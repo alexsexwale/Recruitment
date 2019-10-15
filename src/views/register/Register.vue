@@ -3,7 +3,6 @@
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Register</h3>
-        
         <md-field class="md-form-group" slot="inputs">
           <md-icon>email</md-icon>
           <label>Email</label>
@@ -17,11 +16,11 @@
         <md-field class="md-form-group" slot="inputs">
           <md-icon>lock_outline</md-icon>
           <label>Confirm password</label>
-          <md-input v-model="password"></md-input>
+          <md-input v-model="confirmPassword"></md-input>
         </md-field>
         <!-- <md-checkbox v-model="boolean">I agree to the <a>terms and conditions</a>.</md-checkbox> -->
-        <md-button slot="footer" class="md-simple md-success md-lg">
-          Register
+        <md-button slot="footer" class="md-simple md-success md-lg"><router-link to="/student-form">Register</router-link>
+          
         </md-button>
       </login-card>
     </div>
@@ -35,10 +34,10 @@ export default {
   },
   data() {
     return {
-      firstname: null,
       email: null,
       password: null,
-      boolean: false,
+      confirmPassword: null,
+      boolean: false
     };
   }
 };

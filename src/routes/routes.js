@@ -1,5 +1,5 @@
 import DashboardLayout from "@/pages/Dashboard/Layout/DashboardLayout.vue";
-import AuthLayout from "@/pages/Dashboard/Pages/AuthLayout.vue";
+
 
 // Dashboard pages
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
@@ -9,9 +9,21 @@ import User from "@/pages/Dashboard/Pages/UserProfile.vue";
 import Lock from "@/pages/Dashboard/Pages/Lock.vue";
 
 // Views
-import Login from "@/views/Login.vue";
-import Register from "@/views/Register.vue";
-import ForgotPassword from "@/views/ForgotPassword.vue";
+import AuthLayout from "@/views/AuthLayout.vue";
+import Login from "@/views/login/Login.vue";
+import ForgotPassword from "@/views/forgotPassword/ForgotPassword.vue";
+import Contact from "@/views/contact/Contact.vue";
+import Faq from "@/views/faq/Faq.vue";
+import PrivacyPolicy from "@/views/privacyPolicy/PrivacyPolicy.vue";
+import TermsAndConditions from "@/views/T&Cs/TermsAndConditions.vue";
+import Partner from "@/views/partner/Partner.vue";
+
+
+// Form - Register
+import Register from "@/views/register/Register.vue";
+import StudentForm from "@/views/register/student/StudentForm.vue";
+import ClientForm from "@/views/register/client/ClientForm.vue";
+
 
 // Components pages
 import Buttons from "@/pages/Dashboard/Components/Buttons.vue";
@@ -164,19 +176,54 @@ let authPages = {
       component: Login
     },
     {
-      path: "/register",
-      name: "Register",
-      component: Register
+      path: "/forgot-password",
+      name: "ForgotPassword",
+      component: ForgotPassword
     },
     {
-      path: "/forgot",
-      name: "Forgot",
-      component: ForgotPassword
+      path: "/contact",
+      name: "Contact",
+      component: Contact
+    },
+    {
+      path: "/faq",
+      name: "faq",
+      component: Faq
+    },
+    {
+      path: "/privacy-policy",
+      name: "privacy-policy",
+      component: PrivacyPolicy
+    },
+    {
+      path: "/terms-and-conditions",
+      name: "terms-and-conditions",
+      component: TermsAndConditions
+    },
+    {
+      path: "/partner",
+      name: "partner",
+      component: Partner
     },
     {
       path: "/lock",
       name: "Lock",
       component: Lock
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: Register
+    },
+    {
+      path: "/student-form",
+      name: "StudentForm",
+      components: { default: StudentForm }
+    },
+    {
+      path: "/client-form",
+      name: "ClientForm",
+      components: { default: ClientForm }
     }
   ]
 };
