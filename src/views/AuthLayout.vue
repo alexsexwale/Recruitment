@@ -88,6 +88,7 @@ export default {
       let images = {
         Pricing: "./img/bg-pricing.jpg",
         Login: "./img/login/Login.jpeg",
+        ForgotPassword: "./img/forgotPassword/Forgot_Password.jpeg",
         Register: "./img/register/Sign_Up.jpeg",
         StudentForm: "./img/register/student/Wizard_Form_Student.jpeg",
         ClientForm: "./img/register/client/Wizard_Form_Client.jpg",
