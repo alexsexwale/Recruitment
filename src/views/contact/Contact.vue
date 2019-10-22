@@ -89,14 +89,10 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .justify-content-between {
   justify-content: space-between !important;
 }
 .container {
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-    padding-top: 0px;
-    padding-bottom: 0px;
 }
 </style>

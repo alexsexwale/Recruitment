@@ -1,8 +1,23 @@
 import DashboardLayout from "@/pages/Dashboard/Layout/DashboardLayout.vue";
 
+// Common Dashboard
+import ActiveMicrojob from "@/views/dashboard/view-microjobs/active/ActiveMicrojob.vue";
+import PendingMicrojob from "@/views/dashboard/view-microjobs/pending/PendingMicrojob.vue";
+import CompleteMicrojob from "@/views/dashboard/view-microjobs/complete/CompleteMicrojob.vue";
+import Support from "@/views/dashboard/support/Support.vue";
+import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 
-// Dashboard pages
+// Client Dashboard
 import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+import ClientDashbordLayout from "@/views/dashboard/client-dashboard/Layout/DashboardLayout.vue";
+import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.vue";
+
+import PostMicrojob from "@/views/dashboard/client-dashboard/microjobs/post/PostMicrojob.vue";
+import EditMicrojob from "@/views/dashboard/client-dashboard/microjobs/edit/EditMicrojob.vue";
+
+// Student Dashboard
+import StudentDashbordLayout from "@/views/dashboard/student-dashboard/Layout/DashboardLayout.vue";
+import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
 
 // Pages
 import User from "@/pages/Dashboard/Pages/UserProfile.vue";
@@ -48,120 +63,220 @@ import PaginatedTables from "@/pages/Dashboard/Tables/PaginatedTables.vue";
 // Charts
 import Widgets from "@/pages/Dashboard/Widgets.vue";
 
-let componentsMenu = {
-  path: "/components",
-  component: DashboardLayout,
-  redirect: "/components/buttons",
-  name: "Components",
-  children: [
-    {
-      path: "buttons",
-      name: "Buttons",
-      components: { default: Buttons }
-    },
-    {
-      path: "grid-system",
-      name: "Grid System",
-      components: { default: GridSystem }
-    },
-    {
-      path: "panels",
-      name: "Panels",
-      components: { default: Panels }
-    },
-    {
-      path: "sweet-alert",
-      name: "Sweet Alert",
-      components: { default: SweetAlert }
-    },
-    {
-      path: "notifications",
-      name: "Notifications",
-      components: { default: Notifications }
-    },
-    {
-      path: "icons",
-      name: "Icons",
-      components: { default: Icons }
-    },
-    {
-      path: "typography",
-      name: "Typography",
-      components: { default: Typography }
-    }
-  ]
-};
-let formsMenu = {
-  path: "/forms",
-  component: DashboardLayout,
-  redirect: "/forms/regular",
-  name: "Forms",
-  children: [
-    {
-      path: "regular",
-      name: "Regular Forms",
-      components: { default: RegularForms }
-    },
-    {
-      path: "extended",
-      name: "Extended Forms",
-      components: { default: ExtendedForms }
-    },
-    {
-      path: "validation",
-      name: "Validation Forms",
-      components: { default: ValidationForms }
-    },
-    {
-      path: "wizard",
-      name: "Wizard",
-      components: { default: Wizard }
-    }
-  ]
-};
+// let componentsMenu = {
+//   path: "/components",
+//   component: DashboardLayout,
+//   redirect: "/components/buttons",
+//   name: "Components",
+//   children: [
+//     {
+//       path: "buttons",
+//       name: "Buttons",
+//       components: { default: Buttons }
+//     },
+//     {
+//       path: "grid-system",
+//       name: "Grid System",
+//       components: { default: GridSystem }
+//     },
+//     {
+//       path: "panels",
+//       name: "Panels",
+//       components: { default: Panels }
+//     },
+//     {
+//       path: "sweet-alert",
+//       name: "Sweet Alert",
+//       components: { default: SweetAlert }
+//     },
+//     {
+//       path: "notifications",
+//       name: "Notifications",
+//       components: { default: Notifications }
+//     },
+//     {
+//       path: "icons",
+//       name: "Icons",
+//       components: { default: Icons }
+//     },
+//     {
+//       path: "typography",
+//       name: "Typography",
+//       components: { default: Typography }
+//     }
+//   ]
+// };
+// let formsMenu = {
+//   path: "/forms",
+//   component: DashboardLayout,
+//   redirect: "/forms/regular",
+//   name: "Forms",
+//   children: [
+//     {
+//       path: "regular",
+//       name: "Regular Forms",
+//       components: { default: RegularForms }
+//     },
+//     {
+//       path: "extended",
+//       name: "Extended Forms",
+//       components: { default: ExtendedForms }
+//     },
+//     {
+//       path: "validation",
+//       name: "Validation Forms",
+//       components: { default: ValidationForms }
+//     },
+//     {
+//       path: "wizard",
+//       name: "Wizard",
+//       components: { default: Wizard }
+//     }
+//   ]
+// };
 
-let tablesMenu = {
-  path: "/table-list",
-  component: DashboardLayout,
-  redirect: "/table-list/regular",
-  name: "Tables",
-  children: [
-    {
-      path: "regular",
-      name: "Regular Tables",
-      components: { default: RegularTables }
-    },
-    {
-      path: "extended",
-      name: "Extended Tables",
-      components: { default: ExtendedTables }
-    },
-    {
-      path: "paginated",
-      name: "Pagianted Tables",
-      components: { default: PaginatedTables }
-    }
-  ]
-};
+// let tablesMenu = {
+//   path: "/table-list",
+//   component: DashboardLayout,
+//   redirect: "/table-list/regular",
+//   name: "Tables",
+//   children: [
+//     {
+//       path: "regular",
+//       name: "Regular Tables",
+//       components: { default: RegularTables }
+//     },
+//     {
+//       path: "extended",
+//       name: "Extended Tables",
+//       components: { default: ExtendedTables }
+//     },
+//     {
+//       path: "paginated",
+//       name: "Pagianted Tables",
+//       components: { default: PaginatedTables }
+//     }
+//   ]
+// };
 
-let mapsMenu = {
-  path: "/maps",
-  component: DashboardLayout,
-  name: "Maps",
-  redirect: "/maps/google"
-};
+// let mapsMenu = {
+//   path: "/maps",
+//   component: DashboardLayout,
+//   name: "Maps",
+//   redirect: "/maps/google"
+// };
 
-let pagesMenu = {
+// let pagesMenu = {
+//   path: "/pages",
+//   component: DashboardLayout,
+//   name: "Pages",
+//   redirect: "/pages/user",
+//   children: [
+//     {
+//       path: "user",
+//       name: "User Page",
+//       components: { default: User }
+//     }
+//   ]
+// };
+
+let clientDashboard = {
   path: "/pages",
   component: DashboardLayout,
-  name: "Pages",
+  name: "Client",
   redirect: "/pages/user",
   children: [
     {
-      path: "user",
-      name: "User Page",
+      path: "/client-dashboard",
+      name: "clientDashboard",
       components: { default: User }
+    },
+    {
+      path: "/post-a-job",
+      name: "post",
+      component: PostMicrojob
+    },
+    {
+      path: "/active",
+      name: "active-microjobs",
+      component: ActiveMicrojob
+    },
+    {
+      path: "/pending",
+      name: "pending-microjobs",
+      component: PendingMicrojob
+    },
+    {
+      path: "/complete",
+      name: "complete-microjobs",
+      component: CompleteMicrojob
+    },
+    {
+      path: "/chat",
+      name: "chat",
+      //component: Chat
+    },
+    {
+      path: "/support",
+      name: "support",
+      component: Support
+    },
+    {
+      path: "/feedback",
+      name: "feedback",
+      component: Feedback
     }
+
+  ]
+};
+
+let studentDashboard = {
+  path: "/pages",
+  component: DashboardLayout,
+  name: "Student",
+  children: [
+    {
+      path: "/client-dashboard",
+      name: "clientDashboard",
+      components: { default: User }
+    },
+    {
+      path: "/apply",
+      name: "apply",
+
+      //component: ApplyMicrojob
+    },
+    {
+      path: "/active",
+      name: "active-microjobs",
+      //component: ActiveMicrojob
+    },
+    {
+      path: "/pending",
+      name: "pending-microjobs",
+      //component: PendingMicrojob
+    },
+    {
+      path: "/complete",
+      name: "complete-microjobs",
+      //component: CompleteMicrojob
+    },
+    {
+      path: "/chat",
+      name: "chat",
+      //component: Chat
+    },
+    {
+      path: "/support",
+      name: "support",
+      //component: Support
+    },
+    {
+      path: "/feedback",
+      name: "feedback",
+      //component: Feedback
+    }
+
   ]
 };
 
@@ -234,11 +349,11 @@ const routes = [
     redirect: "/dashboard",
     name: "Home"
   },
-  componentsMenu,
-  formsMenu,
-  tablesMenu,
-  mapsMenu,
-  pagesMenu,
+  // componentsMenu,
+  // formsMenu,
+  // tablesMenu,
+  // mapsMenu,
+  // pagesMenu,
   authPages,
   {
     path: "/",

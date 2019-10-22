@@ -56,114 +56,114 @@
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('companyName') && touched.companyName },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('companyName') }
           ]">
           <md-icon>email</md-icon>
           <label>Company Name</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="companyName" data-vv-name="companyName" type="text" name="companyName" required v-validate="modelValidations.companyName">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('companyName')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('companyName') && touched.companyName">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('companyWebsite') && touched.companyWebsite },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('companyWebsite') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon>http</md-icon>
           <label>Company Website</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="companyWebsite" data-vv-name="companyWebsite" type="text" name="companyWebsite" required v-validate="modelValidations.companyWebsite">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('companyWebsite')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('companyWebsite') && touched.companyWebsite">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('phoneNumber') && touched.phoneNumber },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('phoneNumber') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon>phone</md-icon>
           <label>Phone Number</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="phoneNumber" data-vv-name="phoneNumber" type="text" name="phoneNumber" required v-validate="modelValidations.phoneNumber">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('phoneNumber')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('phoneNumber') && touched.phoneNumber">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('vat') && touched.vat },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('vat') }
           ]">
           <md-icon>email</md-icon>
           <label>VAT No.</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="vat" data-vv-name="vat" type="text" name="vat" required v-validate="modelValidations.vat">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('vat')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('vat') && touched.vat">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('companySize') && touched.companySize },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('companySize') }
           ]">
           <md-icon>email</md-icon>
           <label>Company Size</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="companySize" data-vv-name="companySize" type="text" name="companySize" required v-validate="modelValidations.companySize">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('companySize')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('companySize') && touched.companySize">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('email') && touched.email },
+            { 'md-valid': !errors.has('industry') && touched.industry },
             { 'md-form-group': true },
-            { 'md-error': errors.has('email') }
+            { 'md-error': errors.has('industry') }
           ]">
           <md-icon>email</md-icon>
           <label>Industry</label>
-          <md-input v-model="email" data-vv-name="email" type="text" name="email" required v-validate="modelValidations.email">
+          <md-input v-model="industry" data-vv-name="industry" type="text" name="industry" required v-validate="modelValidations.industry">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -197,20 +197,44 @@ export default {
       email: "",
       touched: {
         firstName: false,
-        lastName: false
+        lastName: false,
+        companyName: false,
+        companyWebsite: false,
+        phoneNumber: false,
+        vat: false,
+        companySize: false,
+        industry: false
       },
       modelValidations: {
         firstName: {
-          required: true,
-          min: 5
+          required: true
         },
         lastName: {
-          required: true,
-          min: 5
+          required: true
         },
         email: {
           required: true,
           email: true
+        },
+        companyName: {
+          required: true
+        },
+        companyWebsite: {
+          required: true
+        },
+        phoneNumber: {
+          required: true,
+          min: 10,
+          max: 10
+        },
+        vat: {
+          required: true
+        },
+        companySize: {
+          required: true
+        },
+        industry: {
+          required: true
         }
       }
     };
@@ -257,7 +281,7 @@ export default {
       this.touched.companyName = true;
     },
     companyWebsite() {
-      this.touched.phoneNumber = true;
+      this.touched.companyWebsite = true;
     },
     phoneNumber() {
       this.touched.phoneNumber = true;
