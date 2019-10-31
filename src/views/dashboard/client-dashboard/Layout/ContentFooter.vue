@@ -4,47 +4,22 @@
       <nav>
         <ul>
           <li>
-            <router-link
-              v-if="$route.meta.rtlActive"
-              :to="{ path: 'https://www.creative-tim.com' }"
-              >منزل</router-link
-            >
-            <a v-else href="https://www.creative-tim.com">Creative Tim</a>
+            <router-link :to="{ path: '/contact' }">Contact Us</router-link>
           </li>
           <li>
-            <a v-if="$route.meta.rtlActive" href="http://blog.creative-tim.com">
-              شركة
-            </a>
-            <a v-else href="https://creative-tim.com/presentation">
-              About Us
-            </a>
+            <router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link>
           </li>
           <li>
-            <a v-if="$route.meta.rtlActive" href="http://blog.creative-tim.com">
-              محفظة
-            </a>
-            <a v-else href="http://blog.creative-tim.com">
-              Blog
-            </a>
+            <router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link>
           </li>
           <li>
-            <a
-              v-if="$route.meta.rtlActive"
-              href="https://www.creative-tim.com/license"
-            >
-              بلوق
-            </a>
-            <a v-else href="https://www.creative-tim.com/license">
-              Licenses
-            </a>
+            <router-link :to="{ path: '/faq' }">FAQ</router-link>
           </li>
         </ul>
       </nav>
       <div class="copyright text-center">
         &copy; {{ new Date().getFullYear() }}
-        <a href="https://www.creative-tim.com/?ref=mdp-vuejs" target="_blank"
-          >Creative Tim</a
-        >, made with <i class="fa fa-heart heart"></i> for a better web
+        Jobox (Pty) Ltd All rights reserved
       </div>
     </div>
   </footer>

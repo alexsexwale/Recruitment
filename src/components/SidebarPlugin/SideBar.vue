@@ -7,36 +7,18 @@
     :style="sidebarStyle"
   >
     <div class="logo">
-      <a
-        href="https://www.creative-tim.com"
-        class="simple-text logo-mini"
-        target="_blank"
-      >
+      <a href="https://www.creative-tim.com" class="simple-text logo-mini" target="_blank">
         <div class="logo-img">
           <img :src="logo" />
         </div>
       </a>
-      <a
-        href="https://www.creative-tim.com"
-        class="simple-text logo-normal"
-        target="_blank"
-      >
-        <template v-if="$route.meta.rtlActive">{{ rtlTitle }}</template>
-        <template v-else>{{ title }}</template>
+      <a href="https://www.creative-tim.com" class="simple-text logo-normal" target="_blank">
+        <template>{{ title }}</template>
       </a>
       <div class="navbar-minimize">
-        <md-button
-          id="minimizeSidebar"
-          class="md-round md-just-icon md-transparent"
-          @click="minimizeSidebar"
-        >
-          <i class="material-icons text_align-center visible-on-sidebar-regular"
-            >more_vert</i
-          >
-          <i
-            class="material-icons design_bullet-list-67 visible-on-sidebar-mini"
-            >view_list</i
-          >
+        <md-button id="minimizeSidebar" class="md-round md-just-icon md-transparent" @click="minimizeSidebar">
+          <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+          <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
         </md-button>
       </div>
     </div>
@@ -44,16 +26,8 @@
       <slot></slot>
       <md-list class="nav">
         <slot name="links">
-          <sidebar-item
-            v-for="(link, index) in sidebarLinks"
-            :key="link.name + index"
-            :link="link"
-          >
-            <sidebar-item
-              v-for="(subLink, index) in link.children"
-              :key="subLink.name + index"
-              :link="subLink"
-            >
+          <sidebar-item v-for="(link, index) in sidebarLinks" :key="link.name + index" :link="link">
+            <sidebar-item v-for="(subLink, index) in link.children" :key="subLink.name + index" :link="subLink">
             </sidebar-item>
           </sidebar-item>
         </slot>
@@ -67,11 +41,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Vue MD PRO"
-    },
-    rtlTitle: {
-      type: String,
-      default: "توقيت الإبداعية"
+      default: "Jobox"
     },
     activeColor: {
       type: String,
@@ -103,7 +73,7 @@ export default {
     },
     logo: {
       type: String,
-      default: "./img/vue-logo.png"
+      default: "/img/logo-box.png"
     },
     sidebarLinks: {
       type: Array,

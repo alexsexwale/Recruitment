@@ -6,17 +6,12 @@
           <div class="card-icon">
             <i class="fab fa-twitter"></i>
           </div>
-          <p class="category">Folowers</p>
-          <h3 class="title">
-            +<animated-number :value="245"></animated-number>
-          </h3>
+          <p class="category">Revenue Made Last Month</p>
+          <h3 class="title">R<animated-number :value="2000"></animated-number></h3>
         </template>
 
         <template slot="footer">
-          <div class="stats">
-            <md-icon>update</md-icon>
-            Just Updated
-          </div>
+          <div class="stats"><md-icon>date_range</md-icon> June</div>
         </template>
       </stats-card>
     </div>
@@ -26,19 +21,12 @@
           <div class="card-icon">
             <md-icon>equalizer</md-icon>
           </div>
-          <p class="category">Website Visits</p>
-          <h3 class="title">
-            <animated-number :value="75"></animated-number>.<animated-number
-              :value="521"
-            ></animated-number>
-          </h3>
+          <p class="category">Revenue Made This Month</p>
+          <h3 class="title">R<animated-number :value="5000"></animated-number></h3>
         </template>
 
         <template slot="footer">
-          <div class="stats">
-            <md-icon>local_offer</md-icon>
-            Tracked from Google Analytics
-          </div>
+          <div class="stats"><md-icon>date_range</md-icon> July</div>
         </template>
       </stats-card>
     </div>
@@ -48,19 +36,12 @@
           <div class="card-icon">
             <md-icon>store</md-icon>
           </div>
-          <p class="category">Revenue</p>
-          <h3 class="title">
-            $ <animated-number :value="34"></animated-number>,<animated-number
-              :value="245"
-            ></animated-number>
-          </h3>
+          <p class="category">Jobs Completed Last Month</p>
+          <h3 class="title"><animated-number :value="20"></animated-number></h3>
         </template>
 
         <template slot="footer">
-          <div class="stats">
-            <md-icon>date_range</md-icon>
-            Last <animated-number :value="24"></animated-number> Hours
-          </div>
+          <div class="stats"><div class="stats"><md-icon>date_range</md-icon> June</div></div>
         </template>
       </stats-card>
     </div>
@@ -70,23 +51,20 @@
           <div class="card-icon">
             <md-icon>weekend</md-icon>
           </div>
-          <p class="category">Bookings</p>
+          <p class="category">Jobs Completed This Month</p>
           <h3 class="title">
-            <animated-number :value="184"></animated-number>
+            <animated-number :value="2"></animated-number>
           </h3>
         </template>
 
         <template slot="footer">
           <div class="stats">
-            <md-icon class="text-danger">warning</md-icon>
-            <a href="#pablo">Get More Space...</a>
+            <div class="stats"><md-icon>date_range</md-icon> July</div>
           </div>
         </template>
       </stats-card>
     </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
+    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50">
       <chart-card
         header-animation="true"
         :chart-data="emailsSubscriptionChart.data"
@@ -121,9 +99,7 @@
         </template>
       </chart-card>
     </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
+    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50">
       <chart-card
         :chart-data="dailySalesChart.data"
         :chart-options="dailySalesChart.options"
@@ -159,65 +135,8 @@
         </template>
       </chart-card>
     </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
-      <chart-card
-        :chart-data="dataCompletedTasksChart.data"
-        :chart-options="dataCompletedTasksChart.options"
-        chart-type="Line"
-        chart-inside-header
-        background-color="blue"
-      >
-        <md-button class="md-simple md-info md-just-icon" slot="first-button">
-          <md-icon>refresh</md-icon>
-          <md-tooltip md-direction="bottom">Refresh</md-tooltip>
-        </md-button>
-        <md-button class="md-simple md-just-icon" slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Change Date</md-tooltip>
-        </md-button>
-
-        <template slot="content">
-          <h4 class="title">Completed Tasks</h4>
-          <p class="category">
-            Last Campaign Performance
-          </p>
-        </template>
-
-        <template slot="footer">
-          <div class="stats">
-            <md-icon>access_time</md-icon>
-            campaign sent
-            <animated-number :value="26"></animated-number> minutes ago
-          </div>
-        </template>
-      </chart-card>
-    </div>
-    <div class="md-layout-item md-size-100">
-      <global-sales-card header-color="green">
-        <template slot="header">
-          <div class="card-icon">
-            <md-icon>language</md-icon>
-          </div>
-          <h4 class="title">Global Sales by Top Locations</h4>
-        </template>
-
-        <template slot="content">
-          <div class="md-layout">
-            <div class="md-layout-item md-size-50">
-              <global-sales-table></global-sales-table>
-            </div>
-            <div class="md-layout-item md-size-50">
-              <async-world-map class="map" :data="mapData"></async-world-map>
-            </div>
-          </div>
-        </template>
-      </global-sales-card>
-    </div>
-    <div
-      class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33"
-    >
+    <h3 class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">Recent Projects</h3>
+    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33">
       <product-card header-animation="true">
         <img class="img" slot="imageHeader" :src="product1" />
         <md-icon slot="fixed-button">build</md-icon>
@@ -358,9 +277,9 @@ export default {
   },
   data() {
     return {
-      product1: "./img/card-2.jpg",
-      product2: "./img/card-3.jpg",
-      product3: "./img/card-1.jpg",
+      product1: "../img/dashboard/client/card-1.jpg",
+      product2: "../img/dashboard/client/card-1.jpg",
+      product3: "../img/dashboard/client/card-1.jpg",
       seq2: 0,
       mapData: {
         AU: 760,

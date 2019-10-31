@@ -40,15 +40,6 @@ import StudentForm from "@/views/register/student/StudentForm.vue";
 import ClientForm from "@/views/register/client/ClientForm.vue";
 
 
-// Components pages
-import Buttons from "@/pages/Dashboard/Components/Buttons.vue";
-import GridSystem from "@/pages/Dashboard/Components/GridSystem.vue";
-import Panels from "@/pages/Dashboard/Components/Panels.vue";
-import SweetAlert from "@/pages/Dashboard/Components/SweetAlert.vue";
-import Notifications from "@/pages/Dashboard/Components/Notifications.vue";
-import Icons from "@/pages/Dashboard/Components/Icons.vue";
-import Typography from "@/pages/Dashboard/Components/Typography.vue";
-
 // Forms pages
 import RegularForms from "@/pages/Dashboard/Forms/RegularForms.vue";
 import ExtendedForms from "@/pages/Dashboard/Forms/ExtendedForms.vue";
@@ -63,223 +54,172 @@ import PaginatedTables from "@/pages/Dashboard/Tables/PaginatedTables.vue";
 // Charts
 import Widgets from "@/pages/Dashboard/Widgets.vue";
 
-// let componentsMenu = {
-//   path: "/components",
-//   component: DashboardLayout,
-//   redirect: "/components/buttons",
-//   name: "Components",
-//   children: [
-//     {
-//       path: "buttons",
-//       name: "Buttons",
-//       components: { default: Buttons }
-//     },
-//     {
-//       path: "grid-system",
-//       name: "Grid System",
-//       components: { default: GridSystem }
-//     },
-//     {
-//       path: "panels",
-//       name: "Panels",
-//       components: { default: Panels }
-//     },
-//     {
-//       path: "sweet-alert",
-//       name: "Sweet Alert",
-//       components: { default: SweetAlert }
-//     },
-//     {
-//       path: "notifications",
-//       name: "Notifications",
-//       components: { default: Notifications }
-//     },
-//     {
-//       path: "icons",
-//       name: "Icons",
-//       components: { default: Icons }
-//     },
-//     {
-//       path: "typography",
-//       name: "Typography",
-//       components: { default: Typography }
-//     }
-//   ]
-// };
-// let formsMenu = {
-//   path: "/forms",
-//   component: DashboardLayout,
-//   redirect: "/forms/regular",
-//   name: "Forms",
-//   children: [
-//     {
-//       path: "regular",
-//       name: "Regular Forms",
-//       components: { default: RegularForms }
-//     },
-//     {
-//       path: "extended",
-//       name: "Extended Forms",
-//       components: { default: ExtendedForms }
-//     },
-//     {
-//       path: "validation",
-//       name: "Validation Forms",
-//       components: { default: ValidationForms }
-//     },
-//     {
-//       path: "wizard",
-//       name: "Wizard",
-//       components: { default: Wizard }
-//     }
-//   ]
-// };
+ let formsMenu = {
+   path: "/forms",
+   component: DashboardLayout,
+   redirect: "/forms/regular",
+   name: "Forms",
+   children: [
+     {
+       path: "regular",
+       name: "Regular Forms",
+       components: { default: RegularForms }
+     },
+     {
+       path: "extended",
+       name: "Extended Forms",
+       components: { default: ExtendedForms }
+     },
+     {
+       path: "validation",
+       name: "Validation Forms",
+       components: { default: ValidationForms }
+     },
+     {
+       path: "wizard",
+       name: "Wizard",
+       components: { default: Wizard }
+     }
+   ]
+ };
 
-// let tablesMenu = {
-//   path: "/table-list",
-//   component: DashboardLayout,
-//   redirect: "/table-list/regular",
-//   name: "Tables",
-//   children: [
-//     {
-//       path: "regular",
-//       name: "Regular Tables",
-//       components: { default: RegularTables }
-//     },
-//     {
-//       path: "extended",
-//       name: "Extended Tables",
-//       components: { default: ExtendedTables }
-//     },
-//     {
-//       path: "paginated",
-//       name: "Pagianted Tables",
-//       components: { default: PaginatedTables }
-//     }
-//   ]
-// };
-
-// let mapsMenu = {
-//   path: "/maps",
-//   component: DashboardLayout,
-//   name: "Maps",
-//   redirect: "/maps/google"
-// };
-
-// let pagesMenu = {
-//   path: "/pages",
-//   component: DashboardLayout,
-//   name: "Pages",
-//   redirect: "/pages/user",
-//   children: [
-//     {
-//       path: "user",
-//       name: "User Page",
-//       components: { default: User }
-//     }
-//   ]
-// };
-
-let clientDashboard = {
-  path: "/pages",
-  component: DashboardLayout,
-  name: "Client",
-  redirect: "/pages/user",
+//Client
+let client_microjobs = {
+  path: "/client/microjobs",
+  component: ClientDashbordLayout,
+  name: "microjobs",
+  redirect: "/client/microjobs/active",
   children: [
     {
-      path: "/client-dashboard",
-      name: "clientDashboard",
-      components: { default: User }
+      path: "active",
+      name: "active",
+      components: { default: ActiveMicrojob }
     },
     {
-      path: "/post-a-job",
+      path: "pending",
+      name: "pending",
+      components: { default: PendingMicrojob }
+    },
+    {
+      path: "complete",
+      name: "complete",
+      components: { default: CompleteMicrojob }
+    }
+  ]
+};
+// Client
+let client_postJob = {
+  path: "/client",
+  component: ClientDashbordLayout,
+  name: "post a job",
+  redirect: "/client/post-a-job",
+  children: [
+    {
+      path: "post-a-job",
       name: "post",
-      component: PostMicrojob
-    },
+      components: { default: PostMicrojob }
+    }
+  ]
+};
+
+// Client Support
+let client_support = {
+  path: "/client",
+  component: ClientDashbordLayout,
+  name: "_support",
+  redirect: "/client/support",
+  children: [
     {
-      path: "/active",
-      name: "active-microjobs",
-      component: ActiveMicrojob
-    },
-    {
-      path: "/pending",
-      name: "pending-microjobs",
-      component: PendingMicrojob
-    },
-    {
-      path: "/complete",
-      name: "complete-microjobs",
-      component: CompleteMicrojob
-    },
-    {
-      path: "/chat",
-      name: "chat",
-      //component: Chat
-    },
-    {
-      path: "/support",
+      path: "support",
       name: "support",
       component: Support
-    },
+    }
+  ]
+};
+
+//Client Feedback
+let client_feedback = {
+  path: "/client",
+  component: ClientDashbordLayout,
+  name: "_feedback",
+  redirect: "/client/feedback",
+  children: [
     {
-      path: "/feedback",
+      path: "feedback",
       name: "feedback",
       component: Feedback
     }
-
   ]
 };
 
-let studentDashboard = {
-  path: "/pages",
-  component: DashboardLayout,
-  name: "Student",
+//Student
+let student_microjobs = {
+  path: "/student/microjobs",
+  component: StudentDashbordLayout,
+  name: "microjobs",
+  redirect: "/student/microjobs/active",
   children: [
     {
-      path: "/client-dashboard",
-      name: "clientDashboard",
-      components: { default: User }
+      path: "active",
+      name: "active",
+      components: { default: ActiveMicrojob }
     },
     {
-      path: "/apply",
-      name: "apply",
-
-      //component: ApplyMicrojob
+      path: "pending",
+      name: "pending",
+      components: { default: PendingMicrojob }
     },
     {
-      path: "/active",
-      name: "active-microjobs",
-      //component: ActiveMicrojob
-    },
-    {
-      path: "/pending",
-      name: "pending-microjobs",
-      //component: PendingMicrojob
-    },
-    {
-      path: "/complete",
-      name: "complete-microjobs",
-      //component: CompleteMicrojob
-    },
-    {
-      path: "/chat",
-      name: "chat",
-      //component: Chat
-    },
-    {
-      path: "/support",
-      name: "support",
-      //component: Support
-    },
-    {
-      path: "/feedback",
-      name: "feedback",
-      //component: Feedback
+      path: "complete",
+      name: "complete",
+      components: { default: CompleteMicrojob }
     }
-
+  ]
+};
+// Student
+let student_postJob = {
+  path: "/student",
+  component: StudentDashbordLayout,
+  name: "post a job",
+  redirect: "/student/post-a-job",
+  children: [
+    {
+      path: "post-a-job",
+      name: "post",
+      components: { default: PostMicrojob }
+    }
   ]
 };
 
+// Student Support
+let student_support = {
+  path: "/student",
+  component: StudentDashbordLayout,
+  name: "_support",
+  redirect: "/student/support",
+  children: [
+    {
+      path: "support",
+      name: "support",
+      component: Support
+    }
+  ]
+};
+
+//Student Feedback
+let student_feedback = {
+  path: "/student",
+  component: StudentDashbordLayout,
+  name: "_feedback",
+  redirect: "/student/feedback",
+  children: [
+    {
+      path: "feedback",
+      name: "feedback",
+      component: Feedback
+    }
+  ]
+};
 let authPages = {
   path: "/",
   component: AuthLayout,
@@ -331,12 +271,12 @@ let authPages = {
       component: Register
     },
     {
-      path: "/student-form",
+      path: "/student/register",
       name: "StudentForm",
       components: { default: StudentForm }
     },
     {
-      path: "/client-form",
+      path: "/client/register",
       name: "ClientForm",
       components: { default: ClientForm }
     }
@@ -346,29 +286,39 @@ let authPages = {
 const routes = [
   {
     path: "/",
-    redirect: "/dashboard",
+    redirect: "client/dashboard",
     name: "Home"
   },
-  // componentsMenu,
-  // formsMenu,
-  // tablesMenu,
-  // mapsMenu,
-  // pagesMenu,
+   formsMenu,
+  client_postJob,
+  client_microjobs,
+  client_support,
+  client_feedback,
+  student_postJob,
+  student_microjobs,
+  student_support,
+  student_feedback,
   authPages,
   {
-    path: "/",
-    component: DashboardLayout,
+    path: "/client",
+    component: ClientDashbordLayout,
     children: [
       {
         path: "dashboard",
         name: "Dashboard",
-        components: { default: Dashboard }
+        components: { default: ClientDashboard }
       },
+    ]
+  },
+  {
+    path: "/student",
+    component: StudentDashbordLayout,
+    children: [
       {
-        path: "widgets",
-        name: "Widgets",
-        components: { default: Widgets }
-      }
+        path: "dashboard",
+        name: "Dashboard",
+        components: { default: StudentDashboard }
+      },
     ]
   }
 ];
