@@ -18,17 +18,17 @@
         </md-button>
 
         <div class="md-collapse">
-          <div class="md-autocomplete">
+          <!-- <div class="md-autocomplete">
             <md-autocomplete class="search" v-model="selectedEmployee" :md-options="employees" :md-open-on-focus="false">
               <label v-if="$route.meta.rtlActive">بحث...</label>
               <label v-else>Search...</label>
             </md-autocomplete>
-          </div>
+          </div> -->
           <md-list>
-            <md-list-item href="#/">
+            <!-- <md-list-item href="#/">
               <i class="material-icons">dashboard</i>
               <p class="hidden-lg hidden-md">Dashboard</p>
-            </md-list-item>
+            </md-list-item> -->
 
             <li class="md-list-item">
               <a class="md-list-item-router md-list-item-container md-button-clean dropdown">
@@ -38,6 +38,7 @@
                       <md-icon>person</md-icon>
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
+                      <li><router-link to="/client/edit-profile">Edit Profile</router-link></li>
                       <li><router-link to="/login">Logout</router-link></li>
                     </ul>
                   </drop-down>

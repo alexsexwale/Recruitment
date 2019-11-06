@@ -14,7 +14,7 @@
       <template slot="links">
         <sidebar-item :link="{ name: 'Dashboard', icon: 'dashboard', path: '/student/dashboard' }"></sidebar-item>
         
-        <sidebar-item :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply-for-a-job' }"></sidebar-item>
+        <sidebar-item :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply' }"></sidebar-item>
         
         <sidebar-item :link="{ name: 'View Microjobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/student/microjobs/active' }"></sidebar-item>
@@ -22,7 +22,7 @@
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/microjobs/complete' }"></sidebar-item>
         </sidebar-item>
 
-        <sidebar-item :link="{ name: 'Chat', icon: 'chat', path: '/calendar' }"></sidebar-item>
+        <!-- <sidebar-item :link="{ name: 'Chat', icon: 'chat', path: '/calendar' }"></sidebar-item> -->
 
         <sidebar-item :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
         <sidebar-item :link="{ name: 'Get Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>

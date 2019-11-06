@@ -22,10 +22,10 @@
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/client/microjobs/complete' }"></sidebar-item>
         </sidebar-item>
 
-        <sidebar-item :link="{ name: 'Chat', icon: 'chat', path: '/chat' }"></sidebar-item>
+        <!-- <sidebar-item :link="{ name: 'Chat', icon: 'chat', path: '/chat' }"></sidebar-item> -->
 
         <sidebar-item :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
-        <sidebar-item :link="{ name: 'Get Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
+        <sidebar-item :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
       </template>
     </side-bar>
     <div class="main-panel">

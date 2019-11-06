@@ -4,7 +4,7 @@
       <stats-card header-color="blue">
         <template slot="header">
           <div class="card-icon">
-            <i class="fab fa-twitter"></i>
+            <i class="fas fa-coins"></i>
           </div>
           <p class="category">Revenue Made Last Month</p>
           <h3 class="title">R<animated-number :value="2000"></animated-number></h3>
@@ -19,7 +19,7 @@
       <stats-card header-color="rose">
         <template slot="header">
           <div class="card-icon">
-            <md-icon>equalizer</md-icon>
+            <i class="fas fa-coins"></i>
           </div>
           <p class="category">Revenue Made This Month</p>
           <h3 class="title">R<animated-number :value="5000"></animated-number></h3>
@@ -34,7 +34,7 @@
       <stats-card header-color="green">
         <template slot="header">
           <div class="card-icon">
-            <md-icon>store</md-icon>
+            <i class="fas fa-business-time"></i>
           </div>
           <p class="category">Jobs Completed Last Month</p>
           <h3 class="title"><animated-number :value="20"></animated-number></h3>
@@ -49,7 +49,7 @@
       <stats-card header-color="warning">
         <template slot="header">
           <div class="card-icon">
-            <md-icon>weekend</md-icon>
+            <i class="fas fa-briefcase"></i>
           </div>
           <p class="category">Jobs Completed This Month</p>
           <h3 class="title">

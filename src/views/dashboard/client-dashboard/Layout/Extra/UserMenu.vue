@@ -4,17 +4,8 @@
       <img :src="avatar" alt="avatar" />
     </div>
     <div class="user-info">
-      <a
-        data-toggle="collapse"
-        :aria-expanded="!isClosed"
-        @click.stop="toggleMenu"
-        @click.capture="clicked"
-      >
-        <span v-if="$route.meta.rtlActive">
-          {{ rtlTitle }}
-          <b class="caret"></b>
-        </span>
-        <span v-else>
+      <a data-toggle="collapse" :aria-expanded="!isClosed" @click.stop="toggleMenu" @click.capture="clicked">
+        <span>
           {{ title }}
           <b class="caret"></b>
         </span>
@@ -24,36 +15,24 @@
         <div v-show="!isClosed">
           <ul class="nav">
             <slot>
-              <li>
-                <a v-if="$route.meta.rtlActive" href="#vue">
-                  <span class="sidebar-mini">مع</span>
-                  <span class="sidebar-normal">ملف</span>
-                </a>
-                <a v-else href="#vue">
+              <!-- <li>
+                <a href="#vue">
                   <span class="sidebar-mini">MP</span>
                   <span class="sidebar-normal">My Profile</span>
                 </a>
-              </li>
+              </li> -->
               <li>
-                <a v-if="$route.meta.rtlActive" href="#vue">
-                  <span class="sidebar-mini">هوع</span>
-                  <span class="sidebar-normal">تعديل الملف الشخصي</span>
-                </a>
-                <a v-else href="#vue">
+                <router-link to="/client/edit-profile">
                   <span class="sidebar-mini">EP</span>
                   <span class="sidebar-normal">Edit Profile</span>
-                </a>
+                </router-link>
               </li>
-              <li>
-                <a v-if="$route.meta.rtlActive" href="#vue">
-                  <span class="sidebar-mini">و</span>
-                  <span class="sidebar-normal">إعدادات</span>
-                </a>
-                <a v-else href="#vue">
+              <!-- <li>
+                <a href="#vue">
                   <span class="sidebar-mini">S</span>
                   <span class="sidebar-normal">Settings</span>
                 </a>
-              </li>
+              </li> -->
             </slot>
           </ul>
         </div>
@@ -71,15 +50,11 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Tania Andrew"
-    },
-    rtlTitle: {
-      type: String,
-      default: "تانيا أندرو"
+      default: "Lesedi Nkosi"
     },
     avatar: {
       type: String,
-      default: "./img/faces/avatar.jpg"
+      default: "../img/dashboard/profile/client.png"
     }
   },
   data() {

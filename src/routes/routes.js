@@ -1,26 +1,24 @@
-import DashboardLayout from "@/pages/Dashboard/Layout/DashboardLayout.vue";
-
-// Common Dashboard
+// Common Dashboard Components
 import ActiveMicrojob from "@/views/dashboard/view-microjobs/active/ActiveMicrojob.vue";
 import PendingMicrojob from "@/views/dashboard/view-microjobs/pending/PendingMicrojob.vue";
 import CompleteMicrojob from "@/views/dashboard/view-microjobs/complete/CompleteMicrojob.vue";
 import Support from "@/views/dashboard/support/Support.vue";
 import Feedback from "@/views/dashboard/feedback/Feedback.vue";
+import EditProfile from "@/views/dashboard/userProfile/EditProfileForm.vue"; //To do: seperate client and student
 
-// Client Dashboard
-import Dashboard from "@/pages/Dashboard/Dashboard.vue";
+// Client Dashboard Components
 import ClientDashbordLayout from "@/views/dashboard/client-dashboard/Layout/DashboardLayout.vue";
 import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.vue";
 
 import PostMicrojob from "@/views/dashboard/client-dashboard/microjobs/post/PostMicrojob.vue";
-import EditMicrojob from "@/views/dashboard/client-dashboard/microjobs/edit/EditMicrojob.vue";
 
-// Student Dashboard
+// Student Dashboard Components
 import StudentDashbordLayout from "@/views/dashboard/student-dashboard/Layout/DashboardLayout.vue";
 import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
 
+import ApplyMicrojob from "@/views/dashboard/student-dashboard/microjobs/apply/ApplyMicrojob.vue";
+
 // Pages
-import User from "@/pages/Dashboard/Pages/UserProfile.vue";
 import Lock from "@/pages/Dashboard/Pages/Lock.vue";
 
 // Views
@@ -39,187 +37,106 @@ import Register from "@/views/register/Register.vue";
 import StudentForm from "@/views/register/student/StudentForm.vue";
 import ClientForm from "@/views/register/client/ClientForm.vue";
 
-
-// Forms pages
-import RegularForms from "@/pages/Dashboard/Forms/RegularForms.vue";
-import ExtendedForms from "@/pages/Dashboard/Forms/ExtendedForms.vue";
-import ValidationForms from "@/pages/Dashboard/Forms/ValidationForms.vue";
-import Wizard from "@/pages/Dashboard/Forms/Wizard.vue";
-
-// TableList pages
-import RegularTables from "@/pages/Dashboard/Tables/RegularTables.vue";
-import ExtendedTables from "@/pages/Dashboard/Tables/ExtendedTables.vue";
-import PaginatedTables from "@/pages/Dashboard/Tables/PaginatedTables.vue";
-
-// Charts
-import Widgets from "@/pages/Dashboard/Widgets.vue";
-
- let formsMenu = {
-   path: "/forms",
-   component: DashboardLayout,
-   redirect: "/forms/regular",
-   name: "Forms",
-   children: [
-     {
-       path: "regular",
-       name: "Regular Forms",
-       components: { default: RegularForms }
-     },
-     {
-       path: "extended",
-       name: "Extended Forms",
-       components: { default: ExtendedForms }
-     },
-     {
-       path: "validation",
-       name: "Validation Forms",
-       components: { default: ValidationForms }
-     },
-     {
-       path: "wizard",
-       name: "Wizard",
-       components: { default: Wizard }
-     }
-   ]
- };
-
-//Client
-let client_microjobs = {
-  path: "/client/microjobs",
-  component: ClientDashbordLayout,
-  name: "microjobs",
-  redirect: "/client/microjobs/active",
-  children: [
-    {
-      path: "active",
-      name: "active",
-      components: { default: ActiveMicrojob }
-    },
-    {
-      path: "pending",
-      name: "pending",
-      components: { default: PendingMicrojob }
-    },
-    {
-      path: "complete",
-      name: "complete",
-      components: { default: CompleteMicrojob }
-    }
-  ]
-};
-// Client
-let client_postJob = {
+// Client Menu
+let client_dashboard_menu = {
   path: "/client",
   component: ClientDashbordLayout,
-  name: "post a job",
-  redirect: "/client/post-a-job",
+  name: "client nav menu",
+  redirect: "/client/dashboard",
   children: [
+    {
+      path: "dashboard",
+      name: "Dashboard",
+      components: { default: ClientDashboard }
+    },
     {
       path: "post-a-job",
       name: "post",
       components: { default: PostMicrojob }
-    }
-  ]
-};
-
-// Client Support
-let client_support = {
-  path: "/client",
-  component: ClientDashbordLayout,
-  name: "_support",
-  redirect: "/client/support",
-  children: [
+    },
     {
-      path: "support",
-      name: "support",
-      component: Support
-    }
-  ]
-};
-
-//Client Feedback
-let client_feedback = {
-  path: "/client",
-  component: ClientDashbordLayout,
-  name: "_feedback",
-  redirect: "/client/feedback",
-  children: [
-    {
-      path: "feedback",
-      name: "feedback",
-      component: Feedback
-    }
-  ]
-};
-
-//Student
-let student_microjobs = {
-  path: "/student/microjobs",
-  component: StudentDashbordLayout,
-  name: "microjobs",
-  redirect: "/student/microjobs/active",
-  children: [
-    {
-      path: "active",
+      path: "microjobs/active",
       name: "active",
       components: { default: ActiveMicrojob }
     },
     {
-      path: "pending",
+      path: "microjobs/pending",
       name: "pending",
       components: { default: PendingMicrojob }
     },
     {
-      path: "complete",
+      path: "microjobs/complete",
       name: "complete",
       components: { default: CompleteMicrojob }
+    },
+    {
+      path: "support",
+      name: "support",
+      component: Support
+    },
+    {
+      path: "feedback",
+      name: "feedback",
+      component: Feedback
+    },
+    {
+      path: "edit-profile",
+      name: "Edit Profile",
+      component: EditProfile
     }
   ]
 };
+
 // Student
-let student_postJob = {
+let student_dashboard_menu = {
   path: "/student",
   component: StudentDashbordLayout,
   name: "post a job",
-  redirect: "/student/post-a-job",
+  redirect: "/student/dashboard",
   children: [
     {
-      path: "post-a-job",
-      name: "post",
-      components: { default: PostMicrojob }
-    }
-  ]
-};
-
-// Student Support
-let student_support = {
-  path: "/student",
-  component: StudentDashbordLayout,
-  name: "_support",
-  redirect: "/student/support",
-  children: [
+      path: "dashboard",
+      name: "Dashboard",
+      components: { default: StudentDashboard }
+    },
+    {
+      path: "apply",
+      name: "apply",
+      components: { default: ApplyMicrojob }
+    },
+    {
+      path: "microjobs/active",
+      name: "active",
+      components: { default: ActiveMicrojob }
+    },
+    {
+      path: "microjobs/pending",
+      name: "pending",
+      components: { default: PendingMicrojob }
+    },
+    {
+      path: "microjobs/complete",
+      name: "complete",
+      components: { default: CompleteMicrojob }
+    },
     {
       path: "support",
       name: "support",
       component: Support
-    }
-  ]
-};
-
-//Student Feedback
-let student_feedback = {
-  path: "/student",
-  component: StudentDashbordLayout,
-  name: "_feedback",
-  redirect: "/student/feedback",
-  children: [
+    },
     {
       path: "feedback",
       name: "feedback",
       component: Feedback
+    },
+    {
+      path: "edit-profile",
+      name: "Edit Profile",
+      component: EditProfile
     }
   ]
 };
+
 let authPages = {
   path: "/",
   component: AuthLayout,
@@ -286,41 +203,12 @@ let authPages = {
 const routes = [
   {
     path: "/",
-    redirect: "client/dashboard",
+    redirect: "login",
     name: "Home"
   },
-   formsMenu,
-  client_postJob,
-  client_microjobs,
-  client_support,
-  client_feedback,
-  student_postJob,
-  student_microjobs,
-  student_support,
-  student_feedback,
-  authPages,
-  {
-    path: "/client",
-    component: ClientDashbordLayout,
-    children: [
-      {
-        path: "dashboard",
-        name: "Dashboard",
-        components: { default: ClientDashboard }
-      },
-    ]
-  },
-  {
-    path: "/student",
-    component: StudentDashbordLayout,
-    children: [
-      {
-        path: "dashboard",
-        name: "Dashboard",
-        components: { default: StudentDashboard }
-      },
-    ]
-  }
+  client_dashboard_menu,
+  student_dashboard_menu,
+  authPages
 ];
 
 export default routes;

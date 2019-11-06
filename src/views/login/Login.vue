@@ -16,15 +16,17 @@
         <md-button slot="footer" class="md-simple md-success md-lg">
           <router-link to="/client/dashboard">Login</router-link>
         </md-button>
+        
       </login-card>
     </div>
   </div>
 </template>
 <script>
-import { LoginCard } from "@/components";
+import { LoginCard, Tabs } from "@/components";
 export default {
   components: {
-    LoginCard
+    LoginCard,
+    Tabs
   },
   data() {
     return {

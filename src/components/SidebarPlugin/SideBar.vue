@@ -1,20 +1,20 @@
 <template>
-  <div
-    class="sidebar"
+  <div class="sidebar"
     :data-color="activeColor"
     :data-image="backgroundImage"
     :data-background-color="backgroundColor"
     :style="sidebarStyle"
   >
     <div class="logo">
-      <a href="https://www.creative-tim.com" class="simple-text logo-mini" target="_blank">
+      <router-link to="/client/dashboard" class="simple-text logo-mini">
         <div class="logo-img">
           <img :src="logo" />
         </div>
-      </a>
-      <a href="https://www.creative-tim.com" class="simple-text logo-normal" target="_blank">
+      </router-link>
+      
+      <router-link to="/client/dashboard" class="simple-text logo-normal" target="_blank">
         <template>{{ title }}</template>
-      </a>
+      </router-link>
       <div class="navbar-minimize">
         <md-button id="minimizeSidebar" class="md-round md-just-icon md-transparent" @click="minimizeSidebar">
           <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
