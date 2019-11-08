@@ -51,32 +51,32 @@ let client_dashboard_menu = {
     },
     {
       path: "post-a-job",
-      name: "post",
+      name: "Post a Microjob",
       components: { default: PostMicrojob }
     },
     {
       path: "microjobs/active",
-      name: "active",
+      name: "Active Microjobs",
       components: { default: ActiveMicrojob }
     },
     {
       path: "microjobs/pending",
-      name: "pending",
+      name: "Pending Microjobs",
       components: { default: PendingMicrojob }
     },
     {
       path: "microjobs/complete",
-      name: "complete",
+      name: "Complete Microjobs",
       components: { default: CompleteMicrojob }
     },
     {
       path: "support",
-      name: "support",
+      name: "Get Support",
       component: Support
     },
     {
       path: "feedback",
-      name: "feedback",
+      name: "Give feedback",
       component: Feedback
     },
     {
@@ -101,32 +101,32 @@ let student_dashboard_menu = {
     },
     {
       path: "apply",
-      name: "apply",
+      name: "Apply for a Microjob",
       components: { default: ApplyMicrojob }
     },
     {
       path: "microjobs/active",
-      name: "active",
+      name: "Active Microjobs",
       components: { default: ActiveMicrojob }
     },
     {
       path: "microjobs/pending",
-      name: "pending",
+      name: "Pending Microjobs",
       components: { default: PendingMicrojob }
     },
     {
       path: "microjobs/complete",
-      name: "complete",
+      name: "Complete Microjobs",
       components: { default: CompleteMicrojob }
     },
     {
       path: "support",
-      name: "support",
+      name: "Get Support",
       component: Support
     },
     {
       path: "feedback",
-      name: "feedback",
+      name: "Give Feedback",
       component: Feedback
     },
     {
@@ -159,22 +159,22 @@ let authPages = {
     },
     {
       path: "/faq",
-      name: "faq",
+      name: "Faq",
       component: Faq
     },
     {
       path: "/privacy-policy",
-      name: "privacy-policy",
+      name: "Privacy Policy",
       component: PrivacyPolicy
     },
     {
       path: "/terms-and-conditions",
-      name: "terms-and-conditions",
+      name: "Terms And Conditions",
       component: TermsAndConditions
     },
     {
       path: "/partner",
-      name: "partner",
+      name: "Become a Partner",
       component: Partner
     },
     {
@@ -189,12 +189,12 @@ let authPages = {
     },
     {
       path: "/student/register",
-      name: "StudentForm",
+      name: "Student Registration",
       components: { default: StudentForm }
     },
     {
       path: "/client/register",
-      name: "ClientForm",
+      name: "Client Registration",
       components: { default: ClientForm }
     }
   ]
