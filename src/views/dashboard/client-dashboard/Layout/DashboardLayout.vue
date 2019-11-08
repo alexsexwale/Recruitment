@@ -5,10 +5,7 @@
       { rtl: $route.meta.rtlActive }
     ]" >
     <notifications></notifications>
-    <side-bar
-      :active-color="sidebarBackground"
-      :background-image="sidebarBackgroundImage"
-      :data-background-color="sidebarBackgroundColor">
+    <side-bar :active-color="sidebarBackground" :background-image="sidebarBackgroundImage" :data-background-color="sidebarBackgroundColor">
       <user-menu></user-menu>
       <mobile-menu></mobile-menu>
       <template slot="links">

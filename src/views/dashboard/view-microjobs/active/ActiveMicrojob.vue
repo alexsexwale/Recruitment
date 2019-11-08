@@ -26,13 +26,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>R1000/budget</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Location, Remote
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -63,13 +70,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$1.119/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              London, UK
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -100,13 +114,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$459/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Milan, Italy
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -137,13 +158,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$899/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Barcelona, Spain
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -174,13 +202,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$1.119/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              London, UK
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -211,13 +246,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$459/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Milan, Italy
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -248,13 +290,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$899/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Barcelona, Spain
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -285,13 +334,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$1.119/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              London, UK
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>
@@ -322,13 +378,20 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <h4>$459/night</h4>
+            <i class="fas fa-money-bill-wave"></i> budget
+            <h4 style="text-align:center;">R1000</h4>
+          </div>
+          <div class="price">
+            <br><br>
+            <i class="fas fa-calendar-week"></i> Deadline
+            <h4 style="text-align:center;">12 July 2025</h4>
+            <md-button class="md-success">View</md-button>
           </div>
           <div class="stats">
-            <p class="category">
-              <md-icon>place</md-icon>
-              Milan, Italy
-            </p>
+            <div class="price">
+              <md-icon>place</md-icon> Location
+              <h4 style="text-align:center;">Remote</h4>
+            </div>
           </div>
         </template>
       </product-card>

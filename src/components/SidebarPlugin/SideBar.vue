@@ -3,8 +3,7 @@
     :data-color="activeColor"
     :data-image="backgroundImage"
     :data-background-color="backgroundColor"
-    :style="sidebarStyle"
-  >
+    :style="sidebarStyle">
     <div class="logo">
       <router-link to="/client/dashboard" class="simple-text logo-mini">
         <div class="logo-img">
@@ -12,7 +11,7 @@
         </div>
       </router-link>
       
-      <router-link to="/client/dashboard" class="simple-text logo-normal" target="_blank">
+      <router-link to="/client/dashboard" class="simple-text logo-normal">
         <template>{{ title }}</template>
       </router-link>
       <div class="navbar-minimize">
@@ -111,6 +110,10 @@ export default {
 };
 </script>
 <style>
+.logo-img {
+  background: transparent !important;
+}
+
 @media (min-width: 992px) {
   .navbar-search-form-mobile,
   .nav-mobile-menu {
