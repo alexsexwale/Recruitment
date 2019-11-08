@@ -30,6 +30,7 @@ import Faq from "@/views/faq/Faq.vue";
 import PrivacyPolicy from "@/views/privacyPolicy/PrivacyPolicy.vue";
 import TermsAndConditions from "@/views/T&Cs/TermsAndConditions.vue";
 import Partner from "@/views/partner/Partner.vue";
+import UserRole from "@/views/register/UserRole.vue";
 
 
 // Form - Register
@@ -182,19 +183,25 @@ let authPages = {
       name: "Lock",
       component: Lock
     },
+    //Registration
     {
       path: "/register",
       name: "Register",
       component: Register
     },
     {
-      path: "/student/register",
-      name: "Student Registration",
+      path: "/register/select-user-role",
+      name: "UserRole",
+      component: UserRole
+    },
+    {
+      path: "/register/student",
+      name: "StudentForm",
       components: { default: StudentForm }
     },
     {
-      path: "/client/register",
-      name: "Client Registration",
+      path: "/register/client",
+      name: "ClientForm",
       components: { default: ClientForm }
     }
   ]

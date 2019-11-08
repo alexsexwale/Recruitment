@@ -90,9 +90,11 @@ export default {
         Login: "./img/login/Login.jpeg",
         ForgotPassword: "./img/forgotPassword/Forgot_Password.jpeg",
         Register: "./img/register/Sign_Up.jpeg",
+        UserRole: "./img/register/Sign_Up.jpeg",
         StudentForm: "../img/register/student/Wizard_Form_Student.jpeg",
         ClientForm: "../img/register/client/Wizard_Form_Client.jpg",
         Contact: "./img/contact/Contact.jpeg",
+        Faq: "./img/contact/Contact.jpeg",
         Lock: "./img/lock.jpg"
       };
       return {
