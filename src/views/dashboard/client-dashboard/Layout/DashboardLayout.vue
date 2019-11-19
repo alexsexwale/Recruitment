@@ -11,7 +11,7 @@
       <template slot="links">
         <sidebar-item :link="{ name: 'Dashboard', icon: 'dashboard', path: '/client/dashboard' }"></sidebar-item>
         
-        <sidebar-item :link="{ name: 'Post a Job', icon: 'create', path: '/client/post-a-job' }"></sidebar-item>
+        <sidebar-item :link="{ name: 'Post a Job', icon: 'create', path: '/client/microjobs/post' }"></sidebar-item>
         
         <sidebar-item :link="{ name: 'View Microjobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/microjobs/active' }"></sidebar-item>

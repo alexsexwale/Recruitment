@@ -4,17 +4,19 @@ import PendingMicrojob from "@/views/dashboard/view-microjobs/pending/PendingMic
 import CompleteMicrojob from "@/views/dashboard/view-microjobs/complete/CompleteMicrojob.vue";
 import Support from "@/views/dashboard/support/Support.vue";
 import Feedback from "@/views/dashboard/feedback/Feedback.vue";
-import EditProfile from "@/views/dashboard/userProfile/EditProfileForm.vue"; //To do: seperate client and student
 
 // Client Dashboard Components
 import ClientDashbordLayout from "@/views/dashboard/client-dashboard/Layout/DashboardLayout.vue";
 import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.vue";
-
+import EditClientProfile from "@/views/dashboard/client-dashboard/user-profile/EditProfileForm.vue";
 import PostMicrojob from "@/views/dashboard/client-dashboard/microjobs/post/PostMicrojob.vue";
+import EditMicrojob from '@/views/dashboard/client-dashboard/microjobs/edit/EditMicrojob.vue';
+
 
 // Student Dashboard Components
 import StudentDashbordLayout from "@/views/dashboard/student-dashboard/Layout/DashboardLayout.vue";
 import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
+import EditStudentProfile from "@/views/dashboard/student-dashboard/user-profile/EditProfileForm.vue";
 
 import ApplyMicrojob from "@/views/dashboard/student-dashboard/microjobs/apply/ApplyMicrojob.vue";
 
@@ -51,9 +53,14 @@ let client_dashboard_menu = {
       components: { default: ClientDashboard }
     },
     {
-      path: "post-a-job",
+      path: "microjobs/post",
       name: "Post a Microjob",
       components: { default: PostMicrojob }
+    },
+    {
+      path: "microjobs/edit",
+      name: "Edit Microjob",
+      components: { default: EditMicrojob }
     },
     {
       path: "microjobs/active",
@@ -83,7 +90,7 @@ let client_dashboard_menu = {
     {
       path: "edit-profile",
       name: "Edit Profile",
-      component: EditProfile
+      component: EditClientProfile
     }
   ]
 };
@@ -133,7 +140,7 @@ let student_dashboard_menu = {
     {
       path: "edit-profile",
       name: "Edit Profile",
-      component: EditProfile
+      component: EditStudentProfile
     }
   ]
 };

@@ -64,44 +64,7 @@
         </template>
       </stats-card>
     </div>
-    <div class="md-layout-item md-large-size-33 md-medium-size-50 md-small-size-100">
-      <rotating-card card-class="md-card-background" layer-background
-        :front-card-image="cardRotating.cardRotatingBg1"
-        :back-card-image="cardRotating.cardRotatingBg1">
-        <template slot="frontRotateCardContent">
-          <h6 class="card-category">
-            Full Background Card
-          </h6>
-          <h3 class="card-title">
-            This Background Card Will Rotate on Hover
-          </h3>
-          <p class="card-description">
-            Don't be scared of the truth because we need to restart the
-            human foundation in truth And I love you like Kanye loves
-            Kanye I love Rick Owens’ bed design but the back is...
-          </p>
-        </template>
-        <template slot="backRotateCardContent">
-          <h5 class="card-title">
-            Manage Post
-          </h5>
-          <p class="card-description">
-            As an Admin, you have shortcuts to edit, view or delete the
-            posts.
-          </p>
-
-          <md-button href="javascript:void(0)" class="md-info md-just-icon md-round">
-            <md-icon>subject</md-icon>
-          </md-button>
-          <md-button href="javascript:void(0)" class="md-success md-just-icon md-round">
-            <md-icon>mode_edit</md-icon>
-          </md-button>
-          <md-button href="javascript:void(0)" class="md-danger md-just-icon md-round">
-            <md-icon>delete</md-icon>
-          </md-button>
-        </template>
-      </rotating-card>
-    </div>
+    
     <h3 class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">Recent Projects</h3>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33">
       <product-card header-animation="true">

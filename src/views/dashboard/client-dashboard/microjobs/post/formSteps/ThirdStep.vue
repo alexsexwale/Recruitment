@@ -1,146 +1,83 @@
 <template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-100">
-      <h5 class="info-text">Are you living in a nice area?</h5>
-    </div>
-    <div class="md-layout-item md-size-70 md-small-size-100">
-      <md-field
-        :class="[
-          { 'md-valid': !errors.has('street name') && touched.street },
-          { 'md-error': errors.has('street name') }
-        ]"
-      >
-        <label>Street Name</label>
-        <md-input
-          v-model="street"
-          data-vv-name="street name"
-          type="text"
-          name="street name"
-          required
-          v-validate="modelValidations.street"
-        >
-        </md-input>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('street name')"
-            >close</md-icon
-          >
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon
-            class="success"
-            v-show="!errors.has('street name') && touched.street"
-            >done</md-icon
-          >
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-    <div class="md-layout-item md-size-30 md-small-size-100">
-      <md-field
-        :class="[
-          { 'md-valid': !errors.has('street number') && touched.streetNo },
-          { 'md-error': errors.has('street number') }
-        ]"
-      >
-        <label>Street Number</label>
-        <md-input
-          v-model="streetNo"
-          data-vv-name="street number"
-          type="text"
-          name="street number"
-          required
-          v-validate="modelValidations.streetNo"
-        >
-        </md-input>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('street name')"
-            >close</md-icon
-          >
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon
-            class="success"
-            v-show="!errors.has('street number') && touched.streetNo"
-            >done</md-icon
-          >
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-    <div class="md-layout-item md-small-size-100">
-      <md-field
-        :class="[
-          { 'md-valid': !errors.has('city') && touched.city },
-          { 'md-error': errors.has('city') }
-        ]"
-      >
-        <label>City</label>
-        <md-input
-          v-model="city"
-          data-vv-name="city"
-          type="text"
-          name="city"
-          required
-          v-validate="modelValidations.city"
-        >
-        </md-input>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('city')">close</md-icon>
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon class="success" v-show="!errors.has('city') && touched.city"
-            >done</md-icon
-          >
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-    <div class="md-layout-item md-small-size-100">
-      <md-field>
-        <label for="select">Single Select</label>
-        <md-select v-model="select" name="select">
-          <md-option value="angola">Angola</md-option>
-          <md-option value="france">France</md-option>
-          <md-option value="germany">Germany</md-option>
-          <md-option value="england">England</md-option>
-        </md-select>
-      </md-field>
+  <div>
+    <h5 class="info-text">Specify the location of work</h5>
+    <div class="md-layout">
+      <div class="md-layout-item mt-4 md-size-100">
+        <md-field
+          :class="[
+            { 'md-valid': !errors.has('budget') && touched.budget },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('budget') }
+          ]">
+          <md-icon>face</md-icon>
+          <label>Budget</label>
+          <md-input v-model="budget" data-vv-name="budget" type="text" name="budget" required v-validate="modelValidations.budget"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('budget')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('budget') && touched.budget">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <icon-checkbox v-model="model.upfront" icon="fas fa-laptop" title="Upfront"></icon-checkbox>
+      </div>
+      <div class="md-layout-item md-size-50 md-small-size-100">
+        <icon-checkbox v-model="model.postPayment" icon="fas fa-building" title="Post Payment"></icon-checkbox>
+      </div>
+      <div class="md-layout-item mt-4 md-size-100" v-if="model.postPayment">
+        <md-field
+          :class="[
+            { 'md-valid': !errors.has('payment') && touched.payment },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('payment') }
+          ]">
+          <md-icon>face</md-icon>
+          <label>Days Until Payment</label>
+          <md-input v-model="payment" data-vv-name="payment" type="text" name="payment" required v-validate="modelValidations.payment"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('payment')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('payment') && touched.payment">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+
 export default {
   components: {
+    IconCheckbox,
     SlideYDownTransition
   },
   data() {
     return {
-      street: "",
-      streetNo: "",
-      city: "",
-      country: "",
-      select: null,
-      touched: {
-        street: false
+      model: {
+        upfront: false,
+        postPayment: false
       },
-      countryOptions: ["One", "Two", "Three", "Four", "Five", "Six"],
+      budget: "",
+      touched: {
+        budget: false
+      },
       modelValidations: {
-        street: {
-          required: true,
-          min: 5
-        },
-        streetNo: {
-          required: true,
-          min: 5
-        },
-        city: {
-          required: true
-        },
-        country: {
+        budget: {
           required: true
         }
       }
     };
   },
   methods: {
+    validate() {
+      this.$emit("on-validated", true, this.model);
+      return Promise.resolve(true);
+    },
     getError(fieldName) {
       return this.errors.first(fieldName);
     },
@@ -152,11 +89,8 @@ export default {
     }
   },
   watch: {
-    street() {
-      this.touched.street = true;
-    },
-    streetNo() {
-      this.touched.streetNo = true;
+    budget() {
+      this.touched.budget = true;
     }
   }
 };

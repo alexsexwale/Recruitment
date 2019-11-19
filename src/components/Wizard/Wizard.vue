@@ -45,10 +45,7 @@
             style="transition: transform 0.5s cubic-bezier(0.29, 1.42, 0.79, 1); width: 100%;"
             :style="movingTabStyles"
           >
-            <tab-item-content
-              :tab="activeTab"
-              :moving-tab="true"
-            ></tab-item-content>
+            <tab-item-content :tab="activeTab" :moving-tab="true"></tab-item-content>
           </div>
         </div>
 
@@ -71,16 +68,10 @@
             </div>
 
             <div>
-              <md-button
-                v-if="activeTabIndex < tabCount - 1"
-                @click.native="nextTab"
-                class="btn-next md-success"
-              >
+              <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
                 {{ nextButtonText }}
               </md-button>
-              <md-button v-else class="md-success" @click.native="nextTab">{{
-                finishButtonText
-              }}</md-button>
+              <md-button v-else class="md-success" @click.native="nextTab"><router-link to="/client/dashboard" style="color:white;">{{ finishButtonText }}</router-link></md-button>
             </div>
           </slot>
         </md-card-actions>

@@ -117,11 +117,11 @@ export default {
   data() {
     return {
       // image: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      province: "",
-      postalCode: "",
+      addressLine1: "14 demo str",
+      addressLine2: "Kruger",
+      city: "Johannesburg",
+      province: "Gauteng",
+      postalCode: "1737",
       touched: {
         firstName: false,
         lastName: false,

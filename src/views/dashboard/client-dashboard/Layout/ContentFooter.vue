@@ -3,7 +3,7 @@
     <div class="container">
       <nav>
         <ul>
-          <li>
+          <!-- <li>
             <router-link :to="{ path: '/contact' }">Contact Us</router-link>
           </li>
           <li>
@@ -11,7 +11,7 @@
           </li>
           <li>
             <router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link>
-          </li>
+          </li> -->
           <li>
             <router-link :to="{ path: '/faq' }">FAQ</router-link>
           </li>

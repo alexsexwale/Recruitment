@@ -3,7 +3,7 @@
     <div class="md-layout-item md-size-66 md-xsmall-size-80 mx-auto">
       <simple-wizard>
         <template slot="header">
-          <h3 class="title">Build your profile</h3>
+          <h3 class="title">Edit your profile</h3>
           <h5 class="category">This information will let us know more about you.</h5>
         </template>
 

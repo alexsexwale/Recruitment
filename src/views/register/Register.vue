@@ -20,8 +20,8 @@
         </md-field>
         
         <!-- <md-checkbox v-model="boolean">I agree to the <a>terms and conditions</a>.</md-checkbox> -->
-        <md-button slot="footer" class="md-simple md-success md-lg"><router-link to="/register/select-user-role">Continue</router-link>
-          
+        <md-button slot="footer" class="md-simple md-success md-lg">
+          <router-link to="/register/select-user-role">Continue</router-link>
         </md-button>
       </login-card>
     </div>

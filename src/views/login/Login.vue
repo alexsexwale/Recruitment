@@ -14,25 +14,43 @@
           <md-input v-model="password"></md-input>
         </md-field>
         <md-button slot="footer" class="md-simple md-success md-lg">
-          <router-link to="/client/dashboard">Login</router-link>
+          <router-link to="/client/dashboard">
+          Login</router-link>
         </md-button>
-        
       </login-card>
     </div>
+    <!-- <modal v-if="smallAlertModal" @close="smallAlertModalHide">
+    <template slot="header">
+      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="smallAlertModalHide">
+        <md-icon>clear</md-icon>
+      </md-button>
+    </template>
+
+    <template slot="body">
+      <p>Are you sure you want to do this?</p>
+    </template>
+
+    <template slot="footer">
+      <md-button class="md-simple" @click="smallAlertModalHide">Never Mind</md-button>
+      <md-button class="md-success md-simple" >Yes</md-button>
+    </template>
+  </modal> -->
   </div>
 </template>
 <script>
-import { LoginCard, Tabs } from "@/components";
+import { LoginCard, Tabs, Modal } from "@/components";
 export default {
   components: {
     LoginCard,
-    Tabs
+    Tabs,
+    Modal
   },
   data() {
     return {
       firstname: null,
       email: null,
-      password: null
+      password: null,
+      smallAlertModal: false
     };
   }
 };

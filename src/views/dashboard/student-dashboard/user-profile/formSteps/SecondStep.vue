@@ -173,14 +173,14 @@ export default {
   },
   data() {
     return {
-      institution: "",
-      campus: "",
-      studentNo: "",
-      faculty: "",
-      degree: "",
-      major: "",
-      year: "",
-      graduateStatus: "",
+      institution: "University of Cape Town",
+      campus: "Cape Town",
+      studentNo: "6900002",
+      faculty: "IT",
+      degree: "Computer Science",
+      major: "Application Development",
+      year: "2",
+      graduateStatus: "Undergraduate",
       touched: {
         firstName: false,
         lastName: false,

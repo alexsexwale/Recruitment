@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout-item md-size-100">
+  <div class="md-layout-item md-size-100 transparant">
     <md-card>
       <md-card-content>
         <collapse
@@ -52,3 +52,8 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+.transparant {
+      opacity: 0.8;
+}
+</style>

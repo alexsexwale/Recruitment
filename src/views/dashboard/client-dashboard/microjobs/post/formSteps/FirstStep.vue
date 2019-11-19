@@ -7,52 +7,54 @@
       <div class="md-layout-item mt-4 md-small-size-100">
         <md-field
           :class="[
-            { 'md-valid': !errors.has('firstName') && touched.firstName },
+            { 'md-valid': !errors.has('name') && touched.name },
             { 'md-form-group': true },
-            { 'md-error': errors.has('firstName') }
+            { 'md-error': errors.has('name') }
           ]">
           <md-icon>face</md-icon>
           <label>Microjob Name</label>
-          <md-input v-model="firstName" data-vv-name="firstName" type="text" name="firstName" required v-validate="modelValidations.firstName"></md-input>
+          <md-input v-model="name" data-vv-name="name" type="text" name="name" required v-validate="modelValidations.name"></md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('firstName')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('name')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('firstName') && touched.firstName">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('name') && touched.name">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-
+      </div>
+      <div class="md-layout-item mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('lastName') && touched.lastName },
+            { 'md-valid': !errors.has('description') && touched.description },
             { 'md-form-group': true },
-            { 'md-error': errors.has('lastName') }
+            { 'md-error': errors.has('description') }
           ]">
           <md-icon>record_voice_over</md-icon>
           <label>Microjob Description</label>
-          <md-input v-model="lastName" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName">
+          <md-input v-model="description" data-vv-name="description" type="text" name="description" required v-validate="modelValidations.description">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('lastName')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('description')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('description') && touched.description">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-
+      </div>
+      <div class="md-layout-item mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('lastName') && touched.lastName },
+            { 'md-valid': !errors.has('skills') && touched.skills },
             { 'md-form-group': true },
-            { 'md-error': errors.has('lastName') }
+            { 'md-error': errors.has('skills') }
           ]">
           <md-icon>record_voice_over</md-icon>
           <label>Required Skills</label>
-          <md-input v-model="required" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName">
+          <md-input v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('lastName')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('skills')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('skills') && touched.skills">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -73,27 +75,23 @@ export default {
   },
   data() {
     return {
-      image: "",
-      single: null,
-      firstName: "",
-      lastName: "",
-      required: "",
+      name:"",
+      description: "",
+      skills: "",
       touched: {
-        firstName: false,
-        lastName: false
+        name: false,
+        description: false,
+        skills: false,
       },
       modelValidations: {
-        firstName: {
-          required: true,
-          min: 5
+        name: {
+          required: true
         },
-        lastName: {
-          required: true,
-          min: 5
+        description: {
+          required: true
         },
-        email: {
-          required: true,
-          email: true
+        skills: {
+          required: true
         }
       }
     };
@@ -110,31 +108,17 @@ export default {
         this.$emit("on-validated", res);
         return res;
       });
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
     }
   },
   watch: {
-    firstName() {
-      this.touched.firstName = true;
+    name() {
+      this.touched.name = true;
     },
-    lastName() {
-      this.touched.lastName = true;
+    description() {
+      this.touched.description = true;
     },
-    email() {
-      this.touched.email = true;
+    skills() {
+      this.touched.skills = true;
     }
   }
 };

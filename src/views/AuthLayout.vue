@@ -14,12 +14,12 @@
 
           <div class="md-collapse" :class="{ 'off-canvas-sidebar': responsive }">
             <md-list>
-              <md-list-item @click="linkClick">
+              <!-- <md-list-item @click="linkClick">
                 <router-link :to="{ path: '/partner' }"><md-icon>person_add</md-icon> Become a partner</router-link>
-              </md-list-item>
-              <md-list-item @click="linkClick">
+              </md-list-item> -->
+              <!-- <md-list-item @click="linkClick">
                 <router-link :to="{ path: '/contact' }"><md-icon>phone</md-icon> Contact</router-link>
-              </md-list-item>
+              </md-list-item> -->
               <md-list-item @click="linkClick">
                 <router-link :to="{ path: '/login' }"><md-icon>fingerprint</md-icon> Login</router-link>
               </md-list-item>
@@ -42,8 +42,8 @@
           <div class="container md-offset">
             <nav>
               <ul>
-                <li><router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link></li>
-                <li><router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link></li>
+                <!-- <li><router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link></li>
+                <li><router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link></li> -->
                 <li><router-link :to="{ path: '/faq' }">FAQ</router-link></li>
               </ul>
             </nav>
