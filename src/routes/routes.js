@@ -53,6 +53,11 @@ let client_dashboard_menu = {
       components: { default: ClientDashboard }
     },
     {
+      path: "create-profile",
+      name: "Create Profile",
+      components: { default: ClientForm }
+    },
+    {
       path: "microjobs/post",
       name: "Post a Microjob",
       components: { default: PostMicrojob }
@@ -106,6 +111,11 @@ let student_dashboard_menu = {
       path: "dashboard",
       name: "Dashboard",
       components: { default: StudentDashboard }
+    },
+    {
+      path: "create-profile",
+      name: "Create Profile",
+      components: { default: StudentForm }
     },
     {
       path: "apply",
@@ -190,7 +200,6 @@ let authPages = {
       name: "Lock",
       component: Lock
     },
-    //Registration
     {
       path: "/register",
       name: "Register",

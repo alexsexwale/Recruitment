@@ -1,8 +1,6 @@
 <template>
   <div class="md-layout text-center">
-    <div
-      class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100"
-    >
+    <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Forgot Password</h3>
         <md-field class="md-form-group" slot="inputs">
@@ -10,9 +8,12 @@
           <label>Email</label>
           <md-input v-model="email" type="email"></md-input>
         </md-field>
-        <md-button slot="footer" class="md-simple md-success md-lg">
+        <md-button slot="footer" class="md-success" style="color:#fff">
           Reset
         </md-button>
+        <router-link to="/login" slot="hyperlink">
+          Back to Login
+        </router-link>
       </login-card>
     </div>
   </div>

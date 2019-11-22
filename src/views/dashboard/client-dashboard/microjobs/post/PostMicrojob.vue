@@ -20,10 +20,7 @@
           <template slot="label">
             Details
           </template>
-          <second-step
-            ref="step2"
-            @on-validated="onStepValidated"
-          ></second-step>
+          <second-step ref="step2" @on-validated="onStepValidated"></second-step>
         </wizard-tab>
 
         <wizard-tab :before-change="() => validateStep('step3')">
@@ -31,6 +28,13 @@
             Payments
           </template>
           <third-step ref="step3" @on-validated="wizardComplete"></third-step>
+        </wizard-tab>
+
+        <wizard-tab :before-change="() => validateStep('step4')">
+          <template slot="label">
+            Review
+          </template>
+          <fourth-step ref="step4" @on-validated="wizardComplete"></fourth-step>
         </wizard-tab>
       </simple-wizard>
     </div>
@@ -40,6 +44,7 @@
 import FirstStep from "./formSteps/FirstStep.vue";
 import SecondStep from "./formSteps/SecondStep.vue";
 import ThirdStep from "./formSteps/ThirdStep.vue";
+import FourthStep from "./formSteps/FourthStep.vue";
 import swal from "sweetalert2";
 import { SimpleWizard, WizardTab } from "@/components";
 
@@ -53,6 +58,7 @@ export default {
     FirstStep,
     SecondStep,
     ThirdStep,
+    FourthStep,
     SimpleWizard,
     WizardTab
   },

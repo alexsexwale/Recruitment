@@ -18,7 +18,7 @@
         
         <sidebar-item :link="{ name: 'View Microjobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/student/microjobs/active' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Pending Jobs', path: '/student/microjobs/pending' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Job Bids', path: '/student/microjobs/pending' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/microjobs/complete' }"></sidebar-item>
         </sidebar-item>
 
