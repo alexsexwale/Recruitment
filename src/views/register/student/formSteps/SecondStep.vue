@@ -13,8 +13,10 @@
           ]">
           <md-icon>school</md-icon>
           <label>Where do you study?</label>
-          <md-input v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution">
-          </md-input>
+          <md-select v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution" style="margin-left: 10px;">
+            <md-option value="University of Pretoria">University of Pretoria</md-option>
+            <md-option value="Sefako Makgatho Health Sciences">Sefako Makgatho Health Sciences</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('institution')">close</md-icon>
           </slide-y-down-transition>
@@ -31,7 +33,7 @@
             { 'md-error': errors.has('campus') }
           ]">
           <md-icon>school</md-icon>
-          <label>Select your campus</label>
+          <label>Enter your campus</label>
           <md-input v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
           </md-input>
           <slide-y-down-transition>
@@ -70,8 +72,17 @@
           ]">
           <md-icon>school</md-icon>
           <label>Select your faculty</label>
-          <md-input v-model="faculty" data-vv-name="faculty" type="text" name="faculty" required v-validate="modelValidations.faculty">
-          </md-input>
+          <md-select v-model="faculty" data-vv-name="faculty" type="text" name="faculty" required v-validate="modelValidations.faculty" style="margin-left: 10px;">
+            <md-option value="Economic and Management Sciences">Economic and Management Sciences</md-option>
+            <md-option value="Education">Education</md-option>
+            <md-option value="Engineering, Built Environment and Information Technology">Engineering, Built Environment and Information Technology</md-option>
+            <md-option value="Health Sciences">Health Sciences</md-option>
+            <md-option value="Humanities">Humanities</md-option>
+            <md-option value="Law">Law</md-option>
+            <md-option value="Natural and Agricultural Sciences">Natural and Agricultural Sciences</md-option>
+            <md-option value="Theology and Religion">Theology and Religion</md-option>
+            <md-option value="Veterinary Science">Veterinary Science</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('faculty')">close</md-icon>
           </slide-y-down-transition>
@@ -127,8 +138,16 @@
           ]">
           <md-icon>school</md-icon>
           <label>What year are you in?</label>
-          <md-input v-model="year" data-vv-name="year" type="text" name="year" required v-validate="modelValidations.year">
-          </md-input>
+          <md-select v-model="year" data-vv-name="year" type="text" name="year" required v-validate="modelValidations.year" style="margin-left: 10px;">
+            <md-option value="1st Year">1st Year</md-option>
+            <md-option value="2nd Year">2nd Year</md-option>
+            <md-option value="3rd Year">3rd Year</md-option>
+            <md-option value="4th Year">4th Year</md-option>
+            <md-option value="5th Year">5th Year</md-option>
+            <md-option value="Honours">Honours</md-option>
+            <md-option value="Masters">Masters</md-option>
+            <md-option value="PhD">PhD</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('year')">close</md-icon>
           </slide-y-down-transition>
@@ -148,6 +167,10 @@
           <label>Undergraduate/Postgraduate</label>
           <md-input v-model="graduateStatus" data-vv-name="graduateStatus" type="text" name="graduateStatus" required v-validate="modelValidations.graduateStatus">
           </md-input>
+          <md-select v-model="graduateStatus" data-vv-name="graduateStatus" type="text" name="graduateStatus" required v-validate="modelValidations.graduateStatus" style="margin-left: 10px;">
+            <md-option value="Undergraduate">Undergraduate</md-option>
+            <md-option value="Postgraduate">Postgraduate</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('graduateStatus')">close</md-icon>
           </slide-y-down-transition>

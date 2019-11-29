@@ -18,9 +18,19 @@
                     <md-option value="chat">I'd just like to chat</md-option>
                 </md-select>
           </md-field>
-          <md-field>
+          <md-field :class="[
+              { 'md-valid': !errors.has('description') && touched.description },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('description') }
+            ]">
             <label>Tell us more</label>
-            <md-textarea v-model="description" type="text"></md-textarea>
+            <md-textarea v-model="description" type="text" required v-validate="modelValidations.description"></md-textarea>
+            <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('description')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('description') && touched.description">done</md-icon>
+            </slide-y-down-transition>
           </md-field>
         </md-card-content>
 
@@ -37,8 +47,28 @@ export default {
   data() {
     return {
       message: null,
-      description: null
+      description: null,
+      touched: {
+        message: false,
+        description: false
+      },
+      modelValidations: {
+        message: {
+          required: true
+        },
+        description: {
+          required: true
+        }
+      }
     };
+  },
+  watch: {
+    message() {
+      this.touched.message = true;
+    },
+    description() {
+      this.touched.description = true;
+    }
   }
 };
 </script>

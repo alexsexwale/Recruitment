@@ -48,8 +48,11 @@
           ]">
           <md-icon>record_voice_over</md-icon>
           <label>Required Skills</label>
-          <md-input v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills">
-          </md-input>
+          <!-- <md-input v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills">
+          </md-input> -->
+          <md-chips v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills"><!-- :md-limit="5"> -->
+          <div class="md-helper-text">Eg. Bookeeping</div>
+          </md-chips>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('skills')">close</md-icon>
           </slide-y-down-transition>
@@ -77,11 +80,11 @@ export default {
     return {
       name:"",
       description: "",
-      skills: "",
+      skills: [],
       touched: {
         name: false,
         description: false,
-        skills: false,
+       // skills: false,
       },
       modelValidations: {
         name: {

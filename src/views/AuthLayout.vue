@@ -42,8 +42,8 @@
           <div class="container md-offset">
             <nav>
               <ul>
-                <!-- <li><router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link></li>
-                <li><router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link></li> -->
+                <li><router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link></li>
+                <li><router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link></li>
                 <li><router-link :to="{ path: '/faq' }">FAQ</router-link></li>
               </ul>
             </nav>
@@ -95,6 +95,8 @@ export default {
         ClientForm: "../img/register/client/Wizard_Form_Client.jpg",
         Contact: "./img/contact/Contact.jpeg",
         Faq: "./img/contact/Contact.jpeg",
+        PrivacyPolicy: "./img/privacyPolicy/Privacy_Policy.jpeg",
+        TermsAndConditions: "./img/termsAndConditions/Terms_And_Conditions.jpeg",
         Lock: "./img/lock.jpg"
       };
       return {

@@ -61,25 +61,51 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-      <md-field :class="[
-            { 'md-valid': !errors.has('gender') && touched.gender },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('gender') }
-          ]">
-        <md-icon>face</md-icon>
-        <label for="select">Gender</label>
-        <md-select v-model="gender" name="select">
-          <md-option value="male">Male</md-option>
-          <md-option value="female">Female</md-option>
-        </md-select>
-        <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('gender')">close</md-icon>
-          </slide-y-down-transition>
+        <md-field :class="[
+              { 'md-valid': !errors.has('gender') && touched.gender },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('gender') }
+            ]">
+          <md-icon>face</md-icon>
+          <label for="select">Gender</label>
+          <md-select v-model="gender" name="select" style="margin-left: 10px;">
+            <md-option value="male">Male</md-option>
+            <md-option value="female">Female</md-option>
+            <md-option value="Unkown">Prefer not say</md-option>
+            <md-option value="Other">Other</md-option>
+          </md-select>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('gender') && touched.gender">done</md-icon>
-          </slide-y-down-transition>
-      </md-field>
-    </div>
+              <md-icon class="error" v-show="errors.has('gender')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('gender') && touched.gender">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+              { 'md-valid': !errors.has('race') && touched.race },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('race') }
+            ]">
+          <md-icon>face</md-icon>
+          <label for="select">Race</label>
+          <md-select v-model="race" name="select" style="margin-left: 10px;">
+            <md-option value="black">Black</md-option>
+            <md-option value="white">White</md-option>
+            <md-option value="coloured">Coloured</md-option>
+            <md-option value="asian">Indian/Asian</md-option>
+            <md-option value="other">Other/Unspecified</md-option>
+          </md-select>
+          <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('race')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+      </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
@@ -121,6 +147,7 @@ export default {
       lastName: "",
       dob: Date.now(),
       gender: "",
+      race: "",
       phone: "",
       touched: {
         firstName: false,
@@ -136,6 +163,9 @@ export default {
           min: 2
         },
         gender: {
+          required: true
+        },
+        race: {
           required: true
         },
         phone: {
@@ -186,6 +216,9 @@ export default {
     },
     gender() {
       this.touched.gender = true;
+    },
+    race() {
+      this.touched.race = true;
     },
     phone() {
       this.touched.phone = true;

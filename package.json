@@ -18,6 +18,7 @@
     "@tweenjs/tween.js": "17.4.0",
     "chartist": "0.11.2",
     "es6-promise": "4.2.6",
+    "firebase": "^7.5.0",
     "fuse.js": "3.4.5",
     "google-maps": "3.3.0",
     "jquery": "3.4.1",
