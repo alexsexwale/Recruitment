@@ -257,14 +257,12 @@ export default {
           this.$router.push({ name: "client-dashboard" });
         })
         .catch(err => {
-          // An error happened.
-          console.log(err);
           this.feedback = err.message;
         })
-        } else {
-          this.feedback = "You have not verified that " + this.email + " is your email address."
-          this.addFeedback();
-        }
+      } else {
+        this.feedback = "You have not verified that " + this.email + " is your email address."
+        this.addFeedback();
+      }
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);

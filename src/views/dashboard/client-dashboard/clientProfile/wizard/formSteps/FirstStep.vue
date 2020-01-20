@@ -145,7 +145,6 @@
             <md-option value="101-500">101-500</md-option>
             <md-option value="500+">500+</md-option>
           </md-select>
-          </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('companySize')">close</md-icon>
           </slide-y-down-transition>

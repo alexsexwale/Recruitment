@@ -5,16 +5,16 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Microjob Description
+            <i class="far fa-newspaper" /> Job description
           </h3>
-          <h4 class="card-title">Microjob Name</h4>
-          <p class="card-description">Graphic Designer</p>
+          <h4 class="card-title">Name</h4>
+          <p class="card-description">{{ name }}</p>
 
-          <h4 class="card-title">Microjob Description</h4>
-          <p class="card-description">Looking for a graphic designer to design a logo for a beverage company looking to rebrand</p>
+          <h4 class="card-title">Description</h4>
+          <p class="card-description">{{ description}}</p>
 
           <h4 class="card-title">Skills Required</h4>
-          <p class="card-description">Graphic Design</p>
+          <p v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</p>
 
           <div class="card-stats text-center">
             <md-button class="md-success">Edit</md-button>
@@ -24,13 +24,13 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Microjob Details
+            <i class="far fa-newspaper" /> Job Details
           </h3>
           <h4 class="card-title">Location</h4>
-          <p class="card-description">Hatfield, Pretoria</p>
+          <p class="card-description">{{ location }}</p>
 
           <h4 class="card-title">Deadline</h4>
-          <p class="card-description">7 October 2025</p>
+          <p class="card-description">{{ deadline }}</p>
 
           <div class="card-stats text-center">
             <md-button class="md-success">Edit</md-button>
@@ -43,11 +43,11 @@
             <i class="far fa-newspaper" /> Microjob Payment
             </h3>
             <h4 class="card-title">Budget</h4>
-            <p class="card-description">R1100.00</p>
+            <p class="card-description">R{{ budget }}</p>
             <hr/>
             <b>Cost Breakdown</b>
-            <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R1000.00
-            <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R100.00
+            <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ budget * 0.9}}
+            <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{budget * 0.1}}
 
 
             <h4 class="card-title">Payment Option</h4>
@@ -70,21 +70,18 @@ export default {
     IconCheckbox,
     SlideYDownTransition
   },
+  props: {
+    name: {},
+    description: {},
+    skills: {},
+    location: {},
+    deadline: {},
+    budget: {},
+    payment: {}
+  },
   data() {
     return {
-      model: {
-        upfront: false,
-        postPayment: false
-      },
-      budget: "",
-      touched: {
-        budget: false
-      },
-      modelValidations: {
-        budget: {
-          required: true
-        }
-      }
+      
     };
   },
   methods: {

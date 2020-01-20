@@ -25,7 +25,7 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100" v-if="onsite">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-datepicker @input="addDeadline" v-model="deadline">
           <label>What is the deadline date?</label>
         </md-datepicker>

@@ -56,7 +56,6 @@
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
                 {{ nextButtonText }}
               </md-button>
-              <!-- <md-button v-else class="md-success" @click.native="nextTab">{{ finishButtonText }}</md-button> -->
               <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
                   <div class="md-button-content">
@@ -73,6 +72,11 @@
 </template>
 <script>
 import { throttle } from "./throttle";
+import db from '@/firebase/init';
+import firebase from 'firebase/app';
+import moment from "moment";
+import slugify from "slugify";
+import { Modal } from "@/components";
 
 export default {
   name: "simple-wizard",
@@ -113,9 +117,7 @@ export default {
     skills: {
       required: true
     },
-    location: {
-      required: true
-    },
+    location: {},
     deadline: {},
     budget: {
       required: true
@@ -127,7 +129,8 @@ export default {
       render(h) {
         return h("span", [this.tab.$slots.label || this.tab.label]);
       }
-    }
+    },
+    Modal
   },
   provide() {
     return {
@@ -140,7 +143,10 @@ export default {
       tabs: [],
       activeTabIndex: 0,
       tabLinkWidth: 0,
-      tabLinkHeight: 50
+      tabLinkHeight: 50,
+      slug: null,
+      user: null,
+      feedback: null
     };
   },
   computed: {
@@ -183,8 +189,44 @@ export default {
     }
   },
   methods: {
-    createAccount() {
+    createJob() {
       
+      this.user = firebase.auth().currentUser;
+      let ref = db.collection('clients');
+      ref.where('userId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          this.slug = slugify(this.name + " " + Date.now(), {
+            replacement: '-',
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          })
+          if(!this.location)
+            this.location = "remote";
+          let job = db.collection('jobs').doc(this.slug);
+          job.set({
+            jobId: this.slug,
+            clientId: doc.data().clientId,
+            studentId: null,
+            created: moment(Date.now()).format('L'),
+            lastModified: null,
+            name: this.name,
+            description: this.description,
+            skills: this.skills,
+            location: this.location,
+            deadline: this.deadline,
+            budget: this.budget
+            //postPaymentDays: this.postPaymentDays
+          });
+        })
+      })
+      .then(() => {
+        this.$router.push({ name: "pending-jobs" });
+      })
+      .catch(err => {
+        this.feedback = err.message;
+        console.log(this.feedback);
+      })
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);

@@ -8,7 +8,7 @@ import Chartist from "chartist";
 // router setup
 import router from "./routes/routes";
 
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 Vue.config.productionTip = false;
 

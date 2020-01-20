@@ -105,7 +105,7 @@
 </template>
 <script>
 import db from "@/firebase/init";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import moment from "moment";
 import slugify from "slugify";
 import { LoginCard, Modal } from "@/components";
@@ -175,7 +175,7 @@ export default {
         this.feedback = "Please agree to the terms and conditions";
       }
       else if(this.userRole && this.firstName && this.lastName && this.email && this.password) {
-        this.slug = slugify(this.firstName + " " + this.lastName, {
+        this.slug = slugify(this.firstName + " " + this.lastName + " " + Date.Now(), {
           replacement: '.',
           remove: /[$*_+~.()'"!\-:@]/g,
           lower: true

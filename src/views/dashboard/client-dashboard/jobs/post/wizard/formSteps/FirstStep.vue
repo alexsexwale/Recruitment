@@ -37,7 +37,7 @@
           { 'md-error': errors.has('skills') }
         ]">
         <label>Required Skills</label>
-        <md-chips @change="addSkills" v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills"><!-- :md-limit="5"> -->
+        <md-chips @input="addSkills" v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills"><!-- :md-limit="5"> -->
           <div class="md-helper-text">Press enter to add a skill</div>
         </md-chips>
         <slide-y-down-transition>

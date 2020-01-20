@@ -3,7 +3,7 @@ import Router from "vue-router";
 
 // Firebase
 import db from "@/firebase/init";
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 // Common Dashboard Components
 import ActiveMicrojob from "@/views/dashboard/view-microjobs/active/ActiveMicrojob.vue";
@@ -92,7 +92,7 @@ let client_dashboard_menu = {
     },
     {
       path: "microjobs/active",
-      name: "Active Microjobs",
+      name: "active-jobs",
       components: { default: ActiveMicrojob },
       meta: {
         requiresAuth: true,
@@ -102,7 +102,7 @@ let client_dashboard_menu = {
     },
     {
       path: "microjobs/pending",
-      name: "Pending Microjobs",
+      name: "pending-jobs",
       components: { default: PendingMicrojob },
       meta: {
         requiresAuth: true,
@@ -112,7 +112,7 @@ let client_dashboard_menu = {
     },
     {
       path: "microjobs/complete",
-      name: "Complete Microjobs",
+      name: "complete-jobs",
       components: { default: CompleteMicrojob },
       meta: {
         requiresAuth: true,
@@ -122,7 +122,7 @@ let client_dashboard_menu = {
     },
     {
       path: "support",
-      name: "Get Support",
+      name: "get-support",
       component: Support,
       meta: {
         requiresAuth: true,
@@ -132,7 +132,7 @@ let client_dashboard_menu = {
     },
     {
       path: "feedback",
-      name: "Give feedback",
+      name: "give-feedback",
       component: Feedback,
       meta: {
         requiresAuth: true,
@@ -181,7 +181,7 @@ let student_dashboard_menu = {
     },
     {
       path: "apply",
-      name: "Apply for a Microjob",
+      name: "apply",
       components: { default: ApplyMicrojob },
       meta: {
         requiresAuth: true,
@@ -191,7 +191,7 @@ let student_dashboard_menu = {
     },
     {
       path: "microjobs/active",
-      name: "Active Microjobs",
+      name: "active-student-jobs",
       components: { default: ActiveMicrojob },
       meta: {
         requiresAuth: true,
@@ -201,7 +201,7 @@ let student_dashboard_menu = {
     },
     {
       path: "microjobs/pending",
-      name: "Pending Microjobs",
+      name: "pending-student-jobs",
       components: { default: PendingMicrojob },
       meta: {
         requiresAuth: true,
@@ -211,7 +211,7 @@ let student_dashboard_menu = {
     },
     {
       path: "microjobs/complete",
-      name: "Complete Microjobs",
+      name: "complete-student-jobs",
       components: { default: CompleteMicrojob },
       meta: {
         requiresAuth: true,
@@ -221,7 +221,7 @@ let student_dashboard_menu = {
     },
     {
       path: "support",
-      name: "Get Support",
+      name: "get-student-support",
       component: Support,
       meta: {
         requiresAuth: true,
@@ -231,7 +231,7 @@ let student_dashboard_menu = {
     },
     {
       path: "feedback",
-      name: "Give Feedback",
+      name: "give-student-feedback",
       component: Feedback,
       meta: {
         requiresAuth: true,

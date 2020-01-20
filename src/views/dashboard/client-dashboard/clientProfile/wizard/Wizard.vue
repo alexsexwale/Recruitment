@@ -81,7 +81,7 @@
 <script>
 import { throttle } from "./throttle";
 import db from '@/firebase/init';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import moment from "moment";
 import { Modal } from "@/components";
 
@@ -177,8 +177,6 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
-      user: null,
       feedback: null,
       updated: null,
       modal: false
@@ -441,10 +439,6 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
-  },
-  created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
   }
 };
 </script>
