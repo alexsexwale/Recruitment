@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent>
+    <form @submit.prevent="createAccount">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -22,29 +22,18 @@
               :aria-selected="tab.active"
               :ref="`tab-${index}`"
               class="nav-item wizard-tab-link"
-              :style="linkWidth"
-            >
-              <a
-                class="nav-link"
-                @click="navigateToTab(index)"
+              :style="linkWidth">
+              <a class="nav-link" @click="navigateToTab(index)"
                 :class="[
                   { 'disabled-wizard-link': !tab.checked },
                   { active: tab.active },
                   { checked: tab.checked }
-                ]"
-                data-toggle="tab"
-              >
+                ]" data-toggle="tab">
                 <tab-item-content :tab="tab"></tab-item-content>
               </a>
             </li>
           </ul>
-          <div
-            class="moving-tab"
-            :class="{ 'error-link': activeTab.hasError }"
-            v-if="activeTab"
-            style="transition: transform 0.5s cubic-bezier(0.29, 1.42, 0.79, 1); width: 100%;"
-            :style="movingTabStyles"
-          >
+          <div class="moving-tab" :class="{ 'error-link': activeTab.hasError }" v-if="activeTab" style="transition: transform 0.5s cubic-bezier(0.29, 1.42, 0.79, 1); width: 100%;" :style="movingTabStyles">
             <tab-item-content :tab="activeTab" :moving-tab="true"></tab-item-content>
           </div>
         </div>
@@ -58,11 +47,7 @@
         <md-card-actions md-alignment="space-between">
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
-              <md-button
-                v-if="activeTabIndex > 0"
-                @click.native="prevTab"
-                class="btn-previous"
-              >
+              <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
                 {{ prevButtonText }}
               </md-button>
             </div>
@@ -71,7 +56,14 @@
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
                 {{ nextButtonText }}
               </md-button>
-              <md-button v-else class="md-success" @click.native="nextTab"><router-link to="/client/dashboard" style="color:white;">{{ finishButtonText }}</router-link></md-button>
+              <!-- <md-button v-else class="md-success" @click.native="nextTab">{{ finishButtonText }}</md-button> -->
+              <button v-else class="md-button md-success md-theme-default" slot="footer">
+                <div class="md-ripple">
+                  <div class="md-button-content">
+                    {{finishButtonText}}
+                  </div>
+                </div>
+              </button>
             </div>
           </slot>
         </md-card-actions>
@@ -111,6 +103,48 @@ export default {
     },
     vertical: {
       type: Boolean
+    },
+    firstName: {
+      required: true
+    },
+    lastName: {
+      required: true
+    },
+    dob: {
+      required: true
+    },
+    gender: {
+      required: true
+    },
+    race: {
+      required: true
+    },
+    phone: {
+      required: true
+    },
+    institution: {
+      required: true
+    },
+    campus: {
+      required: true
+    },
+    studentNo: {
+      required: true
+    },
+    faculty: {
+      required: true
+    },
+    degree: {
+      required: true
+    },
+    major: {
+      required: true
+    },
+    year: {
+      required: true
+    },
+    graduateStatus: {
+      required: true
     }
   },
   components: {
@@ -175,6 +209,9 @@ export default {
     }
   },
   methods: {
+    createAccount() {
+      console.log('first name:' +this.firstName);
+    },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
       let tabTitle = tab.title || "";

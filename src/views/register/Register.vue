@@ -1,11 +1,10 @@
 <template>
-  <div class="md-layout text-center">
+  <form @submit.prevent="createAccount" class="md-layout text-center">
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Register</h3>
         <md-radio v-model="userRole" slot="inputs" value="student">Student</md-radio>
         <md-radio v-model="userRole" slot="inputs" value="client">Client</md-radio>
-        
         <md-field slot="inputs"
           :class="[
             { 'md-valid': !errors.has('firstName') && touched.firstName },
@@ -13,7 +12,7 @@
             { 'md-error': errors.has('firstName') }
           ]">
           <md-icon>face</md-icon>
-          <label>First Name</label>
+          <label>Name</label>
           <md-input v-model="firstName" type="text" data-vv-name="firstName" name="firstName" required v-validate="modelValidations.firstName"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('firstName')">close</md-icon>
@@ -71,20 +70,50 @@
           </slide-y-down-transition>
         </md-field>
 
-        <md-checkbox v-model="terms" slot="inputs">I agree to the <a>terms and conditions</a>.</md-checkbox>
-        <md-button slot="footer" class="md-success">
-          <router-link to="/register/select-user-role" style="color:#fff">Register</router-link>
-        </md-button>
+        <md-checkbox v-model="terms" slot="inputs">I agree to the <a @click="termsAndCondition">terms and conditions</a>.</md-checkbox>
+        
+        <button class="md-button md-success md-theme-default" slot="footer">
+          <div class="md-ripple">
+            <div class="md-button-content">
+              Register
+            </div>
+          </div>
+        </button>
       </login-card>
     </div>
-  </div>
+    <!-- Modal: Error handling -->
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Oops!</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">{{feedback}}</p>
+      </template>
+
+      <template slot="footer">
+        <div style="text-align:center;">
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal>
+  </form>
+  
 </template>
 <script>
-import { LoginCard } from "@/components";
+import db from "@/firebase/init";
+import firebase from "firebase";
+import moment from "moment";
+import slugify from "slugify";
+import { LoginCard, Modal } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 export default {
   components: {
     LoginCard,
+    Modal,
     SlideYDownTransition
   },
   data() {
@@ -94,7 +123,10 @@ export default {
       email: null,
       password: null,
       terms: false,
-      userRole: false,
+      userRole: null,
+      modal: false,
+      feedback: null,
+      slug: null,
       touched: {
         firstName: false,
         lastName: false,
@@ -102,7 +134,6 @@ export default {
         password: false,
         terms: false,
         userRole: false
-
       },
       modelValidations: {
         firstName: {
@@ -134,6 +165,82 @@ export default {
         this.$emit("on-validated", res);
         return res;
       });
+    },
+    modalHide() {
+      this.modal = false;
+    },
+    createAccount() {
+      if(!this.terms) {
+        this.modal = true;
+        this.feedback = "Please agree to the terms and conditions";
+      }
+      else if(this.userRole && this.firstName && this.lastName && this.email && this.password) {
+        this.slug = slugify(this.firstName + " " + this.lastName, {
+          replacement: '.',
+          remove: /[$*_+~.()'"!\-:@]/g,
+          lower: true
+        })
+      let users = db.collection('users').doc(this.slug);
+
+      users.get().then(doc => {
+        if(doc.exists) {
+          this.modal = true;
+          this.feedback = "This account already exists";
+        }
+        else {
+          this.exists = false;
+          firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+          .then(cred => {
+            users.set({
+              userId: cred.user.uid,
+              created: moment(Date.now()).format('L'),
+              lastModified: null,
+              name: this.firstName,
+              surname: this.lastName,
+              email: this.email,
+              user: this.userRole,
+              terms_and_conditions: this.terms,
+              alias: this.slug
+            })
+            cred.user.updateProfile({
+              displayName: this.firstName + " " + this.lastName
+            })
+            .catch(err => {
+              this.modal = true;
+              this.feedback = err.message;
+            })
+          })
+          .then(() => {
+            this.feedback = null;
+            var user = firebase.auth().currentUser;
+            user.sendEmailVerification().then(() => {
+              if(this.userRole == "student") {
+                this.$router.push({ name: "create-student-account" });
+              } 
+              else {
+                this.$router.push({ name: "create-client-account" });
+              }
+            }).catch(err => {
+              // An error happened.
+              this.modal = true;
+              this.feedback = err.message;
+            });
+          })
+          .catch(err => {
+              this.modal = true;
+              this.feedback = err.message;
+          })
+        }
+      });
+      
+      } else {
+        this.modal = true;
+        this.feedback = "Please select whether you are a student or a client.";
+      }
+    },
+    termsAndCondition() {
+      let terms = this.$router.resolve({name: 'terms-and-conditions'});
+      window.open(terms.href, '_blank');
     }
   },
   watch: {
@@ -159,4 +266,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.modal-container {
+  max-width: 400px;
+  z-index: 3;
+}
+.black {
+  color: #000000;
+}
+/* .faded-background {
+  background-color: #808080; 
+  z-index: 2;
+  opacity: 0.3;
+} */
+</style>

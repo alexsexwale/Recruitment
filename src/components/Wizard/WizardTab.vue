@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="tab-pane fade"
-    role="tabpanel"
-    :id="tabId"
-    :aria-hidden="!active"
-    :aria-labelledby="`step-${tabId}`"
-    :class="{ 'active show': active }"
-    v-show="active"
-  >
+  <div class="tab-pane fade" role="tabpanel" :id="tabId" :aria-hidden="!active" :aria-labelledby="`step-${tabId}`" :class="{ 'active show': active }" v-show="active">
     <slot></slot>
   </div>
 </template>

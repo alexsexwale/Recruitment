@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout">
+  <form @submit.prevent="feedback" class="md-layout">
     <div class="md-layout-item md-small-size-100">
       <md-card>
         <md-card-header class="md-card-header-icon md-card-header-green">
@@ -13,61 +13,111 @@
             <h4>Pop us a message</h4>
           <md-field>
               <label for="select">What is your message about?</label>
-                <md-select v-model="message" name="select">
-                    <md-option value="feature">Feature suggestion</md-option>
-                    <md-option value="chat">I'd just like to chat</md-option>
+                <md-select v-model="subject" name="subject">
+                    <md-option value="Feature">Feature suggestion</md-option>
+                    <md-option value="Chat">I'd just like to chat</md-option>
                 </md-select>
           </md-field>
-          <md-field :class="[
-              { 'md-valid': !errors.has('description') && touched.description },
-              { 'md-form-group': true },
-              { 'md-error': errors.has('description') }
-            ]">
+          <md-field>
             <label>Tell us more</label>
-            <md-textarea v-model="description" type="text" required v-validate="modelValidations.description"></md-textarea>
-            <slide-y-down-transition>
-              <md-icon class="error" v-show="errors.has('description')">close</md-icon>
-            </slide-y-down-transition>
-            <slide-y-down-transition>
-              <md-icon class="success" v-show="!errors.has('description') && touched.description">done</md-icon>
-            </slide-y-down-transition>
+            <md-textarea v-model="message" type="text"></md-textarea>
           </md-field>
         </md-card-content>
 
         <md-card-actions md-alignment="left">
-          <md-button class="md-success">Submit</md-button>
+          <button class="md-button md-success md-theme-default">
+            <div class="md-ripple">
+              <div class="md-button-content">
+                Submit
+              </div>
+            </div>
+          </button>
         </md-card-actions>
       </md-card>
     </div>
-  </div>
+    <!-- Modal: Error handling -->
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Oops!</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">{{error}}</p>
+      </template>
+
+      <template slot="footer">
+        <div style="text-align:center;">
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal>
+    <!-- Modal: Success -->
+    <modal v-if="successModal" @close="successModalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Feedback Sent!</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">{{success}}</p>
+      </template>
+
+      <template slot="footer">
+        <div style="text-align:center;">
+          <md-button class="md-button md-success" @click="successModalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal>
+  </form>
 </template>
 <script>
+import db from "@/firebase/init";
+import firebase from "firebase";
+import moment from "moment";
+import { Modal } from "@/components";
 export default {
-  components: {},
+  components: { Modal },
   data() {
     return {
+      subject: null,
       message: null,
-      description: null,
-      touched: {
-        message: false,
-        description: false
-      },
-      modelValidations: {
-        message: {
-          required: true
-        },
-        description: {
-          required: true
-        }
-      }
+      modal: false,
+      successModal: false,
+      success: "We appreciate your feedback. We will continue to make improvements on the platform.",
+      error: null
     };
   },
-  watch: {
-    message() {
-      this.touched.message = true;
+  methods: {
+    modalHide() {
+      this.modal = false;
     },
-    description() {
-      this.touched.description = true;
+    successModalHide() {
+      this.successModal = false;
+    },
+    feedback() {
+      if(this.subject && this.message) {
+        let user = firebase.auth().currentUser;
+        let feedbackId = Date.now().toString();
+        let feedback = db.collection('feedback').doc(feedbackId);
+        feedback.set({
+          feedbackId: feedbackId,
+          userId: user.uid,
+          created: moment(Date.now()).format('L'),
+          subject: this.subject,
+          message: this.message
+        })
+        this.subject = null;
+        this.message = null;
+        this.successModal = true;
+      } else {
+        this.modal = true;
+        this.error = "Please complete all fields before sending feedback.";
+      }
     }
   }
 };

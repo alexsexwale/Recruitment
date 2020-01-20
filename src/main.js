@@ -1,31 +1,19 @@
 import Vue from "vue";
-import VueRouter from "vue-router";
 import DashboardPlugin from "./material-dashboard";
 
-// Plugins
+// plugins
 import App from "./App.vue";
 import Chartist from "chartist";
 
 // router setup
-import routes from "./routes/routes";
+import router from "./routes/routes";
+
+import firebase from "firebase";
+
+Vue.config.productionTip = false;
 
 // plugin setup
-Vue.use(VueRouter);
 Vue.use(DashboardPlugin);
-
-// configure router
-const router = new VueRouter({
-  mode: 'history',
-  routes,
-  scrollBehavior: to => {
-    if (to.hash) {
-      return { selector: to.hash };
-    } else {
-      return { x: 0, y: 0 };
-    }
-  },
-  linkExactActiveClass: "nav-item active"
-});
 
 // global library setup
 Object.defineProperty(Vue.prototype, "$Chartist", {
@@ -34,12 +22,18 @@ Object.defineProperty(Vue.prototype, "$Chartist", {
   }
 });
 
-/* eslint-disable no-new */
-new Vue({
-  el: "#app",
-  render: h => h(App),
-  router,
-  data: {
-    Chartist: Chartist
+let app = null;
+
+firebase.auth().onAuthStateChanged(() => {
+  // init app if not already created
+  if (!app) {
+    app = new Vue({
+      el: "#app",
+      render: h => h(App),
+      router,
+      data: {
+        Chartist: Chartist
+      }
+    });
   }
 });
