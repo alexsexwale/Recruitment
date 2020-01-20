@@ -190,7 +190,6 @@ export default {
   },
   methods: {
     createJob() {
-      
       this.user = firebase.auth().currentUser;
       let ref = db.collection('clients');
       ref.where('userId', '==', this.user.uid).get()
@@ -214,7 +213,7 @@ export default {
             description: this.description,
             skills: this.skills,
             location: this.location,
-            deadline: this.deadline,
+            deadline: moment(this.deadline).format('L'),
             budget: this.budget
             //postPaymentDays: this.postPaymentDays
           });

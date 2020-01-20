@@ -16,8 +16,9 @@ import DashboardLayout from "@/components/Layout/DashboardLayout.vue";
 // Client Dashboard Components
 import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client-dashboard/clientProfile/EditProfile.vue";
-import PostAJob from "@/views/dashboard/client-dashboard/jobs/post/PostAJob.vue";
-import EditAJob from "@/views/dashboard/client-dashboard/jobs/edit/EditAJob.vue";
+import PostJob from "@/views/dashboard/client-dashboard/jobs/post/PostJob.vue";
+import EditJob from "@/views/dashboard/client-dashboard/jobs/edit/EditJob.vue";
+import PendingJob from "@/views/dashboard/client-dashboard/jobs/pending/PendingJob.vue";
 
 // Student Dashboard Components
 import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
@@ -73,7 +74,7 @@ let client_dashboard_menu = {
     {
       path: "microjobs/post",
       name: "post-a-job",
-      components: { default: PostAJob },
+      components: { default: PostJob },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -82,8 +83,8 @@ let client_dashboard_menu = {
     },
     {
       path: "microjobs/edit",
-      name: "Edit Microjob",
-      components: { default: EditAJob },
+      name: "edit-job",
+      components: { default: EditJob },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -103,7 +104,7 @@ let client_dashboard_menu = {
     {
       path: "microjobs/pending",
       name: "pending-jobs",
-      components: { default: PendingMicrojob },
+      components: { default: PendingJob },
       meta: {
         requiresAuth: true,
         userRole: "client",

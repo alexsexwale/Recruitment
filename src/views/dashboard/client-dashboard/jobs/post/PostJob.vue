@@ -50,18 +50,20 @@
           </third-step>
         </wizard-tab>
 
-        <wizard-tab :before-change="() => validateStep('step4')"
-          v-bind:name="name"
-          v-bind:description="description"
-          v-bind:skills="skills"
-          v-bind:location="location"
-          v-bind:deadline="deadline"
-          v-bind:budget="budget"
-          v-bind:payment="payment">
+        <wizard-tab :before-change="() => validateStep('step4')">
           <template slot="label">
             Review
           </template>
-          <fourth-step ref="step4" @on-validated="wizardComplete"></fourth-step>
+          <fourth-step ref="step4" 
+            @on-validated="wizardComplete"
+            v-bind:name="name"
+            v-bind:description="description"
+            v-bind:skills="skills"
+            v-bind:location="location"
+            v-bind:deadline="deadline"
+            v-bind:budget="budget"
+            v-bind:payment="payment">
+          </fourth-step>
         </wizard-tab>
       </simple-wizard>
     </div>

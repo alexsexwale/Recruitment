@@ -30,7 +30,7 @@
           <p class="card-description">{{ location }}</p>
 
           <h4 class="card-title">Deadline</h4>
-          <p class="card-description">{{ deadline }}</p>
+          <p class="card-description">{{ deadlineDisplay() }}</p>
 
           <div class="card-stats text-center">
             <md-button class="md-success">Edit</md-button>
@@ -49,7 +49,6 @@
             <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ budget * 0.9}}
             <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{budget * 0.1}}
 
-
             <h4 class="card-title">Payment Option</h4>
             <p class="card-description">Upfront</p>
 
@@ -64,6 +63,7 @@
 <script>
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import moment from "moment";
 
 export default {
   components: {
@@ -81,27 +81,12 @@ export default {
   },
   data() {
     return {
-      
+      deadlineReview: null
     };
   },
   methods: {
-    validate() {
-      this.$emit("on-validated", true, this.model);
-      return Promise.resolve(true);
-    },
-    getError(fieldName) {
-      return this.errors.first(fieldName);
-    },
-    validate() {
-      return this.$validator.validateAll().then(res => {
-        this.$emit("on-validated", res);
-        return res;
-      });
-    }
-  },
-  watch: {
-    budget() {
-      this.touched.budget = true;
+    deadlineDisplay() {
+      return this.deadlineReview = moment(this.deadline).format('DD MMMM YYYY');
     }
   }
 };
