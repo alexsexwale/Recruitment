@@ -77,7 +77,7 @@
 </template>
 <script>
 import db from "@/firebase/init";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import moment from "moment";
 import { Modal } from "@/components";
 export default {
@@ -102,10 +102,8 @@ export default {
     support() {
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
-        let supportId = Date.now().toString();
-        let support = db.collection('support').doc(supportId);
-        support.set({
-          supportId: supportId,
+        let support = db.collection('support');
+        support.add({
           userId: user.uid,
           created: moment(Date.now()).format('L'),
           subject: this.subject,

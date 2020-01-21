@@ -84,7 +84,7 @@ import { WizardTab, Modal } from "@/components";
 import SimpleWizard from "./wizard/Wizard.vue";
 import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import db from '@/firebase/init';
 
 export default {

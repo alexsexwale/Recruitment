@@ -202,6 +202,7 @@ export default {
           })
           if(!this.location)
             this.location = "remote";
+          let skills = db.collection('skills');
           let job = db.collection('jobs').doc(this.slug);
           job.set({
             jobId: this.slug,
@@ -211,12 +212,15 @@ export default {
             lastModified: null,
             name: this.name,
             description: this.description,
-            skills: this.skills,
             location: this.location,
             deadline: moment(this.deadline).format('L'),
             budget: this.budget
             //postPaymentDays: this.postPaymentDays
           });
+          skills.add({
+            jobId: this.slug,
+            skills: this.skills,
+          })
         })
       })
       .then(() => {

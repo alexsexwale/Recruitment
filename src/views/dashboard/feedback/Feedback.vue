@@ -77,7 +77,7 @@
 </template>
 <script>
 import db from "@/firebase/init";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import moment from "moment";
 import { Modal } from "@/components";
 export default {
@@ -102,15 +102,13 @@ export default {
     feedback() {
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
-        let feedbackId = Date.now().toString();
-        let feedback = db.collection('feedback').doc(feedbackId);
-        feedback.set({
-          feedbackId: feedbackId,
+        let feedback = db.collection('feedback');
+        feedback.add({
           userId: user.uid,
           created: moment(Date.now()).format('L'),
           subject: this.subject,
           message: this.message
-        })
+        });
         this.subject = null;
         this.message = null;
         this.successModal = true;

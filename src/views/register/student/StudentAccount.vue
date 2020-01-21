@@ -113,7 +113,7 @@ import SimpleWizard from "./wizard/Wizard.vue";
 import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import db from '@/firebase/init';
 export default {
   data() {
