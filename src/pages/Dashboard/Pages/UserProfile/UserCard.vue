@@ -12,9 +12,7 @@
         foundation in truth And I love you like Kanye loves Kanye I love Rick
         Owens’ bed design but the back is...
       </p>
-      <md-button class="md-round" :class="getColorButton(buttonColor)"
-        >Follow</md-button
-      >
+      <md-button class="md-round" :class="getColorButton(buttonColor)">Select</md-button>
     </md-card-content>
   </md-card>
 </template>
@@ -24,7 +22,7 @@ export default {
   props: {
     cardUserImage: {
       type: String,
-      default: "./img/faces/marc.jpg"
+      default: "/img/dashboard/client/card-1.jpg"
     },
     buttonColor: {
       type: String,

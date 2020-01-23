@@ -15,10 +15,6 @@
 
           <h4 class="card-title">Skills Required</h4>
           <p v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</p>
-
-          <div class="card-stats text-center">
-            <md-button class="md-success">Edit</md-button>
-          </div>
         </md-card-content>
       </md-card>
       <md-card class="bg-success">
@@ -31,10 +27,6 @@
 
           <h4 class="card-title">Deadline</h4>
           <p class="card-description">{{ deadlineDisplay() }}</p>
-
-          <div class="card-stats text-center">
-            <md-button class="md-success">Edit</md-button>
-          </div>
         </md-card-content>
       </md-card>
       <md-card class="bg-success">
@@ -51,10 +43,6 @@
 
             <h4 class="card-title">Payment Option</h4>
             <p class="card-description">Upfront</p>
-
-            <div class="card-stats text-center">
-              <md-button class="md-success">Edit</md-button>
-            </div>
           </md-card-content>
         </md-card>
     </div>

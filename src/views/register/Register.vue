@@ -175,7 +175,7 @@ export default {
         this.feedback = "Please agree to the terms and conditions";
       }
       else if(this.userRole && this.firstName && this.lastName && this.email && this.password) {
-        this.slug = slugify(this.firstName + " " + this.lastName + " " + Date.Now(), {
+        this.slug = slugify(this.firstName + " " + this.lastName, {
           replacement: '.',
           remove: /[$*_+~.()'"!\-:@]/g,
           lower: true

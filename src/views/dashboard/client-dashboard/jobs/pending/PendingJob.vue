@@ -56,8 +56,6 @@ export default {
   data() {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
-      product2: "/img/dashboard/client/card-1.jpg",
-      product3: "/img/dashboard/client/card-1.jpg",
       seq2: 0,
       jobs:[]
     };

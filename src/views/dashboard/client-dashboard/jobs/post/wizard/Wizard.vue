@@ -214,7 +214,9 @@ export default {
             description: this.description,
             location: this.location,
             deadline: moment(this.deadline).format('L'),
-            budget: this.budget
+            budget: this.budget,
+            jobType: "microjob",
+            status: "select"
             //postPaymentDays: this.postPaymentDays
           });
           skills.add({

@@ -18,13 +18,18 @@ import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.
 import EditClientProfile from "@/views/dashboard/client-dashboard/clientProfile/EditProfile.vue";
 import PostJob from "@/views/dashboard/client-dashboard/jobs/post/PostJob.vue";
 import EditJob from "@/views/dashboard/client-dashboard/jobs/edit/EditJob.vue";
+//
 import PendingJob from "@/views/dashboard/client-dashboard/jobs/pending/PendingJob.vue";
+import ClientStatus from "@/views/dashboard/client-dashboard/jobs/status/Status.vue";
+//import Payment from "@/views/dashboard/client-dashboard/jobs/payment/Payment.vue";
 
 // Student Dashboard Components
 import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
 import EditStudentProfile from "@/views/dashboard/student-dashboard/studentProfile/EditProfile.vue";
 
-import ApplyMicrojob from "@/views/dashboard/student-dashboard/microjobs/apply/ApplyMicrojob.vue";
+import Apply from "@/views/dashboard/student-dashboard/jobs/apply/Apply.vue";
+
+import StudentStatus from "@/views/dashboard/student-dashboard/jobs/status/Status.vue";
 
 // Pages
 import Lock from "@/pages/Dashboard/Pages/Lock.vue";
@@ -142,9 +147,19 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "edit-profile",
-      name: "Edit Profile",
+      path: "edit-profile", //change to profile
+      name: "edit-profile", //change to profile
       component: EditClientProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "client-status",
+      name: "client-status",
+      component: ClientStatus,
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -183,7 +198,7 @@ let student_dashboard_menu = {
     {
       path: "apply",
       name: "apply",
-      components: { default: ApplyMicrojob },
+      components: { default: Apply },
       meta: {
         requiresAuth: true,
         userRole: "student",
@@ -241,9 +256,19 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "edit-profile",
-      name: "Edit Profile",
+      path: "edit-profile", //change to profile
+      name: "profile",
       component: EditStudentProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "student-status",
+      name: "student-status",
+      component: StudentStatus,
       meta: {
         requiresAuth: true,
         userRole: "student",
