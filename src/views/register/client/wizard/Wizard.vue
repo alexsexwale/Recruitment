@@ -223,7 +223,6 @@ export default {
           snapshot.forEach(doc => {
             let clients = db.collection('clients').doc(doc.id);
             clients.set({
-              clientId: doc.id,
               userId: this.user.uid,
               created: moment(Date.now()).format('L'),
               lastModified: null,
@@ -239,6 +238,11 @@ export default {
               province: this.province,
               postalCode: this.postalCode
             });
+
+            // let address = db.collection('address').doc(doc.id);
+            // addresss.set({
+
+            // })
             
             let users = db.collection('users').doc(doc.id);
             if(this.firstName) {

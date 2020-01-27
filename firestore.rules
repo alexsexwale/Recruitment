@@ -25,10 +25,25 @@ service cloud.firestore {
     match /feedback/{feedback} {
       allow write;
     }
-
+    
     match /jobs/{jobs} {
       allow read;
       allow write;
     }
+    
+    match /skills/{skills} {
+      allow read;
+      allow write;
+    }
+
+    match /applications/{applications} {
+      allow read;
+      allow write;
+    }
+    
+    match /errors/{errors} {
+      allow write;
+    }
+    
   }
 }

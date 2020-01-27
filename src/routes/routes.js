@@ -1,3 +1,4 @@
+// Vue
 import Vue from "vue";
 import Router from "vue-router";
 
@@ -14,22 +15,26 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 import DashboardLayout from "@/components/Layout/DashboardLayout.vue";
 
 // Client Dashboard Components
-import ClientDashboard from "@/views/dashboard/client-dashboard/ClientDashboard.vue";
-import EditClientProfile from "@/views/dashboard/client-dashboard/clientProfile/EditProfile.vue";
-import PostJob from "@/views/dashboard/client-dashboard/jobs/post/PostJob.vue";
-import EditJob from "@/views/dashboard/client-dashboard/jobs/edit/EditJob.vue";
+import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
+import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
+import PostJob from "@/views/dashboard/client/jobs/post/PostJob.vue";
+import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //
-import PendingJob from "@/views/dashboard/client-dashboard/jobs/pending/PendingJob.vue";
-import ClientStatus from "@/views/dashboard/client-dashboard/jobs/status/Status.vue";
-//import Payment from "@/views/dashboard/client-dashboard/jobs/payment/Payment.vue";
+import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
+import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
+import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
+
+import ClientStatus from "@/views/dashboard/client/jobs/status/Status.vue";
+//import Payment from "@/views/dashboard/client/jobs/payment/Payment.vue";
 
 // Student Dashboard Components
-import StudentDashboard from "@/views/dashboard/student-dashboard/StudentDashboard.vue";
-import EditStudentProfile from "@/views/dashboard/student-dashboard/studentProfile/EditProfile.vue";
+import StudentDashboard from "@/views/dashboard/student/StudentDashboard.vue";
+import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vue";
 
-import Apply from "@/views/dashboard/student-dashboard/jobs/apply/Apply.vue";
+import Jobs from "@/views/dashboard/student/jobs/Jobs.vue";
+import Application from "@/views/dashboard/student/jobs/application/Application.vue";
 
-import StudentStatus from "@/views/dashboard/student-dashboard/jobs/status/Status.vue";
+import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
 
 // Pages
 import Lock from "@/pages/Dashboard/Pages/Lock.vue";
@@ -77,7 +82,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/post",
+      path: "jobs/post",
       name: "post-a-job",
       components: { default: PostJob },
       meta: {
@@ -87,7 +92,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/edit",
+      path: "jobs/edit/:id",
       name: "edit-job",
       components: { default: EditJob },
       meta: {
@@ -97,9 +102,9 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/active",
+      path: "jobs/active",
       name: "active-jobs",
-      components: { default: ActiveMicrojob },
+      components: { default: ActiveJob },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -107,7 +112,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/pending",
+      path: "jobs/pending",
       name: "pending-jobs",
       components: { default: PendingJob },
       meta: {
@@ -117,9 +122,9 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/complete",
+      path: "jobs/complete",
       name: "complete-jobs",
-      components: { default: CompleteMicrojob },
+      components: { default: CompleteJob },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -157,7 +162,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "client-status",
+      path: "status/:id",
       name: "client-status",
       component: ClientStatus,
       meta: {
@@ -196,9 +201,9 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "apply",
+      path: "apply-for-job",
       name: "apply",
-      components: { default: Apply },
+      components: { default: Jobs },
       meta: {
         requiresAuth: true,
         userRole: "student",
@@ -206,7 +211,17 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/active",
+      path: "application/:id",
+      name: "application",
+      components: { default: Application },
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "jobs/active",
       name: "active-student-jobs",
       components: { default: ActiveMicrojob },
       meta: {
@@ -216,7 +231,7 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/pending",
+      path: "jobs/pending",
       name: "pending-student-jobs",
       components: { default: PendingMicrojob },
       meta: {
@@ -226,7 +241,7 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "microjobs/complete",
+      path: "jobs/complete",
       name: "complete-student-jobs",
       components: { default: CompleteMicrojob },
       meta: {
@@ -266,7 +281,7 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "student-status",
+      path: "status/:id",
       name: "student-status",
       component: StudentStatus,
       meta: {

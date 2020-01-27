@@ -22,7 +22,7 @@
                       <md-icon>person</md-icon>
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <li><router-link to="/client/edit-profile">Edit Profile</router-link></li>
+                      <li><router-link to="/client/edit-profile">Profile</router-link></li>
                       <li><a @click="logout">Logout</a></li>
                     </ul>
                   </drop-down>

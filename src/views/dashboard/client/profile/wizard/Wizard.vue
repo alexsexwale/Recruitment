@@ -48,7 +48,7 @@
               <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
                   <div class="md-button-content">
-                    {{finishButtonText}}
+                    Update
                   </div>
                 </div>
               </button>
@@ -56,6 +56,25 @@
           </slot>
         </md-card-actions>
       </md-card>
+      <!-- Modal: Success -->
+      <modal v-if="modal" @close="modalHide">
+        <template slot="header">
+          <h4 class="modal-title black">Profile Updated!</h4>
+          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+            <md-icon>clear</md-icon>
+          </md-button>
+        </template>
+
+        <template slot="body">
+          <p class="black">{{updated}}</p>
+        </template>
+
+        <template slot="footer">
+          <div style="text-align:center;">
+            <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+          </div>
+        </template>
+      </modal>
     </form>
   </div>
 </template>
@@ -64,6 +83,7 @@ import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
+import { Modal } from "@/components";
 
 export default {
   name: "simple-wizard",
@@ -101,58 +121,37 @@ export default {
     lastName: {
       required: true
     },
-    dob: {
+    companyName: {
       required: true
     },
-    gender: {
+    companyWebsite: {
       required: true
     },
-    race: {
+    phoneNumber: {
       required: true
     },
-    phone: {
+    vat: {
       required: true
     },
-    institution: {
+    companySize: {
       required: true
     },
-    campus: {
+    industry: {
       required: true
     },
-    studentNo: {
+    addressLine1: {
       required: true
     },
-    faculty: {
+    addressLine2: {
       required: true
     },
-    degree: {
+    city: {
       required: true
     },
-    major: {
+    province: {
       required: true
     },
-    year: {
-      required: true
-    },
-    graduateStatus: {
-      required: true
-    },
-    accountName: {
-      required: true
-    },
-    accountNumber: {
-      required: true
-    },
-    accountNumber: {
-      required: true
-    },
-    accountType: {
-      required: true
-    },
-    bankName: {
-      required: true
-    },
-    branchCode: {
+    postalCode: {
       required: true
     },
     email: {}
@@ -163,7 +162,8 @@ export default {
       render(h) {
         return h("span", [this.tab.$slots.label || this.tab.label]);
       }
-    }
+    },
+    Modal
   },
   provide() {
     return {
@@ -177,10 +177,9 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
-      user: null,
-      emailVerified: null,
-      feedback: null
+      feedback: null,
+      updated: null,
+      modal: false
     };
   },
   computed: {
@@ -226,69 +225,114 @@ export default {
     addFeedback: function() {
       this.$emit("feedback", this.feedback);
     },
-    addEmailVerified: function() {
-      this.$emit("emailVerified", this.emailVerified);
+    modalHide() {
+      this.modal = false;
     },
     createAccount() {
-      this.user.reload().then(() => {
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      });
-
-      if(this.user.emailVerified) {
-        let ref = db.collection('users');
-        ref.where('userId', '==', this.user.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            let students = db.collection('students').doc(doc.id);
-            students.set({
-              userId: this.user.uid,
-              created: moment(Date.now()).format('L'),
-              lastModified: null,
-              dateOfBirth: moment(this.dob).format('L'),
-              gender: this.gender,
-              race: this.race,
-              phoneNumber: this.phone,
-              institution: this.institution,
-              campus: this.campus,
-              studentNo: this.studentNo,
-              faculty: this.faculty,
-              degree: this.degree,
-              major: this.major,
-              year: this.year,
-              graduateStatus: this.graduateStatus,
-              accountName: this.accountName,
-              accountNumber: this.accountNumber,
-              accountType: this.accountType,
-              bankName: this.bankName,
-              branchCode: this.branchCode
+      let ref = db.collection('users');
+      ref.where('userId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let clients = db.collection('clients').doc(doc.id);
+          let users = db.collection('users').doc(doc.id);
+          if(this.firstName) {
+            clients.update({
+              name: this.firstName
             });
-            
-            let users = db.collection('users').doc(doc.id);
-            if(this.firstName) {
-              users.update({
-                name: this.firstName
-              });
-            }
-            if(this.lastName) {
-              users.update({
-                surname: this.lastName
-              });
-            }
-          })
+            this.modal = true;
+          }
+          if(this.lastName) {
+            clients.update({
+              surname: this.lastName
+            });
+            this.modal = true;
+          }
+          if(this.companyName) {
+            clients.update({
+              companyName: this.companyName,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.companyWebsite) {
+            clients.update({
+              website: this.companyWebsite,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.phoneNumber) {
+            clients.update({
+              phoneNumber: this.phoneNumber,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.vat) {
+            clients.update({
+              vat: this.vat,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.companySize) {
+            clients.update({
+              companySize: this.companySize,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.industry) {
+            clients.update({
+              industry: this.industry,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.addressLine1) {
+            clients.update({
+              addressLine1: this.addressLine1,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.addressLine2) {
+            clients.update({
+              addressLine2: this.addressLine2,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.city) {
+            clients.update({
+              city: this.city,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.province) {
+            clients.update({
+              province: this.province,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
+          if(this.postalCode) {
+            clients.update({
+              postalCode: this.postalCode,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
         })
-        .then(() => {
-          this.$router.push({ name: "student-dashboard" });
-        })
-        .catch(err => {
-          // An error happened.
-          console.log(err);
-          this.feedback = err.message;
-        })
-        } else {
-          this.feedback = "You have not verified that " + this.email + " is your email address."
-          this.addFeedback();
-        }
+      })
+      .then(() => {
+        this.updated = "Your profile has been updated.";
+      })
+      .catch(err => {
+        // An error happened.
+        this.feedback = err.message;
+      })
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -328,11 +372,6 @@ export default {
       }
     },
     async nextTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
@@ -340,11 +379,6 @@ export default {
       return isValid;
     },
     prevTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       this.activeTabIndex--;
     },
     async navigateToTab(index) {
@@ -397,10 +431,6 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
-  },
-  created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
   }
 };
 </script>

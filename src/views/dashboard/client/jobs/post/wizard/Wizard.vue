@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="createAccount">
+    <form @submit.prevent="createJob">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -11,7 +11,18 @@
         </md-card-header>
         <div class="wizard-navigation">
           <ul class="nav nav-pills" role="tablist">
-            <li v-for="(tab, index) in tabs" :key="tab.title" role="tab" :tabindex="tab.checked ? 0 : ''" :id="`step-${tab.tabId}`" :aria-controls="tab.tabId" :aria-disabled="tab.active" :aria-selected="tab.active" :ref="`tab-${index}`" class="nav-item wizard-tab-link" :style="linkWidth">
+            <li
+              v-for="(tab, index) in tabs"
+              :key="tab.title"
+              role="tab"
+              :tabindex="tab.checked ? 0 : ''"
+              :id="`step-${tab.tabId}`"
+              :aria-controls="tab.tabId"
+              :aria-disabled="tab.active"
+              :aria-selected="tab.active"
+              :ref="`tab-${index}`"
+              class="nav-item wizard-tab-link"
+              :style="linkWidth">
               <a class="nav-link" @click="navigateToTab(index)"
                 :class="[
                   { 'disabled-wizard-link': !tab.checked },
@@ -64,6 +75,8 @@ import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
+import slugify from "slugify";
+import { Modal } from "@/components";
 
 export default {
   name: "simple-wizard",
@@ -95,67 +108,20 @@ export default {
     vertical: {
       type: Boolean
     },
-    firstName: {
+    name: {
       required: true
     },
-    lastName: {
+    description: {
       required: true
     },
-    dob: {
+    skills: {
       required: true
     },
-    gender: {
+    location: {},
+    deadline: {},
+    budget: {
       required: true
-    },
-    race: {
-      required: true
-    },
-    phone: {
-      required: true
-    },
-    institution: {
-      required: true
-    },
-    campus: {
-      required: true
-    },
-    studentNo: {
-      required: true
-    },
-    faculty: {
-      required: true
-    },
-    degree: {
-      required: true
-    },
-    major: {
-      required: true
-    },
-    year: {
-      required: true
-    },
-    graduateStatus: {
-      required: true
-    },
-    accountName: {
-      required: true
-    },
-    accountNumber: {
-      required: true
-    },
-    accountNumber: {
-      required: true
-    },
-    accountType: {
-      required: true
-    },
-    bankName: {
-      required: true
-    },
-    branchCode: {
-      required: true
-    },
-    email: {}
+    }
   },
   components: {
     TabItemContent: {
@@ -163,7 +129,8 @@ export default {
       render(h) {
         return h("span", [this.tab.$slots.label || this.tab.label]);
       }
-    }
+    },
+    Modal
   },
   provide() {
     return {
@@ -177,10 +144,10 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
+      slug: null,
       user: null,
-      emailVerified: null,
-      feedback: null
+      feedback: null,
+      client: {}
     };
   },
   computed: {
@@ -223,72 +190,53 @@ export default {
     }
   },
   methods: {
-    addFeedback: function() {
-      this.$emit("feedback", this.feedback);
-    },
-    addEmailVerified: function() {
-      this.$emit("emailVerified", this.emailVerified);
-    },
-    createAccount() {
-      this.user.reload().then(() => {
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      });
-
-      if(this.user.emailVerified) {
-        let ref = db.collection('users');
-        ref.where('userId', '==', this.user.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            let students = db.collection('students').doc(doc.id);
-            students.set({
-              userId: this.user.uid,
+    createJob() {
+      this.user = firebase.auth().currentUser;
+      let ref = db.collection('clients');
+      ref.where('userId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          this.client = doc.data();
+          this.slug = slugify(this.name + " " + Date.now(), {
+            replacement: '-',
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          })
+          if(!this.location)
+            this.location = "remote";
+            let skills = db.collection('skills');
+            let job = db.collection('jobs').doc(this.slug);
+            job.set({
+              jobId: this.slug,
+              clientId: this.user.uid,
+              companyName: this.client.companyName,
+              clientName: this.user.displayName,
+              studentId: null,
               created: moment(Date.now()).format('L'),
               lastModified: null,
-              dateOfBirth: moment(this.dob).format('L'),
-              gender: this.gender,
-              race: this.race,
-              phoneNumber: this.phone,
-              institution: this.institution,
-              campus: this.campus,
-              studentNo: this.studentNo,
-              faculty: this.faculty,
-              degree: this.degree,
-              major: this.major,
-              year: this.year,
-              graduateStatus: this.graduateStatus,
-              accountName: this.accountName,
-              accountNumber: this.accountNumber,
-              accountType: this.accountType,
-              bankName: this.bankName,
-              branchCode: this.branchCode
-            });
-            
-            let users = db.collection('users').doc(doc.id);
-            if(this.firstName) {
-              users.update({
-                name: this.firstName
-              });
-            }
-            if(this.lastName) {
-              users.update({
-                surname: this.lastName
-              });
-            }
+              name: this.name,
+              description: this.description,
+              location: this.location,
+              deadline: moment(this.deadline).format('L'),
+              budget: this.budget,
+              jobType: "microjob",
+              status: "select",
+              paid: false
+              //postPaymentDays: this.postPaymentDays
+          });
+          skills.add({
+            jobId: this.slug,
+            skills: this.skills
           })
         })
-        .then(() => {
-          this.$router.push({ name: "student-dashboard" });
-        })
-        .catch(err => {
-          // An error happened.
-          console.log(err);
-          this.feedback = err.message;
-        })
-        } else {
-          this.feedback = "You have not verified that " + this.email + " is your email address."
-          this.addFeedback();
-        }
+      })
+      .then(() => {
+        this.$router.push({ name: "pending-jobs" });
+      })
+      .catch(err => {
+        this.feedback = err.message;
+        console.log(this.feedback);
+      })
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -328,11 +276,6 @@ export default {
       }
     },
     async nextTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
@@ -340,11 +283,6 @@ export default {
       return isValid;
     },
     prevTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       this.activeTabIndex--;
     },
     async navigateToTab(index) {
@@ -376,7 +314,9 @@ export default {
       this.tabs[this.activeTabIndex].checked = true;
       this.onResize();
     });
-    window.addEventListener("resize", () => {
+    window.addEventListener(
+      "resize",
+      () => {
         throttle(this.onResize, 40);
       },
       false
@@ -397,10 +337,6 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
-  },
-  created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
   }
 };
 </script>
@@ -427,13 +363,5 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
-}
-
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
 }
 </style>

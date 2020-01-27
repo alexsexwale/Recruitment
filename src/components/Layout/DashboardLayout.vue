@@ -11,11 +11,11 @@
       <template slot="links">
         <!-- Begin: client side navbar -->
         <sidebar-item v-if="client" :link="{ name: 'Dashboard', icon: 'dashboard', path: '/client/dashboard' }"></sidebar-item>
-        <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/microjobs/post' }"></sidebar-item>
-        <sidebar-item v-if="client" :link="{ name: 'View Microjobs', icon: 'work_outline' }">
-          <sidebar-item :link="{ name: 'Active Jobs', path: '/client/microjobs/active' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Pending Jobs', path: '/client/microjobs/pending' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Complete Jobs', path: '/client/microjobs/complete' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/post' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'View Jobs', icon: 'work_outline' }">
+          <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Pending Jobs', path: '/client/jobs/pending' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Complete Jobs', path: '/client/jobs/complete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
@@ -23,11 +23,11 @@
 
         <!-- Begin: student side navbar -->
         <sidebar-item v-if="student" :link="{ name: 'Dashboard', icon: 'dashboard', path: '/student/dashboard' }"></sidebar-item>
-        <sidebar-item v-if="student" :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply' }"></sidebar-item>
-        <sidebar-item v-if="student" :link="{ name: 'View Microjobs', icon: 'work_outline' }">
-          <sidebar-item :link="{ name: 'Active Jobs', path: '/student/microjobs/active' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Job Bids', path: '/student/microjobs/pending' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/microjobs/complete' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply-for-job' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'View Jobs', icon: 'work_outline' }">
+          <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Job Bids', path: '/student/jobs/pending' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
