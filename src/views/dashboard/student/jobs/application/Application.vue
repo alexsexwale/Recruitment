@@ -17,7 +17,7 @@
 
           <h4 class="card-title">Skills Required</h4>
           <ul>
-            <li v-for="(skill, index) in job.skills" :key="index" class="card-description">{{ job.skills[index] }}</li>
+            <li v-for="(skill, index) in skills.skills" :key="index" class="card-description">{{ skills.skills[index] }}</li>
           </ul>
         </md-card-content>
       </md-card>
@@ -89,6 +89,7 @@ export default {
   data() {
     return {
       job: {},
+      skills: {},
       feedback: null,
       user: null,
       auth: null,
@@ -121,9 +122,9 @@ export default {
             appliedDate: moment(Date.now()).format('L'),
             applicant: this.auth.displayName,
             applicantAlias: this.user.alias
-          })
-          this.$router.push({ name: 'student-status', params: {id: this.job.id} });
-            }
+            })
+            this.$router.push({ name: 'student-status', params: {id: this.job.id} });
+          }
         })
       }
       else {
@@ -144,6 +145,7 @@ export default {
   created() {
     this.auth = firebase.auth().currentUser;
     let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
+    let skills = db.collection('skills').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
@@ -157,11 +159,17 @@ export default {
               remove: /[$*_+~.()'"!\-:@]/g,
               lower: true
             })
-            let application = db.collection('applications').doc(this.slug);
-            application.get().then(doc => {
-              if(doc.exists && doc.data().jobId == this.$route.params.id) {
-                this.$router.push({ name: 'student-status', params: {id: this.$route.params.id} });
-              }
+            skills.get().then(snapshot => {
+              snapshot.forEach(doc => {
+                this.skills = doc.data();
+                this.skills.id = doc.id;
+                let application = db.collection('applications').doc(this.slug);
+                application.get().then(doc => {
+                  if(doc.exists && doc.data().jobId == this.$route.params.id) {
+                    this.$router.push({ name: 'student-status', params: {id: this.$route.params.id} });
+                  }
+                })
+              })
             })
           })
         })

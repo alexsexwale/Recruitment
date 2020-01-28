@@ -32,7 +32,7 @@
       <md-card class="bg-success">
           <md-card-content>
             <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Microjob Payment
+            <i class="far fa-newspaper" /> Job Payment
             </h3>
             <h4 class="card-title">Budget</h4>
             <p class="card-description">R{{ budget }}</p>
