@@ -3,10 +3,9 @@
     <div class="md-card-avatar">
       <img class="img" :src="cardUserImage" />
     </div>
-
     <md-card-content>
       <h6 class="category text-gray">CEO / Co-Founder</h6>
-      <h4 class="card-title">Alec Thompson</h4>
+      <!-- <h4 class="card-title">{{ applicant }}</h4> -->
       <p class="card-description">
         Don't be scared of the truth because we need to restart the human
         foundation in truth
@@ -26,7 +25,10 @@ export default {
     buttonColor: {
       type: String,
       default: ""
-    }
+    },
+    // applicant: { 
+    //   required: true
+    // }
   },
   data() {
     return {};

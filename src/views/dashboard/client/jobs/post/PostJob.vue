@@ -55,7 +55,6 @@
             Review
           </template>
           <fourth-step ref="step4" 
-            @on-validated="wizardComplete"
             v-bind:name="name"
             v-bind:description="description"
             v-bind:skills="skills"
@@ -109,15 +108,6 @@ export default {
     },
     onStepValidated(validated, model) {
       this.wizardModel = { ...this.wizardModel, ...model };
-    },
-    wizardComplete() {
-      swal({
-        title: "Good job!",
-        text: "You clicked the finish button!",
-        type: "success",
-        confirmButtonClass: "md-button md-success",
-        buttonsStyling: false
-      });
     },
     addName: function(name) {
       this.name = name;

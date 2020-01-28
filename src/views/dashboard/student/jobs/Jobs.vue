@@ -64,7 +64,7 @@ export default {
   created() {
     db.collection('jobs').get()
     .then(snapshot => {
-      snapshot.docChanges().forEach(doc => {
+      snapshot.forEach(doc => {
         let job = doc.data();
         job.id = doc.id;
         this.jobs.push(job);

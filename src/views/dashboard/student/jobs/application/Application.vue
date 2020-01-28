@@ -75,6 +75,7 @@
   </div>
 </template>
 <script>
+import firebase from "firebase/app";
 import db from '@/firebase/init';
 import { IconCheckbox, Modal } from "@/components";
 import moment from "moment";
@@ -141,6 +142,7 @@ export default {
     }
   },
   created() {
+    this.auth = firebase.auth().currentUser;
     let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {

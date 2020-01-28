@@ -33,14 +33,14 @@
           <template slot="label">
             Confirm Completion
           </template>
-          <fourth-step ref="step4" @on-validated="wizardComplete"></fourth-step>
+          <fourth-step ref="step4"></fourth-step>
         </wizard-tab>
 
         <wizard-tab :before-change="() => validateStep('step5')">
           <template slot="label">
             Rate and Review
           </template>
-          <fifth-step ref="step5" @on-validated="wizardComplete"></fifth-step>
+          <fifth-step ref="step5"></fifth-step>
         </wizard-tab>
       </simple-wizard>
     </div>
