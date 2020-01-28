@@ -10,7 +10,7 @@
         Don't be scared of the truth because we need to restart the human
         foundation in truth
       </p>
-      <md-button @click="select" class="md-round" :class="getColorButton(buttonColor)">Select</md-button>
+      <md-button @click="select" class="md-success md-round">Select</md-button>
     </md-card-content>
   </md-card>
 </template>
@@ -21,14 +21,7 @@ export default {
     cardUserImage: {
       type: String,
       default: "/img/dashboard/client/card-1.jpg"
-    },
-    buttonColor: {
-      type: String,
-      default: ""
-    },
-    // applicant: { 
-    //   required: true
-    // }
+    }
   },
   data() {
     return {};
