@@ -50,7 +50,6 @@
               {{ prevButtonText }}
             </md-button>
           </div>
-
           <div>
             <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
               {{ nextButtonText }}
@@ -119,7 +118,7 @@ export default {
   data() {
     return {
       tabs: [],
-      activeTabIndex: 0,
+      activeTabIndex:0,
       tabLinkWidth: 0,
       tabLinkHeight: 50
     };
@@ -263,6 +262,9 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
+  },
+  created() {
+    
   }
 };
 </script>

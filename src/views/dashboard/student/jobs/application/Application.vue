@@ -121,7 +121,9 @@ export default {
             userId: this.auth.uid,
             appliedDate: moment(Date.now()).format('L'),
             applicant: this.auth.displayName,
-            applicantAlias: this.user.alias
+            applicantAlias: this.user.alias,
+            approved: false,
+            status: 'applied'
             })
             this.$router.push({ name: 'student-status', params: {id: this.job.id} });
           }
