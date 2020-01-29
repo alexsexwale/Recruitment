@@ -37,7 +37,7 @@ import Application from "@/views/dashboard/student/jobs/application/Application.
 import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
 
 // Pages
-import Lock from "@/pages/Dashboard/Pages/Lock.vue";
+import Lock from "@/views/lock/Lock.vue";
 
 // Views
 import AuthLayout from "@/views/AuthLayout.vue";
