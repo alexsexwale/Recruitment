@@ -100,6 +100,7 @@
         </div>
       </template>
     </modal>
+    <div v-if="loading" class="lds-circle"><div></div></div>
   </form>
   
 </template>
@@ -127,6 +128,7 @@ export default {
       modal: false,
       feedback: null,
       slug: null,
+      loading: false,
       touched: {
         firstName: false,
         lastName: false,
@@ -170,7 +172,9 @@ export default {
       this.modal = false;
     },
     createAccount() {
+      this.loading = true;
       if(!this.terms) {
+        this.loading = false;
         this.modal = true;
         this.feedback = "Please agree to the terms and conditions";
       }
@@ -184,6 +188,7 @@ export default {
 
       users.get().then(doc => {
         if(doc.exists) {
+          this.loading = false;
           this.modal = true;
           this.feedback = "This account already exists";
         }
@@ -206,6 +211,7 @@ export default {
               displayName: this.firstName + " " + this.lastName
             })
             .catch(err => {
+              this.loading = false;
               this.modal = true;
               this.feedback = err.message;
             })
@@ -222,18 +228,21 @@ export default {
               }
             }).catch(err => {
               // An error happened.
+              this.loading = false;
               this.modal = true;
               this.feedback = err.message;
             });
           })
           .catch(err => {
-              this.modal = true;
-              this.feedback = err.message;
+            this.loading = false;
+            this.modal = true;
+            this.feedback = err.message;
           })
         }
       });
       
       } else {
+        this.loading = false;
         this.modal = true;
         this.feedback = "Please select whether you are a student or a client.";
       }

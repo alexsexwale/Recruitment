@@ -36,6 +36,8 @@
             <md-icon class="success" v-show="!errors.has('password') && touched.password">done</md-icon>
           </slide-y-down-transition>
         </md-field>
+
+        <!-- <md-checkbox v-model="remember" slot="inputs">Keep me logged in</md-checkbox> -->
         
         <button class="md-button md-success md-theme-default" slot="footer">
           <div class="md-ripple">
@@ -86,6 +88,7 @@ export default {
       password: null,
       feedback: null,
       modal: false,
+      remember: null,
       touched: {
         email: false,
         password: false

@@ -8,9 +8,7 @@
           <label>Enter Password</label>
           <md-input v-model="password" type="password"></md-input>
         </md-field>
-        <md-button href class="md-success md-round" slot="footer"
-          >Unlock</md-button
-        >
+        <md-button href class="md-success md-round" slot="footer">Unlock</md-button>
       </lock-card>
     </div>
   </div>

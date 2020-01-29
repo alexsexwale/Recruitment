@@ -36,9 +36,6 @@ import Application from "@/views/dashboard/student/jobs/application/Application.
 
 import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
 
-// Pages
-import Lock from "@/views/lock/Lock.vue";
-
 // Views
 import AuthLayout from "@/views/AuthLayout.vue";
 import Login from "@/views/login/Login.vue";
@@ -334,11 +331,6 @@ let authPages = {
       component: Partner
     },
     {
-      path: "/lock",
-      name: "Lock",
-      component: Lock
-    },
-    {
       path: "/register",
       name: "Register",
       component: Register
@@ -371,9 +363,9 @@ function previous() {
 router.beforeEach((to, from, next) => {
   //Checking to see if route requires auth
   let requiresAuth = to.matched.some(rec => rec.meta.requiresAuth);
+  // check auth state of user
+  let user = firebase.auth().currentUser;
   if (requiresAuth) {
-    // check auth state of user
-    let user = firebase.auth().currentUser;
     // user signed
     if (user) {
       let ref = db.collection("users");
@@ -411,7 +403,11 @@ router.beforeEach((to, from, next) => {
     else {
       previous();
     }
-  } // does not require authentication
+  } // logout if user does not require auth but user is authenticated  
+  else if(!requiresAuth && user) {
+    firebase.auth().signOut().then(() => { next(); });
+  } 
+  // does not require authentication
   else {
     next();
   }
