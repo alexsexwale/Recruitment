@@ -117,13 +117,13 @@ export default {
           }
           else {
             application.set({
-            jobId: this.job.id,
-            userId: this.auth.uid,
-            appliedDate: moment(Date.now()).format('L'),
-            applicant: this.auth.displayName,
-            applicantAlias: this.user.alias,
-            approved: false,
-            status: 'applied'
+              jobId: this.job.id,
+              userId: this.auth.uid,
+              appliedDate: moment(Date.now()).format('L'),
+              applicant: this.auth.displayName,
+              applicantAlias: this.user.alias,
+              approved: false,
+              status: 'applied'
             })
             this.$router.push({ name: 'student-status', params: {id: this.job.id} });
           }
