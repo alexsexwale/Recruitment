@@ -24,7 +24,7 @@
             <i class="fas fa-calendar-week"></i> Deadline
             <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
             
-            <router-link :to="{ name: 'client-status', params: {id: job.id} }"> 
+            <router-link :to="{ name: 'student-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>
