@@ -17,7 +17,7 @@ import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue"
 
 import PostJob from "@/views/dashboard/client/jobs/post/PostJob.vue";
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//
+
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
 import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";

@@ -3,7 +3,7 @@
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <hr>
-        <h2 class="centre">Confirm Completion</h2>
+          <h2 class="centre">Confirm Completion</h2>
         <hr>
         <br>  
         <md-card class="md-card-profile">

@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <hr>
-    <h2 class="centre">Currently Active</h2>
+      <h2 class="centre">Currently Active</h2>
     <hr>
     <br>
     <div class="md-layout">

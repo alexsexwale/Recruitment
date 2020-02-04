@@ -8,14 +8,6 @@
           <md-icon>art_track</md-icon>
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
-        <template slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Edit</md-tooltip>
-        </template>
-        <template slot="third-button">
-          <md-icon>close</md-icon>
-          <md-tooltip md-direction="bottom" @click="deleteJob(job.id)">Remove</md-tooltip>
-        </template>
         <h4 slot="title" class="title">
           {{ job.name }}
         </h4>
