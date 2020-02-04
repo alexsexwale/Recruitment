@@ -1,57 +1,57 @@
 <template>
   <div style="padding:40px; padding-top: 0px;">
     <md-card class="padding">
-    <h1 class="info-text centre">{{ job.name }}</h1>
-    <div class="md-layout">
-      <md-button class="md-success" @click="apply">Apply for job</md-button>
-      <md-card class="bg-success">
-        <md-card-content>
-          <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job description
-          </h3>
-          <h4 class="card-title">Name</h4>
-          <p class="card-description">{{ job.name }}</p>
-
-          <h4 class="card-title">Description</h4>
-          <p class="card-description">{{ job.description }}</p>
-
-          <h4 class="card-title">Skills Required</h4>
-          <ul>
-            <li v-for="(skill, index) in skills.skills" :key="index" class="card-description">{{ skills.skills[index] }}</li>
-          </ul>
-        </md-card-content>
-      </md-card>
-      <md-card class="bg-success">
-        <md-card-content>
-          <h3 class="card-category card-category-social centre">
-            <i class="far fa-newspaper" /> Job Details
-          </h3>
-          <h4 class="card-title">Location</h4>
-          <p class="card-description">{{ job.location }}</p>
-
-          <h4 class="card-title">Deadline</h4>
-          <p class="card-description">{{ job.deadline }}</p>
-        </md-card-content>
-      </md-card>
-      <md-card class="bg-success">
+      <h1 class="info-text centre">{{ job.name }}</h1>
+      <div class="md-layout">
+        <md-button class="md-success" @click="apply">Apply for job</md-button>
+        <md-card class="bg-success">
           <md-card-content>
-            <h3 class="card-category card-category-social centre">
-              <i class="far fa-newspaper" /> Job Payment
+            <h3 class="card-category card-category-social" style="text-align:center;">
+              <i class="far fa-newspaper" /> Job description
             </h3>
-            <h4 class="card-title">Budget</h4>
-            <p class="card-description">R{{ job.budget }}</p>
+            <h4 class="card-title">Name</h4>
+            <p class="card-description">{{ job.name }}</p>
 
-            <h4 class="card-title">Payment Option</h4>
-            <p class="card-description">Upfront</p>
+            <h4 class="card-title">Description</h4>
+            <p class="card-description">{{ job.description }}</p>
+
+            <h4 class="card-title">Skills Required</h4>
+            <ul>
+              <li v-for="(skill, index) in skills.skills" :key="index" class="card-description">{{ skills.skills[index] }}</li>
+            </ul>
           </md-card-content>
         </md-card>
-        <md-button class="md-success btn-previous" @click="back">
-          Back
-        </md-button>
-        <md-button class="md-success btn-next" @click="apply">
-          Apply for job
-        </md-button>
-    </div>
+        <md-card class="bg-success">
+          <md-card-content>
+            <h3 class="card-category card-category-social centre">
+              <i class="far fa-newspaper" /> Job Details
+            </h3>
+            <h4 class="card-title">Location</h4>
+            <p class="card-description">{{ job.location }}</p>
+
+            <h4 class="card-title">Deadline</h4>
+            <p class="card-description">{{ job.deadline }}</p>
+          </md-card-content>
+        </md-card>
+        <md-card class="bg-success">
+            <md-card-content>
+              <h3 class="card-category card-category-social centre">
+                <i class="far fa-newspaper" /> Job Payment
+              </h3>
+              <h4 class="card-title">Budget</h4>
+              <p class="card-description">R{{ job.budget }}</p>
+
+              <h4 class="card-title">Payment Option</h4>
+              <p class="card-description">Upfront</p>
+            </md-card-content>
+          </md-card>
+          <md-button class="md-success btn-previous" @click="back">
+            Back
+          </md-button>
+          <md-button class="md-success btn-next" @click="apply">
+            Apply for job
+          </md-button>
+      </div>
     </md-card>
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
@@ -77,13 +77,12 @@
 <script>
 import firebase from "firebase/app";
 import db from '@/firebase/init';
-import { IconCheckbox, Modal } from "@/components";
+import { Modal } from "@/components";
 import moment from "moment";
 import slugify from "slugify";
 
 export default {
   components: {
-    IconCheckbox,
     Modal
   },
   data() {

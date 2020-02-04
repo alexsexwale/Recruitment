@@ -26,7 +26,7 @@
         <sidebar-item v-if="student" :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply-for-job' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'View Jobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Job Bids', path: '/student/jobs/pending' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Applied Jobs', path: '/student/jobs/applied' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>

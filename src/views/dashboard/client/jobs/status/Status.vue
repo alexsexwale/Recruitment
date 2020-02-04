@@ -1,90 +1,85 @@
 <template>
-  <div class="md-layout">
-    <div class="md-layout-item md-size-66 md-xsmall-size-80 mx-auto">
-      <simple-wizard>
-        <template slot="header">
-          <h3 class="title">Status</h3>
-          <md-button class="btn-next md-success" @click="edit">Edit</md-button>
-        </template>
-
-        <wizard-tab :before-change="() => validateStep('step1')">
-          <template slot="label">
-            Select Student
-          </template>
-          <center><md-button v-if="!paid" class="btn-next md-success" @click="makePayment">Make Payment</md-button></center>
-          <first-step ref="step1" @on-validated="onStepValidated"></first-step>
-        </wizard-tab>
-
-        <wizard-tab :before-change="() => validateStep('step2')">
-          <template slot="label">
-            Confirm job
-          </template>
-          <second-step ref="step2" @on-validated="onStepValidated"></second-step>
-        </wizard-tab>
-
-        <wizard-tab :before-change="() => validateStep('step3')">
-          <template slot="label">
-            Job Active
-          </template>
-          <third-step ref="step3" @on-validated="onStepValidated"></third-step>
-        </wizard-tab>
-
-        <wizard-tab :before-change="() => validateStep('step4')">
-          <template slot="label">
-            Confirm Completion
-          </template>
-          <fourth-step ref="step4"></fourth-step>
-        </wizard-tab>
-
-        <wizard-tab :before-change="() => validateStep('step5')">
-          <template slot="label">
-            Rate and Review
-          </template>
-          <fifth-step ref="step5"></fifth-step>
-        </wizard-tab>
-      </simple-wizard>
-    </div>
+  <div class="content">
+    <md-card class="padding">
+      <div v-if="select" class="margin">
+        <md-button class="btn-next md-success button" @click="edit">Edit</md-button>
+        &nbsp;&nbsp;&nbsp;
+        <md-button class="btn-next md-danger button" @click="remove">Delete</md-button>
+      </div>
+      
+      <Select v-if="select" />
+      <Active v-if="active" />
+      <Complete v-if="complete" />
+      <Rate v-if="rate" />
+    </md-card>
   </div>
 </template>
 <script>
-import FirstStep from "./wizard/formSteps/FirstStep.vue";
-import SecondStep from "./wizard/formSteps/SecondStep.vue";
-import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
-import FourthStep from "./wizard/formSteps/FourthStep.vue";
-import FifthStep from "./wizard/formSteps/FifthStep.vue";
-import swal from "sweetalert2";
-import { WizardTab } from "@/components";
-import SimpleWizard from "./wizard/Wizard.vue";
-
+import db from '@/firebase/init';
+import Select from './flow/select/Select.vue';
+import Active from './flow/active/Active.vue';
+import Complete from './flow/complete/Complete.vue';
+import Rate from './flow/rate/Rate.vue';
 export default {
   components: {
-    FirstStep,
-    SecondStep,
-    ThirdStep,
-    FourthStep,
-    FifthStep,
-    SimpleWizard,
-    WizardTab
+    Select,
+    Active,
+    Complete,
+    Rate
   },
   data() {
     return {
-      paid: false
-    }
+      job: {},
+      select: false,
+      active: false,
+      complete: false,
+      rate: false
+    };
   },
   methods: {
-    validateStep(ref) {
-      return this.$refs[ref].validate();
-    },
-    onStepValidated(validated, model) {
-      this.wizardModel = { ...this.wizardModel, ...model };
-    },
-    makePayment() {
-      // let payment = this.$router.resolve({name: 'terms-and-conditions'});
-      // window.open(terms.href, '_blank');
-    },
     edit() {
       this.$router.push({ name: 'edit-job', params: {id: this.$route.params.id} });
+    },
+    remove() {
+      
+    },
+    payment() {
+
+    },
+    status() {
+      if(this.job.status == "select")
+        this.select = true;
+      if(this.job.status == "active")
+        this.active = true;
+      if(this.job.status == "complete")
+        this.complete = true;
+      if(this.job.status == "rate")
+        this.rate = true;
     }
+  },
+  created() {
+    let jobs = db.collection('jobs');
+    jobs.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.job = doc.data();
+        this.status();
+      })
+    })
   }
 };
 </script>
+<style scoped>
+.padding {
+  padding: 20px;
+}
+.centre {
+    text-align: center;
+}
+.button {
+  max-width: 88px;
+}
+.margin {
+  margin: auto;
+}
+</style>

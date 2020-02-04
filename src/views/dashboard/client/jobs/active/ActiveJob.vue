@@ -67,6 +67,19 @@ export default {
       activeJobs: false
     };
   },
+  methods: {
+    deleteJob(id) {
+      db.collection('jobs').doc(id).delete()
+      .then(() => {
+        this.jobs = this.jobs.filter(job => {
+          return job.id != id;
+        })
+      })
+    },
+    editJob(id) {
+      
+    }
+  },
   created() {
     window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;

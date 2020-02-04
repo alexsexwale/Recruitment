@@ -6,17 +6,15 @@ import Router from "vue-router";
 import db from "@/firebase/init";
 import firebase from "firebase/app";
 
-// Common Dashboard Components
-import ActiveMicrojob from "@/views/dashboard/view-microjobs/active/ActiveMicrojob.vue";
-import PendingMicrojob from "@/views/dashboard/view-microjobs/pending/PendingMicrojob.vue";
-import CompleteMicrojob from "@/views/dashboard/view-microjobs/complete/CompleteMicrojob.vue";
+// Client and Student Dashboard Components
+import DashboardLayout from "@/components/Layout/DashboardLayout.vue";
 import Support from "@/views/dashboard/support/Support.vue";
 import Feedback from "@/views/dashboard/feedback/Feedback.vue";
-import DashboardLayout from "@/components/Layout/DashboardLayout.vue";
 
 // Client Dashboard Components
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
+
 import PostJob from "@/views/dashboard/client/jobs/post/PostJob.vue";
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //
@@ -33,6 +31,10 @@ import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vu
 
 import Jobs from "@/views/dashboard/student/jobs/Jobs.vue";
 import Application from "@/views/dashboard/student/jobs/application/Application.vue";
+
+import Applied from "@/views/dashboard/student/jobs/applied/Applied.vue";
+import ActiveStudentJob from "@/views/dashboard/student/jobs/active/Active.vue";
+import CompleteStudentJob from "@/views/dashboard/student/jobs/complete/Complete.vue";
 
 import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
 
@@ -220,7 +222,7 @@ let student_dashboard_menu = {
     {
       path: "jobs/active",
       name: "active-student-jobs",
-      components: { default: ActiveMicrojob },
+      components: { default: ActiveStudentJob },
       meta: {
         requiresAuth: true,
         userRole: "student",
@@ -228,9 +230,9 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "jobs/pending",
-      name: "pending-student-jobs",
-      components: { default: PendingMicrojob },
+      path: "jobs/applied",
+      name: "applied-student-jobs",
+      components: { default: Applied },
       meta: {
         requiresAuth: true,
         userRole: "student",
@@ -240,7 +242,7 @@ let student_dashboard_menu = {
     {
       path: "jobs/complete",
       name: "complete-student-jobs",
-      components: { default: CompleteMicrojob },
+      components: { default: CompleteStudentJob },
       meta: {
         requiresAuth: true,
         userRole: "student",

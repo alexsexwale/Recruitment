@@ -77,22 +77,26 @@ export default {
       });
     },
     remoteSelection() {
-      if(this.remote)
+      if(this.remote) {
         this.onsite = false;
-      if(!this.remote && !this.onsite)
+      }
+      if(!this.remote && !this.onsite) {
         this.remote = true;
+      }
     },
     onsiteSelection() {
-      if(this.onsite)
+      if(this.onsite) {
         this.remote = false;
-      if(!this.remote && !this.onsite)
+      }
+      if(!this.remote && !this.onsite){
         this.onsite = true;
+      }
     },
     addLocation: function() {
-      this.$emit('location', this.location);
+      this.$emit("location", this.location);
     },
     addDeadline: function() {
-      this.$emit('deadline', this.deadline);
+      this.$emit("deadline", this.deadline);
     }
   },
   watch: {

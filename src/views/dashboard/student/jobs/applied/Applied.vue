@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout" v-if="pendingJobs">
+  <div class="md-layout" v-if="appliedJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="true">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -7,14 +7,6 @@
         <template slot="first-button">
           <md-icon>art_track</md-icon>
           <md-tooltip md-direction="bottom">View</md-tooltip>
-        </template>
-        <template slot="second-button">
-          <md-icon>edit</md-icon>
-          <md-tooltip md-direction="bottom">Edit</md-tooltip>
-        </template>
-        <template slot="third-button">
-          <md-icon>close</md-icon>
-          <md-tooltip md-direction="bottom" @click="deleteJob(job.id)">Remove</md-tooltip>
         </template>
         <h4 slot="title" class="title">
           {{ job.name }}
@@ -47,7 +39,7 @@
     </div>
   </div>
   <div v-else>
-    <h1 class="black" style="text-align:center">You currently have no pending jobs</h1>
+    <h1 class="black" style="text-align:center">You have not applied to any jobs</h1>
   </div>
 </template>
 
@@ -64,7 +56,7 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      pendingJobs: false
+      appliedJobs: false
     };
   },
   methods: {
@@ -75,24 +67,32 @@ export default {
           return job.id != id;
         })
       })
-    },
-    editJob(id) {
-      
     }
   },
   created() {
-    window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
-    jobs.where('clientId', '==', user.uid).where('status', '==', 'select').get()
+    let applicants = db.collection('applications');
+    applicants.where('userId', '==', user.uid).where('status', '==', 'applied').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.pendingJobs = true;
-        let job = doc.data();
-        job.id = doc.id;
-        this.jobs.push(job);
-      })
-    })
+        let id = doc.data().jobId;
+        jobs.where('status', '==', 'select').where('jobId','==', id).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            this.appliedJobs = true;
+            let job = doc.data();
+            job.id = doc.id;
+            this.jobs.push(job);
+          })
+        })
+      });
+    });
   }
 };
 </script>
+<style scoped>
+.centre {
+  text-align: center;  
+}
+</style>

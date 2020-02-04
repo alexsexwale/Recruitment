@@ -204,30 +204,30 @@ export default {
           })
           if(!this.location)
             this.location = "remote";
-            let skills = db.collection('skills').doc(this.slug);
-            let job = db.collection('jobs').doc(this.slug);
-            job.set({
-              jobId: this.slug,
-              clientId: this.user.uid,
-              companyName: this.client.companyName,
-              clientName: this.user.displayName,
-              studentId: null,
-              created: moment(Date.now()).format('L'),
-              lastModified: null,
-              name: this.name,
-              description: this.description,
-              location: this.location,
-              deadline: moment(this.deadline).format('L'),
-              budget: this.budget,
-              jobType: "microjob",
-              status: "select",
-              paid: false
-              //postPaymentDays: this.postPaymentDays
+          let skills = db.collection('skills').doc(this.slug);
+          let job = db.collection('jobs').doc(this.slug);
+          job.set({
+            jobId: this.slug,
+            clientId: this.user.uid,
+            companyName: this.client.companyName,
+            clientName: this.user.displayName,
+            studentId: null,
+            created: moment(Date.now()).format('L'),
+            lastModified: null,
+            name: this.name,
+            description: this.description,
+            location: this.location,
+            deadline: moment(this.deadline).format('L'),
+            budget: this.budget,
+            jobType: "microjob",
+            status: "select",
+            paid: false
           });
           skills.set({
             jobId: this.slug,
-            skills: this.skills
-          })
+            skills: this.skills,
+            lastModified: null
+          });
         })
       })
       .then(() => {
@@ -284,6 +284,7 @@ export default {
     },
     prevTab() {
       this.activeTabIndex--;
+      window.scrollTo(0, 0);
     },
     async navigateToTab(index) {
       if (this.tabs[index].checked) {

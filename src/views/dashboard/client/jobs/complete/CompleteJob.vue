@@ -67,11 +67,24 @@ export default {
       completeJobs: false
     };
   },
+  methods: {
+    deleteJob(id) {
+      db.collection('jobs').doc(id).delete()
+      .then(() => {
+        this.jobs = this.jobs.filter(job => {
+          return job.id != id;
+        })
+      })
+    },
+    editJob(id) {
+      
+    }
+  },
   created() {
     window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
-    jobs.where('clientId', '==', user.uid).where('status', '==', 'complete').get()
+    jobs.where('clientId', '==', user.uid).where('status', '==', 'rate').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.completeJobs = true;

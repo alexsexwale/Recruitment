@@ -7,8 +7,7 @@
         v-bind:skills="skills"
         v-bind:location="location"
         v-bind:deadline="deadline"
-        v-bind:budget="budget"
-        v-bind:payment="payment">
+        v-bind:budget="budget">
         <template slot="header">
           <h3 class="title">Post a Job</h3>
           <h5 class="category">
@@ -45,8 +44,7 @@
           </template>
           <third-step ref="step3" 
             @on-validated="onStepValidated"
-            @budget="addBudget"
-            @payment="addPayment">
+            @budget="addBudget">
           </third-step>
         </wizard-tab>
 
@@ -60,8 +58,7 @@
             v-bind:skills="skills"
             v-bind:location="location"
             v-bind:deadline="deadline"
-            v-bind:budget="budget"
-            v-bind:payment="payment">
+            v-bind:budget="budget">
           </fourth-step>
         </wizard-tab>
       </simple-wizard>
@@ -78,11 +75,6 @@ import { WizardTab } from "@/components";
 import SimpleWizard from "./wizard/Wizard.vue";
 
 export default {
-  data() {
-    return {
-      wizardModel: {}
-    };
-  },
   components: {
     FirstStep,
     SecondStep,
@@ -93,13 +85,13 @@ export default {
   },
   data() {
     return {
+      wizardModel: {},
       name: null,
       description: null,
       skills: [],
       location: null,
       deadline: null,
-      budget: null,
-      payment: null
+      budget: null
     }
   },
   methods: {
@@ -126,9 +118,6 @@ export default {
     },
     addBudget: function(budget) {
       this.budget = budget;
-    },
-    addPayment: function(postPayment) {
-      this.postPayment = postPayment;
     }
   }
 };

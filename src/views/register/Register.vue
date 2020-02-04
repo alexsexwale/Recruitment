@@ -218,7 +218,7 @@ export default {
           })
           .then(() => {
             this.feedback = null;
-            var user = firebase.auth().currentUser;
+            let user = firebase.auth().currentUser;
             user.sendEmailVerification().then(() => {
               if(this.userRole == "student") {
                 this.$router.push({ name: "create-student-account" });
@@ -239,7 +239,7 @@ export default {
             this.feedback = err.message;
           })
         }
-      });
+      })
       
       } else {
         this.loading = false;
@@ -248,8 +248,8 @@ export default {
       }
     },
     termsAndCondition() {
-      let terms = this.$router.resolve({name: 'terms-and-conditions'});
-      window.open(terms.href, '_blank');
+      let terms = this.$router.resolve({ name: "terms-and-conditions" });
+      window.open(terms.href, "_blank");
     }
   },
   watch: {
@@ -283,9 +283,4 @@ export default {
 .black {
   color: #000000;
 }
-/* .faded-background {
-  background-color: #808080; 
-  z-index: 2;
-  opacity: 0.3;
-} */
 </style>
