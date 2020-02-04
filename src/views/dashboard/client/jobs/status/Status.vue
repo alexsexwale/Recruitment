@@ -49,12 +49,23 @@ export default {
     status() {
       if(this.job.status == "select")
         this.select = true;
+      else
+        this.select = false;
+
       if(this.job.status == "active")
         this.active = true;
+      else
+        this.active = false;
+
       if(this.job.status == "complete")
         this.complete = true;
+      else
+        this.complete = false;
+
       if(this.job.status == "rate")
         this.rate = true;
+      else
+        this.rate = false;
     }
   },
   created() {
@@ -64,6 +75,14 @@ export default {
       snapshot.forEach(doc => {
         this.job = doc.data();
         this.status();
+      })
+    })
+    jobs.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.job = change.doc.data();
+          this.status();
+        }
       })
     })
   }
