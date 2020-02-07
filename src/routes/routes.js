@@ -15,8 +15,10 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
-import PostJob from "@/views/dashboard/client/jobs/post/PostJob.vue";
+import MicroJob from "@/views/dashboard/client/jobs/post/microJob/PostJob.vue";
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
+import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
 
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
@@ -83,7 +85,7 @@ let client_dashboard_menu = {
     {
       path: "jobs/post",
       name: "post-a-job",
-      components: { default: PostJob },
+      components: { default: MicroJob },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -164,6 +166,26 @@ let client_dashboard_menu = {
       path: "status/:id",
       name: "client-status",
       component: ClientStatus,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "cancel/:id",
+      name: "client-cancel",
+      component: CancelJob,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "dissatisfied/:id",
+      name: "client-dissatisfied",
+      component: DissatisfiedJob,
       meta: {
         requiresAuth: true,
         userRole: "client",

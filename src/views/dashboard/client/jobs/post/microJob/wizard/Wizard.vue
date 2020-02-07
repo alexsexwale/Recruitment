@@ -221,7 +221,10 @@ export default {
             budget: this.budget,
             jobType: "microjob",
             status: "select",
-            paid: false
+            satisfied: null,
+            complete: false,
+            paid: false,
+            cancelled: false
           });
           skills.set({
             jobId: this.slug,

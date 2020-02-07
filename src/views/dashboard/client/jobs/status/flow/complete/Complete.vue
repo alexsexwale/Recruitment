@@ -77,16 +77,25 @@ export default {
       this.cancelModal = false;  
     },
     dissatisfied() {
-      let completeJob = db.collection('jobs').doc(this.client.id);
-      completeJob.update({
+      let job = db.collection('jobs').doc(this.client.id);
+      job.update({
         complete: false,
         satisfied: false,
         lastModified: moment(Date.now()).format('L')  
-      });  
+      });
+      this.$router.push({ name: 'client-dissatisfied', params: {id: job.id} });
+    },
+    cancel() {
+      let job = db.collection('jobs').doc(this.client.id);
+      job.update({
+        complete: false,
+        lastModified: moment(Date.now()).format('L')  
+      });
+      this.$router.push({ name: 'client-cancel', params: {id: job.id} });
     },
     complete() {
-      let completeJob = db.collection('jobs').doc(this.client.id);
-      completeJob.update({
+      let job = db.collection('jobs').doc(this.client.id);
+      job.update({
         status: "rate",
         satisfied: true,
         lastModified: moment(Date.now()).format('L')  
