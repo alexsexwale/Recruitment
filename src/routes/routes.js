@@ -15,8 +15,21 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
-import MicroJob from "@/views/dashboard/client/jobs/post/microjob/PostJob.vue";
+//Post Jobs
+import Micro from "@/views/dashboard/client/jobs/post/microjob/PostJob.vue";
+//import Reccuring from "@/views/dashboard/client/jobs/post/reccuringjob/PostJob.vue";
+//import Fulltime from "@/views/dashboard/client/jobs/post/fulltime/PostJob.vue";
+//import Parttime from "@/views/dashboard/client/jobs/post/parttime/PostJob.vue";
+//import Internship from "@/views/dashboard/client/jobs/post/internship/PostJob.vue";
+
+//Edit Jobs
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditMicroJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditRecurringJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditParttime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditFulltime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import Internship from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+
 import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
 
@@ -85,7 +98,7 @@ let client_dashboard_menu = {
     {
       path: "jobs/post",
       name: "post-a-job",
-      components: { default: MicroJob },
+      components: { default: Micro },
       meta: {
         requiresAuth: true,
         userRole: "client",

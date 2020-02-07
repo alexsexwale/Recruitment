@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="createJob">
+    <form @submit.prevent="update">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -58,15 +58,32 @@
               </md-button>
               <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
-                  <div class="md-button-content">
-                    {{finishButtonText}}
-                  </div>
+                  <div class="md-button-content">Update</div>
                 </div>
               </button>
             </div>
           </slot>
         </md-card-actions>
       </md-card>
+      <!-- Modal: Success -->
+      <modal v-if="modal" @close="modalHide">
+        <template slot="header">
+          <h4 class="modal-title black">Job Updated!</h4>
+          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+            <md-icon>clear</md-icon>
+          </md-button>
+        </template>
+
+        <template slot="body">
+          <p class="black">Your job post has been updated.</p>
+        </template>
+
+        <template slot="footer">
+          <div style="text-align:center;">
+            <md-button class="md-button md-success" @click="status">Got it</md-button>
+          </div>
+        </template>
+      </modal>
     </form>
   </div>
 </template>
@@ -147,7 +164,8 @@ export default {
       slug: null,
       user: null,
       feedback: null,
-      client: {}
+      client: {},
+      modal: false
     };
   },
   computed: {
@@ -190,66 +208,45 @@ export default {
     }
   },
   methods: {
-    createJob() {
-      this.user = firebase.auth().currentUser;
-      let ref = db.collection('clients');
-      ref.where('userId', '==', this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          this.client = doc.data();
-          this.slug = slugify(this.name + " " + Date.now(), {
-            replacement: '-',
-            remove: /[$*_+~.()'"!\-:@]/g,
-            lower: true
-          })
-          if(!this.location)
-            this.location = "remote";
-          let job = db.collection('jobs').doc(this.slug);
-          let microjob = db.collection('micro').doc(this.slug);
-          let skills = db.collection('skills').doc(this.slug);
-          
-          job.set({
-            jobId: this.slug,
-            clientId: this.user.uid,
-            companyName: this.client.companyName,
-            clientName: this.user.displayName,
-            created: moment(Date.now()).format('L'),
-            lastModified: null,
-            name: this.name,
-            jobType: "micro",
-          });
-
-          microjob.set({
-            jobId: this.slug,
-            studentId: null,
-            name: this.name,
-            description: this.description,
-            location: this.location,
-            deadline: moment(this.deadline).format('L'),
-            budget: this.budget,
-            status: "select",
-            satisfied: null,
-            complete: false,
-            paid: false,
-            cancelled: false,
-            created: moment(Date.now()).format('L'),
-            lastModified: null,
-          });
-
-          skills.set({
-            jobId: this.slug,
-            skills: this.skills,
-            lastModified: null
-          });
-        })
-      })
-      .then(() => {
-        this.$router.push({ name: "pending-jobs" });
-      })
-      .catch(err => {
-        this.feedback = err.message;
-        console.log(this.feedback);
-      })
+    update() {
+      //Update jobs table
+      let jobs = db.collection('jobs').doc(this.$route.params.id);
+      if(this.description) {
+        jobs.update({
+          description: this.description,
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+      if(this.location) {
+        jobs.update({
+          location: this.location,
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+      if(this.deadline) {
+        jobs.update({
+          deadline: moment(this.deadline).format('L'),
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+      //Update skills table
+      let skills = db.collection('skills').doc(this.$route.params.id);
+      if(this.skills) {
+        skills.update({
+          skills: this.skills,
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+    },
+    modalHide() {
+      this.modal = false;
+    },
+    status() {
+      this.$router.push({ name: "client-status", params: {id: this.$route.params.id} });
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -297,7 +294,6 @@ export default {
     },
     prevTab() {
       this.activeTabIndex--;
-      window.scrollTo(0, 0);
     },
     async navigateToTab(index) {
       if (this.tabs[index].checked) {

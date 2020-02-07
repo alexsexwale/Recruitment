@@ -34,6 +34,7 @@
   </div>
 </template>
 <script>
+import db from '@/firebase/init';
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 
@@ -44,9 +45,9 @@ export default {
   },
   data() {
     return {
-      remote: true,
+      remote: false,
       onsite: false,
-      location: "",
+      location: null,
       deadline: null,
       touched: {
         location:false,
@@ -77,26 +78,22 @@ export default {
       });
     },
     remoteSelection() {
-      if(this.remote) {
+      if(this.remote)
         this.onsite = false;
-      }
-      if(!this.remote && !this.onsite) {
+      if(!this.remote && !this.onsite)
         this.remote = true;
-      }
     },
     onsiteSelection() {
-      if(this.onsite) {
+      if(this.onsite)
         this.remote = false;
-      }
-      if(!this.remote && !this.onsite){
+      if(!this.remote && !this.onsite)
         this.onsite = true;
-      }
     },
     addLocation: function() {
-      this.$emit("location", this.location);
+      this.$emit('location', this.location);
     },
     addDeadline: function() {
-      this.$emit("deadline", this.deadline);
+      this.$emit('deadline', this.deadline);
     }
   },
   watch: {
@@ -106,6 +103,19 @@ export default {
     deadline() {
       this.touched.deadline = true;
     }
+  },
+  created() {
+    let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
+    job.get().then(snapshot => {
+      snapshot.forEach(doc => {
+        this.location = doc.data().location;
+        this.deadline = new Date(doc.data().deadline);
+        if(this.location)
+          this.onsite = true;
+        else
+          this.remote = true;
+      })
+    })
   }
 };
 </script>

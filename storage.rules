@@ -1,7 +1,53 @@
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if request.auth!=null;
+rules_version = '2';
+service cloud.firestore {
+  
+  match /databases/{database}/documents {
+    
+    match /users/{users} {
+      allow read;
+      allow write;
+    }
+    
+    match /students/{students} {
+      allow read;
+      allow write;
+    }
+    
+    match /clients/{clients} {
+      allow read;
+      allow write;
+    }
+    
+    match /support/{support} {
+      allow write;
+    }
+    
+    match /feedback/{feedback} {
+      allow write;
+    }
+    
+    match /jobs/{jobs} {
+      allow read;
+      allow write;
+    }
+    
+    match /micro/{micro} {
+      allow read;
+      allow write;
+    }
+    
+    match /skills/{skills} {
+      allow read;
+      allow write;
+    }
+
+    match /applications/{applications} {
+      allow read;
+      allow write;
+    }
+    
+    match /errors/{errors} {
+      allow write;
     }
   }
 }
