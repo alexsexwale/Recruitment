@@ -2,6 +2,7 @@
   <div class="md-layout">
     <div class="md-layout-item md-size-66 md-xsmall-size-80 mx-auto">
       <simple-wizard
+        v-bind:file="file"
         v-bind:firstName="firstName" 
         v-bind:lastName="lastName"
         v-bind:companyName="companyName"
@@ -33,6 +34,7 @@
           <template slot="label">About</template>
           <first-step ref="step1" 
             @on-validated="onStepValidated"
+            @file="addFile"
             @firstName="addFirstName"
             @lastName="addLastName"
             @companyName="addCompanyName"
@@ -94,6 +96,7 @@ export default {
       auth: null,
       user: null,
       feedback: null,
+      file: null,
       firstName: null,
       lastName: null,
       companyName: null,
@@ -138,6 +141,13 @@ export default {
         this.modal = true;
         this.feedback = err.message;
       });
+    },
+    addFile: function(file) {
+      this.file = file;
+      if(!this.emailVerified) {
+        this.user.reload();
+        this.emailVerified = this.user.emailVerified;
+      }
     },
     addFirstName: function(firstName) {
       this.firstName = firstName;

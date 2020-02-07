@@ -62,7 +62,7 @@
 <script>
 import { throttle } from "./throttle";
 import db from '@/firebase/init';
-import firebase from 'firebase/app';
+import firebase, { storage } from 'firebase/app';
 import moment from "moment";
 
 export default {
@@ -94,6 +94,9 @@ export default {
     },
     vertical: {
       type: Boolean
+    },
+    file: {
+      required: true
     },
     firstName: {
       required: true
@@ -161,7 +164,8 @@ export default {
       auth: null,
       user: null,
       emailVerified: null,
-      feedback: null
+      feedback: null,
+      profile: null
     };
   },
   computed: {
@@ -222,6 +226,15 @@ export default {
         .then(snapshot => {
           snapshot.forEach(doc => {
             let clients = db.collection('clients').doc(doc.id);
+            //upload profile picture
+            let storageRef = firebase.storage().ref('profiles/' + this.file.name);
+            let uploadTask = storageRef.put(this.file).then(snapshot => {
+              // Handle successful uploads on complete
+              uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
+                this.profile = downloadUrl;
+              });
+            });
+
             clients.set({
               userId: this.user.uid,
               created: moment(Date.now()).format('L'),
@@ -236,13 +249,9 @@ export default {
               addressLine2: this.addressLine2,
               city: this.city,
               province: this.province,
-              postalCode: this.postalCode
+              postalCode: this.postalCode,
+              profilePicture: this.profile
             });
-
-            // let address = db.collection('address').doc(doc.id);
-            // addresss.set({
-
-            // })
             
             let users = db.collection('users').doc(doc.id);
             if(this.firstName) {

@@ -7,11 +7,11 @@
       <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
-            <div v-if="!image">
+            <div v-if="!file">
               <img :src="avatar" class="picture-src" title="" />
             </div>
             <div v-else>
-              <img :src="image" />
+              <img :src="file" />
             </div>
             <input type="file" @change="onFileChange" />
           </div>
@@ -191,7 +191,7 @@ export default {
   },
   data() {
     return {
-      image: "",
+      file: null,
       firstName: null,
       lastName: null,
       companyName: null,
@@ -256,16 +256,16 @@ export default {
       });
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
+      this.file = e.target.files;
+      this.createImage(this.file[0]);
+      this.$emit("file", this.file[0]);
     },
     createImage(file) {
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = e => {
-        vm.image = e.target.result;
+        vm.file = e.target.result;
       };
       reader.readAsDataURL(file);
     },

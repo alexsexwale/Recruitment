@@ -178,7 +178,7 @@
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
-import firebase from 'firebase/app';
+import firebase, { storage } from 'firebase/app';
 export default {
   components: {
     SlideYDownTransition
@@ -191,7 +191,7 @@ export default {
   },
   data() {
     return {
-      image: "",
+      image: null,
       firstName: null,
       lastName: null,
       companyName: null,
@@ -254,19 +254,25 @@ export default {
       });
     },
     onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
+      let file = e.target.files[0];
+      let storageRef = firebase.storage().ref('profile/' + file.name);
+      this.image = storageRef;
+      this.$emit("image", this.image);
+      //storageRef.put(file);
 
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      // var files = e.target.files || e.dataTransfer.files;
+      // if (!files.length) return;
+      // this.createImage(files[0]);
     },
+    // createImage(file) {
+    //   var reader = new FileReader();
+    //   var vm = this;
+
+    //   reader.onload = e => {
+    //     vm.image = e.target.result;
+    //   };
+    //   reader.readAsDataURL(file);
+    // },
     addFirstName: function() {
       this.$emit("firstName", this.firstName);
     },
