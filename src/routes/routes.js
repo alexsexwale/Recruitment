@@ -15,7 +15,7 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
-import MicroJob from "@/views/dashboard/client/jobs/post/microJob/PostJob.vue";
+import MicroJob from "@/views/dashboard/client/jobs/post/microjob/PostJob.vue";
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
