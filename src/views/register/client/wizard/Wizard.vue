@@ -248,8 +248,9 @@ export default {
               addressLine1: this.addressLine1,
               addressLine2: this.addressLine2,
               city: this.city,
-              province: this.province,
-              postalCode: this.postalCode,
+              province_state: this.province,
+              postalCode_zipcode: this.postalCode,
+              country: "South Africa",
               profilePicture: this.profile
             });
             

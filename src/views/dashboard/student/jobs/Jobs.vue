@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
-      <product-card header-animation="true">
+      <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
@@ -31,7 +31,7 @@
             <br><br>
             <!-- <i class="fas fa-calendar-week"></i> Deadline
             <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
-            <router-link :to="{name: 'application', params: {id: job.id}}"> 
+            <router-link :to="{name: 'micro-application', params: {id: job.id}}"> 
               <md-button class="md-success">Apply</md-button>
             </router-link>
           </div>
@@ -62,14 +62,19 @@ export default {
     };
   },
   created() {
-    db.collection('jobs').get()
+    // display available micro jobs
+    db.collection('micro').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         let job = doc.data();
         job.id = doc.id;
-        this.jobs.push(job);
-      })
-    })
+        this.jobs.push(job); // can push other job types to the same array or seperate the jobs
+      });
+    });
+    // display available reccuring jobs
+    // display available internship jobs
+    // display available part-time jobs
+    // display available full-time jobs
   }
 };
 </script>

@@ -1,9 +1,5 @@
 <template>
-  <md-card
-    class="md-card-product"
-    @mouseleave.native="onMouseLeave"
-    :data-count="hoverCount"
-  >
+  <md-card class="md-card-product" @mouseleave.native="onMouseLeave" :data-count="hoverCount">
     <md-card-header
       @mouseenter.native="onMouseOver"
       :data-header-animation="headerAnimation"
@@ -12,21 +8,13 @@
         { hinge: headerDown },
         { fadeInDown: fixedHeader }
       ]"
-      class="md-card-header-image animated"
-    >
+      class="md-card-header-image animated">
       <slot name="imageHeader"></slot>
     </md-card-header>
 
     <md-card-content>
-      <div
-        class="md-card-action-buttons text-center"
-        v-if="headerAnimation === 'true'"
-      >
-        <md-button
-          class="md-danger md-simple fix-broken-card"
-          @click="fixHeader"
-          v-if="headerDown"
-        >
+      <div class="md-card-action-buttons text-center" v-if="headerAnimation === 'true'">
+        <md-button class="md-danger md-simple fix-broken-card" @click="fixHeader" v-if="headerDown">
           <slot name="fixed-button"></slot> Fix Header!
         </md-button>
         <md-button class="md-simple md-just-icon">

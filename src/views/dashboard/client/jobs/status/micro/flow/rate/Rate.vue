@@ -72,9 +72,9 @@ export default {
             rate: this.rating,
             review: this.review 
           })
-          let rateJob = db.collection('jobs').doc(this.$route.params.id);
+          let rateJob = db.collection('micro').doc(this.$route.params.id);
           rateJob.update({
-            status: "done" 
+            status: "complete"
           });
           this.$router.push({ name: 'complete-jobs'});
         }

@@ -98,6 +98,7 @@ export default {
       job.update({
         status: "rate",
         satisfied: true,
+        complete: true,
         lastModified: moment(Date.now()).format('L')  
       });
     } 

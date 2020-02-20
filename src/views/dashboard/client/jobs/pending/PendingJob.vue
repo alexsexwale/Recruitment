@@ -32,7 +32,7 @@
             <i class="fas fa-calendar-week"></i> Deadline
             <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
             
-            <router-link :to="{ name: 'client-status', params: {id: job.id} }"> 
+            <router-link v-if="job.type == 'micro'" :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>
@@ -81,18 +81,32 @@ export default {
     }
   },
   created() {
-    window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
-    jobs.where('clientId', '==', user.uid).where('status', '==', 'select').get()
+    let micro = db.collection('micro');
+    jobs.where('clientId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.pendingJobs = true;
-        let job = doc.data();
-        job.id = doc.id;
-        this.jobs.push(job);
+        let jobId = doc.data().jobId;
+        let jobType = doc.data().jobType;
+
+        // display micro jobs
+        micro.where('jobId', '==', jobId).where('status', '==', 'select').get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            this.pendingJobs = true;
+            let job = doc.data();
+            job.id = doc.id;
+            job.type = jobType;
+            this.jobs.push(job);
+          });
+        });
+        // display reccuring jobs
+        // display internship jobs
+        // display part-time jobs
+        // display full-time jobs
       })
-    })
+    });
   }
 };
 </script>

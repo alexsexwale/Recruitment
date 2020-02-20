@@ -56,7 +56,7 @@
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
                 {{ nextButtonText }}
               </md-button>
-              <button v-else class="md-button md-success md-theme-default" slot="footer">
+              <button v-else class="md-button md-success md-theme-default">
                 <div class="md-ripple">
                   <div class="md-button-content">
                     {{finishButtonText}}
@@ -72,8 +72,8 @@
 </template>
 <script>
 import { throttle } from "./throttle";
-import db from '@/firebase/init';
-import firebase from 'firebase/app';
+import db from "@/firebase/init";
+import firebase from "firebase/app";
 import moment from "moment";
 import slugify from "slugify";
 import { Modal } from "@/components";
@@ -205,7 +205,7 @@ export default {
           if(!this.location)
             this.location = "remote";
           let job = db.collection('jobs').doc(this.slug);
-          let microjob = db.collection('micro').doc(this.slug);
+          let micro = db.collection('micro').doc(this.slug);
           let skills = db.collection('skills').doc(this.slug);
           
           job.set({
@@ -219,7 +219,7 @@ export default {
             jobType: "micro",
           });
 
-          microjob.set({
+          micro.set({
             jobId: this.slug,
             studentId: null,
             name: this.name,
@@ -227,6 +227,8 @@ export default {
             location: this.location,
             deadline: moment(this.deadline).format('L'),
             budget: this.budget,
+            commission: this.budget * 0.1,
+            total: this.budget * 1.1,
             status: "select",
             satisfied: null,
             complete: false,

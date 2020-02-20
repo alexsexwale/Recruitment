@@ -15,29 +15,38 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
-//Post Jobs
-import Micro from "@/views/dashboard/client/jobs/post/microjob/PostJob.vue";
+// Post Jobs
+import Micro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
 //import Reccuring from "@/views/dashboard/client/jobs/post/reccuringjob/PostJob.vue";
 //import Fulltime from "@/views/dashboard/client/jobs/post/fulltime/PostJob.vue";
 //import Parttime from "@/views/dashboard/client/jobs/post/parttime/PostJob.vue";
 //import Internship from "@/views/dashboard/client/jobs/post/internship/PostJob.vue";
 
-//Edit Jobs
+// Edit Jobs
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditMicroJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditRecurringJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditMicro from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditRecurring from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditParttime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditFulltime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import Internship from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 
+// Cancelled Job
 import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
+
+// Dissatisfied Job
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
 
+// Job Statuses
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
 import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
 
-import ClientStatus from "@/views/dashboard/client/jobs/status/Status.vue";
+import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
+//import ReccuringStatus from "";
+//import InternshipStatus from "";
+//import PartTimeStatus from "";
+//import FullTimeStatus from "";
+
 //import Payment from "@/views/dashboard/client/jobs/payment/Payment.vue";
 
 // Student Dashboard Components
@@ -45,7 +54,7 @@ import StudentDashboard from "@/views/dashboard/student/StudentDashboard.vue";
 import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vue";
 
 import Jobs from "@/views/dashboard/student/jobs/Jobs.vue";
-import Application from "@/views/dashboard/student/jobs/application/Application.vue";
+import MicroApplication from "@/views/dashboard/student/jobs/application/micro/Application.vue";
 
 import Applied from "@/views/dashboard/student/jobs/applied/Applied.vue";
 import ActiveStudentJob from "@/views/dashboard/student/jobs/active/Active.vue";
@@ -102,7 +111,8 @@ let client_dashboard_menu = {
       meta: {
         requiresAuth: true,
         userRole: "client",
-        emailVerified: true
+        emailVerified: true,
+        jobType: "micro"
       }
     },
     {
@@ -176,13 +186,14 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "status/:id",
-      name: "client-status",
-      component: ClientStatus,
+      path: "jobs/micro/status/:id",
+      name: "client-micro-status",
+      component: MicroStatus,
       meta: {
         requiresAuth: true,
         userRole: "client",
-        emailVerified: true
+        emailVerified: true,
+        jobType: "micro"
       }
     },
     {
@@ -212,7 +223,7 @@ let client_dashboard_menu = {
 let student_dashboard_menu = {
   path: "/student",
   component: DashboardLayout,
-  name: "post a job",
+  name: "student nav menu",
   redirect: "/student/dashboard",
   children: [
     {
@@ -245,13 +256,14 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "application/:id",
-      name: "application",
-      components: { default: Application },
+      path: "jobs/micro/application/:id",
+      name: "micro-application",
+      components: { default: MicroApplication },
       meta: {
         requiresAuth: true,
         userRole: "student",
-        emailVerified: true
+        emailVerified: true,
+        jobType: "micro"
       }
     },
     {
@@ -398,53 +410,56 @@ function previous() {
 }
 
 router.beforeEach((to, from, next) => {
-  //Checking to see if route requires auth
+  // checking to see if route requires authentication
   let requiresAuth = to.matched.some(rec => rec.meta.requiresAuth);
-  // check auth state of user
+  // check authentication state of user
   let user = firebase.auth().currentUser;
+  // if the user has authentication information
   if (requiresAuth) {
-    // user signed
+    // if the user is signed in
     if (user) {
       let ref = db.collection("users");
+      // find the users details in the database
       ref.where("userId", "==", user.uid).get()
       .then(snapshot => {
         snapshot.forEach(doc => {
+          // the user role is either student or client
           let userPermission = doc.data().user;
-          // checking to see if user role matches
+          // checking to see if the user role matches
           let userRoleExist = to.matched.some(rec => rec.meta.userRole == userPermission);
-          // user role matches
+          // if user role matches
           if (userRoleExist) {
             // checking to see if user's email has been verified
             let emailVerified = to.matched.some(rec => rec.meta.emailVerified == user.emailVerified);
-            // checking to see if user is directing to student account
+            // checking to see if user is directing to student account page
             let studentAccount = to.matched.some(rec => rec.name == "create-student-account");
-            // or client account
+            // or directing to client account page
             let clientAccount = to.matched.some(rec => rec.name == "create-client-account");
-            // email is verified
-            if(emailVerified) {
+            // if the email is verified
+            if (emailVerified) {
               next();
-            } // email not verified but directing to student or client account
-            else if(!emailVerified && (clientAccount || studentAccount)) {
+            } // if the email account is not verified but directing to student or client account page
+            else if (!emailVerified && (clientAccount || studentAccount)) {
               next();
-            } // email account has not been verified and not directing to student or client account
+            } // otherwise the email account has not been verified and not directing to student or client account page
             else {
               previous();
             }
-          } // user role does not match
+          } // otherwise the user role does not match
           else {
             previous();
           }
         });
       });
-    } // no user signed in
+    } // otherwise no user has signed in
     else {
       previous();
     }
-  } // logout if user does not require auth but user is authenticated  
+  } // logout if the user does not require auth but user is authenticated  
   else if(!requiresAuth && user) {
     firebase.auth().signOut().then(() => { next(); });
   } 
-  // does not require authentication
+  // otherwise the user does not require authentication
   else {
     next();
   }
