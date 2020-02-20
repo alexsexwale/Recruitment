@@ -31,12 +31,30 @@
           <md-icon class="success" v-show="!errors.has('description') && touched.description">done</md-icon>
         </slide-y-down-transition>
       </md-field>
-      
+      <br/><br/>
+      <md-field :class="[
+          { 'md-valid': !errors.has('category') && touched.category },
+          { 'md-error': errors.has('category') }
+        ]">
+        <label>Task/Project</label>
+        <md-select @input="addCategory" v-model="category" data-vv-name="category" type="text" name="category" required v-validate="modelValidations.category" style="margin-left: 10px;">
+          <md-option value="sales">Sales</md-option>
+          <md-option value="photographer">Photographer</md-option>
+          <md-option value="web development">Web development</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('category')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('category') && touched.category">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+      <br/><br/>
       <md-field :class="[
           { 'md-valid': !errors.has('skills') && touched.skills },
           { 'md-error': errors.has('skills') }
         ]">
-        <label>Required Skills</label>
+        <label>Required Skills *</label>
         <md-chips @input="addSkills" v-model="skills" data-vv-name="skills" type="text" name="skills" required v-validate="modelValidations.skills"><!-- :md-limit="5"> -->
           <div class="md-helper-text">Press enter to add a skill</div>
         </md-chips>
@@ -60,10 +78,12 @@ export default {
     return {
       name:null,
       description: null,
+      category: null,
       skills: [],
       touched: {
         name: false,
         description: false,
+        category: false,
         skills: false,
       },
       modelValidations: {
@@ -73,6 +93,9 @@ export default {
         description: {
           required: true
         },
+        category: {
+          required: true
+        },
         skills: {
           required: true
         }
@@ -80,9 +103,6 @@ export default {
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
-    },
     getError(fieldName) {
       return this.errors.first(fieldName);
     },
@@ -98,6 +118,9 @@ export default {
     addDescription: function() {
       this.$emit("description", this.description);
     },
+    addCategory: function() {
+      this.$emit("category", this.category);
+    },
     addSkills: function() {
       this.$emit("skills", this.skills);
     }
@@ -108,6 +131,9 @@ export default {
     },
     description() {
       this.touched.description = true;
+    },
+    category() {
+      this.touched.category = true;
     },
     skills() {
       this.touched.skills = true;

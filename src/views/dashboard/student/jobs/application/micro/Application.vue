@@ -64,7 +64,7 @@
       </template>
 
       <template slot="footer">
-        <div style="text-align:center;">
+        <div class="centre">
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
@@ -108,8 +108,8 @@ export default {
               userId: this.auth.uid,
               errorDate: moment(Date.now()).format('LLL'),
               message: "A duplicate application was proccessed by the same user."
-            })
-            this.$router.push({ name: 'student-status', params: {id: this.$route.params.id} });
+            });
+            this.$router.push({ name: 'student-micro-status', params: {id: this.$route.params.id} });
           }
           else {
             application.set({
@@ -121,10 +121,10 @@ export default {
               applicantAlias: this.user.alias,
               approved: false,
               status: 'applied'
-            })
-            this.$router.push({ name: 'student-status', params: {id: this.job.id} });
+            });
+            this.$router.push({ name: 'student-micro-status', params: {id: this.job.id} });
           }
-        })
+        });
       }
       else {
         this.modal = true;
@@ -134,7 +134,7 @@ export default {
           userId: this.auth.uid,
           errorDate: moment(Date.now()).format('LLL'),
           message: "Unable to apply due to job data not loading."
-        })
+        });
       }
     },
     back() {
@@ -154,10 +154,10 @@ export default {
           snapshot.forEach(doc => {
             this.user = doc.data();
             this.slug = slugify(this.user.alias + " " + this.$route.params.id, {
-              replacement: '.',
+              replacement: '-',
               remove: /[$*_+~.()'"!\-:@]/g,
               lower: true
-            })
+            });
             skills.get().then(snapshot => {
               snapshot.forEach(doc => {
                 this.skills = doc.data();
@@ -167,13 +167,13 @@ export default {
                   if(doc.exists && doc.data().jobId == this.$route.params.id) {
                     this.$router.push({ name: 'student-status', params: {id: this.$route.params.id} });
                   }
-                })
-              })
-            })
-          })
-        })
-      })
-    })
+                });
+              });
+            });
+          });
+        });
+      });
+    });
   }
 };
 </script>

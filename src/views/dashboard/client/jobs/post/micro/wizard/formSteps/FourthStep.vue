@@ -14,7 +14,9 @@
           <p class="card-description">{{ description}}</p>
 
           <h4 class="card-title">Skills Required</h4>
-          <p v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</p>
+          <ul>
+            <li v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</li>
+          </ul>
         </md-card-content>
       </md-card>
       <md-card class="bg-success">
@@ -26,7 +28,7 @@
           <p class="card-description">{{ location }}</p>
 
           <h4 class="card-title">Deadline</h4>
-          <p class="card-description">{{ deadlineDisplay() }}</p>
+          <p class="card-description">{{ deadline }}</p>
         </md-card-content>
       </md-card>
       <md-card class="bg-success">
@@ -34,15 +36,12 @@
             <h3 class="card-category card-category-social" style="text-align:center;">
             <i class="far fa-newspaper" /> Job Payment
             </h3>
-            <h4 class="card-title">Budget</h4>
-            <p class="card-description">R{{ budget }}</p>
+            <h4 class="card-title">Total Budget</h4>
+            <p class="card-description">R{{ total() }}</p>
             <hr/>
             <b>Cost Breakdown</b>
-            <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ budget * 0.9}}
-            <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{budget * 0.1}}
-
-            <h4 class="card-title">Payment Option</h4>
-            <p class="card-description">Upfront</p>
+            <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ rate() }}
+            <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{ fee() }}
           </md-card-content>
         </md-card>
     </div>
@@ -51,7 +50,6 @@
 <script>
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
-import moment from "moment";
 
 export default {
   components: {
@@ -73,8 +71,17 @@ export default {
     };
   },
   methods: {
-    deadlineDisplay() {
-      return this.deadlineReview = moment(this.deadline).format('DD MMMM YYYY');
+    total() {
+      let total = (this.budget * 1.1).toFixed(2);
+      return total;
+    },
+    rate() {
+      let rate = (this.budget * 1).toFixed(2);
+      return rate;
+    },
+    fee() {
+      let fee = (this.budget * 0.1).toFixed(2);
+      return fee;
     }
   }
 };

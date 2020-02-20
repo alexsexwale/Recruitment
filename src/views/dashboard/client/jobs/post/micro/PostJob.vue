@@ -4,6 +4,7 @@
       <simple-wizard
         v-bind:name="name"
         v-bind:description="description"
+        v-bind:category="category"
         v-bind:skills="skills"
         v-bind:location="location"
         v-bind:deadline="deadline"
@@ -23,6 +24,7 @@
             @on-validated="onStepValidated"
             @name="addName"
             @description="addDescription"
+            @category="addCategory"
             @skills="addSkills">
           </first-step>
         </wizard-tab>
@@ -55,6 +57,7 @@
           <fourth-step ref="step4" 
             v-bind:name="name"
             v-bind:description="description"
+            v-bind:category="category"
             v-bind:skills="skills"
             v-bind:location="location"
             v-bind:deadline="deadline"
@@ -88,6 +91,7 @@ export default {
       wizardModel: {},
       name: null,
       description: null,
+      category: null,
       skills: [],
       location: null,
       deadline: null,
@@ -106,6 +110,9 @@ export default {
     },
     addDescription: function(description) {
       this.description = description;
+    },
+    addCategory: function(category) {
+      this.category = category;
     },
     addSkills: function(skills) {
       this.skills = skills;

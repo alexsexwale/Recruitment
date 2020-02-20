@@ -114,11 +114,16 @@ export default {
     description: {
       required: true
     },
+    category:{
+      required: true
+    },
     skills: {
       required: true
     },
     location: {},
-    deadline: {},
+    deadline: {
+      required: true
+    },
     budget: {
       required: true
     }
@@ -225,10 +230,10 @@ export default {
             name: this.name,
             description: this.description,
             location: this.location,
-            deadline: moment(this.deadline).format('L'),
+            deadline: this.deadline,
             budget: this.budget,
-            commission: this.budget * 0.1,
-            total: this.budget * 1.1,
+            commission: (this.budget * 0.1).toFixed(2),
+            total: (this.budget * 1.1).toFixed(2),
             status: "select",
             satisfied: null,
             complete: false,
@@ -240,7 +245,9 @@ export default {
 
           skills.set({
             jobId: this.slug,
+            category: this.category,
             skills: this.skills,
+            created: moment(Date.now()).format('L'),
             lastModified: null
           });
         })

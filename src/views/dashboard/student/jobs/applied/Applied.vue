@@ -20,7 +20,7 @@
             <h4 style="text-align:center;">{{ job.budget }}</h4>
           </div>
           <div class="price">
-            <router-link v-if="job.type == 'micro'" :to="{ name: 'student-status', params: {id: job.id} }"> 
+            <router-link v-if="job.type == 'micro'" :to="{ name: 'student-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>

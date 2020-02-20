@@ -26,8 +26,8 @@ import Micro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
 import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditMicro from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditRecurring from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditParttime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditFulltime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditPartTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+//import EditFullTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import Internship from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 
 // Cancelled Job
@@ -36,11 +36,12 @@ import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
 // Dissatisfied Job
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
 
-// Job Statuses
+// Job
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
 import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
 
+// Job Statuses
 import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
 //import ReccuringStatus from "";
 //import InternshipStatus from "";
@@ -219,7 +220,7 @@ let client_dashboard_menu = {
   ]
 };
 
-// Student
+// Student Dashboard
 let student_dashboard_menu = {
   path: "/student",
   component: DashboardLayout,
@@ -327,8 +328,8 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "status/:id",
-      name: "student-status",
+      path: "jobs/micro/status/:id",
+      name: "student-micro-status",
       component: StudentStatus,
       meta: {
         requiresAuth: true,

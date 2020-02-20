@@ -20,11 +20,7 @@
             <h4 style="text-align:center;">{{ job.budget }}</h4>
           </div>
           <div class="price">
-            <!-- <br><br>
-            <i class="fas fa-calendar-week"></i> Deadline
-            <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
-            
-            <router-link :to="{ name: 'student-status', params: {id: job.id} }"> 
+            <router-link :to="{ name: 'student-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>
@@ -59,18 +55,7 @@ export default {
       activeJobs: false
     };
   },
-  methods: {
-    deleteJob(id) {
-      db.collection('jobs').doc(id).delete()
-      .then(() => {
-        this.jobs = this.jobs.filter(job => {
-          return job.id != id;
-        })
-      })
-    }
-  },
   created() {
-    window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
     jobs.where('studentId', '==', user.uid).where('status', '==', 'active').get()
@@ -80,8 +65,8 @@ export default {
         let job = doc.data();
         job.id = doc.id;
         this.jobs.push(job);
-      })
-    })
+      });
+    });
   }
 };
 </script>
