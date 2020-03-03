@@ -31,7 +31,25 @@
           <md-icon class="success" v-show="!errors.has('description') && touched.description">done</md-icon>
         </slide-y-down-transition>
       </md-field>
-      
+      <br/><br/>
+      <md-field :class="[
+          { 'md-valid': !errors.has('category') && touched.category },
+          { 'md-error': errors.has('category') }
+        ]">
+        <label>Task/Project</label>
+        <md-select @input="addCategory" v-model="category" data-vv-name="category" type="text" name="category" required v-validate="modelValidations.category" style="margin-left: 10px;">
+          <md-option value="sales">Sales</md-option>
+          <md-option value="photographer">Photographer</md-option>
+          <md-option value="web development">Web development</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('category')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('category') && touched.category">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+      <br/><br/>
       <md-field :class="[
           { 'md-valid': !errors.has('skills') && touched.skills },
           { 'md-error': errors.has('skills') }
@@ -62,10 +80,12 @@ export default {
       job: {},
       name:null,
       description: null,
+      category: null,
       skills: [],
       touched: {
         name: false,
         description: false,
+        category: false,
         skills: false,
       },
       modelValidations: {
@@ -73,6 +93,9 @@ export default {
           required: true
         },
         description: {
+          required: true
+        },
+        category: {
           required: true
         },
         skills: {
@@ -100,6 +123,9 @@ export default {
     addDescription: function() {
       this.$emit("description", this.description);
     },
+    addCategory: function() {
+      this.$emit("category", this.category)
+    },
     addSkills: function() {
       this.$emit("skills", this.skills);
     }
@@ -111,12 +137,15 @@ export default {
     description() {
       this.touched.description = true;
     },
+    category() {
+      this.touched.category = true;
+    },
     skills() {
       this.touched.skills = true;
     }
   },
   created() {
-    let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
+    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {
         this.name = doc.data().name;
@@ -125,11 +154,12 @@ export default {
         skills.get().then(snapshot => {
           snapshot.forEach(doc => {
             this.skills = doc.data().skills;
+            this.category = doc.data().category;
             this.skills.id = doc.id;
-          })
-        }) 
-      })
-    })
+          });
+        });
+      });
+    });
   }
 };
 </script>

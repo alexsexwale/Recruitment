@@ -11,11 +11,9 @@
       <div class="md-layout-item mt-4 md-small-size-100" v-if="onsite">
         <md-field :class="[
             { 'md-valid': !errors.has('location') && touched.location },
-            { 'md-form-group': true },
             { 'md-error': errors.has('location') }
           ]">
-          <md-icon>face</md-icon>
-          <label>location</label>
+          <label>Location</label>
           <md-input @change="addLocation" v-model="location" data-vv-name="location" type="text" name="location" required v-validate="modelValidations.location"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('location')">close</md-icon>
@@ -25,10 +23,26 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addDeadline" v-model="deadline">
-          <label>What is the deadline date?</label>
-        </md-datepicker>
+      <br/><br/>
+      <div class="md-layout-item mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('deadline') && touched.deadline },
+            { 'md-error': errors.has('deadline') }
+          ]">
+          <label>Duration Type</label>
+          <md-select @input="addDeadline" v-model="deadline" data-vv-name="deadline" type="text" name="deadline" required v-validate="modelValidations.deadline" style="margin-left: 10px;">
+            <md-option value="0-1">Less than a week</md-option>
+            <md-option value="1-4">Less than a month</md-option>
+            <md-option value="4-12">Less than 3 months</md-option>
+            <md-option value="unknown">I am not sure yet</md-option>
+          </md-select>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('deadline')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('deadline') && touched.deadline">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
       </div>
     </div>
   </div>
@@ -105,11 +119,11 @@ export default {
     }
   },
   created() {
-    let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
+    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {
         this.location = doc.data().location;
-        this.deadline = new Date(doc.data().deadline);
+        this.deadline = doc.data().duration;
         if(this.location)
           this.onsite = true;
         else

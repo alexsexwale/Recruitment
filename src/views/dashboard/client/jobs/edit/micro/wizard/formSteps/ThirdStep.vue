@@ -11,36 +11,12 @@
           ]">
           <md-icon>face</md-icon>
           <label>Budget</label>
-          <md-input @change="addBudget" v-model="budget" data-vv-name="budget" type="number" name="budget" required disabled v-validate="modelValidations.budget"></md-input>
+          <md-input @change="addBudget" v-model="budget" data-vv-name="budget" type="number" name="budget" required v-validate="modelValidations.budget"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('budget')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('budget') && touched.budget">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-      <div class="md-layout-item md-size-50 md-small-size-100">
-        <icon-checkbox v-model="upfront" icon="fas fa-laptop" title="Upfront"></icon-checkbox>
-      </div>
-      <div class="md-layout-item md-size-50 md-small-size-100">
-        <icon-checkbox v-model="postPayment" icon="fas fa-building" title="Post Payment"></icon-checkbox>
-      </div>
-      <div class="md-layout-item mt-4 md-size-100" v-if="postPayment">
-        <md-field
-          :class="[
-            { 'md-valid': !errors.has('payment') && touched.payment },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('payment') }
-          ]">
-          <md-icon>face</md-icon>
-          <label>Days Until Payment</label>
-          <md-input @change="addPayment" v-model="payment" data-vv-name="payment" type="text" name="payment" required v-validate="modelValidations.payment"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('payment')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('payment') && touched.payment">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -107,7 +83,7 @@ export default {
     }
   },
   created() {
-    let job = db.collection('jobs').where('jobId', '==', this.$route.params.id);
+    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {
         this.budget = doc.data().budget;

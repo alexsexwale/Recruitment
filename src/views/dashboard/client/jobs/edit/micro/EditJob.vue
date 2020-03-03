@@ -4,6 +4,7 @@
       <simple-wizard
         v-bind:name="name"
         v-bind:description="description"
+        v-bind:category="category"
         v-bind:skills="skills"
         v-bind:location="location"
         v-bind:deadline="deadline"
@@ -21,6 +22,7 @@
             @on-validated="onStepValidated"
             @name="addName"
             @description="addDescription"
+            @category="addCategory"
             @skills="addSkills">
           </first-step>
         </wizard-tab>
@@ -46,6 +48,21 @@
             @payment="addPayment">
           </third-step>
         </wizard-tab>
+
+        <wizard-tab :before-change="() => validateStep('step4')">
+          <template slot="label">
+            Review
+          </template>
+          <fourth-step ref="step4" 
+            v-bind:name="name"
+            v-bind:description="description"
+            v-bind:category="category"
+            v-bind:skills="skills"
+            v-bind:location="location"
+            v-bind:deadline="deadline"
+            v-bind:budget="budget">
+          </fourth-step>
+        </wizard-tab>
       </simple-wizard>
     </div>
   </div>
@@ -55,6 +72,7 @@ import db from '@/firebase/init';
 import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
+import FourthStep from "./wizard/formSteps/FourthStep.vue";
 import swal from "sweetalert2";
 import { WizardTab } from "@/components";
 import SimpleWizard from "./wizard/Wizard.vue";
@@ -69,6 +87,7 @@ export default {
     FirstStep,
     SecondStep,
     ThirdStep,
+    FourthStep,
     SimpleWizard,
     WizardTab
   },
@@ -76,6 +95,7 @@ export default {
     return {
       name: null,
       description: null,
+      category: null,
       skills: [],
       location: null,
       deadline: null,
@@ -95,6 +115,9 @@ export default {
     },
     addDescription: function(description) {
       this.description = description;
+    },
+    addCategory: function(category) {
+      this.category = category;
     },
     addSkills: function(skills) {
       this.skills = skills;

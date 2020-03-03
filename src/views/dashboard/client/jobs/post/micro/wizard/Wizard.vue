@@ -121,9 +121,7 @@ export default {
       required: true
     },
     location: {},
-    deadline: {
-      required: true
-    },
+    deadline: {},
     budget: {
       required: true
     }
@@ -230,8 +228,8 @@ export default {
             name: this.name,
             description: this.description,
             location: this.location,
-            deadline: this.deadline,
-            budget: this.budget,
+            duration: this.deadline,
+            budget: (this.budget * 1).toFixed(2),
             commission: (this.budget * 0.1).toFixed(2),
             total: (this.budget * 1.1).toFixed(2),
             status: "select",

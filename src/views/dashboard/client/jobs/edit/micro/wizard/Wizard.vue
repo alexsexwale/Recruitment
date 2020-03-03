@@ -131,8 +131,12 @@ export default {
     description: {
       required: true
     },
-    skills: {
+    category: {
       required: true
+    },
+    skills: {
+      required: true,
+      type: Array
     },
     location: {},
     deadline: {},
@@ -210,7 +214,7 @@ export default {
   methods: {
     update() {
       //Update jobs table
-      let jobs = db.collection('jobs').doc(this.$route.params.id);
+      let jobs = db.collection('micro').doc(this.$route.params.id);
       if(this.description) {
         jobs.update({
           description: this.description,
@@ -233,10 +237,17 @@ export default {
         this.modal = true;
       }
       //Update skills table
-      let skills = db.collection('skills').doc(this.$route.params.id);
-      if(this.skills) {
-        skills.update({
+      let jobSkills = db.collection('skills').doc(this.$route.params.id);
+      if(this.skills.length >= 1) {
+        jobSkills.update({
           skills: this.skills,
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+      if(this.category) {
+        jobSkills.update({
+          category: this.category,
           lastModified: moment(Date.now()).format('L')
         });
         this.modal = true;
@@ -246,7 +257,7 @@ export default {
       this.modal = false;
     },
     status() {
-      this.$router.push({ name: "client-status", params: {id: this.$route.params.id} });
+      this.$router.push({ name: "client-micro-status", params: {id: this.$route.params.id} });
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);

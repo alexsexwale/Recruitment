@@ -12,13 +12,13 @@
         <md-card-content>
           <h4>We are sad to hear that you have cancelled the job. We will be able to reach out within in 24 hours after completing the form below.</h4>
           <md-field>
-              <label for="select">Let us know what your issue is?</label>
-                <md-select v-model="reason" name="select">
-                    <md-option value="Reason 1">Reason 1</md-option>
-                    <md-option value="Reason 2">Reason 2</md-option>
-                    <md-option value="Reason 3">Reason 3</md-option>
-                    <md-option value="Reason 4">Reason 4</md-option>
-                </md-select>
+            <label for="select">Let us know what your issue is?</label>
+            <md-select v-model="reason" name="select">
+              <md-option value="Reason 1">Reason 1</md-option>
+              <md-option value="Reason 2">Reason 2</md-option>
+              <md-option value="Reason 3">Reason 3</md-option>
+              <md-option value="Reason 4">Reason 4</md-option>
+            </md-select>
           </md-field>
           <md-field>
             <label>Please give a full description as to why you cancelled</label>

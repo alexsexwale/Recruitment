@@ -33,12 +33,13 @@ export default {
       select: false,
       active: false,
       complete: false,
-      rate: false
+      rate: false,
+      incomplete: false
     };
   },
   methods: {
     edit() {
-      this.$router.push({ name: 'edit-job', params: {id: this.$route.params.id} });
+      this.$router.push({ name: 'edit-micro-job', params: {id: this.$route.params.id} });
     },
     remove() {
       

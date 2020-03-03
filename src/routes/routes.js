@@ -16,15 +16,14 @@ import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
 // Post Jobs
-import Micro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
-//import Reccuring from "@/views/dashboard/client/jobs/post/reccuringjob/PostJob.vue";
-//import Fulltime from "@/views/dashboard/client/jobs/post/fulltime/PostJob.vue";
-//import Parttime from "@/views/dashboard/client/jobs/post/parttime/PostJob.vue";
-//import Internship from "@/views/dashboard/client/jobs/post/internship/PostJob.vue";
+import PostMicro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
+//import PostReccuring from "@/views/dashboard/client/jobs/post/reccuringjob/PostJob.vue";
+//import PostFulltime from "@/views/dashboard/client/jobs/post/fulltime/PostJob.vue";
+//import PostParttime from "@/views/dashboard/client/jobs/post/parttime/PostJob.vue";
+//import PostInternship from "@/views/dashboard/client/jobs/post/internship/PostJob.vue";
 
-// Edit Jobs
-import EditJob from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditMicro from "@/views/dashboard/client/jobs/edit/EditJob.vue";
+// Edit Job
+import EditMicro from "@/views/dashboard/client/jobs/edit/micro/EditJob.vue";
 //import EditRecurring from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditPartTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 //import EditFullTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
@@ -65,6 +64,7 @@ import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
 
 // Views
 import AuthLayout from "@/views/AuthLayout.vue";
+import Register from "@/views/register/Register.vue";
 import Login from "@/views/login/Login.vue";
 import ForgotPassword from "@/views/forgotPassword/ForgotPassword.vue";
 import Contact from "@/views/contact/Contact.vue";
@@ -73,8 +73,7 @@ import PrivacyPolicy from "@/views/privacyPolicy/PrivacyPolicy.vue";
 import TermsAndConditions from "@/views/T&Cs/TermsAndConditions.vue";
 import Partner from "@/views/partner/Partner.vue";
 
-// Form - Register
-import Register from "@/views/register/Register.vue";
+// Create Account
 import StudentAccount from "@/views/register/student/StudentAccount.vue";
 import ClientAccount from "@/views/register/client/ClientAccount.vue";
 
@@ -108,7 +107,7 @@ let client_dashboard_menu = {
     {
       path: "jobs/post",
       name: "post-a-job",
-      components: { default: Micro },
+      components: { default: PostMicro },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -116,10 +115,21 @@ let client_dashboard_menu = {
         jobType: "micro"
       }
     },
+    // { 
+    //   path: "jobs/micro/post",
+    //   name: "post-a-job",
+    //   components: { default: PostMicro },
+    //   meta: {
+    //     requiresAuth: true,
+    //     userRole: "client",
+    //     emailVerified: true,
+    //     jobType: "micro"
+    //   }
+    // },
     {
-      path: "jobs/edit/:id",
-      name: "edit-job",
-      components: { default: EditJob },
+      path: "jobs/micro/edit/:id",
+      name: "edit-micro-job",
+      components: { default: EditMicro },
       meta: {
         requiresAuth: true,
         userRole: "client",
@@ -439,7 +449,7 @@ router.beforeEach((to, from, next) => {
             // if the email is verified
             if (emailVerified) {
               next();
-            } // if the email account is not verified but directing to student or client account page
+            } // else if the email account is not verified but directing to student or client account page
             else if (!emailVerified && (clientAccount || studentAccount)) {
               next();
             } // otherwise the email account has not been verified and not directing to student or client account page
