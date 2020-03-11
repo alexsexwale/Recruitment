@@ -41,7 +41,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('lastName') }
           ]">
-          <md-icon>record_voice_over</md-icon>
+          <md-icon>person</md-icon>
           <label>Last Name</label>
           <md-input @change="addLastName" v-model="lastName" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName">
           </md-input>
@@ -60,7 +60,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('companyName') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon><i class="fas fa-building"></i></md-icon>
           <label>Company Name</label>
           <md-input @change="addCompanyName" v-model="companyName" data-vv-name="companyName" type="text" name="companyName" required v-validate="modelValidations.companyName">
           </md-input>
@@ -79,7 +79,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('companyWebsite') }
           ]">
-          <md-icon>http</md-icon>
+          <md-icon><i class="fas fa-globe"></i></md-icon>
           <label>Company Website</label>
           <md-input @change="addCompanyWebsite" v-model="companyWebsite" data-vv-name="companyWebsite" type="text" name="companyWebsite" required v-validate="modelValidations.companyWebsite">
           </md-input>
@@ -117,16 +117,10 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('vat') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon><i class="fas fa-file-prescription"></i></md-icon>
           <label>VAT No.</label>
-          <md-input @change="addVat" v-model="vat" data-vv-name="vat" type="number" name="vat" required v-validate="modelValidations.vat">
+          <md-input @change="addVat" v-model="vat" data-vv-name="vat" type="number" name="vat">
           </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('vat')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('vat') && touched.vat">done</md-icon>
-          </slide-y-down-transition>
         </md-field>
       </div>
 
@@ -136,14 +130,10 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('companySize') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon><i class="fas fa-sitemap"></i></md-icon>
           <label>Company Size</label>
           <md-select @input="addCompanySize" v-model="companySize" name="select" style="margin-left: 10px;">
-            <md-option value="1-10">1-10</md-option>
-            <md-option value="11-50">11-50</md-option>
-            <md-option value="51-100">51-100</md-option>
-            <md-option value="101-500">101-500</md-option>
-            <md-option value="500+">500+</md-option>
+            <md-option v-for="(sizeType, index) in sizeTypes" :key="index" :value="sizeType">{{sizeType}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('companySize')">close</md-icon>
@@ -154,16 +144,16 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('industry') && touched.industry },
             { 'md-form-group': true },
             { 'md-error': errors.has('industry') }
           ]">
-          <md-icon>email</md-icon>
-          <label>Industry</label>
-          <md-input @change="addIndustry" v-model="industry" data-vv-name="industry" type="text" name="industry" required v-validate="modelValidations.industry">
-          </md-input>
+          <md-icon><i class="fas fa-industry"></i></md-icon>
+          <md-autocomplete style="margin-left: 10px;" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry">
+            <label>Industry</label>
+          </md-autocomplete>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
@@ -199,7 +189,9 @@ export default {
       phoneNumber: null,
       vat: null,
       companySize: null,
+      sizeTypes: [],
       industry: null,
+      industries: [],
       touched: {
         firstName: false,
         lastName: false,
@@ -328,8 +320,13 @@ export default {
       snapshot.forEach(doc => {
         this.firstName = doc.data().name;
         this.lastName = doc.data().surname;
-      })
-    })
+      });
+    });
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.industries = doc.data().Industries;
+      this.sizeTypes = doc.data().CompanySizes;
+    });
   }
 };
 </script>

@@ -2,18 +2,26 @@
   <footer class="footer">
     <div class="container">
       <nav>
-        <ul>
-          <!-- <li>
-            <router-link :to="{ path: '/contact' }">Contact Us</router-link>
+        <ul v-if="client">
+          <li>
+            <router-link :to="{ path: '/client/terms-and-conditions' }">Terms and Conditions</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/terms-and-conditions' }">Terms and Conditions</router-link>
+            <router-link :to="{ path: '/client/privacy-policy' }">Privacy Policy</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/privacy-policy' }">Privacy Policy</router-link>
-          </li> -->
+            <router-link :to="{ path: '/client/faq' }">FAQ</router-link>
+          </li>
+        </ul>
+        <ul v-if="student">
           <li>
-            <router-link :to="{ path: '/faq' }">FAQ</router-link>
+            <router-link :to="{ path: '/student/terms-and-conditions' }">Terms and Conditions</router-link>
+          </li>
+          <li>
+            <router-link :to="{ path: '/student/privacy-policy' }">Privacy Policy</router-link>
+          </li>
+          <li>
+            <router-link :to="{ path: '/student/faq' }">FAQ</router-link>
           </li>
         </ul>
       </nav>
@@ -25,6 +33,31 @@
   </footer>
 </template>
 <script>
-export default {};
+import db from '@/firebase/init';
+import firebase from 'firebase';
+export default {
+  data() {
+    return {
+      client: null,
+      student: null
+    }
+  },
+  created() {
+    let user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        let userPermission = doc.data().user;
+        if(userPermission == "student") {
+          this.student = true;
+        }
+        else {
+          this.client = true;
+        }
+      })
+    });
+  }
+};
 </script>
 <style></style>

@@ -14,8 +14,7 @@
           <md-field>
               <label for="select">What is your message about?</label>
                 <md-select v-model="subject" name="subject">
-                    <md-option value="Feature">Feature suggestion</md-option>
-                    <md-option value="Chat">I'd just like to chat</md-option>
+                    <md-option v-for="(subject, index) in subjects" :key="index" :value="subject">{{subject}}</md-option>
                 </md-select>
           </md-field>
           <md-field>
@@ -89,7 +88,8 @@ export default {
       modal: false,
       successModal: false,
       success: "We appreciate your feedback. We will continue to make improvements on the platform.",
-      error: null
+      error: null,
+      subjects:[]
     };
   },
   methods: {
@@ -117,6 +117,12 @@ export default {
         this.error = "Please complete all fields before sending feedback.";
       }
     }
+  },
+  created() {
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.subjects = doc.data().FeedbackSubjects;
+    });
   }
 };
 </script>

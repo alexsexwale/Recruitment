@@ -29,7 +29,7 @@
             <h4 class="card-title">Location</h4>
             <p class="card-description">{{ job.location }}</p>
 
-            <h4 class="card-title">Deadline</h4>
+            <h4 class="card-title">Anticipated Duration</h4>
             <p class="card-description">{{ job.deadline }}</p>
           </md-card-content>
         </md-card>

@@ -8,6 +8,7 @@
         v-bind:gender="gender"
         v-bind:race="race"
         v-bind:phone="phone"
+        v-bind:aboutMe="aboutMe"
         v-bind:institution="institution"
         v-bind:campus="campus"
         v-bind:studentNo="studentNo"
@@ -49,7 +50,8 @@
             @dob="addDob"
             @gender="addGender"
             @race="addRace"
-            @phone="addPhone">
+            @phone="addPhone"
+            @aboutMe="aboutMe">
           </first-step>
         </wizard-tab>
 
@@ -128,6 +130,7 @@ export default {
       gender: null,
       race: null,
       phone: null,
+      aboutMe: null,
       institution: null,
       campus: null,
       studentNo: null,
@@ -174,138 +177,91 @@ export default {
         this.feedback = err.message;
       });
     },
-    addFirstName: function(firstName) {
-      this.firstName = firstName;
+    refresh() {
       if(!this.emailVerified) {
         this.user.reload();
         this.emailVerified = this.user.emailVerified;
       }
+    },
+    addFirstName: function(firstName) {
+      this.firstName = firstName;
+      this.refresh();
     },
     addLastName: function(lastName) {
       this.lastName = lastName;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addDob: function(dob) {
       this.dob = dob;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addGender: function(gender) {
       this.gender = gender;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addRace: function(race) {
       this.race = race;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addPhone: function(phone) {
       this.phone = phone;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
+    },
+    addAboutMe: function(aboutMe) {
+      this.aboutMe = aboutMe;
+      this.refresh();
     },
     addInstitution: function(institution) {
       this.institution = institution;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addCampus: function(campus) {
       this.campus = campus;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addStudentNo: function(studentNo) {
       this.studentNo = studentNo;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addFaculty: function(faculty) {
       this.faculty = faculty;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addDegree: function(degree) {
       this.degree = degree;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addMajor: function(major) {
       this.major = major;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addYear: function(year) {
       this.year = year;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addGraduateStatus: function(graduateStatus) {
       this.graduateStatus = graduateStatus;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addAccountName: function(accountName) {
       this.accountName = accountName;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addAccountNumber: function(accountNumber) {
       this.accountNumber = accountNumber;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addAccountType: function(accountType) {
       this.accountType = accountType;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addBankName: function(bankName) {
       this.bankName = bankName;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addBranchCode: function(branchCode) {
       this.branchCode = branchCode;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addFeedback: function(feedback) {
       this.modal = true;
@@ -313,10 +269,7 @@ export default {
     },
     addEmailVerified: function(emailVerified) {
       this.emailVerified = emailVerified;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     }
   },
   created() {

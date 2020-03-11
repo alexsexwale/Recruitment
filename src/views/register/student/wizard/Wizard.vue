@@ -113,6 +113,9 @@ export default {
     phone: {
       required: true
     },
+    aboutMe: {
+      required: true
+    },
     institution: {
       required: true
     },
@@ -249,6 +252,7 @@ export default {
               gender: this.gender,
               race: this.race,
               phoneNumber: this.phone,
+              aboutMe: this.aboutMe,
               institution: this.institution,
               campus: this.campus,
               studentNo: this.studentNo,

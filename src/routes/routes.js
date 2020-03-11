@@ -226,6 +226,36 @@ let client_dashboard_menu = {
         userRole: "client",
         emailVerified: true
       }
+    },
+    {
+      path: "/faq",
+      name: "Faq",
+      component: Faq,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "/privacy-policy",
+      name: "privacy-policy",
+      component: PrivacyPolicy,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "/terms-and-conditions",
+      name: "terms-and-conditions",
+      component: TermsAndConditions,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
     }
   ]
 };
@@ -341,6 +371,36 @@ let student_dashboard_menu = {
       path: "jobs/micro/status/:id",
       name: "student-micro-status",
       component: StudentStatus,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "/faq",
+      name: "Faq",
+      component: Faq,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "/privacy-policy",
+      name: "privacy-policy",
+      component: PrivacyPolicy,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "/terms-and-conditions",
+      name: "terms-and-conditions",
+      component: TermsAndConditions,
       meta: {
         requiresAuth: true,
         userRole: "student",

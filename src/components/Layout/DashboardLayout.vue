@@ -10,7 +10,7 @@
       <mobile-menu></mobile-menu>
       <template slot="links">
         <!-- Begin: client side navbar -->
-        <sidebar-item v-if="client" :link="{ name: 'Dashboard', icon: 'dashboard', path: '/client/dashboard' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/dashboard' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/post' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'View Jobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
@@ -30,7 +30,7 @@
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
-        <sidebar-item v-if="student" :link="{ name: 'Get Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'Gite Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
         <!-- End: student side navbar -->
       </template>
     </side-bar>
@@ -121,7 +121,7 @@ export default {
           this.client = true;
         }
       })
-    })
+    });
   },
   mounted() {
     let docClasses = document.body.classList;

@@ -29,7 +29,7 @@
             { 'md-valid': !errors.has('deadline') && touched.deadline },
             { 'md-error': errors.has('deadline') }
           ]">
-          <label>Duration Type</label>
+          <label>Anticipated Duration</label>
           <md-select @input="addDeadline" v-model="deadline" data-vv-name="deadline" type="text" name="deadline" required v-validate="modelValidations.deadline" style="margin-left: 10px;">
             <md-option value="0-1">Less than a week</md-option>
             <md-option value="1-4">Less than a month</md-option>
@@ -62,6 +62,7 @@ export default {
       onsite: false,
       location: "remote",
       deadline: null,
+      anticipatedDuration: null,
       touched: {
         location:false,
         deadline: false

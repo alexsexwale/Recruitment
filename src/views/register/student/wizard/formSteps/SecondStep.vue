@@ -14,8 +14,7 @@
           <md-icon>school</md-icon>
           <label>Where do you study?</label>
           <md-select @input="addInstitution" v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution" style="margin-left: 10px;">
-            <md-option value="University of Pretoria">University of Pretoria</md-option>
-            <md-option value="Sefako Makgatho Health Sciences">Sefako Makgatho Health Sciences</md-option>
+            <md-option v-for="(institution, index) in institutions" :key="index" :value="institution">{{institution}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('institution')">close</md-icon>
@@ -73,15 +72,7 @@
           <md-icon>school</md-icon>
           <label>Select your faculty</label>
           <md-select @input="addFaculty" v-model="faculty" data-vv-name="faculty" type="text" name="faculty" required v-validate="modelValidations.faculty" style="margin-left: 10px;">
-            <md-option value="Economic and Management Sciences">Economic and Management Sciences</md-option>
-            <md-option value="Education">Education</md-option>
-            <md-option value="Engineering, Built Environment and Information Technology">Engineering, Built Environment and Information Technology</md-option>
-            <md-option value="Health Sciences">Health Sciences</md-option>
-            <md-option value="Humanities">Humanities</md-option>
-            <md-option value="Law">Law</md-option>
-            <md-option value="Natural and Agricultural Sciences">Natural and Agricultural Sciences</md-option>
-            <md-option value="Theology and Religion">Theology and Religion</md-option>
-            <md-option value="Veterinary Science">Veterinary Science</md-option>
+            <md-option v-for="(faculty, index) in faculties" :key="index" :value="faculty">{{faculty}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('faculty')">close</md-icon>
@@ -113,40 +104,14 @@
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('major') && touched.major },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('major') }
-          ]">
-          <md-icon>school</md-icon>
-          <label>Select your major</label>
-          <md-input @change="addMajor" v-model="major" data-vv-name="major" type="text" name="major" required v-validate="modelValidations.major">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('major')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('major') && touched.major">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
             { 'md-valid': !errors.has('year') && touched.year },
             { 'md-form-group': true },
             { 'md-error': errors.has('year') }
           ]">
           <md-icon>school</md-icon>
-          <label>What year are you in?</label>
+          <label>Select your year of study?</label>
           <md-select @input="addYear" v-model="year" data-vv-name="year" type="text" name="year" required v-validate="modelValidations.year" style="margin-left: 10px;">
-            <md-option value="1st Year">1st Year</md-option>
-            <md-option value="2nd Year">2nd Year</md-option>
-            <md-option value="3rd Year">3rd Year</md-option>
-            <md-option value="4th Year">4th Year</md-option>
-            <md-option value="5th Year">5th Year</md-option>
-            <md-option value="Honours">Honours</md-option>
-            <md-option value="Masters">Masters</md-option>
-            <md-option value="PhD">PhD</md-option>
+            <md-option v-for="(year, index) in years" :key="index" :value="year">{{year}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('year')">close</md-icon>
@@ -166,8 +131,7 @@
           <md-icon>school</md-icon>
           <label>Undergraduate/Postgraduate</label>
           <md-select @input="addGraduateStatus" v-model="graduateStatus" data-vv-name="graduateStatus" type="text" name="graduateStatus" required v-validate="modelValidations.graduateStatus" style="margin-left: 10px;">
-            <md-option value="Undergraduate">Undergraduate</md-option>
-            <md-option value="Postgraduate">Postgraduate</md-option>
+            <md-option v-for="(graduate, index) in graduates" :key="index" :value="graduate">{{graduate}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('graduateStatus')">close</md-icon>
@@ -182,6 +146,8 @@
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
+import firebase from 'firebase/app';
 export default {
   components: {
     SlideYDownTransition
@@ -202,6 +168,10 @@ export default {
       major: "",
       year: "",
       graduateStatus: "",
+      institutions: [],
+      faculties: [],
+      years: [],
+      graduates: [],
       touched: {
         institution: false,
         campus: false,
@@ -317,6 +287,16 @@ export default {
     graduateStatus() {
       this.touched.graduateStatus = true;
     }
+  },
+  created() {
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.races = doc.data().Races; 
+      this.faculties = doc.data().Faculties;
+      this.graduates = doc.data().Graduates;
+      this.institutions = doc.data().Institutions;
+      this.years = doc.data().Years;
+    });
   }
 };
 </script>

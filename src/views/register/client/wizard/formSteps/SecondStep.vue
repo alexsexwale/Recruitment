@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let us where your workplace located?
+      Let us know where your workplace is located?
     </h5>
     <div class="md-layout">
 
@@ -11,7 +11,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('addressLine1') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-map-pin"></i></md-icon>
           <label>Address Line 1</label>
           <md-input @change="addAddressLine1" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1">
           </md-input>
@@ -30,9 +30,9 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('addressLine2') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-map-pin"></i></md-icon>
           <label>Address Line 2</label>
-          <md-input @change="addAddressLine2" v-model="addressLine2" data-vv-name="addressLine2" type="text" name="addressLine2" required v-validate="modelValidations.addressLine2">
+          <md-input @change="addAddressLine2" v-model="addressLine2" data-vv-name="addressLine2" type="text" name="addressLine2">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('addressLine2')">close</md-icon>
@@ -49,7 +49,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('city') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-city"></i></md-icon>
           <label>City</label>
           <md-input @change="addCity" v-model="city" data-vv-name="city" type="text" name="city" required v-validate="modelValidations.city">
           </md-input>
@@ -68,10 +68,11 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('province') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-map-marked-alt"></i></md-icon>
           <label>Province</label>
-          <md-input @change="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
-          </md-input>
+          <md-select @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province" style="margin-left: 10px;">
+            <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('province')">close</md-icon>
           </slide-y-down-transition>
@@ -87,7 +88,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('postalCode') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-mail-bulk"></i></md-icon>
           <label>Postal Code</label>
           <md-input @change="addPostalCode" v-model="postalCode" data-vv-name="postalCode" type="number" name="postalCode" required v-validate="modelValidations.postalCode">
           </md-input>
@@ -104,6 +105,8 @@
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
+import firebase from 'firebase/app';
 export default {
   components: {
     SlideYDownTransition
@@ -122,6 +125,7 @@ export default {
       city: null,
       province: null,
       postalCode: null,
+      provinces:[],
       touched: {
         addressLine1: false,
         addressLine2: false,
@@ -207,6 +211,12 @@ export default {
     postalCode() {
       this.touched.postalCode = true;
     }
+  },
+  created() {
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.provinces = doc.data().Provinces;
+    });
   }
 };
 </script>

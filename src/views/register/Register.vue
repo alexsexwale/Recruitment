@@ -12,7 +12,7 @@
             { 'md-error': errors.has('firstName') }
           ]">
           <md-icon>face</md-icon>
-          <label>Name</label>
+          <label>First Name</label>
           <md-input v-model="firstName" type="text" data-vv-name="firstName" name="firstName" required v-validate="modelValidations.firstName"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('firstName')">close</md-icon>
@@ -28,7 +28,7 @@
             { 'md-error': errors.has('lastName') }
           ]">
           <md-icon>person</md-icon>
-          <label>Surname</label>
+          <label>Last Name</label>
           <md-input v-model="lastName" type="text" data-vv-name="lastName" name="lastName" required v-validate="modelValidations.lastName"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('lastName')">close</md-icon>

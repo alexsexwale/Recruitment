@@ -1,0 +1,13 @@
+image: node:alpine
+
+deploy_production:
+  stage: deploy
+  environment: Production
+  only:
+    - master
+  script:
+    - npm install
+    - npm i -g firebase-tools
+    - npm run build
+    - firebase deploy --project joboxza --token "1//03KySByi5PQLiCgYIARAAGAMSNwF-L9IrfRSuEtkPs0IFzm9CwFvt99tVs5d7hV0UV0DOxjlUv94CfePrqVCE84UbbQ5YJMYgSao"
+

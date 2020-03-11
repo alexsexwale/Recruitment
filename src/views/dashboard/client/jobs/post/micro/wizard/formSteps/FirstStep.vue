@@ -38,9 +38,7 @@
         ]">
         <label>Task/Project</label>
         <md-select @input="addCategory" v-model="category" data-vv-name="category" type="text" name="category" required v-validate="modelValidations.category" style="margin-left: 10px;">
-          <md-option value="sales">Sales</md-option>
-          <md-option value="photographer">Photographer</md-option>
-          <md-option value="web development">Web development</md-option>
+          <md-option v-for="(category, index) in skillCategories" :key="index" :value="category">{{category}}</md-option>
         </md-select>
         <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('category')">close</md-icon>
@@ -69,6 +67,8 @@
   </div>
 </template>
 <script>
+import db from "@/firebase/init";
+import firebase from "firebase/app";
 import { SlideYDownTransition } from "vue2-transitions";
 export default {
   components: {
@@ -80,6 +80,7 @@ export default {
       description: null,
       category: null,
       skills: [],
+      skillCategories:[],
       touched: {
         name: false,
         description: false,
@@ -138,6 +139,13 @@ export default {
     skills() {
       this.touched.skills = true;
     }
+  },
+  created() {
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.skillCategories = doc.data().SkillCategories;
+      console.log(this.skillCategories);
+    });
   }
 };
 </script>

@@ -39,7 +39,7 @@
     </div>
   </div>
   <div v-else>
-    <h1 class="black" style="text-align:center">You have no completed jobs as of yet</h1>
+    <h1 class="black" style="text-align:center">You have not completed jobs as of yet</h1>
   </div>
 </template>
 
