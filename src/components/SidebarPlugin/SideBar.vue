@@ -5,13 +5,21 @@
     :data-background-color="backgroundColor"
     :style="sidebarStyle">
     <div class="logo">
-      <router-link to="/client/dashboard" class="simple-text logo-mini">
+      <router-link v-if="profile.user == 'client'" :to="{ name: 'client-profile', params: {id: profile.alias}}" class="simple-text logo-mini">
+        <div class="logo-img">
+          <img :src="logo" />
+        </div>
+      </router-link>
+      <router-link v-if="profile.user == 'student'"  :to="{ name: 'student-profile', params: {id: profile.alias}}" class="simple-text logo-mini">
         <div class="logo-img">
           <img :src="logo" />
         </div>
       </router-link>
       
-      <router-link to="/client/dashboard" class="simple-text logo-normal">
+      <router-link v-if="profile.user == 'client'" :to="{ name: 'client-profile', params: {id: profile.alias}}" class="simple-text logo-normal">
+        <template>{{ title }}</template>
+      </router-link>
+      <router-link v-if="profile.user == 'student'"  :to="{ name: 'student-profile', params: {id: profile.alias}}" class="simple-text logo-normal">
         <template>{{ title }}</template>
       </router-link>
       <div class="navbar-minimize">
@@ -35,6 +43,8 @@
   </div>
 </template>
 <script>
+import db from '@/firebase/init';
+import firebase from 'firebase';
 export default {
   name: "sidebar",
   props: {
@@ -106,7 +116,22 @@ export default {
     if (this.$sidebar.showSidebar) {
       this.$sidebar.showSidebar = false;
     }
-  }
+  },
+  data() {
+    return {
+      profile: []
+    }
+  },
+  created() {
+    let user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.profile = doc.data();
+      })
+    });
+  },
 };
 </script>
 <style>

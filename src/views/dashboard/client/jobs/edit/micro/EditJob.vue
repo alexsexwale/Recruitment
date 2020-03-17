@@ -130,9 +130,6 @@ export default {
     },
     addBudget: function(budget) {
       this.budget = budget;
-    },
-    addPayment: function(postPayment) {
-      this.postPayment = postPayment;
     }
   },
   created() {
@@ -140,8 +137,8 @@ export default {
     job.get().then(snapshot => {
       snapshot.forEach(doc => {
         this.name = doc.data().name;
-      })
-    })
+      });
+    });
   }
 };
 </script>

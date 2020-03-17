@@ -152,7 +152,7 @@ export default {
     }
   },
   created() {
-    let jobs = db.collection('micro');
+    let jobs = db.collection('micros');
     jobs.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
       snapshot.forEach(doc => {

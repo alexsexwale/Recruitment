@@ -30,7 +30,7 @@
             <p class="card-description">{{ job.location }}</p>
 
             <h4 class="card-title">Anticipated Duration</h4>
-            <p class="card-description">{{ job.deadline }}</p>
+            <p class="card-description">{{ job.duration }}</p>
           </md-card-content>
         </md-card>
         <md-card class="bg-success">
@@ -143,7 +143,7 @@ export default {
   },
   created() {
     this.auth = firebase.auth().currentUser;
-    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
+    let job = db.collection('micros').where('jobId', '==', this.$route.params.id);
     let skills = db.collection('skills').where('jobId', '==', this.$route.params.id);
     job.get().then(snapshot => {
       snapshot.forEach(doc => {

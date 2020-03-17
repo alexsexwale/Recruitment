@@ -137,9 +137,7 @@ export default {
     postalCode: {
       required: true
     },
-    email: {
-      
-    }
+    email: {}
   },
   components: {
     TabItemContent: {

@@ -171,6 +171,13 @@ export default {
     modalHide() {
       this.modal = false;
     },
+    random() {
+      let rand1 = Math.floor(Math.random() * 10).toString();
+      let rand2 = Math.floor(Math.random() * 10).toString();
+      let rand3 = Math.floor(Math.random() * 10).toString();
+      let rand4 = Math.floor(Math.random() * 10).toString();
+      return rand1 + rand2 + rand3 + rand4;
+    },
     createAccount() {
       this.loading = true;
       if(!this.terms) {
@@ -179,8 +186,8 @@ export default {
         this.feedback = "Please agree to the terms and conditions";
       }
       else if(this.userRole && this.firstName && this.lastName && this.email && this.password) {
-        this.slug = slugify(this.firstName + " " + this.lastName, {
-          replacement: '.',
+        this.slug = slugify(this.firstName + " " + this.lastName + " " + this.random(), {
+          replacement: '-',
           remove: /[$*_+~.()'"!\-:@]/g,
           lower: true
         })

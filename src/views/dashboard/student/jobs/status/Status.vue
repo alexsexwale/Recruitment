@@ -10,10 +10,10 @@
 </template>
 <script>
 import db from '@/firebase/init';
-import Select from './flow/select/Select.vue';
-import Active from './flow/active/Active.vue';
-import Complete from './flow/complete/Complete.vue';
-import Rate from './flow/rate/Rate.vue';
+import Select from './micro/flow/select/Select.vue';
+import Active from './micro/flow/active/Active.vue';
+import Complete from './micro/flow/complete/Complete.vue';
+import Rate from './micro/flow/rate/Rate.vue';
 
 export default {
   components: {
@@ -55,7 +55,7 @@ export default {
     }
   },
   created() {
-    let jobs = db.collection('micro');
+    let jobs = db.collection('micros');
     jobs.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
       snapshot.forEach(doc => {

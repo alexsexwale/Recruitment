@@ -13,6 +13,7 @@ import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 
 // Client Dashboard Components
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
+import ClientProfile from "@/views/dashboard/client/profile/Profile.vue";
 import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue";
 
 // Post Jobs
@@ -51,6 +52,7 @@ import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
 
 // Student Dashboard Components
 import StudentDashboard from "@/views/dashboard/student/StudentDashboard.vue";
+import StudentProfile from "@/views/dashboard/student/profile/Profile.vue";
 import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vue";
 
 import Jobs from "@/views/dashboard/student/jobs/Jobs.vue";
@@ -197,6 +199,16 @@ let client_dashboard_menu = {
       }
     },
     {
+      path: "profile/:id",
+      name: "client-profile",
+      component: ClientProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
       path: "jobs/micro/status/:id",
       name: "client-micro-status",
       component: MicroStatus,
@@ -265,7 +277,7 @@ let student_dashboard_menu = {
   path: "/student",
   component: DashboardLayout,
   name: "student nav menu",
-  redirect: "/student/dashboard",
+  redirect: "/student/apply-for-job",
   children: [
     {
       path: "create-account",
@@ -368,6 +380,16 @@ let student_dashboard_menu = {
       }
     },
     {
+      path: "profile/:id",
+      name: "student-profile",
+      component: StudentProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
       path: "jobs/micro/status/:id",
       name: "student-micro-status",
       component: StudentStatus,
@@ -379,7 +401,7 @@ let student_dashboard_menu = {
     },
     {
       path: "/faq",
-      name: "Faq",
+      name: "student-faq",
       component: Faq,
       meta: {
         requiresAuth: true,
@@ -389,7 +411,7 @@ let student_dashboard_menu = {
     },
     {
       path: "/privacy-policy",
-      name: "privacy-policy",
+      name: "student-privacy-policy",
       component: PrivacyPolicy,
       meta: {
         requiresAuth: true,
@@ -399,7 +421,7 @@ let student_dashboard_menu = {
     },
     {
       path: "/terms-and-conditions",
-      name: "terms-and-conditions",
+      name: "student-terms-and-conditions",
       component: TermsAndConditions,
       meta: {
         requiresAuth: true,
@@ -432,17 +454,17 @@ let authPages = {
     },
     {
       path: "/faq",
-      name: "Faq",
+      name: "client-faq",
       component: Faq
     },
     {
       path: "/privacy-policy",
-      name: "privacy-policy",
+      name: "client-privacy-policy",
       component: PrivacyPolicy
     },
     {
       path: "/terms-and-conditions",
-      name: "terms-and-conditions",
+      name: "client-terms-and-conditions",
       component: TermsAndConditions
     },
     {

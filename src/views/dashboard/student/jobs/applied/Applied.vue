@@ -9,10 +9,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.name }}
+          {{ job.clientName }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.description }}
+          {{ job.name }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -58,7 +58,7 @@ export default {
   created() {
     let user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
-    let micro = db.collection('micro');
+    let micro = db.collection('micros');
     applicants.where('userId', '==', user.uid).where('status', '==', 'applied').get()
     .then(snapshot => {
       snapshot.forEach(doc => {

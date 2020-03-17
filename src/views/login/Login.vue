@@ -89,6 +89,7 @@ export default {
       feedback: null,
       modal: false,
       remember: null,
+      alias: null,
       touched: {
         email: false,
         password: false
@@ -119,11 +120,12 @@ export default {
             ref.where('userId', '==', userId).get()
             .then(snapshot => {
               snapshot.forEach(doc => {
+                this.alias = doc.data().alias;
                 if(doc.data().user == "client") {
-                  let client = db.collection('clients').doc(doc.data().alias);
+                  let client = db.collection('clients').doc(this.alias);
                   client.get().then(doc => {
                     if(doc.exists) {
-                      this.$router.push({ name: 'client-dashboard' });
+                      this.$router.push({ name: 'client-profile', params: {id: this.alias} });
                     }
                     else {
                       this.$router.push({ name: 'create-client-account' });
@@ -131,10 +133,10 @@ export default {
                   })
                 }
                 else {
-                  let student = db.collection('students').doc(doc.data().alias);
+                  let student = db.collection('students').doc(this.alias);
                   student.get().then(doc => {
                     if(doc.exists) {
-                      this.$router.push({ name: 'student-dashboard' });
+                      this.$router.push({ name: 'student-profile', params: {id: this.alias} });
                     }
                     else {
                       this.$router.push({ name: 'create-student-account' });

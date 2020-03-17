@@ -31,6 +31,11 @@ service cloud.firestore {
       allow write;
     }
     
+    match /micros/{micros} {
+      allow read;
+      allow write;
+    }
+    
     match /skills/{skills} {
       allow read;
       allow write;

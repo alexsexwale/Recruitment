@@ -204,18 +204,14 @@ export default {
             replacement: '-',
             remove: /[$*_+~.()'"!\-:@]/g,
             lower: true
-          })
-          if(!this.location)
-            this.location = "remote";
+          });
           let job = db.collection('jobs').doc(this.slug);
-          let micro = db.collection('micro').doc(this.slug);
+          let micro = db.collection('micros').doc(this.slug);
           let skills = db.collection('skills').doc(this.slug);
           
           job.set({
             jobId: this.slug,
             clientId: this.user.uid,
-            companyName: this.client.companyName,
-            clientName: this.user.displayName,
             created: moment(Date.now()).format('L'),
             lastModified: null,
             name: this.name,
@@ -225,6 +221,8 @@ export default {
           micro.set({
             jobId: this.slug,
             studentId: null,
+            companyName: this.client.companyName,
+            clientName: this.user.displayName,
             name: this.name,
             description: this.description,
             location: this.location,

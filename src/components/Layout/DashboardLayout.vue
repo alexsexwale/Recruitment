@@ -1,8 +1,7 @@
 <template>
   <div class="wrapper"
     :class="[
-      { 'nav-open': $sidebar.showSidebar },
-      { rtl: $route.meta.rtlActive }
+      { 'nav-open': $sidebar.showSidebar }
     ]" >
     <notifications></notifications>
     <side-bar :active-color="sidebarBackground" :background-image="sidebarBackgroundImage" :data-background-color="sidebarBackgroundColor">
@@ -10,7 +9,7 @@
       <mobile-menu></mobile-menu>
       <template slot="links">
         <!-- Begin: client side navbar -->
-        <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/dashboard' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/profile/' + alias }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/post' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'View Jobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
@@ -22,7 +21,7 @@
         <!-- End: client side navbar -->
 
         <!-- Begin: student side navbar -->
-        <sidebar-item v-if="student" :link="{ name: 'Dashboard', icon: 'dashboard', path: '/student/dashboard' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'My Profile', icon: 'person', path: '/student/profile/' + alias }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply-for-job' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'View Jobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
@@ -30,7 +29,7 @@
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
-        <sidebar-item v-if="student" :link="{ name: 'Gite Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
         <!-- End: student side navbar -->
       </template>
     </side-bar>
@@ -92,7 +91,8 @@ export default {
       sidebarMini: true,
       sidebarImg: true,
       student: null,
-      client: null
+      client: null,
+      alias: null
     };
   },
   methods: {
@@ -113,6 +113,7 @@ export default {
     ref.where('userId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.alias = doc.data().alias;
         let userPermission = doc.data().user;
         if(userPermission == "student") {
           this.student = true;

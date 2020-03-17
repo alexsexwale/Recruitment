@@ -13,7 +13,6 @@
         v-bind:studentNo="studentNo"
         v-bind:faculty="faculty"
         v-bind:degree="degree"
-        v-bind:major="major"
         v-bind:year="year"
         v-bind:graduateStatus="graduateStatus"
         v-bind:accountName="accountName"
@@ -55,7 +54,6 @@
             @studentNo="addStudentNo"
             @faculty="addFaculty"
             @degree="addDegree"
-            @major="addMajor"
             @year="addYear"
             @graduateStatus="addGraduateStatus">
           </second-step>
@@ -124,7 +122,6 @@ export default {
       studentNo: null,
       faculty: null,
       degree: null,
-      major: null,
       year: null,
       graduateStatus: null,
       accountName: null,
@@ -185,9 +182,6 @@ export default {
     },
     addDegree: function(degree) {
       this.degree = degree;
-    },
-    addMajor: function(major) {
-      this.major = major;
     },
     addYear: function(year) {
       this.year = year;

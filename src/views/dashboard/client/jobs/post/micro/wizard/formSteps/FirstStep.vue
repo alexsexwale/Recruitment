@@ -144,7 +144,6 @@ export default {
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.skillCategories = doc.data().SkillCategories;
-      console.log(this.skillCategories);
     });
   }
 };

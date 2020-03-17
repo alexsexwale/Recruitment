@@ -83,7 +83,7 @@ export default {
   created() {
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
-    let micro = db.collection('micro');
+    let micro = db.collection('micros');
     jobs.where('clientId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {

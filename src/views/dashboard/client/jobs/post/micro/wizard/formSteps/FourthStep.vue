@@ -11,7 +11,7 @@
           <p class="card-description">{{ name }}</p>
 
           <h4 class="card-title">Description</h4>
-          <p class="card-description">{{ description}}</p>
+          <p class="card-description">{{ description }}</p>
 
           <h4 class="card-title">Skills Required</h4>
           <ul>
@@ -25,10 +25,10 @@
             <i class="far fa-newspaper" /> Job Details
           </h3>
           <h4 class="card-title">Location</h4>
-          <p class="card-description">{{ getLocation() }}</p>
+          <p class="card-description">{{ location }}</p>
 
-          <h4 class="card-title">Duration</h4>
-          <p class="card-description">{{ duration() }}</p>
+          <h4 class="card-title">Anticipated Duration</h4>
+          <p class="card-description">{{ deadline }}</p>
         </md-card-content>
       </md-card>
       <md-card class="bg-success">
@@ -71,26 +71,26 @@ export default {
     };
   },
   methods: {
-    getLocation() {
-      if(this.location) {
+    // getLocation() {
+    //   if(this.location) {
         
-      }
-      else{
-        this.location = "remote";
-      }
-    },
-    duration() {
-      switch(this.deadline) {
-        case "0-1":
-          return "Less than a week";
-        case "1-4":
-          return "Less than a month";
-        case "4-12":
-          return "Less than 3 months";
-        case "unknown":
-          return "I am not sure yet";
-      }
-    },
+    //   }
+    //   else{
+    //     this.location = "remote";
+    //   }
+    // },
+    // duration() {
+    //   switch(this.deadline) {
+    //     case "0-1":
+    //       return "Less than a week";
+    //     case "1-4":
+    //       return "Less than a month";
+    //     case "4-12":
+    //       return "Less than 3 months";
+    //     case "unknown":
+    //       return "I am not sure yet";
+    //   }
+    // },
     total() {
       let total = (this.budget * 1.1).toFixed(2);
       return total;

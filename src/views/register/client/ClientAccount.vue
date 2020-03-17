@@ -16,6 +16,7 @@
         v-bind:city="city"
         v-bind:province="province"
         v-bind:postalCode="postalCode"
+        v-bind:email="email"
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
@@ -149,96 +150,63 @@ export default {
         this.emailVerified = this.user.emailVerified;
       }
     },
-    addFirstName: function(firstName) {
-      this.firstName = firstName;
+    refresh() {
       if(!this.emailVerified) {
         this.user.reload();
         this.emailVerified = this.user.emailVerified;
       }
+    },
+    addFirstName: function(firstName) {
+      this.firstName = firstName;
+      this.refresh();
     },
     addLastName: function(lastName) {
       this.lastName = lastName;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addCompanyName: function(companyName) {
       this.companyName = companyName;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addCompanyWebsite: function(companyWebsite) {
       this.companyWebsite = companyWebsite;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addPhoneNumber: function(phoneNumber) {
       this.phoneNumber = phoneNumber;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addVat: function(vat) {
       this.vat = vat;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addCompanySize: function(companySize) {
       this.companySize = companySize;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addIndustry: function(industry) {
       this.industry = industry;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addAddressLineOne: function(addressLine1) {
       this.addressLine1 = addressLine1;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addAddressLineTwo: function(addressLine2) {
       this.addressLine2 = addressLine2;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addCity: function(city) {
       this.city = city;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addProvince: function(province) {
       this.province = province;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addPostalCode: function(postalCode) {
       this.postalCode = postalCode;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     addFeedback: function(feedback) {
       this.modal = true;
@@ -246,10 +214,7 @@ export default {
     },
     addEmailVerified: function(emailVerified) {
       this.emailVerified = emailVerified;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     }
   },
   created() {

@@ -31,10 +31,7 @@
           ]">
           <label>Anticipated Duration</label>
           <md-select @input="addDeadline" v-model="deadline" data-vv-name="deadline" type="text" name="deadline" required v-validate="modelValidations.deadline" style="margin-left: 10px;">
-            <md-option value="0-1">Less than a week</md-option>
-            <md-option value="1-4">Less than a month</md-option>
-            <md-option value="4-12">Less than 3 months</md-option>
-            <md-option value="unknown">I am not sure yet</md-option>
+            <md-option v-for="(deadline, index) in deadlines" :key="index" :value="deadline">{{deadline}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('deadline')">close</md-icon>
@@ -48,6 +45,8 @@
   </div>
 </template>
 <script>
+import db from "@/firebase/init";
+import firebase from "firebase/app";
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 
@@ -60,9 +59,9 @@ export default {
     return {
       remote: true,
       onsite: false,
-      location: "remote",
+      location: null,
       deadline: null,
-      anticipatedDuration: null,
+      deadlines: null,
       touched: {
         location:false,
         deadline: false
@@ -94,12 +93,11 @@ export default {
     remoteSelection() {
       if(this.remote) {
         this.onsite = false;
-        this.location = "remote";
       }
       if(!this.remote && !this.onsite) {
         this.remote = true;
-        this.location = "";
       }
+      this.addRemote();
     },
     onsiteSelection() {
       if(this.onsite) {
@@ -108,6 +106,9 @@ export default {
       if(!this.remote && !this.onsite) {
         this.onsite = true;
       }
+    },
+    addRemote: function() {
+      this.$emit("location", "remote");
     },
     addLocation: function() {
       this.$emit("location", this.location);
@@ -123,6 +124,13 @@ export default {
     deadline() {
       this.touched.deadline = true;
     }
+  },
+  created() {
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.deadlines = doc.data().Deadlines;
+    });
+    this.remoteSelection();
   }
 };
 </script>

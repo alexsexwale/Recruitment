@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout">
+  <div class="md-layout" v-if="postedJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -17,10 +17,10 @@
           <md-tooltip md-direction="bottom" @click="deleteJob(job.id)">Remove</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.name }}
+          {{ job.clientName }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.description }}
+          {{ job.name }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -29,8 +29,6 @@
           </div>
           <div class="price">
             <br><br>
-            <!-- <i class="fas fa-calendar-week"></i> Deadline
-            <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
             <router-link :to="{name: 'micro-application', params: {id: job.id}}"> 
               <md-button class="md-success">Apply</md-button>
             </router-link>
@@ -45,11 +43,14 @@
       </product-card>
     </div>
   </div>
+  <div v-else>
+    <h1 class="black" style="text-align:center">There are currently no jobs posted.</h1>
+  </div>
 </template>
 
 <script>
 import { ProductCard } from "@/components";
-import db from '@/firebase/init'
+import db from '@/firebase/init';
 
 export default {
   components: {
@@ -58,14 +59,16 @@ export default {
   data() {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
-      jobs:[]
+      jobs:[],
+      postedJobs: false
     };
   },
   created() {
     // display available micro jobs
-    db.collection('micro').get()
+    db.collection('micros').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.postedJobs = true;
         let job = doc.data();
         job.id = doc.id;
         this.jobs.push(job); // can push other job types to the same array or seperate the jobs

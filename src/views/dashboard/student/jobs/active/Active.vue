@@ -9,10 +9,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.name }}
+          {{ job.clientName }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.description }}
+          {{ job.name }}
         </div>
         <template slot="footer">
           <div class="price">

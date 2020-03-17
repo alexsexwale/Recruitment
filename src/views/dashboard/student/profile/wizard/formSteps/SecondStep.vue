@@ -113,25 +113,6 @@
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('major') && touched.major },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('major') }
-          ]">
-          <md-icon>school</md-icon>
-          <label>Select your major</label>
-          <md-input @change="addMajor" v-model="major" data-vv-name="major" type="text" name="major" required v-validate="modelValidations.major">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('major')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('major') && touched.major">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
             { 'md-valid': !errors.has('year') && touched.year },
             { 'md-form-group': true },
             { 'md-error': errors.has('year') }
