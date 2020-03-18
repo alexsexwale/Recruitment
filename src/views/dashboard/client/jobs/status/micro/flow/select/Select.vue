@@ -12,7 +12,7 @@
         </div>
         <md-card-content>
           <h6 class="category text-gray">CEO / Co-Founder</h6>
-          <h4 class="card-title">{{ applicant.applicant }}</h4>
+          <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
           <p class="card-description">
             Don't be scared of the truth because we need to restart the human
             foundation in truth
@@ -43,12 +43,12 @@
       </modal>
     </div>
   </div>
-  <hr v-if="availableApplicant || !approved">
+  <hr v-if="available || !approved">
   <h2 v-if="!approved" class="centre">Select a student</h2>
   <h2 v-else class="centre">Other students who have applied</h2>
-  <hr v-if="availableApplicant || !approved">
+  <hr v-if="available || !approved">
   <br>
-  <div class="md-layout" v-if="availableApplicant">
+  <div class="md-layout" v-if="available">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="(applicant, index) in applicants" :key="index">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
@@ -56,7 +56,7 @@
         </div>
         <md-card-content>
           <h6 class="category text-gray">CEO / Co-Founder</h6>
-          <h4 class="card-title">{{ applicant.applicant }}</h4>
+          <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
           <p class="card-description">
             Don't be scared of the truth because we need to restart the human
             foundation in truth
@@ -108,7 +108,7 @@
       </modal>
     </div>
   </div>
-  <div v-if="!availableApplicant && !approved">
+  <div v-if="!available && !approved">
     <br/><br/>
     <h2 class="black centre">Be patient, students will start applying soon</h2>
   </div>
@@ -125,7 +125,7 @@ export default {
     return {
       applicants: [],
       approvedApplicant: [],
-      availableApplicant : false,
+      available : false,
       approved: false,
       selected: false,
       cancelApplicant: false,
@@ -191,7 +191,7 @@ export default {
     applicants.where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', false).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.availableApplicant = true;
+        this.available = true;
         let applicant = doc.data();
         applicant.id = doc.id;
         this.applicants.push(applicant);

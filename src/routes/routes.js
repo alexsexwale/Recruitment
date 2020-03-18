@@ -83,8 +83,8 @@ import ClientAccount from "@/views/register/client/ClientAccount.vue";
 let client_dashboard_menu = {
   path: "/client",
   component: DashboardLayout,
-  name: "client nav menu",
-  redirect: "/client/dashboard",
+  name: "client-nav-menu",
+  redirect: "/client/jobs/micro/post",
   children: [
     {
       path: "create-account",
@@ -107,7 +107,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "jobs/post",
+      path: "jobs/micro/post",
       name: "post-a-job",
       components: { default: PostMicro },
       meta: {
@@ -117,17 +117,6 @@ let client_dashboard_menu = {
         jobType: "micro"
       }
     },
-    // { 
-    //   path: "jobs/micro/post",
-    //   name: "post-a-job",
-    //   components: { default: PostMicro },
-    //   meta: {
-    //     requiresAuth: true,
-    //     userRole: "client",
-    //     emailVerified: true,
-    //     jobType: "micro"
-    //   }
-    // },
     {
       path: "jobs/micro/edit/:id",
       name: "edit-micro-job",
@@ -209,6 +198,16 @@ let client_dashboard_menu = {
       }
     },
     {
+      path: "profile/student/:id",
+      name: "view-student-profile",
+      component: StudentProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
       path: "jobs/micro/status/:id",
       name: "client-micro-status",
       component: MicroStatus,
@@ -276,7 +275,7 @@ let client_dashboard_menu = {
 let student_dashboard_menu = {
   path: "/student",
   component: DashboardLayout,
-  name: "student nav menu",
+  name: "student-nav-menu",
   redirect: "/student/apply-for-job",
   children: [
     {
@@ -383,6 +382,16 @@ let student_dashboard_menu = {
       path: "profile/:id",
       name: "student-profile",
       component: StudentProfile,
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "profile/client/:id",
+      name: "view-client-profile",
+      component: ClientProfile,
       meta: {
         requiresAuth: true,
         userRole: "student",

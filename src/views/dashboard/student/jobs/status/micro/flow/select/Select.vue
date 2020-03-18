@@ -156,8 +156,8 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.approved = true;
-      })  
-    }) 
+      });  
+    }); 
   }
 };
 </script>

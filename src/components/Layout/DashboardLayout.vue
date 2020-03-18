@@ -10,7 +10,7 @@
       <template slot="links">
         <!-- Begin: client side navbar -->
         <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/profile/' + alias }"></sidebar-item>
-        <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/post' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/micro/post' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'View Jobs', icon: 'work_outline' }">
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Pending Jobs', path: '/client/jobs/pending' }"></sidebar-item>

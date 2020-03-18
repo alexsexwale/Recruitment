@@ -6,8 +6,9 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
-          <h6 v-if="profile.degree" class="category text-gray">{{ profile.degree }}</h6>
+          <p class="card-title"><star-rating :increment="0.01" :rating="4.84" :read-only="true" :inline="true" class="stars"></star-rating></p>
           <h4 class="card-title">{{ user.name + ' ' + user.surname }}</h4>
+          <p v-if="profile.degree" class="card-description"><b>Degree: </b> {{ profile.degree }}</p>
           <p v-if="profile.year" class="card-description"><b>Year of Study: </b> {{ profile.year }}</p>
           <p v-if="profile.institution" class="card-description"><b>Institution: </b>{{ profile.institution }}</p>
           <p v-if="profile.graduateStatus" class="card-description"><b>Graduate Status: </b> {{ profile.graduateStatus }}</p>
@@ -20,7 +21,11 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import StarRating from 'vue-star-rating';
 export default {
+    components: { 
+        StarRating 
+    },
     data() {
       return {
         profile: [],

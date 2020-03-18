@@ -4,7 +4,7 @@
      <p class="centre">In order to complete the job, you will need to rate the other party.</p>
     <hr/>
     <strong>Rate the client </strong> <i class="fas fa-question-circle"></i>
-    <star-rating v-model="rating"></star-rating>
+    <star-rating :show-rating="false" :glow="10" v-model="rating"></star-rating>
 
     <md-field :class="[
           { 'md-valid': !errors.has('review') && touched.review },

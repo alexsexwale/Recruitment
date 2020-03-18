@@ -4,11 +4,11 @@
       <h2 class="centre">Rate & Review</h2>
     <hr>
     <br>
-    <strong>Interpersonal </strong><i class="fas fa-question-circle"></i> <star-rating v-model="interpersonal"></star-rating>
-    <strong>Communication </strong><i class="fas fa-question-circle"></i> <star-rating v-model="communication"></star-rating>
-    <strong>Organisational </strong><i class="fas fa-question-circle"></i> <star-rating v-model="organisational"></star-rating>
-    <strong>Leadership </strong><i class="fas fa-question-circle"></i> <star-rating v-model="leadership"></star-rating>
-    <strong>Problem Solving </strong><i class="fas fa-question-circle"></i> <star-rating v-model="problemSolving"></star-rating>
+    <strong>Interpersonal </strong><i class="fas fa-question-circle"></i> <star-rating :show-rating="false" :glow="10" v-model="interpersonal"></star-rating>
+    <strong>Communication </strong><i class="fas fa-question-circle"></i> <star-rating :show-rating="false" :glow="10" v-model="communication"></star-rating>
+    <strong>Organisational </strong><i class="fas fa-question-circle"></i> <star-rating :show-rating="false" :glow="10" v-model="organisational"></star-rating>
+    <strong>Leadership </strong><i class="fas fa-question-circle"></i> <star-rating :show-rating="false" :glow="10" v-model="leadership"></star-rating>
+    <strong>Problem Solving </strong><i class="fas fa-question-circle"></i> <star-rating :show-rating="false" v-model="problemSolving"></star-rating>
     <md-field :class="[
           { 'md-valid': !errors.has('review') && touched.review },
           { 'md-error': errors.has('review') }
