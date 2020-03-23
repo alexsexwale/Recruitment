@@ -122,6 +122,9 @@ export default {
     industry: {
       required: true
     },
+    aboutMe: {
+      required: true
+    },
     addressLine1: {
       required: true
     },
@@ -159,11 +162,11 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
       user: null,
       emailVerified: null,
       feedback: null,
-      profile: null
+      profile: null,
+      alias: null
     };
   },
   computed: {
@@ -219,11 +222,12 @@ export default {
       });
 
       if(this.user.emailVerified) {
-        let ref = db.collection('users');
-        ref.where('userId', '==', this.user.uid).get()
+        let users = db.collection('users');
+        users.where('userId', '==', this.user.uid).get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let clients = db.collection('clients').doc(doc.id);
+            this.alias = doc.id;
+            let clients = db.collection('clients').doc(this.alias);
             //upload profile picture
             let storageRef = firebase.storage().ref('profiles/' + this.file.name);
             let uploadTask = storageRef.put(this.file).then(snapshot => {
@@ -243,16 +247,16 @@ export default {
               vat: this.vat,
               companySize: this.companySize,
               industry: this.industry,
+              bio: this.aboutMe,
               addressLine1: this.addressLine1,
               addressLine2: this.addressLine2,
               city: this.city,
               province_state: this.province,
-              postalCode_zipcode: this.postalCode,
+              postalCode_zipCode: this.postalCode,
               country: "South Africa",
               profilePicture: this.profile
             });
             
-            let users = db.collection('users').doc(doc.id);
             if(this.firstName) {
               users.update({
                 name: this.firstName
@@ -263,10 +267,10 @@ export default {
                 surname: this.lastName
               });
             }
-          })
+          });
         })
         .then(() => {
-          this.$router.push({ name: "client-dashboard" });
+          this.$router.push({ name: "client-profile", params: { id: this.alias } });
         })
         .catch(err => {
           this.feedback = err.message;
@@ -385,8 +389,7 @@ export default {
     }
   },
   created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
+    this.user = firebase.auth().currentUser;
   }
 };
 </script>

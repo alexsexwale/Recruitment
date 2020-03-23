@@ -180,10 +180,10 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
       user: null,
       emailVerified: null,
-      feedback: null
+      feedback: null,
+      alias: null
     };
   },
   computed: {
@@ -243,7 +243,8 @@ export default {
         ref.where('userId', '==', this.user.uid).get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            let students = db.collection('students').doc(doc.id);
+            this.alias = doc.id;
+            let students = db.collection('students').doc(this.alias);
             students.set({
               userId: this.user.uid,
               created: moment(Date.now()).format('L'),
@@ -252,7 +253,7 @@ export default {
               gender: this.gender,
               race: this.race,
               phoneNumber: this.phone,
-              aboutMe: this.aboutMe,
+              bio: this.aboutMe,
               institution: this.institution,
               campus: this.campus,
               studentNo: this.studentNo,
@@ -282,11 +283,9 @@ export default {
           })
         })
         .then(() => {
-          this.$router.push({ name: "student-dashboard" });
+          this.$router.push({ name: "student-profile", params: { id: this.alias } });
         })
         .catch(err => {
-          // An error happened.
-          console.log(err);
           this.feedback = err.message;
         })
         } else {
@@ -403,8 +402,7 @@ export default {
     }
   },
   created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
+    this.user = firebase.auth().currentUser;
   }
 };
 </script>

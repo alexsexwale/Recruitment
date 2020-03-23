@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let us where your workplace located?
+      What are your banking details
     </h5>
     <div class="md-layout">
 
@@ -12,7 +12,7 @@
             { 'md-error': errors.has('accountName') }
           ]">
           <md-icon>school</md-icon>
-          <label>Account Name</label>
+          <label>Account Holder</label>
           <md-input @change="addAccountName" v-model="accountName" data-vv-name="accountName" type="text" name="accountName" required v-validate="modelValidations.accountName">
           </md-input>
           <slide-y-down-transition>

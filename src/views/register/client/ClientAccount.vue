@@ -11,6 +11,7 @@
         v-bind:vat="vat"
         v-bind:companySize="companySize"
         v-bind:industry="industry"
+        v-bind:aboutMe="aboutMe"
         v-bind:addressLine1="addressLine1"
         v-bind:addressLine2="addressLine2"
         v-bind:city="city"
@@ -43,7 +44,8 @@
             @phoneNumber="addPhoneNumber"
             @vat="addVat"
             @companySize="addCompanySize"
-            @industry="addIndustry">
+            @industry="addIndustry"
+            @aboutMe="addAboutMe">
           </first-step>
         </wizard-tab>
 
@@ -106,6 +108,7 @@ export default {
       vat: null,
       companySize: null,
       industry: null,
+      aboutMe: null,
       addressLine1: null,
       addressLine2: null,
       city: null,
@@ -186,6 +189,10 @@ export default {
     },
     addIndustry: function(industry) {
       this.industry = industry;
+      this.refresh();
+    },
+    addAboutMe: function(aboutMe) {
+      this.aboutMe = aboutMe;
       this.refresh();
     },
     addAddressLineOne: function(addressLine1) {

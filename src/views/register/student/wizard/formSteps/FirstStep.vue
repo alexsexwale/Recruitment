@@ -19,8 +19,7 @@
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
-        <md-field
-          :class="[
+        <md-field :class="[
             { 'md-valid': !errors.has('firstName') && touched.firstName },
             { 'md-form-group': true },
             { 'md-error': errors.has('firstName') }
@@ -41,7 +40,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('lastName') }
           ]">
-          <md-icon>record_voice_over</md-icon>
+          <md-icon>person</md-icon>
           <label>Last Name</label>
           <md-input @change="addLastName" v-model="lastName" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName"></md-input>
           <slide-y-down-transition>
@@ -107,8 +106,7 @@
           ]">
           <md-icon>phone</md-icon>
           <label>Phone Number</label>
-          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone">
-          </md-input>
+          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('phone')">close</md-icon>
           </slide-y-down-transition>
@@ -118,15 +116,13 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item">
         <md-field :class="[
             { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
-            { 'md-form-group': true },
             { 'md-error': errors.has('aboutMe') }
           ]">
-          <md-icon>phone</md-icon>
           <label>About Me</label>
-          <md-textarea v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
+          <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
           </slide-y-down-transition>

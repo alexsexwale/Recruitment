@@ -6,13 +6,14 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
-          <p class="card-title"><star-rating :increment="0.01" :rating="4.84" :read-only="true" :inline="true" class="stars"></star-rating></p>
-          <h4 class="card-title">{{ user.name + ' ' + user.surname }}</h4>
+          <p v-if="rating"><b>{{ rating }}</b></p>
+          <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
+          <h4 v-if="user.name && user.surname" class="card-title"><b>{{ user.name + ' ' + user.surname }}</b></h4>
           <p v-if="profile.degree" class="card-description"><b>Degree: </b> {{ profile.degree }}</p>
           <p v-if="profile.year" class="card-description"><b>Year of Study: </b> {{ profile.year }}</p>
           <p v-if="profile.institution" class="card-description"><b>Institution: </b>{{ profile.institution }}</p>
           <p v-if="profile.graduateStatus" class="card-description"><b>Graduate Status: </b> {{ profile.graduateStatus }}</p>
-          <p v-if="profile.aboutMe" class="card-description"><b>About Me: </b>{{ profile.aboutMe }}</p>
+          <p v-if="profile.bio" class="card-description"><b>About Me: </b>{{ profile.bio }}</p>
           
         </md-card-content>
       </md-card>
@@ -29,7 +30,8 @@ export default {
     data() {
       return {
         profile: [],
-        user: [] 
+        user: [],
+        rating: 4.84 
       }
     },
     props: {

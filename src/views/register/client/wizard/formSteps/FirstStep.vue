@@ -151,7 +151,7 @@
             { 'md-error': errors.has('industry') }
           ]">
           <md-icon><i class="fas fa-industry"></i></md-icon>
-          <md-autocomplete style="margin-left: 10px;" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry">
+          <md-autocomplete style="margin-left: 10px;" @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry">
             <label>Industry</label>
           </md-autocomplete>
           <slide-y-down-transition>
@@ -159,6 +159,23 @@
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
+            { 'md-error': errors.has('aboutMe') }
+          ]">
+          <label v-if="companyName == null || companyName == ''">About Me</label>
+          <label v-else>About Us</label>
+          <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -189,6 +206,7 @@ export default {
       phoneNumber: null,
       vat: null,
       companySize: null,
+      aboutMe: null,
       sizeTypes: [],
       industry: null,
       industries: [],
@@ -229,6 +247,9 @@ export default {
           required: true
         },
         industry: {
+          required: true
+        },
+        aboutMe: {
           required: true
         }
       }
@@ -284,6 +305,9 @@ export default {
     },
     addIndustry: function() {
       this.$emit("industry", this.industry);
+    },
+    addAboutMe: function() {
+      this.$emit("aboutMe", this.aboutMe);
     }
   },
   watch: {
@@ -310,6 +334,9 @@ export default {
     },
     industry() {
       this.touched.industry = true;
+    },
+    aboutMe() {
+      this.touched.aboutMe = true;
     }
   },
   created() {
