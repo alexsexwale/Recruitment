@@ -6,7 +6,7 @@
     <notifications></notifications>
     <side-bar :active-color="sidebarBackground" :background-image="sidebarBackgroundImage" :data-background-color="sidebarBackgroundColor">
       <user-menu></user-menu>
-      <mobile-menu></mobile-menu>
+      <!-- <mobile-menu></mobile-menu> -->
       <template slot="links">
         <!-- Begin: client side navbar -->
         <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/profile/' + alias }"></sidebar-item>

@@ -17,7 +17,7 @@
           <md-tooltip md-direction="bottom" @click="deleteJob(job.id)">Remove</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          <router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: job.clientAlias}}"><a>{{ job.clientName }}</a></router-link>
         </h4>
         <div slot="description" class="card-description">
           {{ job.name }}

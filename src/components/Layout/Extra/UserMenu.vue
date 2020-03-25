@@ -33,7 +33,7 @@
             <slot v-if="student">
               <li> <!-- Student: My Profile -->
                 <router-link :to="{ name: 'student-profile', params: { id: alias } }">
-                  <span class="sidebar-mini">EP</span>
+                  <span class="sidebar-mini">MP</span>
                   <span class="sidebar-normal">My Profile</span>
                 </router-link>
               </li>

@@ -135,7 +135,7 @@ export default {
           jobId: this.job.id,
           userId: this.auth.uid,
           errorDate: moment(Date.now()).format('LLL'),
-          message: "Unable to apply due to job data not loading."
+          message: "Unable to apply due to job information not loading."
         })
       }
     },

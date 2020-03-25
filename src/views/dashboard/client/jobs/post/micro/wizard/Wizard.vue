@@ -223,6 +223,7 @@ export default {
             studentId: null,
             companyName: this.client.companyName,
             clientName: this.user.displayName,
+            clientAlias: this.client.alias,
             name: this.name,
             description: this.description,
             location: this.location,

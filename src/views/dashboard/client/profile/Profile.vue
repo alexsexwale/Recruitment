@@ -22,6 +22,7 @@
   </div>
 </template>
 <script>
+import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import StarRating from 'vue-star-rating';
 export default {
