@@ -6,7 +6,9 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <hr v-if="edit">
           <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
+          <hr v-if="edit">
           <p v-if="rating"><b>{{ rating }}</b></p>
           <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
           <h4 v-if="user.name && user.surname" class="card-title">{{ user.name + ' ' + user.surname }}</h4>
@@ -61,7 +63,7 @@ export default {
     let auth = null;
     user.get().then(user => {
         this.user = user.data();
-        auth = firebase.auth().currentUser;
+        auth = firebase.auth().currentUser.uid;
         if(auth == this.user.userId)
           this.edit = true;
     });

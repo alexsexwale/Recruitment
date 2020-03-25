@@ -6,7 +6,9 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <hr v-if="edit">
           <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
+          <hr v-if="edit">
           <p v-if="rating"><b>{{ rating }}</b></p>
           <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
           <h4 v-if="user.name && user.surname" class="card-title"><b>{{ user.name + ' ' + user.surname }}</b></h4>
@@ -26,26 +28,26 @@ import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import StarRating from 'vue-star-rating';
 export default {
-    components: { 
-        StarRating 
-    },
-    data() {
-      return {
-        profile: [],
-        user: [],
-        rating: 4.84,
-        edit: null 
-      }
-    },
-    props: {
+  components: { 
+      StarRating 
+  },
+  data() {
+    return {
+      profile: [],
+      user: [],
+      rating: 4.84,
+      edit: null 
+    }
+  },
+  props: {
     cardUserImage: {
       type: String,
       default: "/img/dashboard/client/card-1.jpg"
-    },
-    methods: {
-      editProfile() {
-        this.$router.push({ name: 'edit-student-profile', params: {id: this.$route.params.id} });
-      }
+    }
+  },
+  methods: {
+    editProfile() {
+      this.$router.push({ name: 'edit-student-profile', params: {id: this.$route.params.id} });
     }
   },
   created() {
@@ -70,14 +72,12 @@ export default {
     let auth = null;
     user.get().then(user => {
         this.user = user.data();
-        auth = firebase.auth().currentUser;
-        if(auth == this.user.userId)
+        let student = db.collection('students').doc(this.$route.params.id);
+        student.get().then(student => {
+          this.profile = student.data(); 
+        });
+        if(firebase.auth().currentUser.uid === this.user.userId)
           this.edit = true;
-    });
-
-    let student = db.collection('students').doc(this.$route.params.id);
-    student.get().then(student => {
-    this.profile = student.data(); 
     });
   }
 }
