@@ -108,7 +108,6 @@ export default {
   data() {
     return {
       wizardModel: {},
-      auth: null,
       user: null,
       feedback: null,
       firstName: null,
@@ -210,8 +209,7 @@ export default {
     }
   },
   created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
+    this.user = firebase.auth().currentUser;
   }
 };
 </script>

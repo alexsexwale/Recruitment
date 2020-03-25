@@ -6,6 +6,7 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
           <p v-if="rating"><b>{{ rating }}</b></p>
           <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
           <h4 v-if="user.name && user.surname" class="card-title"><b>{{ user.name + ' ' + user.surname }}</b></h4>
@@ -22,6 +23,7 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import firebase from 'firebase/app';
 import StarRating from 'vue-star-rating';
 export default {
     components: { 
@@ -31,19 +33,24 @@ export default {
       return {
         profile: [],
         user: [],
-        rating: 4.84 
+        rating: 4.84,
+        edit: null 
       }
     },
     props: {
     cardUserImage: {
       type: String,
       default: "/img/dashboard/client/card-1.jpg"
+    },
+    methods: {
+      editProfile() {
+        this.$router.push({ name: 'edit-student-profile', params: {id: this.$route.params.id} });
+      }
     }
   },
   created() {
-
     // Note: using alias allows the user to update their url profile name, e.g. profile/peter-parker
-    // Note: slower to render onto the page
+    // Note: however it is slower to render onto the page
 
     //   let user = db.collection('users').where('alias', '==', this.$route.params.id);
     //   user.get().then(snapshot => {
@@ -58,11 +65,14 @@ export default {
     //       });
     //     });
     //   });
-
     // Note: checking document id's for the data
     let user = db.collection('users').doc(this.$route.params.id);
+    let auth = null;
     user.get().then(user => {
         this.user = user.data();
+        auth = firebase.auth().currentUser;
+        if(auth == this.user.userId)
+          this.edit = true;
     });
 
     let student = db.collection('students').doc(this.$route.params.id);

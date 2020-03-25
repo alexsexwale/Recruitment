@@ -51,7 +51,7 @@
             @gender="addGender"
             @race="addRace"
             @phone="addPhone"
-            @aboutMe="aboutMe">
+            @aboutMe="addAboutMe">
           </first-step>
         </wizard-tab>
 

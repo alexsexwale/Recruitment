@@ -29,7 +29,7 @@
             { 'md-valid': !errors.has('deadline') && touched.deadline },
             { 'md-error': errors.has('deadline') }
           ]">
-          <label>Anticipated Duration</label>
+          <label>Duration</label>
           <md-select @input="addDeadline" v-model="deadline" data-vv-name="deadline" type="text" name="deadline" required v-validate="modelValidations.deadline" style="margin-left: 10px;">
             <md-option v-for="(deadline, index) in deadlines" :key="index" :value="deadline">{{deadline}}</md-option>
           </md-select>

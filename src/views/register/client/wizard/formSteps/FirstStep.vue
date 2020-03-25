@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let's start with the basic information (with validation)
+      Let's start with the basic information
     </h5>
     <div class="md-layout">
       <div class="md-layout-item md-size-40 md-small-size-100">
@@ -132,7 +132,7 @@
           ]">
           <md-icon><i class="fas fa-sitemap"></i></md-icon>
           <label>Company Size</label>
-          <md-select @input="addCompanySize" v-model="companySize" name="select" style="margin-left: 10px;">
+          <md-select @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
             <md-option v-for="(sizeType, index) in sizeTypes" :key="index" :value="sizeType">{{sizeType}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -145,22 +145,21 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('industry') && touched.industry },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('industry') }
-          ]">
-          <md-icon><i class="fas fa-industry"></i></md-icon>
-          <md-autocomplete style="margin-left: 10px;" @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry">
-            <label>Industry</label>
-          </md-autocomplete>
+        <md-autocomplete style="margin-left: 10px;" @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+          :class="[
+              { 'md-valid': !errors.has('industry') && touched.industry },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('industry') }
+            ]">
+          <!-- <md-icon><i class="fas fa-industry"></i></md-icon> -->
+          <label>Industry</label>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
+          <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
-        </md-field>
+        </md-autocomplete>
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
@@ -218,7 +217,8 @@ export default {
         phoneNumber: false,
         vat: false,
         companySize: false,
-        industry: false
+        industry: false,
+        aboutMe: false
       },
       modelValidations: {
         firstName: {

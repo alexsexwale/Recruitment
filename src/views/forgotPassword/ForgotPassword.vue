@@ -16,7 +16,7 @@
             <md-icon class="error" v-show="errors.has('email')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.password">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
           </slide-y-down-transition>
         </md-field>
         <button class="md-button md-success md-theme-default" slot="footer">

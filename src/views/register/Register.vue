@@ -5,6 +5,7 @@
         <h3 slot="title" class="title">Register</h3>
         <md-radio v-model="userRole" slot="inputs" value="student">Student</md-radio>
         <md-radio v-model="userRole" slot="inputs" value="client">Client</md-radio>
+        
         <md-field slot="inputs"
           :class="[
             { 'md-valid': !errors.has('firstName') && touched.firstName },
@@ -190,9 +191,8 @@ export default {
           replacement: '-',
           remove: /[$*_+~.()'"!\-:@]/g,
           lower: true
-        })
+        });
       let users = db.collection('users').doc(this.slug);
-
       users.get().then(doc => {
         if(doc.exists) {
           this.loading = false;

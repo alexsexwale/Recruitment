@@ -18,6 +18,7 @@
         </sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'Logout', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
         <!-- End: client side navbar -->
 
         <!-- Begin: student side navbar -->
@@ -30,6 +31,7 @@
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
+        <sidebar-item v-if="student" :link="{ name: 'Logout', icon: 'reply_all', path: '/login' }"></sidebar-item>
         <!-- End: student side navbar -->
       </template>
     </side-bar>
@@ -105,6 +107,11 @@ export default {
       if (this.$sidebar) {
         this.$sidebar.toggleMinimize();
       }
+    },
+    logout() {
+      firebase.auth().signOut().then(() => {
+          this.$router.push({ name: 'Login'})
+      });
     }
   },
   created() {

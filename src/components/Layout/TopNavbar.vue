@@ -13,7 +13,6 @@
 
         <div class="md-collapse">
           <md-list>
-
             <li class="md-list-item">
               <a class="md-list-item-router md-list-item-container md-button-clean dropdown">
                 <div class="md-list-item-content">
@@ -22,7 +21,11 @@
                       <md-icon>person</md-icon>
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <li><router-link to="/client/edit-profile">My Profile</router-link></li>
+                      <!-- Client: My Profile -->
+                      <li v-if="client"><router-link :to="{ name: 'client-profile', params: { id: alias } }">My Profile</router-link></li>
+                      <!-- Student: My Profile -->
+                      <li v-if="student"><router-link :to="{ name: 'student-profile', params: { id: alias } }">My Profile</router-link></li>
+                      <!-- Logout -->
                       <li><a @click="logout">Logout</a></li>
                     </ul>
                   </drop-down>
@@ -37,18 +40,41 @@
 </template>
 
 <script>
+import db from '@/firebase/init';
 import firebase from 'firebase'
 export default {
+  data() {
+    return {
+      student: null,
+      client: null
+    }
+  },
   methods: {
     toggleSidebar() {
       this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
     },
     logout() {
       firebase.auth().signOut().then(() => {
-          this.$router.push({ name: 'Login'})
-      })
+        this.$router.push({ name: 'Login'});
+      });
     }
   },
-
+  created() {
+    let user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.data().alias;
+        let userPermission = doc.data().user;
+        if(userPermission == "student") {
+          this.student = true;
+        }
+        else {
+          this.client = true;
+        }
+      });
+    });
+  }
 };
 </script>

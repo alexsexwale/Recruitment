@@ -6,6 +6,7 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
           <p v-if="rating"><b>{{ rating }}</b></p>
           <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
           <h4 v-if="user.name && user.surname" class="card-title">{{ user.name + ' ' + user.surname }}</h4>
@@ -29,7 +30,8 @@ export default {
     return {
       profile: [],
       user: [],
-      rating: 4.84
+      rating: 4.84,
+      edit: null 
     }
   },
   props: {
@@ -38,26 +40,37 @@ export default {
       default: "/img/dashboard/client/card-1.jpg"
     }
   },
+  methods: {
+    editProfile() {
+      this.$router.push({ name: 'edit-client-profile', params: {id: this.$route.params.id} });
+    }
+  },
   created() {
-      // let user = db.collection('users').where('alias', '==', this.$route.params.id);
-      // user.get().then(snapshot => {
-      //   snapshot.forEach(doc => {
-      //     this.profile = doc.data();
+    // Note: using alias allows the user to update their url profile name, e.g. profile/peter-parker
+    // Note: however it is slower to render onto the page
 
-      //     let client = db.collection('clients').where('userId', '==', this.profile.userId )
-      //   });
-      // });
-      let user = db.collection('users');
-      user.doc(this.$route.params.id).get()
-      .then(user => {
-          this.user = user.data();
-      });
+    // let user = db.collection('users').where('alias', '==', this.$route.params.id);
+    // user.get().then(snapshot => {
+    //   snapshot.forEach(doc => {
+    //     this.profile = doc.data();
 
-      let client = db.collection('clients');
-      client.doc(this.$route.params.id).get()
-      .then(client => {
-        this.profile = client.data(); 
-      });
+    //     let client = db.collection('clients').where('userId', '==', this.profile.userId )
+    //   });
+    // });
+    let user = db.collection('users').doc(this.$route.params.id);
+    let auth = null;
+    user.get().then(user => {
+        this.user = user.data();
+        auth = firebase.auth().currentUser;
+        if(auth == this.user.userId)
+          this.edit = true;
+    });
+
+    let client = db.collection('clients');
+    client.doc(this.$route.params.id).get()
+    .then(client => {
+      this.profile = client.data(); 
+    });
   }
 }
 </script>

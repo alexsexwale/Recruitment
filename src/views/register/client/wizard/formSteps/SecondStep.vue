@@ -62,15 +62,15 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('province') && touched.province },
             { 'md-form-group': true },
             { 'md-error': errors.has('province') }
           ]">
           <md-icon><i class="fas fa-map-marked-alt"></i></md-icon>
-          <label>Province</label>
-          <md-select @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province" style="margin-left: 10px;">
+          <label for="select">Province</label>
+          <md-select @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
             <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -147,7 +147,8 @@ export default {
           required: true
         },
         postalCode: {
-          required: true
+          required: true,
+          min: 4
         }
       }
     };

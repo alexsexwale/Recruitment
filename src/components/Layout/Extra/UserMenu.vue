@@ -14,15 +14,31 @@
       <collapse-transition>
         <div v-show="!isClosed">
           <ul class="nav">
-            <slot>
-              <li v-if="client">
-                <router-link to="/client/edit-profile">
+            <!-- Client: User Menu -->
+            <slot v-if="client">
+              <li> <!-- Client: My Profile -->
+                <router-link :to="{ name: 'client-profile', params: { id: alias } }">
+                  <span class="sidebar-mini">MP</span>
+                  <span class="sidebar-normal">My Profile</span>
+                </router-link>
+              </li>
+              <li> <!-- Client: Edit Profile -->
+                <router-link :to="{ name: 'edit-client-profile', params: { id: alias } }">
                   <span class="sidebar-mini">EP</span>
                   <span class="sidebar-normal">Edit Profile</span>
                 </router-link>
               </li>
-              <li v-if="student">
-                <router-link to="/student/edit-profile">
+            </slot>
+            <!-- Student: User Menu -->
+            <slot v-if="student">
+              <li> <!-- Student: My Profile -->
+                <router-link :to="{ name: 'student-profile', params: { id: alias } }">
+                  <span class="sidebar-mini">EP</span>
+                  <span class="sidebar-normal">My Profile</span>
+                </router-link>
+              </li>
+              <li> <!-- Student: Edit Profile -->
+                <router-link :to="{ name: 'edit-student-profile', params: { id: alias } }">
                   <span class="sidebar-mini">EP</span>
                   <span class="sidebar-normal">Edit Profile</span>
                 </router-link>
@@ -60,7 +76,8 @@ export default {
       surname: null,
       username: null,
       student: null,
-      client: null
+      client: null,
+      alias: null
     };
   },
   methods: {
@@ -80,6 +97,7 @@ export default {
         this.name = doc.data().name;
         this.surname = doc.data().surname;
         this.username = this.name + " " + this.surname;
+        this.alias = doc.data().alias;
         let userPermission = doc.data().user;
         if(userPermission == "student") {
           this.student = true;
@@ -87,8 +105,8 @@ export default {
         else {
           this.client = true;
         }
-      })
-    })
+      });
+    });
   }
 };
 </script>

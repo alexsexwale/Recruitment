@@ -12,8 +12,8 @@
             { 'md-error': errors.has('institution') }
           ]">
           <md-icon>school</md-icon>
-          <label>Where do you study?</label>
-          <md-select @input="addInstitution" v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution" style="margin-left: 10px;">
+          <label>Institution</label>
+          <md-select @input="addInstitution" v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution">
             <md-option v-for="(institution, index) in institutions" :key="index" :value="institution">{{institution}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -32,7 +32,7 @@
             { 'md-error': errors.has('campus') }
           ]">
           <md-icon>school</md-icon>
-          <label>Enter your campus</label>
+          <label>Campus</label>
           <md-input @change="addCampus" v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
           </md-input>
           <slide-y-down-transition>
@@ -51,7 +51,7 @@
             { 'md-error': errors.has('studentNo') }
           ]">
           <md-icon>school</md-icon>
-          <label>Student Number</label>
+          <label>Student ID</label>
           <md-input @change="addStudentNo" v-model="studentNo" data-vv-name="studentNo" type="text" name="studentNo" required v-validate="modelValidations.studentNo">
           </md-input>
           <slide-y-down-transition>
@@ -70,8 +70,8 @@
             { 'md-error': errors.has('faculty') }
           ]">
           <md-icon>school</md-icon>
-          <label>Select your faculty</label>
-          <md-select @input="addFaculty" v-model="faculty" data-vv-name="faculty" type="text" name="faculty" required v-validate="modelValidations.faculty" style="margin-left: 10px;">
+          <label>Faculty</label>
+          <md-select @input="addFaculty" v-model="faculty" data-vv-name="faculty" type="text" name="faculty" required v-validate="modelValidations.faculty">
             <md-option v-for="(faculty, index) in faculties" :key="index" :value="faculty">{{faculty}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -90,7 +90,7 @@
             { 'md-error': errors.has('degree') }
           ]">
           <md-icon>school</md-icon>
-          <label>Enter your degree</label>
+          <label>Degree</label>
           <md-input @change="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
           </md-input>
           <slide-y-down-transition>
@@ -109,8 +109,8 @@
             { 'md-error': errors.has('year') }
           ]">
           <md-icon>school</md-icon>
-          <label>Select your year of study?</label>
-          <md-select @input="addYear" v-model="year" data-vv-name="year" type="text" name="year" required v-validate="modelValidations.year" style="margin-left: 10px;">
+          <label>Year of Study?</label>
+          <md-select @input="addYear" v-model="year" data-vv-name="year" type="text" name="year" required v-validate="modelValidations.year">
             <md-option v-for="(year, index) in years" :key="index" :value="year">{{year}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -130,7 +130,7 @@
           ]">
           <md-icon>school</md-icon>
           <label>Undergraduate/Postgraduate</label>
-          <md-select @input="addGraduateStatus" v-model="graduateStatus" data-vv-name="graduateStatus" type="text" name="graduateStatus" required v-validate="modelValidations.graduateStatus" style="margin-left: 10px;">
+          <md-select @input="addGraduateStatus" v-model="graduateStatus" data-vv-name="graduateStatus" type="text" name="graduateStatus" required v-validate="modelValidations.graduateStatus">
             <md-option v-for="(graduate, index) in graduates" :key="index" :value="graduate">{{graduate}}</md-option>
           </md-select>
           <slide-y-down-transition>

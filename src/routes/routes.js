@@ -178,8 +178,8 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "edit-profile", //change to profile
-      name: "edit-profile", //change to profile
+      path: "profile/edit/:id",
+      name: "edit-client-profile",
       component: EditClientProfile,
       meta: {
         requiresAuth: true,
@@ -369,8 +369,8 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "edit-profile", //change to profile
-      name: "profile",
+      path: "profile/edit/:id",
+      name: "edit-student-profile",
       component: EditStudentProfile,
       meta: {
         requiresAuth: true,
