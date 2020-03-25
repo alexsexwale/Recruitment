@@ -113,7 +113,7 @@ export default {
     phone: {
       required: true
     },
-    aboutMe: {
+    bio: {
       required: true
     },
     institution: {
@@ -253,7 +253,7 @@ export default {
               gender: this.gender,
               race: this.race,
               phoneNumber: this.phone,
-              bio: this.aboutMe,
+              bio: this.bio,
               institution: this.institution,
               campus: this.campus,
               studentNo: this.studentNo,

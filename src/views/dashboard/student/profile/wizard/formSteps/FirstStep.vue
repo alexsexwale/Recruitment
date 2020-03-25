@@ -53,25 +53,33 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addDob" v-model="dob">
+      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
+        <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
+          :class="[
+              { 'md-valid': !errors.has('dob') && touched.dob },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('dob') }
+            ]">
           <label>Date of birth</label>
+          <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('dob')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('dob') && touched.dob">done</md-icon>
+          </slide-y-down-transition>
         </md-datepicker>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
         <md-field :class="[
               { 'md-valid': !errors.has('gender') && touched.gender },
               { 'md-form-group': true },
               { 'md-error': errors.has('gender') }
             ]">
           <md-icon>face</md-icon>
-          <label for="select">Gender</label>
-          <md-select @input="addGender" v-model="gender" name="select" style="margin-left: 10px;">
-            <md-option value="male">Male</md-option>
-            <md-option value="female">Female</md-option>
-            <md-option value="unknown">Prefer not say</md-option>
-            <md-option value="other">Other</md-option>
+          <label for="gender">Gender</label>
+          <md-select @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
+            <md-option v-for="(gender, index) in genders" :key="index" :value="gender">{{gender}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('gender')">close</md-icon>
@@ -82,20 +90,16 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
         <md-field :class="[
               { 'md-valid': !errors.has('race') && touched.race },
               { 'md-form-group': true },
               { 'md-error': errors.has('race') }
             ]">
           <md-icon>face</md-icon>
-          <label for="select">Race</label>
-          <md-select @input="addRace" v-model="race" name="select" style="margin-left: 10px;">
-            <md-option value="black">Black</md-option>
-            <md-option value="white">White</md-option>
-            <md-option value="coloured">Coloured</md-option>
-            <md-option value="asian">Indian/Asian</md-option>
-            <md-option value="other">Other/Unspecified</md-option>
+          <label for="race">Race</label>
+          <md-select @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
+            <md-option v-for="(race, index) in races" :key="index" :value="race">{{race}}</md-option>
           </md-select>
           <slide-y-down-transition>
               <md-icon class="error" v-show="errors.has('race')">close</md-icon>
@@ -106,7 +110,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('phone') && touched.phone },
             { 'md-form-group': true },
@@ -121,6 +125,23 @@
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('phone') && touched.phone">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item md-size-100 ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('bio') && touched.bio },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('bio') }
+          ]">
+          <label>About Me</label>
+          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" required v-validate="modelValidations.bio"></md-textarea>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('bio')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('bio') && touched.bio">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -150,13 +171,17 @@ export default {
       gender: null,
       race: null,
       phone: null,
+      bio: null,
+      genders:[],
+      races:[],
       touched: {
         firstName: false,
         lastName: false,
         dob: false,
         gender: false,
         race: false,
-        phone: false
+        phone: false,
+        bio: false
       },
       modelValidations: {
         firstName: {
@@ -177,6 +202,9 @@ export default {
           required: true,
           min: 10,
           max: 10
+        },
+        bio: {
+          required: true
         }
       }
     };
@@ -225,6 +253,9 @@ export default {
     },
     addPhone: function() {
       this.$emit("phone", this.phone);
+    },
+    addBio: function() {
+      this.$emit("bio", this.bio);
     }
   },
   watch: {
@@ -245,6 +276,9 @@ export default {
     },
     phone() {
       this.touched.phone = true;
+    },
+    bio() {
+      this.touched.bio = true;
     }
   },
   created() {
@@ -256,8 +290,8 @@ export default {
       snapshot.forEach(doc => {
         this.firstName = doc.data().name;
         this.lastName = doc.data().surname;
-      })
-    })
+      });
+    });
     student.where('userId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -265,8 +299,14 @@ export default {
         this.gender = doc.data().gender;
         this.race = doc.data().race;
         this.phone = doc.data().phoneNumber;
-      })
-    })
+        this.bio = doc.data().bio;
+      });
+    });
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.genders = doc.data().Genders;
+      this.races = doc.data().Races; 
+    });
   }
 };
 </script>

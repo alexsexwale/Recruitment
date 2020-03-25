@@ -21,9 +21,9 @@
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
           :class="[
-              { 'md-valid': !errors.has('gender') && touched.gender },
+              { 'md-valid': !errors.has('dob') && touched.gender },
               { 'md-form-group': true },
-              { 'md-error': errors.has('gender') }
+              { 'md-error': errors.has('dob') }
             ]">
           <label>Date of birth</label>
           <slide-y-down-transition>
@@ -89,16 +89,16 @@
         </md-field>
         
         <md-field :class="[
-            { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
-            { 'md-error': errors.has('aboutMe') }
+            { 'md-valid': !errors.has('bio') && touched.bio },
+            { 'md-error': errors.has('bio') }
           ]">
           <label>About Me</label>
-          <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
+          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" required v-validate="modelValidations.bio"></md-textarea>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('bio')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('bio') && touched.bio">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -128,7 +128,7 @@ export default {
       gender: null,
       race: null,
       phone: null,
-      aboutMe: null,
+      bio: null,
       genders:[],
       races:[],
       touched: {
@@ -138,7 +138,7 @@ export default {
         gender: false,
         race: false,
         phone: false,
-        aboutMe: false
+        bio: false
       },
       modelValidations: {
         firstName: {
@@ -163,7 +163,7 @@ export default {
           min: 10,
           max: 10
         },
-        aboutMe: {
+        bio: {
           required: true
         }
       }
@@ -214,8 +214,8 @@ export default {
     addPhone: function() {
       this.$emit("phone", this.phone);
     },
-    addAboutMe: function() {
-      this.$emit("aboutMe", this.aboutMe);
+    addBio: function() {
+      this.$emit("bio", this.bio);
     }
   },
   watch: {
@@ -237,8 +237,8 @@ export default {
     phone() {
       this.touched.phone = true;
     },
-    aboutMe() {
-      this.touched.aboutMe = true;
+    bio() {
+      this.touched.bio = true;
     }
   },
   created() {

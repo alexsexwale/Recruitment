@@ -8,7 +8,7 @@
         v-bind:gender="gender"
         v-bind:race="race"
         v-bind:phone="phone"
-        v-bind:aboutMe="aboutMe"
+        v-bind:bio="bio"
         v-bind:institution="institution"
         v-bind:campus="campus"
         v-bind:studentNo="studentNo"
@@ -51,7 +51,7 @@
             @gender="addGender"
             @race="addRace"
             @phone="addPhone"
-            @aboutMe="addAboutMe">
+            @bio="addBio">
           </first-step>
         </wizard-tab>
 
@@ -130,7 +130,7 @@ export default {
       gender: null,
       race: null,
       phone: null,
-      aboutMe: null,
+      bio: null,
       institution: null,
       campus: null,
       studentNo: null,
@@ -207,8 +207,8 @@ export default {
       this.phone = phone;
       this.refresh();
     },
-    addAboutMe: function(aboutMe) {
-      this.aboutMe = aboutMe;
+    addBio: function(bio) {
+      this.bio = bio;
       this.refresh();
     },
     addInstitution: function(institution) {

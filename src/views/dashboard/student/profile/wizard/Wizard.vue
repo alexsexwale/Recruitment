@@ -113,6 +113,9 @@ export default {
     phone: {
       required: true
     },
+    bio: {
+      required: true
+    },
     institution: {
       required: true
     },
@@ -126,9 +129,6 @@ export default {
       required: true
     },
     degree: {
-      required: true
-    },
-    major: {
       required: true
     },
     year: {
@@ -264,6 +264,12 @@ export default {
           if(this.phone) {
             student.update({
               phoneNumber: this.phone,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.bio) {
+            student.update({
+              bio: this.bio,
               lastModified: moment(Date.now()).format('L')
             });
           }
