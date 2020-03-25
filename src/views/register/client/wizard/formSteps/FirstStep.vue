@@ -80,7 +80,7 @@
             { 'md-error': errors.has('companyWebsite') }
           ]">
           <md-icon><i class="fas fa-globe"></i></md-icon>
-          <label>Company Website</label>
+          <label>Website</label>
           <md-input @change="addCompanyWebsite" v-model="companyWebsite" data-vv-name="companyWebsite" type="text" name="companyWebsite" required v-validate="modelValidations.companyWebsite">
           </md-input>
           <slide-y-down-transition>
