@@ -11,11 +11,10 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
-          <h6 class="category text-gray">CEO / Co-Founder</h6>
+          <h6 class="category text-gray">{{ applicant.degree }}</h6>
           <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
           <p class="card-description">
-            Don't be scared of the truth because we need to restart the human
-            foundation in truth
+            {{ applicant.bio }}
           </p>
           <md-button @click="cancelModal=true;" class="md-danger md-round">Cancel</md-button>
         </md-card-content>
@@ -55,11 +54,10 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
-          <h6 class="category text-gray">CEO / Co-Founder</h6>
+          <h6 class="category text-gray"> {{ applicant.degree }}</h6>
           <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
           <p class="card-description">
-            Don't be scared of the truth because we need to restart the human
-            foundation in truth
+            {{ applicant.bio }}
           </p>
           <md-button @click="select(applicant.id)" class="md-success md-round">Select</md-button>
           &nbsp;&nbsp;&nbsp;

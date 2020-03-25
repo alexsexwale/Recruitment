@@ -11,12 +11,11 @@
             <img class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
-          <h6 class="category text-gray">CEO / Co-Founder</h6>
-          <!-- <h4 class="card-title">{{ applicant.applicant }}</h4> -->
-          <p class="card-description">
-            Don't be scared of the truth because we need to restart the human
-            foundation in truth
-          </p>
+            <h6 class="category text-gray">{{ applicant.degree }}</h6>
+            <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
+            <p class="card-description">
+              {{ applicant.bio }}
+            </p>
           </md-card-content>
         </md-card>
       </div>
@@ -58,7 +57,8 @@ export default {
   },
   data() {
     return {
-      cancelModal: false
+      cancelModal: false,
+      applicant: {}
     }
   },
   props: {
@@ -84,7 +84,14 @@ export default {
     }  
   },
   created() {
-    
+    db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', false).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.available = true;
+        this.applicant = doc.data();
+        this.applicant.id = doc.id;
+      });
+    });
   }
 }
 </script>

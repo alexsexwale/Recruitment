@@ -12,7 +12,7 @@
             <img class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
-          <h6 class="category text-gray">{{ client.companyName }}</h6>
+          <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
           <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
           <p class="card-description">
             {{ client.description }}
@@ -56,11 +56,10 @@
             <img class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
-            <h6 class="category text-gray">CEO / Co-Founder</h6>
+            <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
             <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
             <p class="card-description">
-              Don't be scared of the truth because we need to restart the human
-              foundation in truth
+              {{ client.description }}
             </p>
           </md-card-content>
         </md-card>

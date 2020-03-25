@@ -86,6 +86,7 @@ export default {
     return {
       job: {},
       skills: {},
+      student: {},
       feedback: null,
       user: null,
       auth: null,
@@ -118,6 +119,8 @@ export default {
               studentId: this.auth.uid,
               appliedDate: moment(Date.now()).format('L'),
               applicant: this.auth.displayName,
+              degree: this.student.degree,
+              bio: this.student.bio, 
               applicantAlias: this.user.alias,
               approved: false,
               status: 'applied'
@@ -143,33 +146,33 @@ export default {
   },
   created() {
     this.auth = firebase.auth().currentUser;
-    let job = db.collection('micros').where('jobId', '==', this.$route.params.id);
-    let skills = db.collection('skills').where('jobId', '==', this.$route.params.id);
-    job.get().then(snapshot => {
-      snapshot.forEach(doc => {
-        this.job = doc.data();
-        this.job.id = doc.id;
-        let user = db.collection('users').where('userId', '==', this.auth.uid);
-        user.get().then(snapshot => {
-          snapshot.forEach(doc => {
-            this.user = doc.data();
-            this.slug = slugify(this.user.alias + " " + this.$route.params.id, {
-              replacement: '-',
-              remove: /[$*_+~.()'"!\-:@]/g,
-              lower: true
+    let job = db.collection('micros').doc(this.$route.params.id);
+    let skills = db.collection('skills').doc(this.$route.params.id);
+    job.get().then(doc => {
+      this.job = doc.data();
+      this.job.id = doc.id;
+      let user = db.collection('users').where('userId', '==', this.auth.uid);
+      user.get().then(snapshot => {
+        snapshot.forEach(doc => {
+          this.user = doc.data();
+          this.slug = slugify(this.user.alias + " " + this.$route.params.id, {
+            replacement: '-',
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          });
+          skills.get().then(doc => {
+            this.skills = doc.data();
+            this.skills.id = doc.id;
+            let application = db.collection('applications').doc(this.slug);
+            application.get().then(doc => {
+              if(doc.exists && doc.data().jobId == this.$route.params.id) {
+                this.$router.push({ name: 'student-micro-status', params: {id: this.$route.params.id} });
+              }
             });
-            skills.get().then(snapshot => {
-              snapshot.forEach(doc => {
-                this.skills = doc.data();
-                this.skills.id = doc.id;
-                let application = db.collection('applications').doc(this.slug);
-                application.get().then(doc => {
-                  if(doc.exists && doc.data().jobId == this.$route.params.id) {
-                    this.$router.push({ name: 'student-status', params: {id: this.$route.params.id} });
-                  }
-                });
-              });
-            });
+          });
+          let students = db.collection('students').doc(this.user.alias);
+          students.get().then(doc => {
+            this.student = doc.data();
           });
         });
       });
