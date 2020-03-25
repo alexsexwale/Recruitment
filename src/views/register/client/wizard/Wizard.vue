@@ -393,7 +393,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 /* Tab content animation */
 .tab-content {
   display: flex; // to avoid horizontal scroll when animating

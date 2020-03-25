@@ -259,4 +259,10 @@ export default {
   }
 };
 </script>
-<style></style>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .md-field label {
+    font-size: 11px;
+  }
+}
+</style>

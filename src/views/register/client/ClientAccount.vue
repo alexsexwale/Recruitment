@@ -238,3 +238,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .md-layout-item.md-xsmall-size-80 {
+    min-width: 100%;
+  }
+}
+</style>
