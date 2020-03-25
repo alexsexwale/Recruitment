@@ -18,7 +18,7 @@
         </sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
-        <sidebar-item v-if="client" :link="{ name: 'Logout', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
+        <sidebar-item v-if="client" :link="{ name: 'Logout', icon: 'reply_all', path: '/login' }"></sidebar-item>
         <!-- End: client side navbar -->
 
         <!-- Begin: student side navbar -->
