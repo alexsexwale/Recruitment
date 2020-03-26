@@ -233,8 +233,8 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.email = doc.data().email;
-      })
-    })
+      });
+    });
   }
 };
 </script>

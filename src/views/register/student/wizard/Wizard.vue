@@ -239,59 +239,48 @@ export default {
       });
 
       if(this.user.emailVerified) {
-        let ref = db.collection('users');
-        ref.where('userId', '==', this.user.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.alias = doc.id;
-            let students = db.collection('students').doc(this.alias);
-            students.set({
-              userId: this.user.uid,
-              created: moment(Date.now()).format('L'),
-              lastModified: null,
-              dateOfBirth: moment(this.dob).format('L'),
-              gender: this.gender,
-              race: this.race,
-              phoneNumber: this.phone,
-              bio: this.bio,
-              institution: this.institution,
-              campus: this.campus,
-              studentNo: this.studentNo,
-              faculty: this.faculty,
-              degree: this.degree,
-              major: this.major,
-              year: this.year,
-              graduateStatus: this.graduateStatus,
-              accountName: this.accountName,
-              accountNumber: this.accountNumber,
-              accountType: this.accountType,
-              bankName: this.bankName,
-              branchCode: this.branchCode
-            });
-            
-            let users = db.collection('users').doc(doc.id);
-            if(this.firstName) {
-              users.update({
-                name: this.firstName
-              });
-            }
-            if(this.lastName) {
-              users.update({
-                surname: this.lastName
-              });
-            }
-          })
-        })
-        .then(() => {
-          this.$router.push({ name: "student-profile", params: { id: this.alias } });
-        })
-        .catch(err => {
-          this.feedback = err.message;
-        })
-        } else {
-          this.feedback = "You have not verified that " + this.email + " is your email address."
-          this.addFeedback();
+        let students = db.collection('students').doc(this.alias);
+        students.set({
+          userId: this.user.uid,
+          created: moment(Date.now()).format('L'),
+          lastModified: null,
+          dateOfBirth: moment(this.dob).format('L'),
+          gender: this.gender,
+          race: this.race,
+          phoneNumber: this.phone,
+          bio: this.bio,
+          institution: this.institution,
+          campus: this.campus,
+          studentNo: this.studentNo,
+          faculty: this.faculty,
+          degree: this.degree,
+          major: this.major,
+          year: this.year,
+          graduateStatus: this.graduateStatus,
+          accountName: this.accountName,
+          accountNumber: this.accountNumber,
+          accountType: this.accountType,
+          bankName: this.bankName,
+          branchCode: this.branchCode
+        });
+        
+        let users = db.collection('users').doc(doc.id);
+        if(this.firstName) {
+          users.update({
+            name: this.firstName
+          });
         }
+        if(this.lastName) {
+          users.update({
+            surname: this.lastName
+          });
+        }
+        this.$router.push({ name: "student-profile", params: { id: this.alias } });
+
+      } else {
+        this.feedback = "You have not verified that " + this.email + " is your email address."
+        this.addFeedback();
+      }
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -403,6 +392,13 @@ export default {
   },
   created() {
     this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.id;
+      });
+    });
   }
 };
 </script>

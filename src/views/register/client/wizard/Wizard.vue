@@ -37,7 +37,7 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                {{ prevButtonText }}
+                {{ prevButtonText }} 
               </md-button>
             </div>
 
@@ -222,59 +222,48 @@ export default {
       });
 
       if(this.user.emailVerified) {
-        let users = db.collection('users');
-        users.where('userId', '==', this.user.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.alias = doc.id;
-            let clients = db.collection('clients').doc(this.alias);
-            //upload profile picture
-            let storageRef = firebase.storage().ref('profiles/' + this.file.name);
-            let uploadTask = storageRef.put(this.file).then(snapshot => {
-              // Handle successful uploads on complete
-              uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
-                this.profile = downloadUrl;
-              });
-            });
+        let clients = db.collection('clients').doc(this.alias);
+        //upload profile picture
+        //let storageRef = firebase.storage().ref('profiles/' + this.file.name);
+        // let uploadTask = storageRef.put(this.file).then(snapshot => {
+        //   // Handle successful uploads on complete
+        //   uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
+        //     this.profile = downloadUrl;
+        //   });
+        // });
 
-            clients.set({
-              userId: this.user.uid,
-              created: moment(Date.now()).format('L'),
-              lastModified: null,
-              companyName: this.companyName,
-              website: this.companyWebsite,
-              phoneNumber: this.phoneNumber,
-              vat: this.vat,
-              companySize: this.companySize,
-              industry: this.industry,
-              bio: this.aboutMe,
-              addressLine1: this.addressLine1,
-              addressLine2: this.addressLine2,
-              city: this.city,
-              province_state: this.province,
-              postalCode_zipCode: this.postalCode,
-              country: "South Africa",
-              profilePicture: this.profile
-            });
-            
-            if(this.firstName) {
-              users.update({
-                name: this.firstName
-              });
-            }
-            if(this.lastName) {
-              users.update({
-                surname: this.lastName
-              });
-            }
+        clients.set({
+          userId: this.user.uid,
+          created: moment(Date.now()).format('L'),
+          lastModified: null,
+          companyName: this.companyName,
+          website: this.companyWebsite,
+          phoneNumber: this.phoneNumber,
+          vat: this.vat,
+          companySize: this.companySize,
+          industry: this.industry,
+          bio: this.aboutMe,
+          addressLine1: this.addressLine1,
+          addressLine2: this.addressLine2,
+          city: this.city,
+          province_state: this.province,
+          postalCode_zipCode: this.postalCode,
+          country: "South Africa",
+          profilePicture: this.profile
+        });
+        
+        if(this.firstName) {
+          users.update({
+            name: this.firstName
           });
-        })
-        .then(() => {
-          this.$router.push({ name: "client-profile", params: { id: this.alias } });
-        })
-        .catch(err => {
-          this.feedback = err.message;
-        })
+        }
+        if(this.lastName) {
+          users.update({
+            surname: this.lastName
+          });
+        }
+        this.$router.push({ name: "client-profile", params: { id: this.alias } });
+
       } else {
         this.feedback = "You have not verified that " + this.email + " is your email address."
         this.addFeedback();
@@ -390,6 +379,13 @@ export default {
   },
   created() {
     this.user = firebase.auth().currentUser;
+    let users = db.collection('users');
+    users.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.id;
+      });
+    });
   }
 };
 </script>
