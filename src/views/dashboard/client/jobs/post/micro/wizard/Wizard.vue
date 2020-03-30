@@ -148,6 +148,7 @@ export default {
       tabLinkWidth: 0,
       tabLinkHeight: 50,
       slug: null,
+      alias: null,
       user: null,
       feedback: null,
       client: {}
@@ -223,7 +224,7 @@ export default {
             studentId: null,
             companyName: this.client.companyName,
             clientName: this.user.displayName,
-            clientAlias: this.client.alias,
+            clientAlias: this.alias,
             name: this.name,
             description: this.description,
             location: this.location,
@@ -357,6 +358,16 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
+  },
+  created() {
+    let auth = firebase.auth().currentUser;
+    let users = db.collection('users');
+    users.where('userId', '==', auth.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.id;
+      });
+    });
   }
 };
 </script>

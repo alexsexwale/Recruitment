@@ -84,7 +84,7 @@ export default {
         let jobType = doc.data().jobType;
 
         // display micro jobs
-        micro.where('jobId', '==', jobId).where('status', '==', 'select').get()
+        micro.where('jobId', '==', jobId).where('status', '==', 'active').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
             this.pendingJobs = true;

@@ -125,4 +125,15 @@ export default {
 .centre {
   text-align: center;
 }
+.md-layout, .md-layout-item {
+    width: 40%;
+    margin: auto;
+}
+/* Mobile View */
+@media only screen and (max-width: 768px) {
+  .md-layout, .md-layout-item {
+    width: 100%;
+    margin: auto;
+  }
+}
 </style>

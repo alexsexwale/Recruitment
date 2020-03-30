@@ -160,13 +160,12 @@ export default {
   },
   data() {
     return {
-      institution: "",
-      campus: "",
-      studentNo: "",
-      faculty: "",
-      degree: "",
-      major: "",
-      year: "",
+      institution: null,
+      campus: null,
+      studentNo: null,
+      faculty: null,
+      degree: null,
+      year: null,
       graduateStatus: "",
       institutions: [],
       faculties: [],
@@ -178,7 +177,6 @@ export default {
         studentNo: false,
         faculty: false,
         degree: false,
-        major: false,
         year: false,
         graduateStatus: false
       },
@@ -196,9 +194,6 @@ export default {
           required: true
         },
         degree: {
-          required: true
-        },
-        major: {
           required: true
         },
         year: {
@@ -252,9 +247,6 @@ export default {
     addDegree: function() {
       this.$emit("degree", this.degree);
     },
-    addMajor: function() {
-      this.$emit("major", this.major);
-    },
     addYear: function() {
       this.$emit("year", this.year);
     },
@@ -277,9 +269,6 @@ export default {
     },
     degree() {
       this.touched.degree = true;
-    },
-    major() {
-      this.touched.major = true;
     },
     year() {
       this.touched.year = true;

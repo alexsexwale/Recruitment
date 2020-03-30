@@ -5,7 +5,7 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job description
+            <i class="far fa-newspaper" /> Description
           </h3>
           <h4 class="card-title">Name</h4>
           <p class="card-description">{{ name }}</p>
@@ -22,7 +22,7 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job Details
+            <i class="far fa-newspaper" /> Details
           </h3>
           <h4 class="card-title">Location</h4>
           <p class="card-description">{{ location }}</p>
@@ -34,7 +34,7 @@
       <md-card class="bg-success">
           <md-card-content>
             <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job Payment
+            <i class="far fa-newspaper" /> Payment
             </h3>
             <h4 class="card-title">Total Budget</h4>
             <p class="card-description">R{{ total() }}</p>

@@ -148,10 +148,7 @@ export default {
     },
     addFile: function(file) {
       this.file = file;
-      if(!this.emailVerified) {
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-      }
+      this.refresh();
     },
     refresh() {
       if(!this.emailVerified) {

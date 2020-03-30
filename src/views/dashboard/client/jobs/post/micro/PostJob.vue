@@ -18,7 +18,8 @@
 
         <wizard-tab :before-change="() => validateStep('step1')">
           <template slot="label">
-            Description
+            <div class="pc-view">Description</div>
+            <div class="mobi-view"><i class="fas fa-list-ul"></i></div>  
           </template>
           <first-step ref="step1" 
             @on-validated="onStepValidated"
@@ -31,7 +32,8 @@
 
         <wizard-tab :before-change="() => validateStep('step2')">
           <template slot="label">
-            Location
+            <div class="pc-view">Location</div>
+            <div class="mobi-view"><i class="fas fa-location-arrow"></i></div>
           </template>
           <second-step ref="step2"
             @on-validated="onStepValidated"
@@ -42,7 +44,8 @@
 
         <wizard-tab :before-change="() => validateStep('step3')">
           <template slot="label">
-            Payments
+            <div class="pc-view">Payment</div>
+            <div class="mobi-view"><i class="fas fa-wallet"></i></div>
           </template>
           <third-step ref="step3" 
             @on-validated="onStepValidated"
@@ -52,7 +55,8 @@
 
         <wizard-tab :before-change="() => validateStep('step4')">
           <template slot="label">
-            Review
+            <div class="pc-view">Review</div>
+            <div class="mobi-view"><i class="fas fa-tasks"></i></div>
           </template>
           <fourth-step ref="step4" 
             v-bind:name="name"
@@ -129,3 +133,22 @@ export default {
   }
 };
 </script>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
+  .md-layout-item.md-xsmall-size-80 {
+    min-width: 100%;
+  }
+  .md-card-wizard .nav-pills > li i {
+    font-size: 0px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
+  }
+}
+</style>

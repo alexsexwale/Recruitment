@@ -131,9 +131,6 @@ export default {
     degree: {
       required: true
     },
-    major: {
-      required: true
-    },
     year: {
       required: true
     },
@@ -254,7 +251,6 @@ export default {
           studentNo: this.studentNo,
           faculty: this.faculty,
           degree: this.degree,
-          major: this.major,
           year: this.year,
           graduateStatus: this.graduateStatus,
           accountName: this.accountName,
@@ -264,7 +260,6 @@ export default {
           branchCode: this.branchCode
         });
         
-        let users = db.collection('users').doc(doc.id);
         if(this.firstName) {
           users.update({
             name: this.firstName
