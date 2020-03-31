@@ -86,18 +86,16 @@ export default {
   computed: {
     setBgImage() {
       let images = {
-        Pricing: "./img/bg-pricing.jpg",
         Login: "./img/login/Login.jpeg",
         ForgotPassword: "./img/forgotPassword/Forgot_Password.jpeg",
         Register: "./img/register/Sign_Up.jpeg",
-        UserRole: "./img/register/Sign_Up.jpeg",
-        StudentForm: "../img/register/student/Wizard_Form_Student.jpeg",
-        ClientForm: "../img/register/client/Wizard_Form_Client.jpg",
         Contact: "./img/contact/Contact.jpeg",
         Faq: "./img/contact/Contact.jpeg",
         PrivacyPolicy: "./img/privacyPolicy/Privacy_Policy.jpeg",
         TermsAndConditions: "./img/termsAndConditions/Terms_And_Conditions.jpeg",
-        Lock: "./img/lock.jpg"
+        Lock: "./img/lock.jpg",
+        StudentAccount: "./img/register/Sign_Up.jpeg",
+        ClientAccount: "./img/register/Sign_Up.jpeg"
       };
       return {
         backgroundImage: `url(${images[this.$route.name]})`

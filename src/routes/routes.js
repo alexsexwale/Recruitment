@@ -86,16 +86,16 @@ let client_dashboard_menu = {
   name: "client-nav-menu",
   redirect: "/client/jobs/micro/post",
   children: [
-    {
-      path: "create-account",
-      name: "create-client-account",
-      components: { default: ClientAccount },
-      props: true,
-      meta: {
-        requiresAuth: true,
-        userRole: "client"
-      }
-    },
+    // {
+    //   path: "create-account",
+    //   name: "create-client-account",
+    //   components: { default: ClientAccount },
+    //   props: true,
+    //   meta: {
+    //     requiresAuth: true,
+    //     userRole: "client"
+    //   }
+    // },
     {
       path: "dashboard",
       name: "client-dashboard",
@@ -278,15 +278,15 @@ let student_dashboard_menu = {
   name: "student-nav-menu",
   redirect: "/student/apply-for-job",
   children: [
-    {
-      path: "create-account",
-      name: "create-student-account",
-      components: { default: StudentAccount },
-      meta: {
-        requiresAuth: true,
-        userRole: "student"
-      }
-    },
+    // {
+    //   path: "create-account",
+    //   name: "create-student-account",
+    //   components: { default: StudentAccount },
+    //   meta: {
+    //     requiresAuth: true,
+    //     userRole: "student"
+    //   }
+    // },
     {
       path: "dashboard",
       name: "student-dashboard",
@@ -441,6 +441,40 @@ let student_dashboard_menu = {
   ]
 };
 
+let clientSignUp = {
+  path: "/new-client",
+  component: AuthLayout,
+  name: "/client/create-client-account",
+  children: [
+    {
+      path: "/create-account",
+      name: "create-client-account",
+      components: { default: ClientAccount },
+      meta: {
+        requiresAuth: true,
+        userRole: "client"
+      }
+    }
+  ]
+}
+
+let studentSignUp = {
+  path: "/new-student",
+  component: AuthLayout,
+  name: "create-student-account",
+  children: [
+    {
+      path: "/create-account",
+      name: "create-student-account",
+      components: { default: StudentAccount },
+      meta: {
+        requiresAuth: true,
+        userRole: "student"
+      }
+    }
+  ]
+}
+
 let authPages = {
   path: "/",
   component: AuthLayout,
@@ -500,6 +534,8 @@ const router = new Router({
       name: "Home"
     },
     authPages,
+    clientSignUp,
+    studentSignUp,
     client_dashboard_menu,
     student_dashboard_menu
   ]

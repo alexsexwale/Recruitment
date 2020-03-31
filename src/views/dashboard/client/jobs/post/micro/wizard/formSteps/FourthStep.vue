@@ -5,7 +5,7 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Description
+            <i class="fas fa-list-ul"></i> Description
           </h3>
           <h4 class="card-title">Name</h4>
           <p class="card-description">{{ name }}</p>
@@ -22,7 +22,7 @@
       <md-card class="bg-success">
         <md-card-content>
           <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Details
+            <i class="fas fa-clipboard-list"></i> Details
           </h3>
           <h4 class="card-title">Location</h4>
           <p class="card-description">{{ location }}</p>
@@ -34,7 +34,7 @@
       <md-card class="bg-success">
           <md-card-content>
             <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Payment
+            <i class="fas fa-wallet"></i> Payment
             </h3>
             <h4 class="card-title">Total Budget</h4>
             <p class="card-description">R{{ total() }}</p>
@@ -71,26 +71,6 @@ export default {
     };
   },
   methods: {
-    // getLocation() {
-    //   if(this.location) {
-        
-    //   }
-    //   else{
-    //     this.location = "remote";
-    //   }
-    // },
-    // duration() {
-    //   switch(this.deadline) {
-    //     case "0-1":
-    //       return "Less than a week";
-    //     case "1-4":
-    //       return "Less than a month";
-    //     case "4-12":
-    //       return "Less than 3 months";
-    //     case "unknown":
-    //       return "I am not sure yet";
-    //   }
-    // },
     total() {
       let total = (this.budget * 1.1).toFixed(2);
       return total;

@@ -37,18 +37,21 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                {{ prevButtonText }} 
+                <div class="pc-view">{{ prevButtonText }}</div>
+                <div class="mobi-view"><i class="fas fa-arrow-left"></i></div>
               </md-button>
             </div>
 
             <div>
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
-                {{ nextButtonText }}
+                <div class="pc-view">{{ nextButtonText }}</div>
+                <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
               <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
                   <div class="md-button-content">
-                    {{finishButtonText}}
+                    <div class="pc-view">{{ finishButtonText }}</div>
+                    <div class="mobi-view"><i class="fa fa-check"></i></div>
                   </div>
                 </div>
               </button>
@@ -420,5 +423,17 @@ export default {
 }
 .black {
   color: #000000;
+}
+
+@media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
+  }
 }
 </style>

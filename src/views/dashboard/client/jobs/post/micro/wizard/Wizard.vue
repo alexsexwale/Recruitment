@@ -48,18 +48,21 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                {{ prevButtonText }}
+                <div class="pc-view">Previous</div>
+                <div class="mobi-view"><i class="fas fa-arrow-left"></i></div>
               </md-button>
             </div>
 
             <div>
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
-                {{ nextButtonText }}
+                <div class="pc-view">Next</div>
+                <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
               <button v-else class="md-button md-success md-theme-default">
                 <div class="md-ripple">
                   <div class="md-button-content">
-                    {{finishButtonText}}
+                    <div class="pc-view">Finish</div>
+                    <div class="mobi-view"><i class="fa fa-check"></i></div>
                   </div>
                 </div>
               </button>
@@ -92,18 +95,6 @@ export default {
     subTitle: {
       type: String,
       default: "Subtitle"
-    },
-    prevButtonText: {
-      type: String,
-      default: "Previous"
-    },
-    nextButtonText: {
-      type: String,
-      default: "Next"
-    },
-    finishButtonText: {
-      type: String,
-      default: "Finish"
     },
     vertical: {
       type: Boolean
@@ -394,5 +385,17 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
+}
+
+@media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
+  }
 }
 </style>
