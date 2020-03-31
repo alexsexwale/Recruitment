@@ -444,7 +444,7 @@ let student_dashboard_menu = {
 let clientSignUp = {
   path: "/new-client",
   component: AuthLayout,
-  name: "/client/create-client-account",
+  name: "client-account",
   children: [
     {
       path: "/create-account",
@@ -461,7 +461,7 @@ let clientSignUp = {
 let studentSignUp = {
   path: "/new-student",
   component: AuthLayout,
-  name: "create-student-account",
+  name: "student-account",
   children: [
     {
       path: "/create-account",

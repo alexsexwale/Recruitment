@@ -263,16 +263,6 @@ export default {
           branchCode: this.branchCode
         });
         
-        if(this.firstName) {
-          users.update({
-            name: this.firstName
-          });
-        }
-        if(this.lastName) {
-          users.update({
-            surname: this.lastName
-          });
-        }
         this.$router.push({ name: "student-profile", params: { id: this.alias } });
 
       } else {

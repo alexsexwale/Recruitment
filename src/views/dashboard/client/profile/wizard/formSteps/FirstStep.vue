@@ -136,14 +136,10 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('companySize') }
           ]">
-          <md-icon>email</md-icon>
+          <md-icon><i class="fas fa-sitemap"></i></md-icon>
           <label>Company Size</label>
-          <md-select @input="addCompanySize" v-model="companySize" name="select" style="margin-left: 10px;">
-            <md-option value="1-10">1-10</md-option>
-            <md-option value="11-50">11-50</md-option>
-            <md-option value="51-100">51-100</md-option>
-            <md-option value="101-500">101-500</md-option>
-            <md-option value="500+">500+</md-option>
+          <md-select style="margin-left: 10px;" @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
+            <md-option v-for="(sizeType, index) in sizeTypes" :key="index" :value="sizeType">{{sizeType}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('companySize')">close</md-icon>
@@ -154,24 +150,38 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('industry') && touched.industry },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('industry') }
-          ]">
-          <md-icon>email</md-icon>
-          <label>Industry</label>
-          <md-input @change="addIndustry" v-model="industry" data-vv-name="industry" type="text" name="industry" required v-validate="modelValidations.industry">
-          </md-input>
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-autocomplete @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+          :class="[
+              { 'md-valid': !errors.has('industry') && touched.industry },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('industry') }
+            ]">
+          <!-- <md-icon><i class="fas fa-industry"></i></md-icon> -->
+          <label style="margin-left: 35px;">Industry</label>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
+          <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
-        </md-field>
+        </md-autocomplete>
       </div>
+
+      <md-field :class="[
+            { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
+            { 'md-error': errors.has('aboutMe') }
+          ]">
+          <label v-if="companyName == null || companyName == ''">About Me</label>
+          <label v-else>About Us</label>
+          <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
     </div>
   </div>
 </template>
@@ -199,7 +209,10 @@ export default {
       phoneNumber: null,
       vat: null,
       companySize: null,
+      sizeTypes: [],
       industry: null,
+      aboutMe: null,
+      industries: [],
       touched: {
         firstName: false,
         lastName: false,
@@ -208,7 +221,8 @@ export default {
         phoneNumber: false,
         vat: false,
         companySize: false,
-        industry: false
+        industry: false,
+        aboutMe: false
       },
       modelValidations: {
         firstName: {
@@ -235,6 +249,9 @@ export default {
           required: true
         },
         industry: {
+          required: true
+        },
+        aboutMe: {
           required: true
         }
       }
@@ -296,6 +313,9 @@ export default {
     },
     addIndustry: function() {
       this.$emit("industry", this.industry);
+    },
+    addAboutMe: function() {
+      this.$emit("aboutMe", this.aboutMe);
     }
   },
   watch: {
@@ -322,6 +342,9 @@ export default {
     },
     industry() {
       this.touched.industry = true;
+    },
+    aboutMe() {
+      this.touched.aboutMe = true;
     }
   },
   created() {
@@ -333,8 +356,8 @@ export default {
       snapshot.forEach(doc => {
         this.firstName = doc.data().name;
         this.lastName = doc.data().surname;
-      })
-    })
+      });
+    });
 
     client.where('userId', '==', user.uid).get()
     .then(snapshot => {
@@ -345,8 +368,15 @@ export default {
         this.vat = doc.data().vat;
         this.companySize = doc.data().companySize;
         this.industry = doc.data().industry;
-      })
-    })
+        this.aboutMe = doc.data().bio;
+      });
+    });
+
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.industries = doc.data().Industries;
+      this.sizeTypes = doc.data().CompanySizes;
+    });
   }
 };
 </script>

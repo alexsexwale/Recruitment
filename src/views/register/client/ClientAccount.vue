@@ -259,4 +259,7 @@ export default {
     display: none;
   }
 }
+.md-layout-item.md-size-66 {
+    min-width: 100%;
+}
 </style>

@@ -19,42 +19,6 @@
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
-        <md-field
-          :class="[
-            { 'md-valid': !errors.has('firstName') && touched.firstName },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('firstName') }
-          ]">
-          <md-icon>face</md-icon>
-          <label>First Name</label>
-          <md-input @change="addFirstName" v-model="firstName" data-vv-name="firstName" type="text" name="firstName" required v-validate="modelValidations.firstName"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('firstName')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('firstName') && touched.firstName">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-
-        <md-field :class="[
-            { 'md-valid': !errors.has('lastName') && touched.lastName },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('lastName') }
-          ]">
-          <md-icon>person</md-icon>
-          <label>Last Name</label>
-          <md-input @change="addLastName" v-model="lastName" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('lastName')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('companyName') && touched.companyName },
             { 'md-form-group': true },
@@ -71,9 +35,7 @@
             <md-icon class="success" v-show="!errors.has('companyName') && touched.companyName">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('companyWebsite') && touched.companyWebsite },
             { 'md-form-group': true },
@@ -145,14 +107,14 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-autocomplete style="margin-left: 10px;" @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+        <md-autocomplete @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
               { 'md-error': errors.has('industry') }
             ]">
           <!-- <md-icon><i class="fas fa-industry"></i></md-icon> -->
-          <label>Industry</label>
+          <label style="margin-left: 35px;">Industry</label>
           <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
@@ -162,8 +124,7 @@
         </md-autocomplete>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
+      <md-field :class="[
             { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
             { 'md-error': errors.has('aboutMe') }
           ]">
@@ -177,7 +138,6 @@
             <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div>
     </div>
   </div>
 </template>

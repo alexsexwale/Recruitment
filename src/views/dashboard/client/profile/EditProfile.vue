@@ -10,6 +10,7 @@
         v-bind:vat="vat"
         v-bind:companySize="companySize"
         v-bind:industry="industry"
+        v-bind:aboutMe="aboutMe"
         v-bind:addressLine1="addressLine1"
         v-bind:addressLine2="addressLine2"
         v-bind:city="city"
@@ -17,7 +18,7 @@
         v-bind:postalCode="postalCode"
         @feedback="addFeedback">
         <template slot="header">
-          <h3 class="title">Build your profile</h3>
+          <h3 class="title">Edit Your profile</h3>
           <h5 class="category">This information will let us know more about you.</h5>
         </template>
 
@@ -31,7 +32,8 @@
             @phoneNumber="addPhoneNumber"
             @vat="addVat"
             @companySize="addCompanySize"
-            @industry="addIndustry">
+            @industry="addIndustry"
+            @aboutMe="addAboutMe">
           </first-step>
         </wizard-tab>
 
@@ -90,6 +92,7 @@ export default {
       vat: null,
       companySize: null,
       industry: null,
+      aboutMe: null,
       addressLine1: null,
       addressLine2: null,
       city: null,
@@ -132,6 +135,9 @@ export default {
     },
     addIndustry: function(industry) {
       this.industry = industry;
+    },
+    addAboutMe: function(aboutMe) {
+      this.aboutMe = aboutMe;
     },
     addAddressLine1: function(addressLine1) {
       this.addressLine1 = addressLine1;

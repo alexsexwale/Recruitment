@@ -142,6 +142,9 @@ export default {
     industry: {
       required: true
     },
+    aboutMe: {
+      required: true
+    },
     addressLine1: {
       required: true
     },
@@ -292,6 +295,13 @@ export default {
             });
             this.modal = true;
           }
+          if(this.aboutMe) {
+            clients.update({
+              bio: this.aboutMe,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.modal = true;
+          }
           if(this.addressLine1) {
             clients.update({
               addressLine1: this.addressLine1,
@@ -333,7 +343,6 @@ export default {
         this.updated = "Your profile has been updated.";
       })
       .catch(err => {
-        // An error happened.
         this.feedback = err.message;
       })
     },

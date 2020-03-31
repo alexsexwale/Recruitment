@@ -255,16 +255,6 @@ export default {
           profilePicture: this.profile
         });
         
-        if(this.firstName) {
-          users.update({
-            name: this.firstName
-          });
-        }
-        if(this.lastName) {
-          users.update({
-            surname: this.lastName
-          });
-        }
         this.$router.push({ name: "client-profile", params: { id: this.alias } });
 
       } else {

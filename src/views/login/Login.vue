@@ -130,7 +130,7 @@ export default {
                     else {
                       this.$router.push({ name: 'create-client-account' });
                     }
-                  })
+                  });
                 }
                 else {
                   let student = db.collection('students').doc(this.alias);
@@ -141,25 +141,25 @@ export default {
                     else {
                       this.$router.push({ name: 'create-student-account' });
                     }
-                  })
+                  });
                 }
-              })
+              });
             })
             .catch(err => {
               this.modal = true;
               this.feedback = err.message
-          })
+          });
         })
         .catch(err => {
           this.modal = true;
           this.feedback = err.message
-        })
-        } else {
-          this.modal = true;
-          this.feedback = 'Please select whether you are a student or a client.'
-        }
+        });
+      } 
+      else {
+        this.modal = true;
+        this.feedback = 'Please select whether you are a student or a client.'
       }
-
+    }
   },
   watch: {
     email() {
@@ -173,11 +173,17 @@ export default {
 </script>
 
 <style>
+/* Pop up modal */
 .modal-container {
   max-width: 400px;
   z-index: 3;
 }
+/* color */
 .black {
   color: #000000;
+}
+/* success/error icon */
+.md-field .success.md-icon, .md-field .error.md-icon {
+  position: inherit;
 }
 </style>
