@@ -31,7 +31,8 @@
 
         <wizard-tab :before-change="() => validateStep('step1')">
           <template slot="label">
-            About
+            <div class="pc-view">About</div>
+            <div class="mobi-view"><i class="fas fa-user"></i></div>
           </template>
           <first-step ref="step1" 
             @on-validated="onStepValidated" 
@@ -47,7 +48,8 @@
 
         <wizard-tab :before-change="() => validateStep('step2')">
           <template slot="label">
-            Studies
+            <div class="pc-view">Studies</div>
+            <div class="mobi-view"><i class="fas fa-university"></i></div>
           </template>
           <second-step ref="step2" 
             @on-validated="onStepValidated"
@@ -63,7 +65,8 @@
 
         <wizard-tab :before-change="() => validateStep('step3')">
           <template slot="label">
-            Banking
+            <div class="pc-view">Banking</div>
+            <div class="mobi-view"><i class="fas fa-piggy-bank"></i></div>
           </template>
           <third-step ref="step3" 
             @on-validated="onStepValidated"
@@ -221,8 +224,21 @@ export default {
 </script>
 <style scoped>
 @media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
   .md-layout-item.md-xsmall-size-80 {
     min-width: 100%;
+    overflow-x: hidden;
+  }
+  .md-card-wizard .nav-pills > li i {
+    font-size: 0px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
   }
 }
 </style>

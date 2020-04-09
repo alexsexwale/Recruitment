@@ -1,7 +1,7 @@
 <template>
   <div class="md-layout" v-if="completeJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
-      <product-card header-animation="true">
+      <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
@@ -27,7 +27,8 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 style="text-align:center;">{{ job.location }}</h4>
+              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
+              <h4 v-else style="text-align:center;">{{ job.location }}</h4>
             </div>
           </div>
         </template>
@@ -71,7 +72,7 @@ export default {
   created() {
     window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
-    let jobs = db.collection('jobs');
+    let jobs = db.collection('micros');
     jobs.where('studentId', '==', user.uid).where('status', '==', 'rate').get()
     .then(snapshot => {
       snapshot.forEach(doc => {

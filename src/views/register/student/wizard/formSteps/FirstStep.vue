@@ -41,7 +41,7 @@
             ]">
           <md-icon>face</md-icon>
           <label for="gender">Gender</label>
-          <md-select @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
+          <md-select class="pad" @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
             <md-option v-for="(gender, index) in genders" :key="index" :value="gender">{{gender}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -61,7 +61,7 @@
             ]">
           <md-icon>face</md-icon>
           <label for="race">Race</label>
-          <md-select @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
+          <md-select class="pad" @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
             <md-option v-for="(race, index) in races" :key="index" :value="race">{{race}}</md-option>
           </md-select>
           <slide-y-down-transition>

@@ -165,6 +165,7 @@ export default {
 @media only screen and (max-width: 768px) {
   .md-layout-item.md-xsmall-size-80 {
     min-width: 100%;
+    overflow-x: hidden;
   }
 }
 </style>

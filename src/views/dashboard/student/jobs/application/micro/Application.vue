@@ -121,7 +121,8 @@ export default {
               applicant: this.auth.displayName,
               degree: this.student.degree,
               bio: this.student.bio, 
-              applicantAlias: this.user.alias,
+              alias: this.user.alias,
+              email: this.user.email,
               approved: false,
               status: 'applied'
             });

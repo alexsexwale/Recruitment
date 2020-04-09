@@ -132,7 +132,7 @@ export default {
         
     },
     accept() {
-      let activeJob = db.collection('jobs').doc(this.client.id);
+      let activeJob = db.collection('micros').doc(this.client.id);
       activeJob.update({
         status: "active",
         studentId: firebase.auth().currentUser.uid,
@@ -149,11 +149,9 @@ export default {
     let user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
     applicants.where('jobId', '==', this.$route.params.id).where('userId', '==', user.uid).where('approved', '==', true).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.approved = true;
-      });  
-    }); 
+    .then(() => {
+      this.approved = true;
+    });  
   }
 };
 </script>

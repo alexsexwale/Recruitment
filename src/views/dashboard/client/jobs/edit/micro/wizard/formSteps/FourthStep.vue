@@ -2,58 +2,72 @@
   <div>
     <h5 class="info-text">Have one last final look at the microjob you are about to post</h5>
     <div class="md-layout">
-      <md-card class="bg-success">
+      <md-card>
         <md-card-content>
-          <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job description
-          </h3>
-          <h4 class="card-title">Name</h4>
-          <p class="card-description">{{ name }}</p>
+          <collapse :collapse="['Description', 'Details', 'Payment']" icon="keyboard_arrow_down" color-collapse="success">
+            <template slot="md-collapse-pane-1">
+              <md-card class="bg-success">
+                <md-card-content>
+                  <h3 class="card-category card-category-social" style="text-align:center;">
+                    <i class="fas fa-list-ul"></i> Description
+                  </h3>
+                  <h4 class="card-title">Name</h4>
+                  <p class="card-description">{{ name }}</p>
 
-          <h4 class="card-title">Description</h4>
-          <p class="card-description">{{ description}}</p>
+                  <h4 class="card-title">Description</h4>
+                  <p class="card-description">{{ description }}</p>
 
-          <h4 class="card-title">Skills Required</h4>
-          <ul>
-            <li v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</li>
-          </ul>
+                  <h4 class="card-title">Skills Required</h4>
+                  <ul v-if="skills">
+                    <li v-for="skill in skills" :key="skill" class="card-description">{{ skill }}</li>
+                  </ul>
+                </md-card-content>
+              </md-card>
+            </template>
+            <template slot="md-collapse-pane-2">
+              <md-card class="bg-success">
+                <md-card-content>
+                  <h3 class="card-category card-category-social" style="text-align:center;">
+                    <i class="fas fa-clipboard-list"></i> Details
+                  </h3>
+                  <h4 class="card-title">Location</h4>
+                  <p class="card-description">{{ location }}</p>
+
+                  <h4 class="card-title">Anticipated Duration</h4>
+                  <p class="card-description">{{ deadline }}</p>
+                </md-card-content>
+              </md-card>
+            </template>
+            <template slot="md-collapse-pane-3">
+              <md-card class="bg-success">
+                <md-card-content>
+                  <h3 class="card-category card-category-social" style="text-align:center;">
+                  <i class="fas fa-wallet"></i> Payment
+                  </h3>
+                  <h4 class="card-title">Total Budget</h4>
+                  <p class="card-description">R{{ total() }}</p>
+                  <hr/>
+                  <b>Cost Breakdown</b>
+                  <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ rate() }}
+                  <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{ fee() }}
+                </md-card-content>
+              </md-card>
+            </template>
+          </collapse>
         </md-card-content>
       </md-card>
-      <md-card class="bg-success">
-        <md-card-content>
-          <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job Details
-          </h3>
-          <h4 class="card-title">Location</h4>
-          <p class="card-description">{{ getLocation() }}</p>
-
-          <h4 class="card-title">Duration</h4>
-          <p class="card-description">{{ duration() }}</p>
-        </md-card-content>
-      </md-card>
-      <md-card class="bg-success">
-          <md-card-content>
-            <h3 class="card-category card-category-social" style="text-align:center;">
-            <i class="far fa-newspaper" /> Job Payment
-            </h3>
-            <h4 class="card-title">Total Budget</h4>
-            <p class="card-description">R{{ total() }}</p>
-            <hr/>
-            <b>Cost Breakdown</b>
-            <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ rate() }}
-            <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{ fee() }}
-          </md-card-content>
-        </md-card>
     </div>
   </div>
 </template>
 <script>
-import { IconCheckbox } from "@/components";
+import db from "@/firebase/init";
+import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 
 export default {
   components: {
     IconCheckbox,
+    Collapse,
     SlideYDownTransition
   },
   props: {
@@ -62,30 +76,14 @@ export default {
     skills: {},
     location: {},
     deadline: {},
-    budget: {},
-    payment: {}
+    budget: {}
+  },
+  data() {
+    return {
+      deadlineReview: null
+    };
   },
   methods: {
-    getLocation() {
-      if(this.location) {
-        
-      }
-      else{
-        this.location = "remote";
-      }
-    },
-    duration() {
-      switch(this.deadline) {
-        case "0-1":
-          return "Less than a week";
-        case "1-4":
-          return "Less than a month";
-        case "4-12":
-          return "Less than 3 months";
-        case "unknown":
-          return "I am not sure yet";
-      }
-    },
     total() {
       let total = (this.budget * 1.1).toFixed(2);
       return total;

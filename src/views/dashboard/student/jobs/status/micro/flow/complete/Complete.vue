@@ -1,8 +1,8 @@
 <template>
   <div class="content">
-    <hr/>
+    <hr>
     <p class="centre">Waiting for the client to confirm the completion of the job.</p>
-    <hr/>
+    <hr>
     <h6 class="centre">Client Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">

@@ -35,19 +35,12 @@ export default {
   },
   data() {
     return {
-      upfront: false,
-      postPayment: false,
       budget: null,
-      payment: null,
       touched: {
-        budget: false,
-        payment: false
+        budget: false
       },
       modelValidations: {
         budget: {
-          required: true
-        },
-        payment: {
           required: true
         }
       }
@@ -69,32 +62,18 @@ export default {
     },
     addBudget: function() {
       this.$emit("budget", this.budget);
-    },
-    addPayment: function() {
-      this.$emit("payment", this.payment);
     }
   },
   watch: {
     budget() {
       this.touched.budget = true;
-    },
-    payment() {
-      this.touched.payment = true;
     }
   },
   created() {
-    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
-    job.get().then(snapshot => {
-      snapshot.forEach(doc => {
-        this.budget = doc.data().budget;
-        this.payment = doc.data().postPayment;
-        if(this.payment)
-          this.postPayment = true;
-        else
-          this.upfront = true;
-      })
-      
-    })
+    let job = db.collection('micros').doc(this.$route.params.id);
+    job.get().then(doc => {
+      this.budget = doc.data().budget;
+    });
   }
 };
 </script>

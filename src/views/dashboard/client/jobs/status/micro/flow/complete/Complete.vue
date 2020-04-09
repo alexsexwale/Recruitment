@@ -12,7 +12,7 @@
           </div>
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
-            <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
+            <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link>
             <p class="card-description">
               {{ applicant.bio }}
             </p>

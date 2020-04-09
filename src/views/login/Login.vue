@@ -186,4 +186,7 @@ export default {
 .md-field .success.md-icon, .md-field .error.md-icon {
   position: inherit;
 }
+.pad {
+  padding-left: 10px;
+}
 </style>

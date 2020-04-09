@@ -296,6 +296,7 @@ export default {
   }
   .md-layout-item.md-xsmall-size-80 {
     min-width: 100%;
+    overflow-x: hidden;
   }
   .md-card-wizard .nav-pills > li i {
     font-size: 0px;

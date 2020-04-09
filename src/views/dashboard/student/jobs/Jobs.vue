@@ -36,7 +36,8 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 style="text-align:center;">{{ job.location }}</h4>
+              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
+              <h4 v-else style="text-align:center;">{{ job.location }}</h4>
             </div>
           </div>
         </template>
@@ -65,7 +66,7 @@ export default {
   },
   created() {
     // display available micro jobs
-    db.collection('micros').get()
+    db.collection('micros').where('status', '==', 'select').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.postedJobs = true;

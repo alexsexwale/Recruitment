@@ -18,6 +18,78 @@
           <p v-if="profile.graduateStatus" class="card-description"><b>Graduate Status: </b> {{ profile.graduateStatus }}</p>
           <p v-if="profile.bio" class="card-description"><b>About Me: </b>{{ profile.bio }}</p>
           
+          <!-- <el-carousel trigger="click" :interval="5000">
+            <el-carousel-item>
+              <testimonial-card card-plain>
+                <div slot="cardAvatarTop" class="md-card-avatar mt-0">
+                  <a href="javascript:void(0)">
+                    <img class="img" :src="sectionTestimonials2.testimonials1">
+                  </a>
+                </div>
+                <template slot="cardContent">
+                  <h5 class="card-description">
+                    "I speak yell scream directly at the old guard on behalf
+                    of the future. I gotta say at that time I’d like to meet
+                    Kanye I speak yell scream directly at the old guard on
+                    behalf of the future. My brother Chance!!! <br>Thank you
+                    for letting me work on this masterpiece. One of my
+                    favorite people."
+                  </h5>
+                  <h4 class="card-title">Kendall Thompson</h4>
+                  <h6 class="card-category text-muted">CEO @ Marketing Digital Ltd.</h6>
+                </template>
+                <template slot="cardAction">
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                </template>
+              </testimonial-card>
+            </el-carousel-item>
+            <el-carousel-item>
+              <testimonial-card card-plain>
+                <div slot="cardAvatarTop" class="md-card-avatar mt-0">
+                  <a href="javascript:void(0)">
+                    <img class="img" :src="sectionTestimonials2.testimonials2">
+                  </a>
+                </div>
+                <template slot="cardContent">
+                  <h5 class="card-description">
+                    "Thank you Anna for the invite thank you to the whole
+                    Vogue team Called I Miss the Old Kanye At the God's last
+                    game Chop up the soul Kanye. I promise I will never let
+                    the people down. I want a better life for all!!! Pablo
+                    Pablo Pablo Pablo! Thank you Anna for the invite thank you
+                    to the whole Vogue team."
+                  </h5>
+                  <h4 class="card-title">Christian Louboutin</h4>
+                  <h6 class="card-category text-muted">Designer @ Louboutin &amp; Co.</h6>
+                </template>
+                <template slot="cardAction">
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                  <md-icon class="text-warning">
+                    star
+                  </md-icon>
+                </template>
+              </testimonial-card>
+            </el-carousel-item>
+          </el-carousel> -->
         </md-card-content>
       </md-card>
     </div>
@@ -27,16 +99,26 @@
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import StarRating from 'vue-star-rating';
+import { TestimonialCard } from "@/components";
+import { Carousel, CarouselItem } from 'element-ui';
 export default {
+  name: 'client-profile',
   components: { 
-      StarRating 
+      StarRating,
+      TestimonialCard,
+      Carousel,
+      CarouselItem
   },
   data() {
     return {
       profile: [],
       user: [],
       rating: 4.84,
-      edit: null 
+      edit: null,
+      sectionTestimonials2: {
+        testimonials1: require("@/assets/img/faces/kendall.jpg"),
+        testimonials2: require("@/assets/img/faces/christian.jpg")
+      },
     }
   },
   props: {
@@ -71,14 +153,19 @@ export default {
     let user = db.collection('users').doc(this.$route.params.id);
     let auth = null;
     user.get().then(user => {
-        this.user = user.data();
-        let student = db.collection('students').doc(this.$route.params.id);
-        student.get().then(student => {
-          this.profile = student.data(); 
-        });
-        if(firebase.auth().currentUser.uid === this.user.userId)
-          this.edit = true;
+      this.user = user.data();
+      let student = db.collection('students').doc(this.$route.params.id);
+      student.get().then(student => {
+        this.profile = student.data(); 
+      });
+      if(firebase.auth().currentUser.uid === this.user.userId)
+        this.edit = true;
     });
   }
 }
 </script>
+<style lang="scss">
+.mt-0 {
+  margin-top: 0 !important;
+}
+</style>

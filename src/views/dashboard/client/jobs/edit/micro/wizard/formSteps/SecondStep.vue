@@ -29,12 +29,9 @@
             { 'md-valid': !errors.has('deadline') && touched.deadline },
             { 'md-error': errors.has('deadline') }
           ]">
-          <label>Duration Type</label>
+          <label>Duration</label>
           <md-select @input="addDeadline" v-model="deadline" data-vv-name="deadline" type="text" name="deadline" required v-validate="modelValidations.deadline" style="margin-left: 10px;">
-            <md-option value="0-1">Less than a week</md-option>
-            <md-option value="1-4">Less than a month</md-option>
-            <md-option value="4-12">Less than 3 months</md-option>
-            <md-option value="unknown">I am not sure yet</md-option>
+            <md-option v-for="(deadline, index) in deadlines" :key="index" :value="deadline">{{deadline}}</md-option>
           </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('deadline')">close</md-icon>
@@ -48,7 +45,8 @@
   </div>
 </template>
 <script>
-import db from '@/firebase/init';
+import db from "@/firebase/init";
+import firebase from "firebase/app";
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 
@@ -63,6 +61,7 @@ export default {
       onsite: false,
       location: null,
       deadline: null,
+      deadlines: null,
       touched: {
         location:false,
         deadline: false
@@ -92,22 +91,31 @@ export default {
       });
     },
     remoteSelection() {
-      if(this.remote)
+      if(this.remote) {
         this.onsite = false;
-      if(!this.remote && !this.onsite)
+      }
+      if(!this.remote && !this.onsite) {
         this.remote = true;
+      }
+      this.addRemote();
     },
     onsiteSelection() {
-      if(this.onsite)
+      this.location = null;
+      if(this.onsite) {
         this.remote = false;
-      if(!this.remote && !this.onsite)
+      }
+      if(!this.remote && !this.onsite) {
         this.onsite = true;
+      }
+    },
+    addRemote: function() {
+      this.$emit("location", "remote");
     },
     addLocation: function() {
-      this.$emit('location', this.location);
+      this.$emit("location", this.location);
     },
     addDeadline: function() {
-      this.$emit('deadline', this.deadline);
+      this.$emit("deadline", this.deadline);
     }
   },
   watch: {
@@ -119,18 +127,26 @@ export default {
     }
   },
   created() {
-    let job = db.collection('micro').where('jobId', '==', this.$route.params.id);
-    job.get().then(snapshot => {
-      snapshot.forEach(doc => {
-        this.location = doc.data().location;
-        this.deadline = doc.data().duration;
-        if(this.location)
-          this.onsite = true;
-        else
-          this.remote = true;
-      })
-    })
+    let job = db.collection('micros').doc(this.$route.params.id);
+    job.get().then(doc => {
+      this.location = doc.data().location;
+      this.deadline = doc.data().duration;
+      if(this.location == "remote")
+        this.remote = true;
+      else
+        this.onsite = true;
+    });
+
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.deadlines = doc.data().Deadlines;
+    });
+    this.remoteSelection();
   }
 };
 </script>
-<style></style>
+<style>
+.padding {
+  padding:10px;
+}
+</style>

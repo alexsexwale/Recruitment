@@ -58,6 +58,7 @@ export default {
       active: false,
       complete: false,
       rate: false,
+      modal: false,
       incomplete: false,
       api: "https://joboxza.herokuapp.com"
     };

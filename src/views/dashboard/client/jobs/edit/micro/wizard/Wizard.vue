@@ -48,19 +48,19 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                <div class="pc-view">{{ prevButtonText }}</div>
+                <div class="pc-view">Previous</div>
                 <div class="mobi-view"><i class="fas fa-arrow-left"></i></div>
               </md-button>
             </div>
 
             <div>
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
-                <div class="pc-view">{{ nextButtonText }}</div>
+                <div class="pc-view">Next</div>
                 <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
               <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
-                  <div class="md-button-content pc-view">Update</div>
+                  <div class="pc-view">Update</div>
                   <div class="mobi-view"><i class="fa fa-check"></i></div>
                 </div>
               </button>
@@ -72,9 +72,6 @@
       <modal v-if="modal" @close="modalHide">
         <template slot="header">
           <h4 class="modal-title black">Job Updated!</h4>
-          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
-            <md-icon>clear</md-icon>
-          </md-button>
         </template>
 
         <template slot="body">
@@ -112,18 +109,6 @@ export default {
     subTitle: {
       type: String,
       default: "Subtitle"
-    },
-    prevButtonText: {
-      type: String,
-      default: "Previous"
-    },
-    nextButtonText: {
-      type: String,
-      default: "Next"
-    },
-    finishButtonText: {
-      type: String,
-      default: "Finish"
     },
     vertical: {
       type: Boolean
@@ -217,7 +202,7 @@ export default {
   methods: {
     update() {
       //Update jobs table
-      let jobs = db.collection('micro').doc(this.$route.params.id);
+      let jobs = db.collection('micros').doc(this.$route.params.id);
       if(this.description) {
         jobs.update({
           description: this.description,
@@ -234,7 +219,7 @@ export default {
       }
       if(this.deadline) {
         jobs.update({
-          deadline: moment(this.deadline).format('L'),
+          deadline: this.deadline,
           lastModified: moment(Date.now()).format('L')
         });
         this.modal = true;

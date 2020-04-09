@@ -1,9 +1,11 @@
 import Vue from "vue";
 import DashboardPlugin from "./material-dashboard";
+import { Carousel, CarouselItem } from 'element-ui';
 
 // plugins
 import App from "./App.vue";
 import Chartist from "chartist";
+import ElementUI from 'element-ui';
 
 // router setup
 import router from "./routes/routes";
@@ -11,6 +13,8 @@ import router from "./routes/routes";
 import firebase from "firebase/app";
 
 Vue.config.productionTip = false;
+Vue.use(Carousel);
+Vue.use(CarouselItem);
 
 // plugin setup
 Vue.use(DashboardPlugin);

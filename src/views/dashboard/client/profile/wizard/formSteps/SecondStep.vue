@@ -32,7 +32,7 @@
           ]">
           <md-icon>school</md-icon>
           <label>Address Line 2</label>
-          <md-input @change="addAddressLine2" v-model="addressLine2" data-vv-name="addressLine2" type="text" name="addressLine2" required v-validate="modelValidations.addressLine2">
+          <md-input @change="addAddressLine2" v-model="addressLine2" data-vv-name="addressLine2" type="text" name="addressLine2" v-validate="modelValidations.addressLine2">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('addressLine2')">close</md-icon>

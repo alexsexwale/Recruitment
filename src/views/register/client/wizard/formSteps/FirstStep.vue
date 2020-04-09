@@ -94,7 +94,7 @@
           ]">
           <md-icon><i class="fas fa-sitemap"></i></md-icon>
           <label>Company Size</label>
-          <md-select @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
+          <md-select class="pad" @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
             <md-option v-for="(sizeType, index) in sizeTypes" :key="index" :value="sizeType">{{sizeType}}</md-option>
           </md-select>
           <slide-y-down-transition>

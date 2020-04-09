@@ -79,7 +79,7 @@ export default {
       this.cancelModal = false;
     },
     complete() {
-      let completeJob = db.collection('jobs').doc(this.client.id);
+      let completeJob = db.collection('micros').doc(this.client.id);
       completeJob.update({
         status: "complete",
         complete: true,
