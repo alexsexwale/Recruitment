@@ -138,7 +138,7 @@
           ]">
           <md-icon><i class="fas fa-sitemap"></i></md-icon>
           <label>Company Size</label>
-          <md-select style="margin-left: 10px;" @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
+          <md-select class="pad" @input="addCompanySize" v-model="companySize" data-vv-name="companySize" name="select" required v-validate="modelValidations.companySize">
             <md-option v-for="(sizeType, index) in sizeTypes" :key="index" :value="sizeType">{{sizeType}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -150,15 +150,15 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <!-- <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-autocomplete @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
               { 'md-error': errors.has('industry') }
-            ]">
+            ]"> -->
           <!-- <md-icon><i class="fas fa-industry"></i></md-icon> -->
-          <label style="margin-left: 35px;">Industry</label>
+          <!-- <label style="margin-left: 35px;">Industry</label>
           <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
@@ -166,7 +166,7 @@
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
         </md-autocomplete>
-      </div>
+      </div> -->
 
       <md-field :class="[
             { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },

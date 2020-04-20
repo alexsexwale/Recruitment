@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { firestorePlugin } from 'vuefire';
 import DashboardPlugin from "./material-dashboard";
 import { Carousel, CarouselItem } from 'element-ui';
 
@@ -18,6 +19,7 @@ Vue.use(CarouselItem);
 
 // plugin setup
 Vue.use(DashboardPlugin);
+Vue.use(firestorePlugin);
 
 // global library setup
 Object.defineProperty(Vue.prototype, "$Chartist", {

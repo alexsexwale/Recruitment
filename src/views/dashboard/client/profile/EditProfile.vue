@@ -23,7 +23,10 @@
         </template>
 
         <wizard-tab>
-          <template slot="label">About</template>
+          <template slot="label">
+            <div class="pc-view">About</div> 
+            <div class="mobi-view"><i class="fas fa-user"></i></div>
+          </template>
           <first-step ref="step1" 
             @firstName="addFirstName"
             @lastName="addLastName"
@@ -38,7 +41,10 @@
         </wizard-tab>
 
         <wizard-tab>
-          <template slot="label">Location</template>
+          <template slot="label">
+            <div class="pc-view">Location</div>
+            <div class="mobi-view"><i class="fas fa-location-arrow"></i></div>
+          </template>
           <second-step ref="step2" 
             @addressLine1="addAddressLine1"
             @addressLine2="addAddressLine2"
@@ -163,9 +169,24 @@ export default {
 </script>
 <style scoped>
 @media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
   .md-layout-item.md-xsmall-size-80 {
     min-width: 100%;
     overflow-x: hidden;
   }
+  .md-card-wizard .nav-pills > li i {
+    font-size: 0px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
+  }
+}
+.md-layout-item.md-size-66 {
+    min-width: 100%;
 }
 </style>

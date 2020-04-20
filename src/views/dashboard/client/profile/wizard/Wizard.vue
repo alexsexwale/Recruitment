@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="createAccount">
+    <form @submit.prevent="updateAccount" @input="fieldUpdate">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -87,6 +87,7 @@ import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
 import { Modal } from "@/components";
+import { debounce } from "debounce";
 
 export default {
   name: "simple-wizard",
@@ -185,7 +186,7 @@ export default {
       tabLinkHeight: 50,
       feedback: null,
       updated: null,
-      modal: false
+      modal: false,
     };
   },
   computed: {
@@ -234,21 +235,28 @@ export default {
     modalHide() {
       this.modal = false;
     },
-    createAccount() {
+    fieldUpdate() {
+      this.debouncedUpdate();
+    },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    async updateAccount() {
       let ref = db.collection('users');
-      ref.where('userId', '==', this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
+      let user = firebase.auth().currentUser;
+        ref.where('userId', '==', user.uid).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
           let clients = db.collection('clients').doc(doc.id);
           let users = db.collection('users').doc(doc.id);
           if(this.firstName) {
-            clients.update({
+            users.update({
               name: this.firstName
             });
             this.modal = true;
           }
           if(this.lastName) {
-            clients.update({
+            users.update({
               surname: this.lastName
             });
             this.modal = true;
@@ -325,26 +333,27 @@ export default {
           }
           if(this.province) {
             clients.update({
-              province: this.province,
+              province_state: this.province,
               lastModified: moment(Date.now()).format('L')
             });
             this.modal = true;
           }
           if(this.postalCode) {
             clients.update({
-              postalCode: this.postalCode,
+              postalCode_zipCode: this.postalCode,
               lastModified: moment(Date.now()).format('L')
             });
             this.modal = true;
           }
-        })
+        });
       })
       .then(() => {
+        this.modal = true
         this.updated = "Your profile has been updated.";
       })
       .catch(err => {
         this.feedback = err.message;
-      })
+      });
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);

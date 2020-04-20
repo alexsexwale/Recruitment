@@ -70,7 +70,7 @@
           ]">
           <md-icon><i class="fas fa-map-marked-alt"></i></md-icon>
           <label for="select">Province</label>
-          <md-select @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
+          <md-select class="pad" @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
             <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -119,7 +119,6 @@ export default {
   },
   data() {
     return {
-      // image: "",
       addressLine1: null,
       addressLine2: null,
       city: null,
@@ -135,9 +134,6 @@ export default {
       },
       modelValidations: {
         addressLine1: {
-          required: true
-        },
-        addressLine2: {
           required: true
         },
         city: {

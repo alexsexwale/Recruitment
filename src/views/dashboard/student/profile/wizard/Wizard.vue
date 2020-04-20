@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="createAccount">
+    <form @submit.prevent="updateAccount">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -215,153 +215,150 @@ export default {
     addFeedback: function() {
       this.$emit("feedback", this.feedback);
     },
-    createAccount() {
+    updateAccount() {
       let ref = db.collection('users');
       ref.where('userId', '==', this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let student = db.collection('students').doc(doc.id);
-          let users = db.collection('users').doc(doc.id);
-          if(this.firstName) {
-            users.update({
-              name: this.firstName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.lastName) {
-            users.update({
-              surname: this.lastName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.dob) {
-            student.update({
-              dateOfBirth: moment(this.dob).format('L'),
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.gender) {
-            student.update({
-              gender: this.gender,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.race) {
-            student.update({
-              race: this.race,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.phone) {
-            student.update({
-              phoneNumber: this.phone,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.bio) {
-            student.update({
-              bio: this.bio,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.institution) {
-            student.update({
-              institution: this.institution,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.campus) {
-            student.update({
-              campus: this.campus,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.studentNo) {
-            student.update({
-              studentNo: this.studentNo,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.faculty) {
-            student.update({
-              faculty: this.faculty,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.degree) {
-            student.update({
-              degree: this.degree,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.major) {
-            student.update({
-              major: this.major,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.major) {
-            student.update({
-              major: this.major,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.year) {
-            student.update({
-              year: this.year,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.graduateStatus) {
-            student.update({
-              graduateStatus: this.graduateStatus,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountName) {
-            student.update({
-              accountName: this.accountName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountName) {
-            student.update({
-              accountName: this.accountName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountNumber) {
-            student.update({
-              accountNumber: this.accountNumber,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountType) {
-            student.update({
-              accountType: this.accountType,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.bankName) {
-            student.update({
-              bankName: this.bankName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.branchCode) {
-            student.update({
-              branchCode: this.branchCode,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-        })
+      .then(doc => {
+        let student = db.collection('students').doc(doc.id);
+        let users = db.collection('users').doc(doc.id);
+        if(this.firstName) {
+          users.update({
+            name: this.firstName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.lastName) {
+          users.update({
+            surname: this.lastName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.dob) {
+          student.update({
+            dateOfBirth: moment(this.dob).format('L'),
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.gender) {
+          student.update({
+            gender: this.gender,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.race) {
+          student.update({
+            race: this.race,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.phone) {
+          student.update({
+            phoneNumber: this.phone,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.bio) {
+          student.update({
+            bio: this.bio,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.institution) {
+          student.update({
+            institution: this.institution,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.campus) {
+          student.update({
+            campus: this.campus,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.studentNo) {
+          student.update({
+            studentNo: this.studentNo,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.faculty) {
+          student.update({
+            faculty: this.faculty,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.degree) {
+          student.update({
+            degree: this.degree,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.major) {
+          student.update({
+            major: this.major,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.major) {
+          student.update({
+            major: this.major,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.year) {
+          student.update({
+            year: this.year,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.graduateStatus) {
+          student.update({
+            graduateStatus: this.graduateStatus,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.accountName) {
+          student.update({
+            accountName: this.accountName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.accountName) {
+          student.update({
+            accountName: this.accountName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.accountNumber) {
+          student.update({
+            accountNumber: this.accountNumber,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.accountType) {
+          student.update({
+            accountType: this.accountType,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.bankName) {
+          student.update({
+            bankName: this.bankName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
+        if(this.branchCode) {
+          student.update({
+            branchCode: this.branchCode,
+            lastModified: moment(Date.now()).format('L')
+          });
+        }
       })
       .then(() => {
         this.feedback = "Your profile has been updated.";
       })
       .catch(err => {
         // An error happened.
-        console.log(err);
         this.feedback = err.message;
       })
     },

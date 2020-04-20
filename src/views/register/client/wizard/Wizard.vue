@@ -254,9 +254,7 @@ export default {
           country: "South Africa",
           profilePicture: this.profile
         });
-        
         this.$router.push({ name: "client-profile", params: { id: this.alias } });
-
       } else {
         this.feedback = "You have not verified that " + this.email + " is your email address."
         this.addFeedback();

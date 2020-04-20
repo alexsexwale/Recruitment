@@ -147,7 +147,6 @@ export default {
         this.modal = true;
         this.feedback = "Email Sent. Check your inbox and verify!";
       }).catch(err => {
-        // An error happened.
         this.modal = true;
         this.feedback = err.message;
       });

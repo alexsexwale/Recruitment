@@ -18,9 +18,10 @@
     "@sendgrid/mail": "^6.4.0",
     "@tweenjs/tween.js": "17.4.0",
     "chartist": "0.11.2",
+    "debounce": "^1.2.0",
     "element-ui": "^2.13.0",
     "es6-promise": "4.2.6",
-    "firebase": "^7.5.0",
+    "firebase": "^7.14.0",
     "fuse.js": "3.4.5",
     "google-maps": "3.3.0",
     "jquery": "3.4.1",
@@ -36,7 +37,8 @@
     "vue-material": "^1.0.0-beta-11",
     "vue-router": "3.0.6",
     "vue-star-rating": "^1.6.1",
-    "vue2-transitions": "0.3.0"
+    "vue2-transitions": "0.3.0",
+    "vuefire": "^2.2.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.8.0",
