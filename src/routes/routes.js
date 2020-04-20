@@ -18,17 +18,9 @@ import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue"
 
 // Post Jobs
 import PostMicro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
-//import PostReccuring from "@/views/dashboard/client/jobs/post/reccuringjob/PostJob.vue";
-//import PostFulltime from "@/views/dashboard/client/jobs/post/fulltime/PostJob.vue";
-//import PostParttime from "@/views/dashboard/client/jobs/post/parttime/PostJob.vue";
-//import PostInternship from "@/views/dashboard/client/jobs/post/internship/PostJob.vue";
 
 // Edit Job
 import EditMicro from "@/views/dashboard/client/jobs/edit/micro/EditJob.vue";
-//import EditRecurring from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditPartTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import EditFullTime from "@/views/dashboard/client/jobs/edit/EditJob.vue";
-//import Internship from "@/views/dashboard/client/jobs/edit/EditJob.vue";
 
 // Cancelled Job
 import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
@@ -86,16 +78,6 @@ let client_dashboard_menu = {
   name: "client-nav-menu",
   redirect: "/client/jobs/micro/post",
   children: [
-    // {
-    //   path: "create-account",
-    //   name: "create-client-account",
-    //   components: { default: ClientAccount },
-    //   props: true,
-    //   meta: {
-    //     requiresAuth: true,
-    //     userRole: "client"
-    //   }
-    // },
     {
       path: "dashboard",
       name: "client-dashboard",
@@ -278,15 +260,6 @@ let student_dashboard_menu = {
   name: "student-nav-menu",
   redirect: "/student/apply-for-job",
   children: [
-    // {
-    //   path: "create-account",
-    //   name: "create-student-account",
-    //   components: { default: StudentAccount },
-    //   meta: {
-    //     requiresAuth: true,
-    //     userRole: "student"
-    //   }
-    // },
     {
       path: "dashboard",
       name: "student-dashboard",
