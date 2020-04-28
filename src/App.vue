@@ -6,6 +6,22 @@
 export default {};
 </script>
 <style>
+/* Pop up modal */
+.modal-container {
+  max-width: 400px;
+  z-index: 3;
+}
+/* color */
+.black {
+  color: #000000;
+}
+/* success/error icon */
+.md-field .success.md-icon, .md-field .error.md-icon {
+  position: inherit;
+}
+.pad {
+  padding-left: 10px;
+}
 .lds-circle {
   display: inline-block;
   transform: translateZ(1px);

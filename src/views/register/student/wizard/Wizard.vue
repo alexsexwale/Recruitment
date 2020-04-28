@@ -250,6 +250,7 @@ export default {
           phoneNumber: this.phone,
           bio: this.bio,
           institution: this.institution,
+          institutionType: "University",
           campus: this.campus,
           studentNo: this.studentNo,
           faculty: this.faculty,

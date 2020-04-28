@@ -63,15 +63,12 @@
           </template>
           <second-step ref="step2" 
             @on-validated="onStepValidated"
-            @institution="addInstitution"
-            @campus="addCampus"
-            @studentNo="addStudentNo"
-            @faculty="addFaculty"
-            @degree="addDegree"
-            @major="addMajor"
-            @year="addYear"
-            @graduateStatus="addGraduateStatus">
+            @institution="addInstitution">
           </second-step>
+          <!-- University of Pretoria -->
+          <tuks ref="step2" v-if="institution === 'University of Pretoria'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
+            @year="addYear" @graduateStatus="addGraduateStatus" @campus="addCampus" @studentNo="addStudentNo">
+          </tuks>
         </wizard-tab>
 
         <wizard-tab :before-change="() => validateStep('step3')">
@@ -120,6 +117,7 @@ import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
+import Tuks from './wizard/Institutions/University of Pretoria/Tuks';
 export default {
   data() {
     return {
@@ -158,7 +156,8 @@ export default {
     ThirdStep,
     SimpleWizard,
     WizardTab,
-    Modal
+    Modal,
+    Tuks
   },
   methods: {
     modalHide() {

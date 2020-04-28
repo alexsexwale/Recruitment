@@ -173,10 +173,8 @@ export default {
       this.modal = false;
     },
     random() {
-      let rand1 = Math.floor(Math.random() * 10).toString();
-      let rand2 = Math.floor(Math.random() * 10).toString();
-      let rand3 = Math.floor(Math.random() * 10).toString();
-      let rand4 = Math.floor(Math.random() * 10).toString();
+      let rand1 = Math.floor(Math.random() * 10).toString(); let rand2 = Math.floor(Math.random() * 10).toString();
+      let rand3 = Math.floor(Math.random() * 10).toString(); let rand4 = Math.floor(Math.random() * 10).toString();
       return rand1 + rand2 + rand3 + rand4;
     },
     createAccount() {
