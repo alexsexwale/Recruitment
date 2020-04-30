@@ -7,7 +7,6 @@
         v-bind:lastName="lastName"
         v-bind:companyName="companyName"
         v-bind:companyWebsite="companyWebsite"
-        v-bind:phoneNumber="phoneNumber"
         v-bind:vat="vat"
         v-bind:companySize="companySize"
         v-bind:industry="industry"
@@ -44,7 +43,6 @@
             @lastName="addLastName"
             @companyName="addCompanyName"
             @companyWebsite="addCompanyWebsite"
-            @phoneNumber="addPhoneNumber"
             @vat="addVat"
             @companySize="addCompanySize"
             @industry="addIndustry"
@@ -110,7 +108,6 @@ export default {
       lastName: null,
       companyName: null,
       companyWebsite: null,
-      phoneNumber: null,
       vat: null,
       companySize: null,
       industry: null,
@@ -145,7 +142,7 @@ export default {
     verification() {
       this.user.sendEmailVerification().then(() => {
         this.modal = true;
-        this.feedback = "Email Sent. Check your inbox and verify!";
+        this.feedback = "Email Sent. Check your inbox and verify your email!";
       }).catch(err => {
         this.modal = true;
         this.feedback = err.message;
@@ -175,10 +172,6 @@ export default {
     },
     addCompanyWebsite: function(companyWebsite) {
       this.companyWebsite = companyWebsite;
-      this.refresh();
-    },
-    addPhoneNumber: function(phoneNumber) {
-      this.phoneNumber = phoneNumber;
       this.refresh();
     },
     addVat: function(vat) {

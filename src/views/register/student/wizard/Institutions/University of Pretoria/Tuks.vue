@@ -1066,21 +1066,15 @@ export default {
       if(this.graduateStatus){this.graduateStatus = null;}
       if(this.year){this.year = null;}
       if(this.degree){this.degree = null;}
-      if(this.campus){this.campus = null;}
-      if(this.studentNo){this.studentNo = null;}
     },
     addGraduateStatus: function() {
       this.$emit("graduateStatus", this.graduateStatus);
       if(this.year){this.year = null;}
       if(this.degree){this.degree = null;}
-      if(this.campus){this.campus = null;}
-      if(this.studentNo){this.studentNo = null;}
     },
     addYear: function() {
       this.$emit("year", this.year);
       if(this.degree){this.degree = null;}
-      if(this.campus){this.campus = null;}
-      if(this.studentNo){this.studentNo = null;}
     },
     addDegree: function() {
       this.$emit("degree", this.degree);

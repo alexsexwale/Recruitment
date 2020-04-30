@@ -56,25 +56,6 @@
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('phoneNumber') && touched.phoneNumber },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('phoneNumber') }
-          ]">
-          <md-icon>phone</md-icon>
-          <label>Phone Number</label>
-          <md-input @change="addPhoneNumber" v-model="phoneNumber" data-vv-name="phoneNumber" type="text" name="phoneNumber" required v-validate="modelValidations.phoneNumber">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('phoneNumber')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('phoneNumber') && touched.phoneNumber">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
             { 'md-valid': !errors.has('vat') && touched.vat },
             { 'md-form-group': true },
             { 'md-error': errors.has('vat') }
@@ -162,7 +143,6 @@ export default {
       lastName: null,
       companyName: null,
       companyWebsite: null,
-      phoneNumber: null,
       vat: null,
       companySize: null,
       aboutMe: null,
@@ -174,7 +154,6 @@ export default {
         lastName: false,
         companyName: false,
         companyWebsite: false,
-        phoneNumber: false,
         vat: false,
         companySize: false,
         industry: false,
@@ -192,11 +171,6 @@ export default {
         },
         companyWebsite: {
           required: true
-        },
-        phoneNumber: {
-          required: true,
-          min: 10,
-          max: 10,
         },
         vat: {
           required: true,
@@ -254,9 +228,6 @@ export default {
     addCompanyWebsite: function() {
       this.$emit("companyWebsite", this.companyWebsite);
     },
-    addPhoneNumber: function() {
-      this.$emit("phoneNumber", this.phoneNumber);
-    },
     addVat: function() {
       this.$emit("vat", this.vat);
     },
@@ -282,9 +253,6 @@ export default {
     },
     companyWebsite() {
       this.touched.companyWebsite = true;
-    },
-    phoneNumber() {
-      this.touched.phoneNumber = true;
     },
     vat() {
       this.touched.vat = true;

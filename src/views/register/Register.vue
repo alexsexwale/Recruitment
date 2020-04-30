@@ -40,6 +40,22 @@
         </md-field>
 
         <md-field slot="inputs" :class="[
+            { 'md-valid': !errors.has('phoneNumber') && touched.phoneNumber },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('phoneNumber') }
+          ]">
+          <md-icon>phone</md-icon>
+          <label>Phone Number</label>
+          <md-input v-model="phoneNumber" type="text" data-vv-name="phoneNumber" name="phoneNumber" required v-validate="modelValidations.phoneNumber"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('phoneNumber')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('phoneNumber') && touched.email">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+
+        <md-field slot="inputs" :class="[
             { 'md-valid': !errors.has('email') && touched.email },
             { 'md-form-group': true },
             { 'md-error': errors.has('email') }
@@ -101,9 +117,25 @@
         </div>
       </template>
     </modal>
+    <!-- Modal: Verify Email and continue creating account -->
+    <modal v-if="successModal">
+      <template slot="header">
+        <h4 class="modal-title black">Verify Email!</h4>
+      </template>
+
+      <template slot="body">
+        <p class="black">You have been successfully registered.</p>
+        <p class="black">Check your inbox and verify your email</p>
+      </template>
+
+      <template slot="footer">
+        <div style="text-align:center;">
+          <md-button class="md-button md-success" @click="proceed">Got it</md-button>
+        </div>
+      </template>
+    </modal>
     <div v-if="loading" class="lds-circle"><div></div></div>
   </form>
-  
 </template>
 <script>
 import db from "@/firebase/init";
@@ -122,11 +154,13 @@ export default {
     return {
       firstName: null,
       lastName: null,
+      phoneNumber: null,
       email: null,
       password: null,
       terms: false,
       userRole: null,
       modal: false,
+      successModal: false,
       feedback: null,
       slug: null,
       loading: false,
@@ -134,6 +168,7 @@ export default {
         firstName: false,
         lastName: false,
         email: false,
+        phoneNumber: false,
         password: false,
         terms: false,
         userRole: false
@@ -148,6 +183,11 @@ export default {
         email: {
           required: true,
           email: true
+        },
+        phoneNumber: {
+          required: true,
+          min: 10,
+          max: 10,
         },
         password: {
           required: true,
@@ -207,6 +247,7 @@ export default {
               lastModified: null,
               name: this.firstName,
               surname: this.lastName,
+              phone: this.phoneNumber,
               email: this.email,
               user: this.userRole,
               terms_and_conditions: this.terms,
@@ -225,12 +266,7 @@ export default {
             this.feedback = null;
             let user = firebase.auth().currentUser;
             user.sendEmailVerification().then(() => {
-              if(this.userRole == "student") {
-                this.$router.push({ name: "create-student-account" });
-              } 
-              else {
-                this.$router.push({ name: "create-client-account" });
-              }
+              this.successModal = true;
             }).catch(err => {
               // An error happened.
               this.loading = false;
@@ -252,6 +288,14 @@ export default {
         this.feedback = "Please select whether you are a student or a client.";
       }
     },
+    proceed() {
+      if(this.userRole == "student") {
+        this.$router.push({ name: "create-student-account" });
+      } 
+      else {
+        this.$router.push({ name: "create-client-account" });
+      }
+    },
     termsAndCondition() {
       let terms = this.$router.resolve({ name: "terms-and-conditions" });
       window.open(terms.href, "_blank");
@@ -267,6 +311,9 @@ export default {
     email() {
       this.touched.email = true;
     },
+    phoneNumber() {
+      this.touched.phoneNumber = true;
+    },
     password() {
       this.touched.password = true;
     },
@@ -279,13 +326,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
-}
-</style>

@@ -61,6 +61,7 @@ import AuthLayout from "@/views/AuthLayout.vue";
 import Register from "@/views/register/Register.vue";
 import Login from "@/views/login/Login.vue";
 import ForgotPassword from "@/views/forgotPassword/ForgotPassword.vue";
+import Configuration from "@/views/configuration/Configuration.vue";
 import Contact from "@/views/contact/Contact.vue";
 import Faq from "@/views/faq/Faq.vue";
 import PrivacyPolicy from "@/views/privacyPolicy/PrivacyPolicy.vue";
@@ -180,7 +181,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "profile/student/:id",
+      path: "profile/:id",
       name: "view-student-profile",
       component: StudentProfile,
       meta: {
@@ -362,7 +363,7 @@ let student_dashboard_menu = {
       }
     },
     {
-      path: "profile/client/:id",
+      path: "profile/:id",
       name: "view-client-profile",
       component: ClientProfile,
       meta: {
@@ -462,6 +463,11 @@ let authPages = {
       path: "/forgot-password",
       name: "ForgotPassword",
       component: ForgotPassword
+    },
+    {
+      path: "/configuration",
+      name: "Configuration",
+      component: Configuration
     },
     {
       path: "/contact",

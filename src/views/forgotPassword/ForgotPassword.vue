@@ -98,7 +98,7 @@ export default {
       this.modal = false;
     },
     sent() {
-      this.$router.push({ name: 'login'});
+      this.$router.push({ name: 'Login'});
     },
     forgot() {
       firebase.auth().sendPasswordResetEmail(this.email)

@@ -55,12 +55,13 @@ export default {
     }
   },
   created() {
-    let jobs = db.collection('jobs');
+    let jobs = db.collection('micros');
     jobs.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
         this.status();
+        console.log(this.job);
       })
     })
     jobs.onSnapshot(snapshot => {

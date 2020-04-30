@@ -71,22 +71,6 @@
               <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
             </slide-y-down-transition>
         </md-field>
-
-        <md-field :class="[
-            { 'md-valid': !errors.has('phone') && touched.phone },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('phone') }
-          ]">
-          <md-icon>phone</md-icon>
-          <label>Cellphone</label>
-          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('phone')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('phone') && touched.phone">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
         
         <md-field :class="[
             { 'md-valid': !errors.has('bio') && touched.bio },
@@ -127,7 +111,6 @@ export default {
       dob: null,
       gender: null,
       race: null,
-      phone: null,
       bio: null,
       genders:[],
       races:[],
@@ -137,7 +120,6 @@ export default {
         dob: false,
         gender: false,
         race: false,
-        phone: false,
         bio: false
       },
       modelValidations: {
@@ -157,11 +139,6 @@ export default {
         },
         race: {
           required: true
-        },
-        phone: {
-          required: true,
-          min: 10,
-          max: 10
         },
         bio: {
           required: true
@@ -211,9 +188,6 @@ export default {
     addRace: function() {
       this.$emit("race", this.race);
     },
-    addPhone: function() {
-      this.$emit("phone", this.phone);
-    },
     addBio: function() {
       this.$emit("bio", this.bio);
     }
@@ -233,9 +207,6 @@ export default {
     },
     race() {
       this.touched.race = true;
-    },
-    phone() {
-      this.touched.phone = true;
     },
     bio() {
       this.touched.bio = true;

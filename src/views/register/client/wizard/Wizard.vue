@@ -113,9 +113,6 @@ export default {
     companyWebsite: {
       required: true
     },
-    phoneNumber: {
-      required: true
-    },
     vat: {
       required: true
     },
@@ -241,7 +238,6 @@ export default {
           lastModified: null,
           companyName: this.companyName,
           website: this.companyWebsite,
-          phoneNumber: this.phoneNumber,
           vat: this.vat,
           companySize: this.companySize,
           industry: this.industry,
