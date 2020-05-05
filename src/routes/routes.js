@@ -28,10 +28,11 @@ import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
 // Dissatisfied Job
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
 
-// Job
+// Client Job
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
-import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
+import ClientCompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
+import ClientIncompleteJob from "@/views/dashboard/client/jobs/incomplete/IncompleteJob";
 
 // Job Statuses
 import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
@@ -133,7 +134,17 @@ let client_dashboard_menu = {
     {
       path: "jobs/complete",
       name: "complete-jobs",
-      components: { default: CompleteJob },
+      components: { default: ClientCompleteJob },
+      meta: {
+        requiresAuth: true,
+        userRole: "client",
+        emailVerified: true
+      }
+    },
+    {
+      path: "jobs/complete",
+      name: "complete-jobs",
+      components: { default: ClientIncompleteJob },
       meta: {
         requiresAuth: true,
         userRole: "client",

@@ -4,6 +4,7 @@
       Let's start with the basic information
     </h5>
     <div class="md-layout">
+      <notifications></notifications>
       <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
@@ -88,7 +89,7 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-autocomplete @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
@@ -106,19 +107,19 @@
       </div>
 
       <md-field :class="[
-            { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
-            { 'md-error': errors.has('aboutMe') }
-          ]">
-          <label v-if="companyName == null || companyName == ''">About Me</label>
-          <label v-else>About Us</label>
-          <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
+          { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
+          { 'md-error': errors.has('aboutMe') }
+        ]">
+        <label v-if="companyName == null || companyName == ''">About Me</label>
+        <label v-else>About Us</label>
+        <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('aboutMe') && touched.aboutMe">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
     </div>
   </div>
 </template>
@@ -126,6 +127,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import moment from "moment";
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
@@ -139,8 +142,8 @@ export default {
   data() {
     return {
       file: null,
-      firstName: null,
-      lastName: null,
+      user: null,
+      client: null,
       companyName: null,
       companyWebsite: null,
       vat: null,
@@ -150,8 +153,6 @@ export default {
       industry: null,
       industries: [],
       touched: {
-        firstName: false,
-        lastName: false,
         companyName: false,
         companyWebsite: false,
         vat: false,
@@ -160,12 +161,6 @@ export default {
         aboutMe: false
       },
       modelValidations: {
-        firstName: {
-          required: true
-        },
-        lastName: {
-          required: true
-        },
         companyName: {
           required: true
         },
@@ -193,9 +188,6 @@ export default {
     handlePreview(file) {
       this.model.imageUrl = URL.createObjectURL(file.raw);
     },
-    getError(fieldName) {
-      return this.errors.first(fieldName);
-    },
     validate() {
       return this.$validator.validateAll().then(res => {
         this.$emit("on-validated", res);
@@ -216,38 +208,105 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    addFirstName: function() {
-      this.$emit("firstName", this.firstName);
-    },
-    addLastName: function() {
-      this.$emit("lastName", this.lastName);
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.client.get().then(doc => {
+        if(doc.exists) {
+          if(this.companyName) {
+            this.client.update({
+              companyName: this.companyName
+            });
+          }
+          if(this.companyWebsite) {
+            this.client.update({
+              website: this.companyWebsite
+            });
+          }
+          if(this.phoneNumber) {
+            this.client.update({
+              phoneNumber: this.phoneNumber
+            });
+          }
+          if(this.vat) {
+            this.client.update({
+              vat: this.vat
+            });
+          }
+          if(this.companySize) {
+            this.client.update({
+              companySize: this.companySize
+            });
+          }
+          if(this.industry) {
+            this.client.update({
+              industry: this.industry
+            });
+          }
+          if(this.aboutMe) {
+            this.client.update({
+              bio: this.aboutMe
+            });
+          }
+        }
+        if(doc.exists === false) {
+          this.client.set({
+            userId: this.user.uid,
+            created: moment(Date.now()).format('L'),
+            lastModified: null,
+            companyName: this.companyName,
+            website: this.companyWebsite,
+            vat: this.vat,
+            companySize: this.companySize,
+            industry: this.industry,
+            bio: this.aboutMe,
+            addressLine1: null,
+            addressLine2: null,
+            city: null,
+            province_state: null,
+            postalCode_zipCode: null,
+            country: "South Africa",
+            profilePicture: null,
+            accountCreated: false
+          });
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addCompanyName: function() {
       this.$emit("companyName", this.companyName);
+      this.debouncedUpdate();
     },
     addCompanyWebsite: function() {
       this.$emit("companyWebsite", this.companyWebsite);
+      this.debouncedUpdate();
     },
     addVat: function() {
       this.$emit("vat", this.vat);
+      this.debouncedUpdate();
     },
     addCompanySize: function() {
       this.$emit("companySize", this.companySize);
+      this.debouncedUpdate();
     },
     addIndustry: function() {
       this.$emit("industry", this.industry);
+      this.debouncedUpdate();
     },
     addAboutMe: function() {
       this.$emit("aboutMe", this.aboutMe);
+      this.debouncedUpdate();
     }
   },
   watch: {
-    firstName() {
-      this.touched.firstName = true;
-    },
-    lastName() {
-      this.touched.lastName = true;
-    },
     companyName() {
       this.touched.companyName = true;
     },
@@ -268,19 +327,32 @@ export default {
     }
   },
   created() {
-    let user = firebase.auth().currentUser;
-    let ref = db.collection('users');
-    ref.where('userId', '==', user.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.firstName = doc.data().name;
-        this.lastName = doc.data().surname;
-      });
-    });
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.industries = doc.data().Industries;
       this.sizeTypes = doc.data().CompanySizes;
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.client = db.collection('clients').doc(doc.id);
+        this.client.get().then(doc => {
+          if(doc.exists) {
+            this.companyName = doc.data().companyName;
+            this.companyWebsite = doc.data().website;
+            this.vat = doc.data().vat;
+            this.companySize = doc.data().companySize;
+            this.industry = doc.data().industry;
+            this.aboutMe = doc.data().bio;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
     });
   }
 };
@@ -290,5 +362,8 @@ export default {
   .md-field label {
     font-size: 11px;
   }
+}
+.industry {
+  padding-left: 35px;
 }
 </style>

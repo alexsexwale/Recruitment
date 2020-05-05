@@ -1,9 +1,7 @@
 <template>
   <div class="md-layout">
     <div class="md-layout-item md-size-66 md-xsmall-size-80 mx-auto">
-      <simple-wizard 
-        v-bind:firstName="firstName" 
-        v-bind:lastName="lastName"
+      <simple-wizard
         v-bind:dob="dob"
         v-bind:gender="gender"
         v-bind:race="race"
@@ -45,8 +43,6 @@
           </template>
           <first-step ref="step1" 
             @on-validated="onStepValidated" 
-            @firstName="addFirstName"
-            @lastName="addLastName"
             @dob="addDob"
             @gender="addGender"
             @race="addRace"
@@ -123,8 +119,6 @@ export default {
       auth: null,
       user: null,
       feedback: null,
-      firstName: null,
-      lastName: null,
       dob: null,
       gender: null,
       race: null,
@@ -181,14 +175,6 @@ export default {
         this.user.reload();
         this.emailVerified = this.user.emailVerified;
       }
-    },
-    addFirstName: function(firstName) {
-      this.firstName = firstName;
-      this.refresh();
-    },
-    addLastName: function(lastName) {
-      this.lastName = lastName;
-      this.refresh();
     },
     addDob: function(dob) {
       this.dob = dob;

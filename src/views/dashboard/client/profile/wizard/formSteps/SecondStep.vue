@@ -4,7 +4,6 @@
       Let us where your workplace located?
     </h5>
     <div class="md-layout">
-
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine1') && touched.addressLine1 },

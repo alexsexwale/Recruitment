@@ -151,7 +151,8 @@ export default {
     let url = new URL(url_string);
     this.mode = url.searchParams.get("mode");
     this.code = url.searchParams.get("oobCode");
-    if(this.mode == 'verifyEmail') { this.verifyEmail(); }
+    if(this.mode === 'verifyEmail') { this.verifyEmail(); }
+    if(this.mode !== 'verifyEmail' && this.mode !== 'resetPassword' ) { this.proceed(); }
   }
 };
 </script>

@@ -238,7 +238,6 @@ export default {
           this.feedback = "This account already exists";
         }
         else {
-          this.exists = false;
           firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           .then(cred => {
             users.set({
@@ -280,7 +279,7 @@ export default {
             this.feedback = err.message;
           })
         }
-      })
+      });
       
       } else {
         this.loading = false;

@@ -120,13 +120,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
-}
-</style>

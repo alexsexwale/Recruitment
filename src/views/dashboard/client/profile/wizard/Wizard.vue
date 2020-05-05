@@ -1,6 +1,7 @@
 <template>
   <div class="wizard-container">
     <form @submit.prevent="updateAccount" @input="fieldUpdate">
+      <notifications></notifications>
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -59,25 +60,6 @@
           </slot>
         </md-card-actions>
       </md-card>
-      <!-- Modal: Success -->
-      <modal v-if="modal" @close="modalHide">
-        <template slot="header">
-          <h4 class="modal-title black">Profile Updated!</h4>
-          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
-            <md-icon>clear</md-icon>
-          </md-button>
-        </template>
-
-        <template slot="body">
-          <p class="black">{{updated}}</p>
-        </template>
-
-        <template slot="footer">
-          <div style="text-align:center;">
-            <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
-          </div>
-        </template>
-      </modal>
     </form>
   </div>
 </template>
@@ -86,9 +68,7 @@ import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
-import { Modal } from "@/components";
 import { debounce } from "debounce";
-
 export default {
   name: "simple-wizard",
   props: {
@@ -169,8 +149,7 @@ export default {
       render(h) {
         return h("span", [this.tab.$slots.label || this.tab.label]);
       }
-    },
-    Modal
+    }
   },
   provide() {
     return {
@@ -184,9 +163,7 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      feedback: null,
-      updated: null,
-      modal: false,
+      feedback: null
     };
   },
   computed: {
@@ -232,9 +209,6 @@ export default {
     addFeedback: function() {
       this.$emit("feedback", this.feedback);
     },
-    modalHide() {
-      this.modal = false;
-    },
     fieldUpdate() {
       this.debouncedUpdate();
     },
@@ -251,105 +225,100 @@ export default {
           let users = db.collection('users').doc(doc.id);
           if(this.firstName) {
             users.update({
-              name: this.firstName
+              name: this.firstName,
+              lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.lastName) {
             users.update({
-              surname: this.lastName
+              surname: this.lastName,
+              lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
+          }
+          if(this.phoneNumber) {
+            users.update({
+              phone: this.phoneNumber,
+              lastModified: moment(Date.now()).format('L')
+            });
           }
           if(this.companyName) {
             clients.update({
               companyName: this.companyName,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.companyWebsite) {
             clients.update({
               website: this.companyWebsite,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
-          if(this.phoneNumber) {
-            clients.update({
-              phoneNumber: this.phoneNumber,
-              lastModified: moment(Date.now()).format('L')
-            });
-            this.modal = true;
-          }
+          
           if(this.vat) {
             clients.update({
               vat: this.vat,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.companySize) {
             clients.update({
               companySize: this.companySize,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.industry) {
             clients.update({
               industry: this.industry,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.aboutMe) {
             clients.update({
               bio: this.aboutMe,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.addressLine1) {
             clients.update({
               addressLine1: this.addressLine1,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.addressLine2) {
             clients.update({
               addressLine2: this.addressLine2,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.city) {
             clients.update({
               city: this.city,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.province) {
             clients.update({
               province_state: this.province,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
           if(this.postalCode) {
             clients.update({
               postalCode_zipCode: this.postalCode,
               lastModified: moment(Date.now()).format('L')
             });
-            this.modal = true;
           }
         });
       })
       .then(() => {
-        this.modal = true
-        this.updated = "Your profile has been updated.";
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
       })
       .catch(err => {
         this.feedback = err.message;
@@ -478,14 +447,6 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
-}
-
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
 }
 
 @media only screen and (max-width: 768px) {

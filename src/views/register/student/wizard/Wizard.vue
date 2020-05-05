@@ -98,12 +98,6 @@ export default {
     vertical: {
       type: Boolean
     },
-    firstName: {
-      required: true
-    },
-    lastName: {
-      required: true
-    },
     dob: {
       required: true
     },
@@ -111,9 +105,6 @@ export default {
       required: true
     },
     race: {
-      required: true
-    },
-    phone: {
       required: true
     },
     bio: {
@@ -240,32 +231,119 @@ export default {
 
       if(this.user.emailVerified) {
         let students = db.collection('students').doc(this.alias);
-        students.set({
-          userId: this.user.uid,
-          created: moment(Date.now()).format('L'),
-          lastModified: null,
-          dateOfBirth: moment(this.dob).format('L'),
-          gender: this.gender,
-          race: this.race,
-          phoneNumber: this.phone,
-          bio: this.bio,
-          institution: this.institution,
-          institutionType: "University",
-          campus: this.campus,
-          studentNo: this.studentNo,
-          faculty: this.faculty,
-          degree: this.degree,
-          year: this.year,
-          graduateStatus: this.graduateStatus,
-          accountName: this.accountName,
-          accountNumber: this.accountNumber,
-          accountType: this.accountType,
-          bankName: this.bankName,
-          branchCode: this.branchCode
+        students.get().then(doc => {
+          if(doc.exists) {
+            if(this.dateOfBirth) {
+              students.update({
+                dateOfBirth: moment(this.dob).format('L')
+              });
+            }
+            if(this.gender) {
+              students.update({
+                gender: this.gender
+              });
+            }
+            if(this.race) {
+              students.update({
+                race: this.race
+              });
+            }
+            if(this.bio) {
+              students.update({
+                bio: this.bio
+              });
+            }
+            if(this.institution) {
+              students.update({
+                institution: this.institution
+              });
+            }
+            if(this.campus) {
+              students.update({
+                campus: this.campus
+              });
+            }
+            if(this.studentNo) {
+              students.update({
+                studentNo: this.studentNo
+              });
+            }
+            if(this.faculty) {
+              students.update({
+                faculty: this.faculty
+              });
+            }
+            if(this.degree) {
+              students.update({
+                degree: this.degree
+              });
+            }
+            if(this.year) {
+              students.update({
+                year: this.year
+              });
+            }
+            if(this.graduateStatus) {
+              students.update({
+                graduateStatus: this.graduateStatus
+              });
+            }
+            if(this.accountName) {
+              students.update({
+                accountName: this.accountName
+              });
+            }
+            if(this.accountNumber) {
+              students.update({
+                accountNumber: this.accountNumber
+              });
+            }
+            if(this.accountType) {
+              students.update({
+                accountType: this.accountType
+              });
+            }
+            if(this.bankName) {
+              students.update({
+                bankName: this.bankName
+              });
+            }
+            if(this.branchCode) {
+              students.update({
+                branchCode: this.branchCode
+              });
+            }
+            students.update({
+              accountCreated: true
+            });
+          }
+          else {
+            students.set({
+              userId: this.user.uid,
+              created: moment(Date.now()).format('L'),
+              lastModified: null,
+              dateOfBirth: moment(this.dob).format('L'),
+              gender: this.gender,
+              race: this.race,
+              bio: this.bio,
+              institution: this.institution,
+              institutionType: "University",
+              campus: this.campus,
+              studentNo: this.studentNo,
+              faculty: this.faculty,
+              degree: this.degree,
+              year: this.year,
+              graduateStatus: this.graduateStatus,
+              accountName: this.accountName,
+              accountNumber: this.accountNumber,
+              accountType: this.accountType,
+              bankName: this.bankName,
+              branchCode: this.branchCode,
+              accountCreated: true
+            });
+          }
+          this.$router.push({ name: "student-profile", params: { id: this.alias } });
         });
-        
-        this.$router.push({ name: "student-profile", params: { id: this.alias } });
-
       } else {
         this.feedback = "You have not verified that " + this.email + " is your email address."
         this.addFeedback();

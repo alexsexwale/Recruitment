@@ -4,8 +4,8 @@
       Let us know where your workplace is located?
     </h5>
     <div class="md-layout">
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <notifications></notifications>
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine1') && touched.addressLine1 },
             { 'md-form-group': true },
@@ -24,7 +24,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine2') && touched.addressLine2 },
             { 'md-form-group': true },
@@ -43,7 +43,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('city') && touched.city },
             { 'md-form-group': true },
@@ -82,7 +82,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('postalCode') && touched.postalCode },
             { 'md-form-group': true },
@@ -107,6 +107,7 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
@@ -119,6 +120,8 @@ export default {
   },
   data() {
     return {
+      user: null,
+      client: null,
       addressLine1: null,
       addressLine2: null,
       city: null,
@@ -150,46 +153,73 @@ export default {
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
-    },
-    getError(fieldName) {
-      return this.errors.first(fieldName);
-    },
     validate() {
       return this.$validator.validateAll().then(res => {
         this.$emit("on-validated", res);
         return res;
       });
     },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.client.get().then(doc => {
+        if(doc.exists) {
+          if(this.addressLine1) {
+            this.client.update({
+              addressLine1: this.addressLine1
+            });
+          }
+          if(this.addressLine2) {
+            this.client.update({
+              addressLine2: this.addressLine2
+            });
+          }
+          if(this.city) {
+            this.client.update({
+              city: this.city
+            });
+          }
+          if(this.province) {
+            this.client.update({
+              province_state: this.province
+            });
+          }
+          if(this.postalCode) {
+            this.client.update({
+              postalCode_zipCode: this.postalCode
+            });
+          }
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addAddressLine1: function() {
       this.$emit("addressLine1", this.addressLine1);
+      this.debouncedUpdate();
     },
     addAddressLine2: function() {
       this.$emit("addressLine2", this.addressLine2);
+      this.debouncedUpdate();
     },
     addCity: function() {
       this.$emit("city", this.city);
+      this.debouncedUpdate();
     },
     addProvince: function() {
       this.$emit("province", this.province);
+      this.debouncedUpdate();
     },
     addPostalCode: function() {
       this.$emit("postalCode", this.postalCode);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -213,6 +243,27 @@ export default {
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.provinces = doc.data().Provinces;
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.client = db.collection('clients').doc(doc.id);
+        this.client.get().then(doc => {
+          if(doc.exists) {
+            this.addressLine1 = doc.data().addressLine1;
+            this.addressLine2 = doc.data().addressLine2;
+            this.city = doc.data().city;
+            this.province = doc.data().province_state;
+            this.postalCode = doc.data().postalCode_zipCode;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
     });
   }
 };

@@ -4,6 +4,7 @@
       Tell us about your studies
     </h5>
     <div class="md-layout">
+      <notifications></notifications>
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('institution') && touched.institution },
@@ -30,6 +31,7 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
@@ -42,6 +44,8 @@ export default {
   },
   data() {
     return {
+      user: null,
+      student: null,
       institution: null,
       institutions: [],
       touched: {
@@ -61,8 +65,31 @@ export default {
         return res;
       });
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.institutions) {
+            this.student.update({
+              institution: this.institution
+            });
+          }
+        }
+      });
+      this.$notify(
+      {
+        message: 'Your data has been automatically saved!',
+        icon: 'add_alert',
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: 'success'
+      });
+    },
     addInstitution: function() {
       this.$emit("institution", this.institution);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -75,6 +102,23 @@ export default {
     settings.get().then(doc => {
       this.races = doc.data().Races; 
       this.institutions = doc.data().Institutions;
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.institution = doc.data().institution;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
     });
   }
 };

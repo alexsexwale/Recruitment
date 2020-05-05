@@ -4,7 +4,7 @@
       What are your banking details
     </h5>
     <div class="md-layout">
-
+      <notifications></notifications>
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('accountName') && touched.accountName },
@@ -104,12 +104,17 @@
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
+import firebase from 'firebase/app';
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
   },
   data() {
     return {
+      user: null,
+      student: null,
       accountName: null,
       accountNumber: null,
       accountType: null,
@@ -168,20 +173,67 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.accountName) {
+            this.student.update({
+              accountName: this.accountName
+            });
+          }
+          if(this.accountNumber) {
+            this.student.update({
+              accountNumber: this.accountNumber
+            });
+          }
+          if(this.accountType) {
+            this.student.update({
+              accountType: this.accountType
+            });
+          }
+          if(this.bankName) {
+            this.student.update({
+              bankName: this.bankName
+            });
+          }
+          if(this.branchCode) {
+            this.student.update({
+              branchCode: this.branchCode
+            });
+          }
+        }
+      });
+      this.$notify(
+      {
+        message: 'Your data has been automatically saved!',
+        icon: 'add_alert',
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: 'success'
+      });
+    },
     addAccountName: function() {
       this.$emit("accountName", this.accountName);
+      this.debouncedUpdate();
     },
     addAccountNumber: function() {
       this.$emit("accountNumber", this.accountNumber);
+      this.debouncedUpdate();
     },
     addAccountType: function() {
       this.$emit("accountType", this.accountType);
+      this.debouncedUpdate();
     },
     addBankName: function() {
       this.$emit("bankName", this.bankName);
+      this.debouncedUpdate();
     },
     addBranchCode: function() {
       this.$emit("branchCode", this.branchCode);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -200,6 +252,28 @@ export default {
     branchCode() {
       this.touched.branchCode = true;
     }
+  },
+  created() {
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.accountName = doc.data().accountName;
+            this.accountNumber = doc.data().accountNumber;
+            this.accountType = doc.data().accountType;
+            this.bankName = doc.data().bankName;
+            this.branchCode = doc.data().branchCode;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
+    });
   }
 };
 </script>

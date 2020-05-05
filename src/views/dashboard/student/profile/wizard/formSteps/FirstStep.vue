@@ -51,9 +51,26 @@
             <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
           </slide-y-down-transition>
         </md-field>
+
+        <md-field :class="[
+            { 'md-valid': !errors.has('phone') && touched.phone },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('phone') }
+          ]">
+          <md-icon>phone</md-icon>
+          <label>Phone Number</label>
+          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone">
+          </md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('phone')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('phone') && touched.phone">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
       </div>
 
-      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
         <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
           :class="[
               { 'md-valid': !errors.has('dob') && touched.dob },
@@ -65,12 +82,12 @@
           <md-icon class="error" v-show="errors.has('dob')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('dob') && touched.dob">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('dob') && touched.dob" style="position: absolute">done</md-icon>
           </slide-y-down-transition>
         </md-datepicker>
       </div>
 
-      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
         <md-field :class="[
               { 'md-valid': !errors.has('gender') && touched.gender },
               { 'md-form-group': true },
@@ -90,7 +107,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
         <md-field :class="[
               { 'md-valid': !errors.has('race') && touched.race },
               { 'md-form-group': true },
@@ -107,25 +124,6 @@
             <slide-y-down-transition>
               <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
             </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item md-size-50 ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('phone') && touched.phone },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('phone') }
-          ]">
-          <md-icon>phone</md-icon>
-          <label>Phone Number</label>
-          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('phone')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('phone') && touched.phone">done</md-icon>
-          </slide-y-down-transition>
         </md-field>
       </div>
 
@@ -290,6 +288,7 @@ export default {
       snapshot.forEach(doc => {
         this.firstName = doc.data().name;
         this.lastName = doc.data().surname;
+        this.phone = doc.data().phone;
       });
     });
     student.where('userId', '==', user.uid).get()
@@ -298,7 +297,6 @@ export default {
         this.dob = new Date(doc.data().dateOfBirth);
         this.gender = doc.data().gender;
         this.race = doc.data().race;
-        this.phone = doc.data().phoneNumber;
         this.bio = doc.data().bio;
       });
     });

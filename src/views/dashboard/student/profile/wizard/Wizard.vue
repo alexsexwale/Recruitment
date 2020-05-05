@@ -1,6 +1,7 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="updateAccount">
+    <form @submit.prevent="updateAccount" @input="fieldUpdate">
+      <notifications></notifications>
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -67,6 +68,7 @@ import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
+import { debounce } from "debounce";
 
 export default {
   name: "simple-wizard",
@@ -167,9 +169,7 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      auth: null,
-      user: null,
-      feedback: null
+      feedback: null,
     };
   },
   computed: {
@@ -215,9 +215,16 @@ export default {
     addFeedback: function() {
       this.$emit("feedback", this.feedback);
     },
-    updateAccount() {
+    fieldUpdate() {
+      this.debouncedUpdate();
+    },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    async updateAccount() {
       let ref = db.collection('users');
-      ref.where('userId', '==', this.user.uid).get()
+      let user = firebase.auth().currentUser;
+      ref.where('userId', '==', user.uid).get()
       .then(doc => {
         let student = db.collection('students').doc(doc.id);
         let users = db.collection('users').doc(doc.id);
@@ -230,6 +237,12 @@ export default {
         if(this.lastName) {
           users.update({
             surname: this.lastName,
+            lastModified: moment(Date.now()).format('L')
+          });
+        } 
+        if(this.phone) {
+          users.update({
+            phoneNumber: this.phone,
             lastModified: moment(Date.now()).format('L')
           });
         }
@@ -248,12 +261,6 @@ export default {
         if(this.race) {
           student.update({
             race: this.race,
-            lastModified: moment(Date.now()).format('L')
-          });
-        }
-        if(this.phone) {
-          student.update({
-            phoneNumber: this.phone,
             lastModified: moment(Date.now()).format('L')
           });
         }
@@ -355,7 +362,14 @@ export default {
         }
       })
       .then(() => {
-        this.feedback = "Your profile has been updated.";
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
       })
       .catch(err => {
         // An error happened.
@@ -459,10 +473,6 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
-  },
-  created() {
-    this.auth = firebase.auth();
-    this.user = this.auth.currentUser;
   }
 };
 </script>
@@ -487,13 +497,5 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
-}
-
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
 }
 </style>

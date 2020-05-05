@@ -2,6 +2,7 @@ import Vue from "vue";
 import { firestorePlugin } from 'vuefire';
 import DashboardPlugin from "./material-dashboard";
 import { Carousel, CarouselItem } from 'element-ui';
+import Notifications from './components/NotificationPlugin';
 
 // plugins
 import App from "./App.vue";
@@ -16,6 +17,7 @@ import firebase from "firebase/app";
 Vue.config.productionTip = false;
 Vue.use(Carousel);
 Vue.use(CarouselItem);
+Vue.use(Notifications);
 
 // plugin setup
 Vue.use(DashboardPlugin);

@@ -52,6 +52,22 @@
             <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
           </slide-y-down-transition>
         </md-field>
+        <md-field :class="[
+            { 'md-valid': !errors.has('phoneNumber') && touched.phoneNumber },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('phoneNumber') }
+          ]">
+          <md-icon>phone</md-icon>
+          <label>Phone Number</label>
+          <md-input @change="addPhoneNumber" v-model="phoneNumber" data-vv-name="phoneNumber" type="text" name="phoneNumber" required v-validate="modelValidations.phoneNumber">
+          </md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('phoneNumber')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('phoneNumber') && touched.phoneNumber">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
@@ -88,25 +104,6 @@
           </slide-y-down-transition>
           <slide-y-down-transition>
             <md-icon class="success" v-show="!errors.has('companyWebsite') && touched.companyWebsite">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('phoneNumber') && touched.phoneNumber },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('phoneNumber') }
-          ]">
-          <md-icon>phone</md-icon>
-          <label>Phone Number</label>
-          <md-input @change="addPhoneNumber" v-model="phoneNumber" data-vv-name="phoneNumber" type="text" name="phoneNumber" required v-validate="modelValidations.phoneNumber">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('phoneNumber')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('phoneNumber') && touched.phoneNumber">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -150,15 +147,15 @@
         </md-field>
       </div>
 
-      <!-- <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-autocomplete @change="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
               { 'md-error': errors.has('industry') }
-            ]"> -->
+            ]">
           <!-- <md-icon><i class="fas fa-industry"></i></md-icon> -->
-          <!-- <label style="margin-left: 35px;">Industry</label>
+          <label style="margin-left: 35px;">Industry</label>
           <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('industry')">close</md-icon>
           </slide-y-down-transition>
@@ -166,7 +163,7 @@
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
         </md-autocomplete>
-      </div> -->
+      </div>
 
       <md-field :class="[
             { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
@@ -356,6 +353,7 @@ export default {
       snapshot.forEach(doc => {
         this.firstName = doc.data().name;
         this.lastName = doc.data().surname;
+        this.phoneNumber = doc.data().phone;
       });
     });
 
@@ -364,7 +362,6 @@ export default {
       snapshot.forEach(doc => {
         this.companyName = doc.data().companyName;
         this.companyWebsite = doc.data().website;
-        this.phoneNumber = doc.data().phoneNumber;
         this.vat = doc.data().vat;
         this.companySize = doc.data().companySize;
         this.industry = doc.data().industry;
@@ -380,4 +377,13 @@ export default {
   }
 };
 </script>
-<style></style>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .md-field label {
+    font-size: 11px;
+  }
+}
+.industry {
+  padding-left: 35px;
+}
+</style>

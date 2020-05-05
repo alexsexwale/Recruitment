@@ -223,34 +223,103 @@ export default {
 
       if(this.user.emailVerified) {
         let clients = db.collection('clients').doc(this.alias);
-        //upload profile picture
-        //let storageRef = firebase.storage().ref('profiles/' + this.file.name);
-        // let uploadTask = storageRef.put(this.file).then(snapshot => {
-        //   // Handle successful uploads on complete
-        //   uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
-        //     this.profile = downloadUrl;
-        //   });
-        // });
+        clients.get().then(doc => {
+          if(doc.exists) {
+            if(this.companyName) {
+              clients.update({
+                companyName: this.companyName
+              });
+              this.modal = true;
+            }
+            if(this.companyWebsite) {
+              clients.update({
+                website: this.companyWebsite
+              });
+              this.modal = true;
+            }
+            if(this.vat) {
+              clients.update({
+                vat: this.vat
+              });
+            }
+            if(this.companySize) {
+              clients.update({
+                companySize: this.companySize
+              });
+            }
+            if(this.industry) {
+              clients.update({
+                industry: this.industry
+              });
+            }
+            if(this.aboutMe) {
+              clients.update({
+                bio: this.aboutMe
+              });
+              this.modal = true;
+            }
+            if(this.addressLine1) {
+              clients.update({
+                addressLine1: this.addressLine1
+              });
+            }
+            if(this.addressLine2) {
+              clients.update({
+                addressLine2: this.addressLine2
+              });
+            }
+            if(this.city) {
+              clients.update({
+                city: this.city
+              });
+            }
+            if(this.province) {
+              clients.update({
+                province_state: this.province
+              });
+            }
+            if(this.postalCode) {
+              clients.update({
+                postalCode_zipCode: this.postalCode
+              });
+            }
+            clients.update({
+              accountCreated: true
+            });
+          }
+          else {
+            //upload profile picture
+            //let storageRef = firebase.storage().ref('profiles/' + this.file.name);
+            // let uploadTask = storageRef.put(this.file).then(snapshot => {
+            //   // Handle successful uploads on complete
+            //   uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
+            //     this.profile = downloadUrl;
+            //   });
+            // });
 
-        clients.set({
-          userId: this.user.uid,
-          created: moment(Date.now()).format('L'),
-          lastModified: null,
-          companyName: this.companyName,
-          website: this.companyWebsite,
-          vat: this.vat,
-          companySize: this.companySize,
-          industry: this.industry,
-          bio: this.aboutMe,
-          addressLine1: this.addressLine1,
-          addressLine2: this.addressLine2,
-          city: this.city,
-          province_state: this.province,
-          postalCode_zipCode: this.postalCode,
-          country: "South Africa",
-          profilePicture: this.profile
+            clients.set({
+              userId: this.user.uid,
+              created: moment(Date.now()).format('L'),
+              lastModified: null,
+              companyName: this.companyName,
+              website: this.companyWebsite,
+              vat: this.vat,
+              companySize: this.companySize,
+              industry: this.industry,
+              bio: this.aboutMe,
+              addressLine1: this.addressLine1,
+              addressLine2: this.addressLine2,
+              city: this.city,
+              province_state: this.province,
+              postalCode_zipCode: this.postalCode,
+              country: "South Africa",
+              profilePicture: this.profile,
+              accountCreated: true
+            });
+          }
+          this.$router.push({ name: "client-profile", params: { id: this.alias } });
         });
-        this.$router.push({ name: "client-profile", params: { id: this.alias } });
+        
       } else {
         this.feedback = "You have not verified that " + this.email + " is your email address."
         this.addFeedback();
@@ -399,14 +468,6 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
-}
-
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
 }
 
 @media only screen and (max-width: 768px) {

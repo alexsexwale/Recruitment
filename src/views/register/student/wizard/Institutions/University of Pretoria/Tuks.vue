@@ -1,5 +1,6 @@
 <template>
   <div class="md-layout">
+    <notifications></notifications>
     <!-- Faculties -->
     <div class="md-layout-item ml-auto mt-4 md-small-size-100">
       <md-field :class="[
@@ -524,28 +525,6 @@
       </md-field>
     </div>
 
-    <!-- Postgraduate Humanities Postgraduate Diplomas -->
-    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
-      v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Postgraduate Diploma/Certificates' ">
-      <md-field :class="[
-          { 'md-valid': !errors.has('degree') && touched.degree },
-          { 'md-form-group': true },
-          { 'md-error': errors.has('degree') }
-        ]">
-        <md-icon>school</md-icon>
-        <label>Diploma/Higher Certificate</label>
-        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
-          <md-option v-for="(degree, index) in humanitiesPostgraduateDiplomas" :key="index" :value="degree">{{degree}}</md-option>
-        </md-select>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-
     <!-- Postgraduate Humanities Honours Degrees -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
       v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Honours' ">
@@ -854,8 +833,8 @@
       </md-field>
     </div>
 
-    <!-- Undergraduate Veterinary Sciences Degrees -->
-    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Veterinary Sciences' 
+    <!-- Undergraduate Veterinary Services Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Veterinary Services' 
        && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
       <md-field :class="[
           { 'md-valid': !errors.has('degree') && touched.degree },
@@ -865,7 +844,7 @@
         <md-icon>school</md-icon>
         <label>Degree</label>
         <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
-          <md-option v-for="(degree, index) in veterinaryServicesMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+          <md-option v-for="(degree, index) in veterinaryServicesUndergraduateDegrees" :key="index" :value="degree">{{degree}}</md-option>
         </md-select>
         <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
@@ -876,9 +855,9 @@
       </md-field>
     </div>
 
-    <!-- Postgraduate Veterinary Sciences Masters Degrees -->
+    <!-- Postgraduate Veterinary Services Masters Degrees -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
-      v-if="faculty === 'Veterinary Sciences' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      v-if="faculty === 'Veterinary Services' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
       <md-field :class="[
           { 'md-valid': !errors.has('degree') && touched.degree },
           { 'md-form-group': true },
@@ -898,9 +877,9 @@
       </md-field>
     </div>
 
-    <!-- Postgraduate Veterinary Sciences Doctorates Degrees -->
+    <!-- Postgraduate Veterinary Services Doctorates Degrees -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
-      v-if="faculty === 'Veterinary Sciences' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      v-if="faculty === 'Veterinary Services' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
       <md-field :class="[
           { 'md-valid': !errors.has('degree') && touched.degree },
           { 'md-form-group': true },
@@ -965,6 +944,7 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import debounce from "debounce";
 export default {
   name: 'tuks',
   components: {
@@ -972,6 +952,8 @@ export default {
   },
   data() {
     return {
+      user: null,
+      student: null,
       graduates: null,
       faculty: null,
       degree: null,
@@ -998,7 +980,6 @@ export default {
       economicsAndManagementSciencesPostgraduateDiplomas: [],
       educationPostgraduateDiplomas: [],
       healthSciencesPostgraduateDiplomas: [],
-      humanitiesPostgraduateDiplomas: [],
       
       // Honours Degrees
       economicsAndManagementSciencesHonoursDegrees: [],
@@ -1061,29 +1042,82 @@ export default {
     }
   },
   methods: {
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.faculty) {
+            this.student.update({
+              faculty: this.faculty
+            });
+          }
+          if(this.graduateStatus) {
+            this.student.update({
+              graduateStatus: this.graduateStatus
+            });
+          }
+          if(this.year) {
+            this.student.update({
+              year: this.year
+            });
+          }
+          if(this.degree) {
+            this.student.update({
+              degree: this.degree
+            });
+          }
+          if(this.campus) {
+            this.student.update({
+              campus: this.campus
+            });
+          }
+          if(this.studentNo) {
+            this.student.update({
+              studentNo: this.studentNo
+            });
+          }
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
+    },
     addFaculty: function() {
       this.$emit("faculty", this.faculty);
       if(this.graduateStatus){this.graduateStatus = null;}
       if(this.year){this.year = null;}
       if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addGraduateStatus: function() {
       this.$emit("graduateStatus", this.graduateStatus);
       if(this.year){this.year = null;}
       if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addYear: function() {
       this.$emit("year", this.year);
       if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addDegree: function() {
       this.$emit("degree", this.degree);
+      this.debouncedUpdate();
     },
     addCampus: function() {
       this.$emit("campus", this.campus);
+      this.debouncedUpdate();
     },
     addStudentNo: function() {
       this.$emit("studentNo", this.studentNo);
+      this.debouncedUpdate();
     },
     validate() {
       return this.$validator.validateAll().then(res => {
@@ -1134,7 +1168,7 @@ export default {
       this.healthSciencesUndergraduateDegrees = doc.data().HealthSciencesUndergraduateDegrees;
       this.humanitiesUndergraduateDegrees = doc.data().HumanitiesUndergraduateDegrees;
       this.lawUndergraduateDegrees = doc.data().LawUndergraduateDegrees;
-      this.naturalAndAgriculturalSciencesUndergraduateDegrees = doc.data().naturalAndAgriculturalSciencesUndergraduateDegrees;
+      this.naturalAndAgriculturalSciencesUndergraduateDegrees = doc.data().NaturalAndAgriculturalSciencesUndergraduateDegrees;
       this.theologyAndReligionUndergraduateDegrees = doc.data().TheologyAndReligionUndergraduateDegrees;
       this.veterinaryServicesUndergraduateDegrees = doc.data().VeterinaryServicesUndergraduateDegrees;
       
@@ -1142,7 +1176,6 @@ export default {
       this.economicsAndManagementSciencesPostgraduateDiplomas = doc.data().EconomicsAndManagementSciencesPostgraduateDiplomas;
       this.educationPostgraduateDiplomas = doc.data().EducationPostgraduateDiplomas;
       this.healthSciencesPostgraduateDiplomas = doc.data().HealthSciencesPostgraduateDiplomas;
-      this.humanitiesPostgraduateDiplomas = doc.data().HumanitiesPostgraduateDiplomas;
 
       // Honours Degrees
       this.economicsAndManagementSciencesHonoursDegrees = doc.data().EconomicsAndManagementSciencesHonoursDegrees;
@@ -1174,7 +1207,29 @@ export default {
       this.naturalAndAgriculturalSciencesDoctoratesDegrees = doc.data().NaturalAndAgriculturalSciencesDoctoratesDegrees;
       this.theologyAndReligionDoctoratesDegrees = doc.data().TheologyAndReligionDoctoratesDegrees;
       this.veterinaryServicesDoctoratesDegrees = doc.data().VeterinaryServicesDoctoratesDegrees;
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.faculty = doc.data().faculty;
+            // this.graduateStatus = doc.data().graduateStatus;
+            // this.degree = doc.data().degree;
+            // this.year = doc.data().year;
+            this.campus = doc.data().campus;
+            this.studentNo = doc.data().studentNo;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
       });
-    }
+    });
+  }
 }
 </script>

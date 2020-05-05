@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      user: {},
       email: null,
       password: null,
       feedback: null,
@@ -124,7 +125,8 @@ export default {
                 if(doc.data().user == "client") {
                   let client = db.collection('clients').doc(this.alias);
                   client.get().then(doc => {
-                    if(doc.exists) {
+                    this.user = doc.data();
+                    if(doc.exists && doc.data().accountCreated) {
                       this.$router.push({ name: 'client-profile', params: {id: this.alias} });
                     }
                     else {
@@ -135,7 +137,7 @@ export default {
                 else {
                   let student = db.collection('students').doc(this.alias);
                   student.get().then(doc => {
-                    if(doc.exists) {
+                    if(doc.exists && doc.data().accountCreated) {
                       this.$router.push({ name: 'student-profile', params: {id: this.alias} });
                     }
                     else {

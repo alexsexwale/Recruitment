@@ -4,6 +4,7 @@
       Tell us a little about yourself
     </h5>
     <div class="md-layout">
+      <notifications></notifications>
       <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
@@ -93,6 +94,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import moment from "moment";
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
@@ -106,8 +109,8 @@ export default {
   data() {
     return {
       image: "",
-      firstName: null,
-      lastName: null,
+      user: null,
+      student: null,
       dob: null,
       gender: null,
       race: null,
@@ -115,22 +118,12 @@ export default {
       genders:[],
       races:[],
       touched: {
-        firstName: false,
-        lastName: false,
         dob: false,
         gender: false,
         race: false,
         bio: false
       },
       modelValidations: {
-        firstName: {
-          required: true,
-          min: 2
-        },
-        lastName: {
-          required: true,
-          min: 2
-        },
         dob: {
           required: true
         },
@@ -173,32 +166,86 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    addFirstName: function() {
-      this.$emit("firstName", this.firstName);
-    },
-    addLastName: function() {
-      this.$emit("lastName", this.lastName);
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.dob) {
+            this.student.update({
+              dateOfBirth: moment(this.dob).format('L')
+            });
+          }
+          if(this.gender) {
+            this.student.update({
+              gender: this.gender
+            });
+          }
+          if(this.race) {
+            this.student.update({
+              race: this.race
+            });
+          }
+          if(this.bio) {
+            this.student.update({
+              bio: this.bio
+            });
+          }
+        }
+        if(doc.exists === false) {
+          this.student.set({
+            userId: this.user.uid,
+            created: moment(Date.now()).format('L'),
+            lastModified: null,
+            dateOfBirth: moment(this.dob).format('L'),
+            gender: this.gender,
+            race: this.race,
+            bio: this.bio,
+            institution: null,
+            institutionType: "University",
+            campus: null,
+            studentNo: null,
+            faculty: null,
+            degree: null,
+            year: null,
+            graduateStatus: null,
+            accountName: null,
+            accountNumber: null,
+            accountType: null,
+            bankName: null,
+            branchCode: null,
+            accountCreated: false
+          });
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addDob: function() {
       this.$emit("dob", this.dob);
+      this.debouncedUpdate();
     },
     addGender: function() {
       this.$emit("gender", this.gender);
+      this.debouncedUpdate();
     },
     addRace: function() {
       this.$emit("race", this.race);
+      this.debouncedUpdate();
     },
     addBio: function() {
       this.$emit("bio", this.bio);
+      this.debouncedUpdate();
     }
   },
   watch: {
-    firstName() {
-      this.touched.firstName = true;
-    },
-    lastName() {
-      this.touched.lastName = true;
-    },
     dob() {
       this.touched.dob = true;
     },
@@ -213,19 +260,30 @@ export default {
     }
   },
   created() {
-    let user = firebase.auth().currentUser;
-    let ref = db.collection('users');
-    ref.where('userId', '==', user.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.firstName = doc.data().name;
-        this.lastName = doc.data().surname;
-      });
-    });
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.genders = doc.data().Genders;
       this.races = doc.data().Races; 
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.dob = new Date(doc.data().dateOfBirth);
+            this.gender = doc.data().gender;
+            this.race = doc.data().race;
+            this.bio = doc.data().bio;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
     });
   }
 };
