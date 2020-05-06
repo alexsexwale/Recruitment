@@ -494,14 +494,6 @@ export default {
   cursor: not-allowed;
 }
 
-.modal-container {
-  max-width: 400px;
-  z-index: 3;
-}
-.black {
-  color: #000000;
-}
-
 @media only screen and (max-width: 768px) {
   .pc-view {
     display: none;

@@ -100,7 +100,6 @@ export default {
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
-      this.races = doc.data().Races; 
       this.institutions = doc.data().Institutions;
     });
 

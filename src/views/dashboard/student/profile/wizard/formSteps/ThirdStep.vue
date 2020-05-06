@@ -5,14 +5,14 @@
     </h5>
     <div class="md-layout">
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('accountName') && touched.accountName },
             { 'md-form-group': true },
             { 'md-error': errors.has('accountName') }
           ]">
-          <md-icon>school</md-icon>
-          <label>Account Name</label>
+          <md-icon><i class="fas fa-address-card"></i></md-icon>
+          <label>Account Holder</label>
           <md-input @change="addAccountName" v-model="accountName" data-vv-name="accountName" type="text" name="accountName" required v-validate="modelValidations.accountName">
           </md-input>
           <slide-y-down-transition>
@@ -24,13 +24,13 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('accountNumber') && touched.accountNumber },
             { 'md-form-group': true },
             { 'md-error': errors.has('accountNumber') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-wallet"></i></md-icon>
           <label>Account Number</label>
           <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="text" name="accountNumber" required v-validate="modelValidations.accountNumber">
           </md-input>
@@ -43,13 +43,13 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('accountType') && touched.accountType },
             { 'md-form-group': true },
             { 'md-error': errors.has('accountType') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-piggy-bank"></i></md-icon>
           <label>Account Type</label>
           <md-input @change="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
           </md-input>
@@ -62,13 +62,13 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('bankName') && touched.bankName },
             { 'md-form-group': true },
             { 'md-error': errors.has('bankName') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-university"></i></md-icon>
           <label>Bank Name</label>
           <md-input @change="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
           </md-input>
@@ -81,13 +81,13 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('branchCode') && touched.branchCode },
             { 'md-form-group': true },
             { 'md-error': errors.has('branchCode') }
           ]">
-          <md-icon>school</md-icon>
+          <md-icon><i class="fas fa-stamp"></i></md-icon>
           <label>Branch Code</label>
           <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="text" name="branchCode" required v-validate="modelValidations.branchCode">
           </md-input>

@@ -253,7 +253,6 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          
           if(this.vat) {
             clients.update({
               vat: this.vat,
