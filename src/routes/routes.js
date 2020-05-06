@@ -45,6 +45,7 @@ import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
 
 // Student Dashboard Components
 import StudentDashboard from "@/views/dashboard/student/StudentDashboard.vue";
+import StudentIncompleteJob from "@/views/dashboard/student/jobs/incomplete/IncompleteJob";
 import StudentProfile from "@/views/dashboard/student/profile/Profile.vue";
 import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vue";
 
@@ -142,7 +143,7 @@ let client_dashboard_menu = {
       }
     },
     {
-      path: "jobs/complete",
+      path: "jobs/incomplete",
       name: "complete-jobs",
       components: { default: ClientIncompleteJob },
       meta: {
@@ -327,6 +328,16 @@ let student_dashboard_menu = {
       path: "jobs/complete",
       name: "complete-student-jobs",
       components: { default: CompleteStudentJob },
+      meta: {
+        requiresAuth: true,
+        userRole: "student",
+        emailVerified: true
+      }
+    },
+    {
+      path: "jobs/incomplete",
+      name: "complete-jobs",
+      components: { default: StudentIncompleteJob },
       meta: {
         requiresAuth: true,
         userRole: "student",

@@ -15,6 +15,7 @@
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Pending Jobs', path: '/client/jobs/pending' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/client/jobs/complete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Incomplete Jobs', path: '/client/jobs/incomplete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
@@ -28,6 +29,7 @@
           <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Applied Jobs', path: '/student/jobs/applied' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Incomplete Jobs', path: '/student/jobs/incomplete' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
