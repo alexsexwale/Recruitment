@@ -1,7 +1,8 @@
 <template>
 <div>
+  <hr><h2 class="centre"><b>Select a Student</b></h2>
   <hr v-if="approved">
-  <h2 class="centre" v-if="approved">Please be patient while waiting for applicant to respond</h2>
+  <p class="centre" v-if="approved">Please be patient while waiting for applicant to respond</p>
   <hr v-if="approved">
   <br v-if="approved">
   <div class="md-layout" v-if="approved">
@@ -43,8 +44,7 @@
     </div>
   </div>
   <hr v-if="available || !approved">
-  <h2 v-if="!approved" class="centre">Select a student</h2>
-  <h2 v-else class="centre">Other students who have applied</h2>
+  <p v-if="approved" class="centre">Other students who have applied</p>
   <hr v-if="available || !approved">
   <br>
   <div class="md-layout" v-if="available">
@@ -60,31 +60,9 @@
             {{ applicant.bio }}
           </p>
           <md-button @click="select(applicant.id)" class="md-success md-round">Select</md-button>
-          &nbsp;&nbsp;&nbsp;
-          <md-button @click="declineModal=true;" class="md-danger md-round">Decline</md-button>
         </md-card-content>
       </md-card>
-      <!-- Modal: Decline -->
-      <modal v-if="declineModal" @close="declineModalHide">
-        <template slot="header">
-          <h4 class="modal-title black">Decline Student</h4>
-          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="declineModalHide">
-            <md-icon>clear</md-icon>
-          </md-button>
-        </template>
-
-        <template slot="body">
-          <p class="black">The student will be removed from the list of applicants. Would you like to continue?</p>
-        </template>
-
-        <template slot="footer">
-          <div style="text-align:center;">
-            <md-button class="md-button md-danger" @click="declineModalHide">Cancel</md-button>
-              &nbsp;&nbsp;&nbsp;
-            <md-button class="md-button md-success" @click="decline(applicant.id)">Yes</md-button>
-          </div>
-        </template>
-      </modal>
+      
       <!-- Modal: Cannot select -->
       <modal v-if="noSelectModal" @close="noSelectModalHide">
         <template slot="header">
@@ -128,7 +106,6 @@ export default {
       selected: false,
       cancelApplicant: false,
       approvedModal: false,
-      declineModal: false,
       cancelModal: false,
       noSelectModal: false,
       index: null
@@ -143,9 +120,6 @@ export default {
   methods: {
     approvedModalHide() {
       this.approvedModal = false;  
-    }, 
-    declineModalHide() {
-      this.declineModal = false;
     },
     cancelModalHide() {
       this.cancelModal = false;  
@@ -164,13 +138,6 @@ export default {
           approved: true
         });
       }
-    },
-    decline(id) {
-      let applicants = db.collection('applications').doc(id);
-      applicants.update({
-        status: "declined"
-      });
-      this.declineModal = false;
     },
     cancel(id) {
       this.cancelApplicant = true;

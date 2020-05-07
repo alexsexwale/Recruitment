@@ -1,6 +1,6 @@
 <template>
   <div class="content" v-if="!approved">
-    <hr>
+    <hr><h2 class="centre">Apply for Job</h2><hr>
     <p class="centre">Your application has been sent!</p>
     <p class="centre">We will let you know when the client has made their decision.</p>
     <hr>
@@ -12,11 +12,11 @@
             <img class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
-          <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
-          <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
-          <p class="card-description">
-            {{ client.description }}
-          </p>
+            <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
+            <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
+            <p class="card-description">
+              {{ client.description }}
+            </p>
           </md-card-content>
         </md-card>
       </div>
@@ -49,6 +49,9 @@
     </modal>
   </div>
   <div v-else class="content">
+    <hr>
+      <h2 class="centre">Apply for Job</h2>
+    <hr>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
@@ -148,9 +151,11 @@ export default {
     });  
     let user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
-    applicants.where('jobId', '==', this.$route.params.id).where('userId', '==', user.uid).where('approved', '==', true).get()
-    .then(() => {
-      this.approved = true;
+    applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', user.uid).where('approved', '==', true).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.approved = true;
+      });
     });  
   }
 };

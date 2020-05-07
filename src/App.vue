@@ -15,6 +15,9 @@ export default {};
 .black {
   color: #000000;
 }
+.centre {
+  text-align: center;
+}
 /* success/error icon */
 .md-field .success.md-icon, .md-field .error.md-icon {
   position: inherit;

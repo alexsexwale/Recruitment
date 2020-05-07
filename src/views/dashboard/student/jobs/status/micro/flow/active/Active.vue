@@ -1,8 +1,6 @@
 <template>
   <div class="content">
-    <hr>
-      <h2 class="centre">Currently Active</h2>
-    <hr>
+    <hr><h2 class="centre">Currently Active</h2><hr>
     <br>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">

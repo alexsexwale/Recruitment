@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="submit">
-    <hr/>
-     <p class="centre">In order to complete the job, you will need to rate the other party.</p>
-    <hr/>
+    <hr>
+     <h2 class="centre">Rate & Review</h2>
+    <hr>
     <strong>Rate the client </strong> <i class="fas fa-question-circle"></i>
     <star-rating :show-rating="false" :glow="10" v-model="rating"></star-rating>
 
