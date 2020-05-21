@@ -1,5 +1,7 @@
 <template>
   <div class="wizard-container">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <form @submit.prevent="createAccount">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
@@ -166,7 +168,8 @@ export default {
       emailVerified: null,
       feedback: null,
       profile: null,
-      alias: null
+      alias: null,
+      loading: true
     };
   },
   computed: {
@@ -216,6 +219,7 @@ export default {
       this.$emit("emailVerified", this.emailVerified);
     },
     createAccount() {
+      this.loading = true;
       this.user.reload().then(() => {
         this.emailVerified = this.user.emailVerified;
         this.addEmailVerified();
@@ -318,10 +322,12 @@ export default {
             });
           }
           this.$router.push({ name: "client-profile", params: { id: this.alias } });
+          this.loading = false;
         });
         
       } else {
         this.feedback = "You have not verified that " + this.email + " is your email address."
+        this.loading = false;
         this.addFeedback();
       }
     },
@@ -442,6 +448,7 @@ export default {
         this.alias = doc.id;
       });
     });
+    this.loading = false;
   }
 };
 </script>

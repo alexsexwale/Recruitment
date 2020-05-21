@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="createAccount" class="md-layout text-center">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Register</h3>
@@ -112,7 +114,7 @@
       </template>
 
       <template slot="footer">
-        <div style="text-align:center;">
+        <div class="centre">
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
@@ -129,12 +131,12 @@
       </template>
 
       <template slot="footer">
-        <div style="text-align:center;">
+        <div class="centre">
           <md-button class="md-button md-success" @click="proceed">Got it</md-button>
         </div>
       </template>
     </modal>
-    <div v-if="loading" class="lds-circle"><div></div></div>
+    
   </form>
 </template>
 <script>
@@ -251,7 +253,7 @@ export default {
               user: this.userRole,
               terms_and_conditions: this.terms,
               alias: this.slug
-            })
+            });
             cred.user.updateProfile({
               displayName: this.firstName + " " + this.lastName
             })
@@ -265,6 +267,7 @@ export default {
             this.feedback = null;
             let user = firebase.auth().currentUser;
             user.sendEmailVerification().then(() => {
+              this.loading = false;
               this.successModal = true;
             }).catch(err => {
               // An error happened.

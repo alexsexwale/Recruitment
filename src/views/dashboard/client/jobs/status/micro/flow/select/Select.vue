@@ -1,5 +1,7 @@
 <template>
 <div>
+  <div v-if="loading" class="background"></div>
+  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <hr><h2 class="centre"><b>Select a Student</b></h2>
   <hr v-if="approved">
   <p class="centre" v-if="approved">Please be patient while waiting for applicant to respond</p>
@@ -86,13 +88,14 @@
   </div>
   <div v-if="!available && !approved">
     <br/><br/>
-    <h2 class="black centre">Be patient, students will start applying soon</h2>
+    <h2 class="black centre">{{ feedback }}</h2>
   </div>
 </div>
 </template>
 <script>
 import db from '@/firebase/init';
 import { Modal } from "@/components";
+import { debounce } from "debounce";
 export default {
   components: {
     Modal
@@ -108,7 +111,9 @@ export default {
       approvedModal: false,
       cancelModal: false,
       noSelectModal: false,
-      index: null
+      index: null,
+      loading: true,
+      feedback: "Be patient, students will start applying soon"
     };
   },
   props: {
@@ -127,28 +132,35 @@ export default {
     noSelectModalHide() {
       this.noSelectModal = false;
     },
+    async reload() {
+      location.reload();
+    },
+    debouncedReload: debounce(function() {
+      this.reload();
+    }, 1500),
     select(id) {
       if(this.approved) {
         this.noSelectModal = true;
       }
       else {
+        this.loading = true
         this.selected = true;
         let applicants = db.collection('applications').doc(id);
         applicants.update({
           approved: true
         });
+        this.debouncedReload();
       }
     },
     cancel(id) {
+      this.loading = true;
       this.cancelApplicant = true;
       let applicants = db.collection('applications').doc(id);
       applicants.update({
         approved: false
       });
       this.cancelModal = false;
-    },
-    profile() {
-
+      this.debouncedReload();
     }
   },
   created() {
@@ -175,26 +187,20 @@ export default {
       snapshot.docChanges().forEach(change => {
         if(change.type == 'modified') {
           let applicant = change.doc.data();
-          applicant.id = change.doc.id;
           if(this.selected) {
-            this.index = change.newIndex;
-            this.applicants.splice(this.index, 1);
-            this.approvedApplicant.push(applicant); 
-            this.approved = true;
-            this.selected = false;
-          }
-
-          if(this.cancelApplicant) {
-            console.log(this.index)
-            this.approvedApplicant.splice(this.index, 1);
-            this.applicants.splice(this.index, 0, applicant);
-            // this.applicants.push(applicant);
+            this.available = false;
             this.approved = false;
-            this.cancelApplicant = false;
+            this.feedback = "Selecting " + applicant.applicant;
+          }
+          if(this.cancelApplicant) {
+            this.available = false;
+            this.approved = false;
+            this.feedback = "Cancelling " + applicant.applicant;
           }
         }
       });
     });
+    this.loading = false;
   }   
 }
 </script>

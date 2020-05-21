@@ -1,5 +1,7 @@
 <template>
   <div class="md-layout" v-if="postedJobs">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -45,7 +47,9 @@
     </div>
   </div>
   <div v-else>
-    <h1 class="black" style="text-align:center">There are currently no jobs posted.</h1>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <h1 class="black centre">There are currently no jobs posted.</h1>
   </div>
 </template>
 
@@ -61,7 +65,8 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      postedJobs: false
+      postedJobs: false,
+      loading: true
     };
   },
   created() {
@@ -75,6 +80,7 @@ export default {
         this.jobs.push(job); // can push other job types to the same array or seperate the jobs
       });
     });
+    this.loading = false;
     // display available reccuring jobs
     // display available internship jobs
     // display available part-time jobs

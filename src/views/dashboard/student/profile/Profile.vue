@@ -1,5 +1,7 @@
 <template>
   <div class="md-layout">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
@@ -115,6 +117,7 @@ export default {
       user: [],
       rating: 4.84,
       edit: null,
+      loading: true,
       sectionTestimonials2: {
         testimonials1: require("@/assets/img/faces/kendall.jpg"),
         testimonials2: require("@/assets/img/faces/christian.jpg")
@@ -129,6 +132,7 @@ export default {
   },
   methods: {
     editProfile() {
+      this.loading = true;
       this.$router.push({ name: 'edit-student-profile', params: {id: this.$route.params.id} });
     }
   },
@@ -161,6 +165,7 @@ export default {
       if(firebase.auth().currentUser.uid === this.user.userId)
         this.edit = true;
     });
+    this.loading = false;
   }
 }
 </script>

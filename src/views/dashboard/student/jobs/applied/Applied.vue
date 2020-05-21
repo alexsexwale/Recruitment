@@ -1,5 +1,7 @@
 <template>
   <div class="md-layout" v-if="appliedJobs">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -17,7 +19,7 @@
         <template slot="footer">
           <div class="price">
             <i class="fas fa-money-bill-wave"></i> budget
-            <h4 style="text-align:center;">{{ job.budget }}</h4>
+            <h4 class="centre">{{ job.budget }}</h4>
           </div>
           <div class="price">
             <router-link v-if="job.type == 'micro'" :to="{ name: 'student-micro-status', params: {id: job.id} }"> 
@@ -27,8 +29,8 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
-              <h4 v-else style="text-align:center;">{{ job.location }}</h4>
+              <h4 v-if="job.location !== 'remote'" class="centre">on-site</h4>
+              <h4 v-else class="centre">{{ job.location }}</h4>
             </div>
           </div>
         </template>
@@ -36,7 +38,9 @@
     </div>
   </div>
   <div v-else>
-    <h1 class="black" style="text-align:center">You have not applied to any jobs</h1>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <h1 class="black centre">You have not applied to any jobs</h1>
   </div>
 </template>
 
@@ -53,7 +57,8 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      appliedJobs: false
+      appliedJobs: false,
+      loading: true
     };
   },
   created() {
@@ -83,6 +88,7 @@ export default {
       // display part-time jobs
       // display full-time jobs
     });
+    this.loading = false;
   }
 };
 </script>

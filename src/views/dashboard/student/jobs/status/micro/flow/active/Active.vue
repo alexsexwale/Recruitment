@@ -1,5 +1,7 @@
 <template>
   <div class="content">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <hr><h2 class="centre">Currently Active</h2><hr>
     <br>
     <div class="md-layout">
@@ -63,7 +65,8 @@ export default {
     return {
       client: {},
       cancelModal: false,
-      active: false
+      active: false,
+      loading: true
     }
   },
   props: {
@@ -77,15 +80,14 @@ export default {
       this.cancelModal = false;
     },
     complete() {
+      this.loading = true;
       let completeJob = db.collection('micros').doc(this.client.id);
       completeJob.update({
         status: "complete",
         complete: true,
         lastModified: moment(Date.now()).format('L')  
       });
-    },
-    cancel() {
-
+      this.loading = false;
     }
   },
   created() {
@@ -94,6 +96,7 @@ export default {
       this.client = doc.data();
       this.client.id = doc.id;
     }); 
+    this.loading = false;
   }
 }
 </script>

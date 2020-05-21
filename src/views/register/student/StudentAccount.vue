@@ -23,7 +23,7 @@
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
-          <h3 class="title">Build your profile</h3>
+          <h3 v-if="emailVerified" class="title" style="color:#000">Build your profile</h3>
           <h5 v-if="emailVerified" class="category">
             This information will let us know more about you.
           </h5>

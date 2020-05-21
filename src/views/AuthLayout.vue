@@ -1,6 +1,8 @@
 <template>
   <div class="full-page" :class="{ 'nav-open': $sidebar.showSidebar }">
     <md-toolbar md-elevation="0" class="md-transparent md-toolbar-absolute">
+    <!-- <div class="background"></div>
+    <div class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div> -->
       <div class="md-toolbar-row md-offset">
         <div class="md-toolbar-section-start">
           <h3 class="md-title">{{ $route.name }}</h3>

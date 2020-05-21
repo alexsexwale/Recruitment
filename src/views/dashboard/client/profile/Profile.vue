@@ -1,5 +1,7 @@
 <template>
   <div class="md-layout">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
@@ -34,7 +36,8 @@ export default {
       profile: [],
       user: [],
       rating: 4.84,
-      edit: null 
+      edit: null,
+      loading: true 
     }
   },
   props: {
@@ -45,7 +48,9 @@ export default {
   },
   methods: {
     editProfile() {
+      this.loading = true;
       this.$router.push({ name: 'edit-client-profile', params: {id: this.$route.params.id} });
+      this.loading = false;
     }
   },
   created() {
@@ -74,6 +79,7 @@ export default {
     .then(client => {
       this.profile = client.data(); 
     });
+    this.loading = false;
   }
 }
 </script>

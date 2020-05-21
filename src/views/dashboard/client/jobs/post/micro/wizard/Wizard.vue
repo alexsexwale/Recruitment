@@ -1,5 +1,7 @@
 <template>
   <div class="wizard-container">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <form @submit.prevent="createJob">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
@@ -142,7 +144,8 @@ export default {
       alias: null,
       user: null,
       feedback: null,
-      client: {}
+      client: {},
+      loading: true
     };
   },
   computed: {
@@ -186,6 +189,7 @@ export default {
   },
   methods: {
     createJob() {
+      this.loading = true;
       this.user = firebase.auth().currentUser;
       let ref = db.collection('clients');
       ref.where('userId', '==', this.user.uid).get()
@@ -226,6 +230,8 @@ export default {
             status: "select",
             satisfied: null,
             complete: false,
+            clientRatingComplete: false,
+            studentRatingComplete: false,
             paid: false,
             cancelled: false,
             created: moment(Date.now()).format('L'),
@@ -246,7 +252,7 @@ export default {
       })
       .catch(err => {
         this.feedback = err.message;
-        console.log(this.feedback);
+        this.loading = false;
       })
     },
     addTab(tab) {
@@ -359,6 +365,7 @@ export default {
         this.alias = doc.id;
       });
     });
+    this.loading = false;
   }
 };
 </script>
@@ -397,5 +404,9 @@ export default {
   .mobi-view {
     display: none;
   }
+}
+/* Loader */
+.lds-circle {
+  position: absolute;
 }
 </style>

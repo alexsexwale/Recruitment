@@ -1,5 +1,7 @@
 <template>
   <div style="padding:40px; padding-top: 0px;">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <md-card class="padding">
       <h1 class="info-text centre">{{ job.name }}</h1>
       <div class="md-layout">
@@ -101,7 +103,8 @@ export default {
       user: null,
       auth: null,
       slug: null,
-      modal: false
+      modal: false,
+      loading: true
     };
   },
   methods: {
@@ -109,6 +112,7 @@ export default {
       this.modal = false;
     },
     apply() {
+      this.loading = true;
       if(this.job) {
         let application = db.collection('applications').doc(this.slug);
         application.get().then(doc => {
@@ -149,6 +153,7 @@ export default {
           errorDate: moment(Date.now()).format('LLL'),
           message: "Unable to apply due to job data not loading."
         });
+        this.loading = false;
       }
     },
     back() {
@@ -188,6 +193,7 @@ export default {
         });
       });
     });
+    this.loading = false;
   }
 };
 </script>

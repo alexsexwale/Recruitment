@@ -1,5 +1,7 @@
 <template>
   <div class="wizard-container">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <form @submit.prevent="update">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
@@ -157,7 +159,8 @@ export default {
       user: null,
       feedback: null,
       client: {},
-      modal: false
+      modal: false,
+      loading: false
     };
   },
   computed: {
@@ -201,6 +204,7 @@ export default {
   },
   methods: {
     update() {
+      this.loading = true;
       //Update jobs table
       let jobs = db.collection('micros').doc(this.$route.params.id);
       if(this.description) {
@@ -240,6 +244,7 @@ export default {
         });
         this.modal = true;
       }
+      this.loading = false;
     },
     modalHide() {
       this.modal = false;

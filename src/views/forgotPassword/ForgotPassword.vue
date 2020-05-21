@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="forgot" class="md-layout text-center">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Forgot Password</h3>
@@ -82,6 +84,7 @@ export default {
       feedback: null,
       modal: false,
       sentModal: false,
+      loading: false,
       touched: {
         email: false
       },
@@ -101,16 +104,18 @@ export default {
       this.$router.push({ name: 'Login'});
     },
     forgot() {
+      this.loading = true;
       firebase.auth().sendPasswordResetEmail(this.email)
        .then(() =>{
+        this.loading = false;
         this.sentModal = true;
        })
        .catch(err => {
           // Handle Errors here.
+          this.loading = false;
           this.modal = true;
           this.feedback = err.message;
       });
-
     }
   },
   watch: {

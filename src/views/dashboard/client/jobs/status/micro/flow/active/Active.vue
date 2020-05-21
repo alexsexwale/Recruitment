@@ -1,10 +1,10 @@
 <template>
   <div class="content">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <hr><h2 class="centre">Currently Active</h2><hr>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
-        <hr>
-        <h2 class="centre">Active Job</h2>
-        <hr>
         <br>  
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
@@ -58,7 +58,8 @@ export default {
   data() {
     return {
       cancelModal: false,
-      applicant: {}
+      applicant: {},
+      loading: true
     }
   },
   props: {
@@ -84,7 +85,7 @@ export default {
     }  
   },
   created() {
-    db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', false).get()
+    db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', true).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.available = true;
@@ -92,6 +93,7 @@ export default {
         this.applicant.id = doc.id;
       });
     });
+    this.loading = false;
   }
 }
 </script>

@@ -61,17 +61,16 @@ export default {
       snapshot.forEach(doc => {
         this.job = doc.data();
         this.status();
-        console.log(this.job);
-      })
-    })
+      });
+    });
     jobs.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if(change.type == 'modified') {
           this.job = change.doc.data();
           this.status();
         }
-      })
-    })
+      });
+    });
   }
 };
 </script>

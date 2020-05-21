@@ -1,11 +1,12 @@
 <template>
   <form @submit.prevent="submit">
-    <hr>
-     <h2 class="centre">Rate & Review</h2>
-    <hr>
-    <strong>Rate the client </strong> <i class="fas fa-question-circle"></i>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <hr><h2 class="centre">Rate & Review</h2><hr>
+    <!-- Rating -->
+    <strong>Rate the client </strong> <i class="fas fa-question-circle"><md-tooltip md-direction="right">blah blah blah Client</md-tooltip></i>
     <star-rating :show-rating="false" :glow="10" v-model="rating"></star-rating>
-
+    <!-- Review -->
     <md-field :class="[
           { 'md-valid': !errors.has('review') && touched.review },
           { 'md-error': errors.has('review') }
@@ -46,6 +47,7 @@ export default {
       rating: null,
       review: null,
       feedback: null,
+      loading: false,
       touched: {
         review: false
       },
@@ -58,18 +60,33 @@ export default {
   },
   methods: {
     submit() {
+      this.loading = true;
       if(this.rating && this.review) {
-        let ClientRating = db.collection('clientRatings');
-        clientRating.add({
+        let rateClient = db.collection('studentRatings');
+        rateClient.add({
           jobId: this.$route.params.id,
           rate: this.rating,
           review: this.review 
-        })
-        let rateJob = db.collection('jobs').doc(this.$route.params.id);
-        rateJob.update({
-          status: "done"  
         });
-        this.$router.push({ name: 'complete-student-jobs'});
+        let rateJob = db.collection('micros').doc(this.$route.params.id);
+        rateJob.get().then(doc => {
+          rateJob.update({
+            studentRatingComplete: true
+          });
+          if(doc.data().clientRatingComplete) {
+            rateJob.update({
+              complete: true
+            });
+            this.$router.push({ name: 'complete-student-jobs'});
+          }
+          else {
+            this.$router.push({ name: 'student-profile'});
+          }
+        });
+      }
+      else {
+        this.feedback = "Please complete the form before submitting";
+        this.loading = false;
       }
     }
   },

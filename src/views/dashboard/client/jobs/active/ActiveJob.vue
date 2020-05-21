@@ -1,4 +1,7 @@
 <template>
+<div>
+  <div v-if="loading" class="background"></div>
+  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="activeJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
@@ -20,10 +23,6 @@
             <h4 style="text-align:center;">{{ job.budget }}</h4>
           </div>
           <div class="price">
-            <!-- <br><br>
-            <i class="fas fa-calendar-week"></i> Deadline
-            <h4 style="text-align:center;">{{ job.deadline }}</h4> -->
-            
             <router-link v-if="job.type == 'micro'" :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
@@ -39,9 +38,10 @@
       </product-card>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="activeJobs === false">
     <h1 class="black" style="text-align:center">You currently have no active jobs</h1>
   </div>
+</div>
 </template>
 
 <script>
@@ -57,24 +57,11 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      activeJobs: false
+      activeJobs: null,
+      loading: true
     };
   },
-  methods: {
-    deleteJob(id) {
-      db.collection('jobs').doc(id).delete()
-      .then(() => {
-        this.jobs = this.jobs.filter(job => {
-          return job.id != id;
-        })
-      })
-    },
-    editJob(id) {
-      
-    }
-  },
   created() {
-    window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('jobs');
     let micro = db.collection('micros');
@@ -88,13 +75,17 @@ export default {
         micro.where('jobId', '==', jobId).where('status', '==', 'active').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            this.pendingJobs = true;
-             let job = doc.data();
-             job.id = doc.id;
-             job.type = jobType;
-             this.jobs.push(job);
+            this.activeJobs = true;
+            let job = doc.data();
+            job.id = doc.id;
+            job.type = jobType;
+            this.jobs.push(job);
           })
         });
+        if(this.activeJobs === null) 
+         this.activeJobs = false;
+        
+        this.loading = false;
 
         // display reccuring jobs
 

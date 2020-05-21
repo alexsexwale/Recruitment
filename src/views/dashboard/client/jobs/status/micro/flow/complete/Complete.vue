@@ -1,11 +1,11 @@
 <template>
   <div class="content">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <hr><h2 class="centre">Confirm Completion</h2><hr>
+    <h6 class="centre">Student Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
-        <hr>
-          <h2 class="centre">Confirm Completion</h2>
-        <hr>
-        <br>  
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
             <img class="img" :src="cardUserImage" />
@@ -13,19 +13,17 @@
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
             <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link>
-            <p class="card-description">
-              {{ applicant.bio }}
-            </p>
+            <p class="card-description">{{ applicant.bio }}</p>
           </md-card-content>
         </md-card>
       </div>
     </div>
     <div class="centre">
       <md-button @click="dissatisfied" class="md-danger">
-        I'm not satisfied
+        I am not satisfied
       </md-button>
         &nbsp;&nbsp;&nbsp;
-      <md-button @click="complete" class="md-success">
+      <md-button @click="confirmComplete" class="md-success">
         Confirm completion
       </md-button>
     </div>
@@ -64,7 +62,8 @@ export default {
     return {
       cancelModal: false,
       client: {},
-      applicant: {}
+      applicant: {},
+      loading: true
     }
   },
   props: {
@@ -78,7 +77,8 @@ export default {
       this.cancelModal = false;  
     },
     dissatisfied() {
-      let job = db.collection('jobs').doc(this.client.id);
+      this.loading = true;
+      let job = db.collection('micros').doc(this.client.id);
       job.update({
         complete: false,
         satisfied: false,
@@ -87,21 +87,23 @@ export default {
       this.$router.push({ name: 'client-dissatisfied', params: {id: job.id} });
     },
     cancel() {
-      let job = db.collection('jobs').doc(this.client.id);
+      let job = db.collection('micros').doc(this.client.id);
       job.update({
         complete: false,
         lastModified: moment(Date.now()).format('L')  
       });
       this.$router.push({ name: 'client-cancel', params: {id: job.id} });
     },
-    complete() {
-      let job = db.collection('jobs').doc(this.client.id);
+    confirmComplete() {
+      this.loading = true;
+      let job = db.collection('micros').doc(this.client.id);
       job.update({
         status: "rate",
         satisfied: true,
         complete: true,
         lastModified: moment(Date.now()).format('L')  
       });
+      this.loading = false;
     } 
   },
   created() {
@@ -110,7 +112,7 @@ export default {
       this.client.id = doc.id;
     });
     
-    db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', false).get()
+    db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', true).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.available = true;
@@ -118,12 +120,14 @@ export default {
         this.applicant.id = doc.id;
       });
     });  
+    this.loading = false;
   }
 }
 </script>
 <style scoped>
 .centre {
   text-align: center;
+  font-weight: bold;
 }
 .md-layout, .md-layout-item {
     width: 40%;

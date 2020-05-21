@@ -1,5 +1,7 @@
 <template>
   <div class="md-layout" v-if="completeJobs">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -36,7 +38,9 @@
     </div>
   </div>
   <div v-else>
-    <h1 class="black" style="text-align:center">You have no complete jobs</h1>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <h1 class="black centre">You have no complete jobs</h1>
   </div>
 </template>
 
@@ -53,24 +57,11 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      completeJobs: false
+      completeJobs: false,
+      loading: true
     };
   },
-  methods: {
-    deleteJob(id) {
-      db.collection('jobs').doc(id).delete()
-      .then(() => {
-        this.jobs = this.jobs.filter(job => {
-          return job.id != id;
-        })
-      })
-    },
-    editJob(id) {
-      
-    }
-  },
   created() {
-    window.scrollTo(0, 0);
     let user = firebase.auth().currentUser;
     let jobs = db.collection('micros');
     jobs.where('studentId', '==', user.uid).where('status', '==', 'rate').get()
@@ -80,8 +71,9 @@ export default {
         let job = doc.data();
         job.id = doc.id;
         this.jobs.push(job);
-      })
-    })
+      });
+    });
+    this.loading = false;
   }
 };
 </script>

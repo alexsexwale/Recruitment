@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="support" class="md-layout">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
       <md-card>
         <md-card-header class="md-card-header-icon md-card-header-green">
@@ -89,7 +91,8 @@ export default {
       successModal: false,
       success: "We will investigate on the matter at our earliest convenience.",
       error: null,
-      subjects:[]
+      subjects:[],
+      loading: true
     };
   },
   methods: {
@@ -100,6 +103,7 @@ export default {
       this.successModal = false;
     },
     support() {
+      this.loading = true;
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
         let support = db.collection('support');
@@ -108,14 +112,16 @@ export default {
           created: moment(Date.now()).format('L'),
           subject: this.subject,
           message: this.message
-        })
+        });
         this.subject = null;
         this.message = null;
         this.successModal = true;
+        this.loading = false;
       }
       else {
         this.modal = true;
         this.error = "Please complete all fields before sending feedback.";
+        this.loading = false;
       }
     }
   },
@@ -124,6 +130,7 @@ export default {
     settings.get().then(doc => {
       this.subjects = doc.data().SupportSubjects;
     });
+    this.loading = false;
   }
 }
 </script>

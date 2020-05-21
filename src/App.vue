@@ -25,18 +25,29 @@ export default {};
 .pad {
   padding-left: 10px;
 }
+.background {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-transition: opacity .15s ease;
+  transition: opacity .15s ease;
+}
 .lds-circle {
   display: inline-block;
   transform: translateZ(1px);
-  z-index: 99;
+  z-index: 10000;
 }
 .lds-circle > div {
   display: inline-block;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: #dddddd;
-  animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  width: 128px;
+  height: 128px;
+  animation: lds-circle 5.4s cubic-bezier(0, 0.2, 0.8, 1) infinite; /*2.4s */
+  position: absolute;
+  opacity: 0.8;
 }
 @keyframes lds-circle {
   0%, 100% {

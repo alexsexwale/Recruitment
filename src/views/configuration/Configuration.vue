@@ -1,6 +1,8 @@
 <template>
-    <!-- Email Verified -->
+       <!-- Email Verified -->
     <div v-if="mode == 'verifyEmail'" class="md-layout text-center">
+      <div v-if="loading" class="background"></div>
+      <div v-if="loading" class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
       <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
         <login-card header-color="green">
           <h3 slot="title" class="title">Email Verified</h3>
@@ -11,6 +13,8 @@
     </div>
     <!-- Reset Password -->
     <form v-else-if="mode == 'resetPassword'" @submit.prevent="reset" class="md-layout text-center">
+      <div v-if="loading" class="background"></div>
+      <div v-if="loading" class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
       <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
         <login-card header-color="green">
           <h3 slot="title" class="title">Reset Password</h3>
@@ -73,6 +77,8 @@
     </form>
     <!-- Empty Card -->
     <div v-else class="md-layout text-center">
+      <div v-if="loading" class="background"></div>
+      <div v-if="loading" class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
       <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
         <login-card header-color="green">
           <h3 slot="title" class="title">Configuration</h3>
@@ -102,6 +108,7 @@ export default {
       feedback: null,
       modal: false,
       resetModal: false,
+      loading: true,
       touched: {
         password: false
       },
@@ -121,22 +128,28 @@ export default {
       this.$router.push({ name: 'Login'});
     },
     reset() {
+      this.loading = true;
       firebase.auth().confirmPasswordReset(this.code, this.password)
        .then(() => {
+         this.loading = false;
         this.resetModal = true;
        })
        .catch(err => {
           // Handle Errors here.
+          this.loading = false;
           this.modal = true;
           this.feedback = err.message;
       });
     },
     verifyEmail() {
+      this.loading = true;
       firebase.auth().applyActionCode(this.code)
       .then(() => {
+        this.loading = false;
         this.feedback = "Your email account has been Verified.";
       })
       .catch(err => {
+        this.loading = false;
         this.feedback = err.message;
       });
     }
@@ -153,6 +166,7 @@ export default {
     this.code = url.searchParams.get("oobCode");
     if(this.mode === 'verifyEmail') { this.verifyEmail(); }
     if(this.mode !== 'verifyEmail' && this.mode !== 'resetPassword' ) { this.proceed(); }
+    this.loading = false;
   }
 };
 </script>

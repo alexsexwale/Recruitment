@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="login" class="md-layout text-center">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
       <login-card header-color="green">
         <h3 slot="title" class="title">Login</h3>
@@ -91,6 +93,7 @@ export default {
       modal: false,
       remember: null,
       alias: null,
+      loading: false,
       touched: {
         email: false,
         password: false
@@ -112,6 +115,7 @@ export default {
       this.modal = false;
     },
     login() {
+      this.loading = true;
       let ref = db.collection('users');
       if(this.email && this.password) {
         let auth = firebase.auth();
@@ -128,9 +132,11 @@ export default {
                     this.user = doc.data();
                     if(doc.exists && doc.data().accountCreated) {
                       this.$router.push({ name: 'client-profile', params: {id: this.alias} });
+                      this.loading = false;
                     }
                     else {
                       this.$router.push({ name: 'create-client-account' });
+                      this.loading = false;
                     }
                   });
                 }
@@ -139,9 +145,11 @@ export default {
                   student.get().then(doc => {
                     if(doc.exists && doc.data().accountCreated) {
                       this.$router.push({ name: 'student-profile', params: {id: this.alias} });
+                      this.loading = false;
                     }
                     else {
                       this.$router.push({ name: 'create-student-account' });
+                      this.loading = false;
                     }
                   });
                 }
@@ -150,18 +158,25 @@ export default {
             .catch(err => {
               this.modal = true;
               this.feedback = err.message
+              this.loading = false;
           });
         })
         .catch(err => {
           this.modal = true;
           this.feedback = err.message
+          this.loading = false;
         });
       } 
       else {
         this.modal = true;
-        this.feedback = 'Please select whether you are a student or a client.'
+        this.feedback = 'Please select whether you are a student or a client.';
+        this.loading = false;
       }
-    }
+    },
+    // reducePrice:function(amount) {
+    //   this.$store.dispatch('reducedPrice', amount)   
+    // },
+    
   },
   watch: {
     email() {
@@ -170,7 +185,20 @@ export default {
     password() {
       this.touched.password = true;
     }
-  }
+  },
+  // computed: {
+  //   products() {
+  //     return this.$store.state.products;
+  //   },
+  //   saleProducts() {
+  //     return this.$store.getters.saleProducts;
+  //   }
+  // },
+  // created() {
+  //   console.log(this.products)
+  //   console.log(this.saleProducts)
+  //   console.log(this.reducePrice(4))
+  // }
 };
 </script>
 

@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { store } from './store/store';
 import { firestorePlugin } from 'vuefire';
 import DashboardPlugin from "./material-dashboard";
 import { Carousel, CarouselItem } from 'element-ui';
@@ -36,6 +37,7 @@ firebase.auth().onAuthStateChanged(() => {
   // init app if not already created
   if (!app) {
     app = new Vue({
+      store: store,
       el: "#app",
       render: h => h(App),
       router,

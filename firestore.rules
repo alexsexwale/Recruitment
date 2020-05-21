@@ -45,6 +45,16 @@ service cloud.firestore {
       allow read;
       allow write;
     }
+
+    match /studentRatings/{studentRatings} {
+      allow read;
+      allow write;
+    }
+
+    match /clientRatings/{clientRatings} {
+      allow read;
+      allow write;
+    }
     
     match /errors/{errors} {
       allow write;

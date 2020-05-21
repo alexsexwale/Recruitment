@@ -1,8 +1,9 @@
 <template>
   <div class="content">
-    <hr>
-    <p class="centre">Waiting for the client to confirm the completion of the job.</p>
-    <hr>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <hr><h2 class="centre">Confirm Completion</h2>
+    <hr><p class="centre">Waiting for the client to confirm the completion of the job.</p><hr>
     <h6 class="centre">Client Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
@@ -13,9 +14,7 @@
           <md-card-content>
           <h6 class="category text-gray">{{ client.companyName }}</h6>
           <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
-          <p class="card-description">
-            {{ client.description }}
-          </p>
+          <p class="card-description">{{ client.description }}</p>
           </md-card-content>
         </md-card>
       </div>
@@ -27,7 +26,8 @@ import db from '@/firebase/init';
 export default {
   data() {
     return {
-      client: {}  
+      client: {},
+      loading: true  
     }  
   },
   props: {
@@ -42,6 +42,7 @@ export default {
       this.client = doc.data();
       this.client.id = doc.id;
     });    
+    this.loading = false;
   }  
 }
 </script>

@@ -20,7 +20,7 @@
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
-          <h3 class="title">Build your profile</h3>
+          <h3 v-if="emailVerified" class="title" style="color:#000">Build your profile</h3>
           <h5 v-if="emailVerified" class="category">This information will let us know more about you.</h5>
           <div v-else>
             <p slot="inputs" style="color:red;">Check your inbox to verify that <b>{{email}}</b> is your email address</p>

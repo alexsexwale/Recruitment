@@ -1,4 +1,7 @@
 <template>
+<div>
+  <div v-if="loading" class="background"></div>
+  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="pendingJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
@@ -47,9 +50,10 @@
       </product-card>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="pendingJobs===false">
     <h1 class="black" style="text-align:center">You currently have no pending jobs</h1>
   </div>
+</div>
 </template>
 
 <script>
@@ -65,7 +69,8 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      pendingJobs: false
+      pendingJobs: null,
+      loading: true
     };
   },
   methods: {
@@ -76,9 +81,6 @@ export default {
           return job.id != id;
         })
       })
-    },
-    editJob(id) {
-      
     }
   },
   created() {
@@ -102,6 +104,10 @@ export default {
             this.jobs.push(job);
           });
         });
+        if(this.pendingJobs === null) 
+         this.pendingJobs = false;
+        
+        this.loading = false;
         // display reccuring jobs
         // display internship jobs
         // display part-time jobs

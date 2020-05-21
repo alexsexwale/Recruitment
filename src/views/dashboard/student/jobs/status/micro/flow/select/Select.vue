@@ -1,5 +1,7 @@
 <template>
   <div class="content" v-if="!approved">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <hr><h2 class="centre">Apply for Job</h2><hr>
     <p class="centre">Your application has been sent!</p>
     <p class="centre">We will let you know when the client has made their decision.</p>
@@ -49,6 +51,8 @@
     </modal>
   </div>
   <div v-else class="content">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <hr>
       <h2 class="centre">Apply for Job</h2>
     <hr>
@@ -115,7 +119,8 @@ export default {
       client: {},
       approved: false,
       cancelModal: false,
-      declineModal : false
+      declineModal: false,
+      loading: true
     };
   },
   props: {
@@ -131,16 +136,15 @@ export default {
     declineModalHide() {
       this.declineModal = false;
     },
-    decline() {
-        
-    },
     accept() {
+      this.loading = true;
       let activeJob = db.collection('micros').doc(this.client.id);
       activeJob.update({
         status: "active",
         studentId: firebase.auth().currentUser.uid,
         lastModified: moment(Date.now()).format('L')
       });
+      this.loading = false;
     }
   },
   created() {
@@ -156,7 +160,15 @@ export default {
       snapshot.forEach(doc => {
         this.approved = true;
       });
-    });  
+    }); 
+    applicants.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.approved = change.doc.data().approved;
+        }
+      })
+    }) 
+    this.loading = false;
   }
 };
 </script>

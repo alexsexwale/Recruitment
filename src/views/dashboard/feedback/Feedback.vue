@@ -1,5 +1,7 @@
 <template>
   <form @submit.prevent="feedback" class="md-layout">
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
       <md-card>
         <md-card-header class="md-card-header-icon md-card-header-green">
@@ -89,7 +91,8 @@ export default {
       successModal: false,
       success: "We appreciate your feedback. We will continue to make improvements on the platform.",
       error: null,
-      subjects:[]
+      subjects:[],
+      loading: true
     };
   },
   methods: {
@@ -100,6 +103,7 @@ export default {
       this.successModal = false;
     },
     feedback() {
+      this.loading = true;
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
         let feedback = db.collection('feedback');
@@ -112,9 +116,11 @@ export default {
         this.subject = null;
         this.message = null;
         this.successModal = true;
+        this.loading = false;
       } else {
         this.modal = true;
         this.error = "Please complete all fields before sending feedback.";
+        this.loading = false;
       }
     }
   },
@@ -123,6 +129,7 @@ export default {
     settings.get().then(doc => {
       this.subjects = doc.data().FeedbackSubjects;
     });
+    this.loading = false;
   }
 };
 </script>
