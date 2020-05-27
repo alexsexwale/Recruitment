@@ -237,7 +237,7 @@ export default {
         if(doc.exists) {
           this.loading = false;
           this.modal = true;
-          this.feedback = "This account already exists";
+          this.feedback = "Well this is awkward... Try register again";
         }
         else {
           firebase.auth().createUserWithEmailAndPassword(this.email, this.password)

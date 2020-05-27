@@ -72,8 +72,8 @@ export default {
         job.id = doc.id;
         this.jobs.push(job);
       });
+      this.loading = false;
     });
-    this.loading = false;
   }
 };
 </script>

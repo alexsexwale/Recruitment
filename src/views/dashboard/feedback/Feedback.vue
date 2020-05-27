@@ -92,7 +92,7 @@ export default {
       success: "We appreciate your feedback. We will continue to make improvements on the platform.",
       error: null,
       subjects:[],
-      loading: true
+      loading: false
     };
   },
   methods: {
@@ -130,7 +130,13 @@ export default {
       this.subjects = doc.data().FeedbackSubjects;
     });
     this.loading = false;
-  }
+  },
+  // computed: {
+  //   subjects() {
+  //     console.log(this.$store.getters.dropdown.FeedbackSubjects);
+  //     return this.$store.getters.dropdown.FeedbackSubjects;
+  //   }
+  // }
 };
 </script>
 <style lang="scss" scoped>

@@ -1,7 +1,8 @@
 <template>
+<div>
+  <div v-if="loading" class="background"></div>
+  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="appliedJobs">
-    <div v-if="loading" class="background"></div>
-    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img class="img" slot="imageHeader" :src="product1" />
@@ -37,11 +38,10 @@
       </product-card>
     </div>
   </div>
-  <div v-else>
-    <div v-if="loading" class="background"></div>
-    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+  <div v-else-if="appliedJobs === false">
     <h1 class="black centre">You have not applied to any jobs</h1>
   </div>
+</div>
 </template>
 
 <script>
@@ -57,7 +57,7 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      appliedJobs: false,
+      appliedJobs: null,
       loading: true
     };
   },
@@ -82,18 +82,12 @@ export default {
             this.jobs.push(job);
           });
         });
+        if(this.appliedJobs === null) 
+         this.appliedJobs = false;
+
+        this.loading = false;
       });
-      // display reccuring jobs
-      // display internship jobs
-      // display part-time jobs
-      // display full-time jobs
     });
-    this.loading = false;
   }
 };
 </script>
-<style scoped>
-.centre {
-  text-align: center;
-}
-</style>

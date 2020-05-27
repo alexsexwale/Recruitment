@@ -62,7 +62,7 @@ export default {
       rate: false,
       modal: false,
       incomplete: false,
-      loading: true
+      loading: false
 
     };
   },
@@ -124,7 +124,6 @@ export default {
         }
       });
     });
-    this.loading = false;
   }
 };
 </script>

@@ -79,8 +79,8 @@ export default {
         job.id = doc.id;
         this.jobs.push(job); // can push other job types to the same array or seperate the jobs
       });
+      this.loading = false;
     });
-    this.loading = false;
     // display available reccuring jobs
     // display available internship jobs
     // display available part-time jobs

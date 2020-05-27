@@ -20,7 +20,7 @@
         <template slot="footer">
           <div class="price">
             <i class="fas fa-money-bill-wave"></i> budget
-            <h4 style="text-align:center;">{{ job.budget }}</h4>
+            <h4 class="centre">{{ job.budget }}</h4>
           </div>
           <div class="price">
             <router-link v-if="job.type == 'micro'" :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
@@ -30,8 +30,8 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
-              <h4 v-else style="text-align:center;">{{ job.location }}</h4>
+              <h4 v-if="job.location !== 'remote'" class="centre">on-site</h4>
+              <h4 v-else class="centre">{{ job.location }}</h4>
             </div>
           </div>
         </template>
@@ -39,7 +39,7 @@
     </div>
   </div>
   <div v-else-if="activeJobs === false">
-    <h1 class="black" style="text-align:center">You currently have no active jobs</h1>
+    <h1 class="black centre">You currently have no active jobs</h1>
   </div>
 </div>
 </template>
@@ -70,7 +70,6 @@ export default {
       snapshot.forEach(doc => {
         let jobId = doc.data().jobId;
         let jobType = doc.data().jobType;
-
         // display micro jobs
         micro.where('jobId', '==', jobId).where('status', '==', 'active').get()
         .then(snapshot => {
@@ -80,22 +79,14 @@ export default {
             job.id = doc.id;
             job.type = jobType;
             this.jobs.push(job);
-          })
+          });
         });
         if(this.activeJobs === null) 
          this.activeJobs = false;
         
         this.loading = false;
-
-        // display reccuring jobs
-
-        // display internship jobs
-
-        // display part-time jobs
-
-        // display full-time jobs
-      })
-    })
+      });
+    });
   }
 };
 </script>

@@ -37,7 +37,7 @@ firebase.auth().onAuthStateChanged(() => {
   // init app if not already created
   if (!app) {
     app = new Vue({
-      store: store,
+      store,
       el: "#app",
       render: h => h(App),
       router,

@@ -166,15 +166,9 @@ export default {
         if(change.type == 'modified') {
           this.approved = change.doc.data().approved;
         }
-      })
-    }) 
+      });
+    }); 
     this.loading = false;
   }
 };
 </script>
-<style scoped>
-  .centre {
-    text-align: center;
-    font-weight: bold;
-  }
-</style>
