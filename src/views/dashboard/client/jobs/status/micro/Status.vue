@@ -45,6 +45,7 @@ import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
 import Rate from './flow/rate/Rate.vue';
 import { Modal } from "@/components";
+const axios = require('axios');
 export default {
   components: {
     Select,
@@ -103,7 +104,6 @@ export default {
     makePayment: function() {
       this.loading = true;
       this.$store.dispatch('makePayment', this.job);
-      this.loading = false;
     }
   },
   created() {
@@ -113,6 +113,10 @@ export default {
       snapshot.forEach(doc => {
         this.job = doc.data();
         this.job.id = doc.id;
+        db.collection('users').doc(this.job.clientAlias).get().then(doc => {
+          this.job.email = doc.data().email;
+          this.job.phone = doc.data().phone;
+        });
         this.status();
       });
     });

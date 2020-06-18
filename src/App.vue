@@ -2,10 +2,25 @@
   <router-view></router-view>
 </template>
 
-<script>
-export default {};
-</script>
 <style>
+body {
+	font-family: "Comfortaa";
+}
+h1, h2, h3, h4, h5, h6, .h01, .h02, .h03, .h04, .h05, .h06 {
+	font-family: "Comfortaa";
+}
+h5, .h05, h6, .h06 {
+	font-family: "Comfortaa";
+}
+p, a {
+  font-family: "Comfortaa";
+}
+input, textarea, select {
+  font-family: "Comfortaa";
+}
+label, legend {
+	font-family: "Comfortaa";
+}
 /* Pop up modal */
 .modal-container {
   max-width: 400px;

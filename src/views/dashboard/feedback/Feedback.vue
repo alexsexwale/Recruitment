@@ -14,14 +14,14 @@
         <md-card-content>
             <h4>Pop us a message</h4>
           <md-field>
-              <label for="select">What is your message about?</label>
-                <md-select v-model="subject" name="subject">
-                    <md-option v-for="(subject, index) in subjects" :key="index" :value="subject">{{subject}}</md-option>
-                </md-select>
+            <label for="select">What is your message about?</label>
+              <md-select required v-model="subject" name="subject">
+                  <md-option v-for="(subject, index) in subjects" :key="index" :value="subject">{{subject}}</md-option>
+              </md-select>
           </md-field>
           <md-field>
             <label>Tell us more</label>
-            <md-textarea v-model="message" type="text"></md-textarea>
+            <md-textarea required v-model="message" type="text"></md-textarea>
           </md-field>
         </md-card-content>
 
@@ -106,13 +106,7 @@ export default {
       this.loading = true;
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
-        let feedback = db.collection('feedback');
-        feedback.add({
-          userId: user.uid,
-          created: moment(Date.now()).format('L'),
-          subject: this.subject,
-          message: this.message
-        });
+        this.$store.dispatch('feedback', { id: user.uid, subject: this.subject, message: this.message });
         this.subject = null;
         this.message = null;
         this.successModal = true;

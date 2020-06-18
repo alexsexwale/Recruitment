@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="forgot" class="md-layout text-center">
+  <form @submit.prevent="forgot({ email })" class="md-layout text-center">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-size-33 md-medium-size-50 md-small-size-70 md-xsmall-size-100">
@@ -33,35 +33,20 @@
         </router-link>
       </login-card>
     </div>
-    <!-- Modal: Error handling -->
+
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
+        <h4 class="modal-title black">{{ header }}</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
       <template slot="body">
-        <p class="black">{{feedback}}</p>
+        <p class="black">{{ body }}</p>
       </template>
       <template slot="footer">
-        <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
-        </div>
-      </template>
-    </modal>
-    <!-- Modal: Success Message -->
-    <modal v-if="sentModal">
-      <template slot="header">
-        <h4 class="modal-title black">Email Sent!</h4>
-      </template>
-      <template slot="body">
-        <p class="black">Go ahead and check your inbox to reset your password.</p>
-      </template>
-      <template slot="footer">
-        <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="sent">Got it</md-button>
-        </div>
+        <md-button v-if="success" class="md-button md-success" @click="sent">{{ footer }}</md-button>
+        <md-button v-if="error" class="md-button md-success" @click="modalHide">{{ footer }}</md-button>
       </template>
     </modal>
   </form>
@@ -69,10 +54,9 @@
 <script>
 import { LoginCard, Modal } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
-import db from '@/firebase/init';
-import firebase from "firebase/app";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'forgot-password',
+  name: "forgot-password",
   components: {
     LoginCard,
     Modal,
@@ -81,10 +65,6 @@ export default {
   data() {
     return {
       email: null,
-      feedback: null,
-      modal: false,
-      sentModal: false,
-      loading: false,
       touched: {
         email: false
       },
@@ -96,27 +76,19 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters({
+      header: "headerFP",
+      body: "bodyFP",
+      footer: "footerFP",
+      modal: "modalFP",
+      loading: "loadingFP",
+      success: "successFP",
+      error: "errorFP"
+    })
+  },
   methods: {
-    modalHide() {
-      this.modal = false;
-    },
-    sent() {
-      this.$router.push({ name: 'Login'});
-    },
-    forgot() {
-      this.loading = true;
-      firebase.auth().sendPasswordResetEmail(this.email)
-       .then(() =>{
-        this.loading = false;
-        this.sentModal = true;
-       })
-       .catch(err => {
-          // Handle Errors here.
-          this.loading = false;
-          this.modal = true;
-          this.feedback = err.message;
-      });
-    }
+    ...mapActions(["forgot", "sent", "modalHide"])
   },
   watch: {
     email() {

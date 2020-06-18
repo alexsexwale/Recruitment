@@ -9,5 +9,5 @@ deploy_production:
     - npm install
     # - npm i -g firebase-tools
     # - npm run build
-    # - firebase deploy --project joboxza --token "1//03KySByi5PQLiCgYIARAAGAMSNwF-L9IrfRSuEtkPs0IFzm9CwFvt99tVs5d7hV0UV0DOxjlUv94CfePrqVCE84UbbQ5YJMYgSao"
+    # - firebase deploy --project joboxza --token "1//03QZb8WbPE2iSCgYIARAAGAMSNwF-L9IrVxdQXGiC-vIe_jNtaMSog1xWaTheTZlj6d-WsncXHQE_z6gXK-1jlZvwdEfqcZWRPTU"
 

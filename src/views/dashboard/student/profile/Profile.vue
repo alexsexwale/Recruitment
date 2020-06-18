@@ -11,7 +11,7 @@
           <hr v-if="edit">
           <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
           <hr v-if="edit">
-          <p v-if="rating"><b>{{ rating }}</b></p>
+          <!-- <p v-if="rating"><b>{{ rating }}</b></p> -->
           <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p>
           <h4 v-if="user.name && user.surname" class="card-title"><b>{{ user.name + ' ' + user.surname }}</b></h4>
           <p v-if="profile.degree" class="card-description"><b>Degree: </b> {{ profile.degree }}</p>

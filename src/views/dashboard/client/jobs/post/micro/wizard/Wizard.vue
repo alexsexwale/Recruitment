@@ -201,11 +201,8 @@ export default {
             remove: /[$*_+~.()'"!\-:@]/g,
             lower: true
           });
-          let job = db.collection('jobs').doc(this.slug);
-          let micro = db.collection('micros').doc(this.slug);
-          let skills = db.collection('skills').doc(this.slug);
           
-          job.set({
+          db.collection('jobs').doc(this.slug).set({
             jobId: this.slug,
             clientId: this.user.uid,
             created: moment(Date.now()).format('L'),
@@ -214,7 +211,7 @@ export default {
             jobType: "micro",
           });
 
-          micro.set({
+          db.collection('micros').doc(this.slug).set({
             jobId: this.slug,
             studentId: null,
             companyName: this.client.companyName,
@@ -238,14 +235,26 @@ export default {
             lastModified: null,
           });
 
-          skills.set({
+          db.collection('skills').doc(this.slug).set({
             jobId: this.slug,
             category: this.category,
             skills: this.skills,
             created: moment(Date.now()).format('L'),
             lastModified: null
           });
-        })
+
+          db.collection('payments').doc(this.slug).set({
+            jobId: this.slug,
+            amount: (this.budget * 1.1).toFixed(2),
+            created: moment(Date.now()).format("L"),
+            inboundPayment: false,
+            outboundPayment: false,
+            BatchFileUploadResult: null,
+            lastModified: null,
+            studentAlias: null
+          });
+
+        });
       })
       .then(() => {
         this.$router.push({ name: "pending-jobs" });

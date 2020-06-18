@@ -54,6 +54,7 @@
 import db from '@/firebase/init';
 import moment from "moment";
 import { Modal } from "@/components";
+import axios from "axios";
 export default {
   components: {
     Modal
@@ -95,15 +96,7 @@ export default {
       this.$router.push({ name: 'client-cancel', params: {id: job.id} });
     },
     confirmComplete() {
-      this.loading = true;
-      let job = db.collection('micros').doc(this.client.id);
-      job.update({
-        status: "rate",
-        satisfied: true,
-        complete: true,
-        lastModified: moment(Date.now()).format('L')  
-      });
-      this.loading = false;
+      this.$store.dispatch("complete", this.client.id);
     } 
   },
   created() {

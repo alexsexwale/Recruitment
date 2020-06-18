@@ -138,11 +138,24 @@ export default {
     },
     accept() {
       this.loading = true;
-      let activeJob = db.collection('micros').doc(this.client.id);
-      activeJob.update({
+      db.collection('micros').doc(this.client.id).update({
         status: "active",
-        studentId: firebase.auth().currentUser.uid,
+        studentId: this.user.uid,
+        studentAlias: this.applicant.alias,
         lastModified: moment(Date.now()).format('L')
+      });
+      db.collection('payments').doc(this.client.id).update({
+        studentAlias: this.applicant.alias
+      });
+      db.collection("applications").where("studentId", "!=", this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          db.collection('applications').doc(doc.id).update({
+            status: "declined"
+          });
+          //To do: Send email to client to notify the student has accepted the job.
+          //To do: Create function that sends email to all students that were not accepted for the job.
+        });
       });
       this.loading = false;
     }
@@ -153,11 +166,12 @@ export default {
       this.client = doc.data();
       this.client.id = doc.id;
     });  
-    let user = firebase.auth().currentUser;
+    this.user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
-    applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', user.uid).where('approved', '==', true).get()
+    applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', this.user.uid).where('approved', '==', true).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.applicant = doc.data();
         this.approved = true;
       });
     }); 
