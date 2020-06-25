@@ -23,7 +23,7 @@
     "element-ui": "^2.13.0",
     "es6-promise": "^4.2.8",
     "firebase": "^7.14.0",
-    "firebase-functions": "^3.6.2",
+    "firebase-functions": "^3.7.0",
     "fuse.js": "3.4.5",
     "google-maps": "3.3.0",
     "jquery": "3.4.1",

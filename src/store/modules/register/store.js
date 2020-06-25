@@ -13,12 +13,12 @@ function random() {
 
 export default {
     state: {
-        solutionSuccessModal: "https://jobox.atlassian.net/wiki/spaces/JWA/pages/103547028/Forgot+Password+Success+Modal",
-        solutionErrorModal: "https://jobox.atlassian.net/wiki/spaces/JWA/pages/103547028/Forgot+Password+Success+Modal",
-        messageSuccessModal: "In the collection 'ContentManagent', the document id 'Forgot Password Success Modal' may be missing.\n\nPlease click the link to review the confluence page to see how to resolve the issue. ",
-        messageErrorModal: "In the collection 'ContentManagent', the document id 'Forgot Password Error Modal' may be missing.\n\nPlease click the link to review the confluence page to see how to resolve the issue. ",
-        otherMessageSuccessModal: "Contact tech support immediately. Issue is related to the collection 'ContentManagent' in the document id 'Forgot Password Success Modal'",
-        otherMessageErrorModal: "Contact tech support immediately. Issue is related to the collection 'ContentManagent' in the document id 'Forgot Password Error Modal'",
+        solutionSuccessModal: "https://jobox.atlassian.net/wiki/spaces/JWA/pages/103514226/Register+Success+Modal",
+        solutionErrorModal: "https://jobox.atlassian.net/wiki/spaces/JWA/pages/103514212/Register+Error+Modal",
+        messageSuccessModal: "In the collection 'ContentManagent', the document id 'Register Success Modal' may be missing.\n\nPlease click the link to review the confluence page to see how to resolve the issue. ",
+        messageErrorModal: "In the collection 'ContentManagent', the document id 'Register Error Modal' may be missing.\n\nPlease click the link to review the confluence page to see how to resolve the issue. ",
+        otherMessageSuccessModal: "Contact tech support immediately. Issue is related to the collection 'ContentManagent' in the document id 'Register Success Modal'",
+        otherMessageErrorModal: "Contact tech support immediately. Issue is related to the collection 'ContentManagent' in the document id 'Register Error Modal'",
         // <Modal>
         header: null,
         body: null,
@@ -47,12 +47,77 @@ export default {
         register: (state, payload) => {
             state.loading = true;
             if(!payload.terms) {
-                state.loading = false;
-                state.modal = true;
-                state.header = "Oops!";
-                state.body = "Please agree to the terms and conditions";
-                state.footer = "Got it";
-                state.error = true;
+                db.collection("ContentManagement").doc("Register - Terms Modal").get().then(doc => {
+                    state.content = doc.data();
+                    state.loading = false;
+                    state.header = state.content.header;
+                    state.body = state.content.body;
+                    state.footer = state.content.footer;
+                    state.modal = true;
+                    state.error = true;
+                })
+                .catch(errCMS => {
+                    state.loading = false;
+                    state.header = "Oops!";
+                    state.body = "Please agree to the terms and conditions";
+                    state.footer = "Got it";
+                    state.modal = true;
+                    state.error = true;
+                    if(errCMS.message = "Cannot read property 'header' of undefined") {
+                        var args = {
+                            type: "errors",
+                            subject: errCMS.message, 
+                            message: state.messageErrorModal + state.solutionErrorModal
+                        }
+                        // Send error to tech support
+                       api.notification(args).then(() => {
+                            state.loading = false;
+                            state.header = "Oops!";
+                            state.body = err.message;
+                            state.footer = "Got it";
+                        }).catch(errAPI => {
+                            db.collection(args.type).add({
+                                jobId: null,
+                                created: moment(Date.now()).format('L'),
+                                issue: errAPI.message,
+                                message: "API post call to 'notification' failed. Contact tech support immediately."
+                            });
+                            db.collection(args.type).add({
+                                jobId: null,
+                                created: moment(Date.now()).format('L'),
+                                issue: errCMS.message,
+                                message: state.messageSuccessModal + state.solutionSuccessModal
+                            });
+                        });
+                    }
+                    else {
+                        var args = {
+                            type: "errors",
+                            subject: errCMS.message, 
+                            message: state.otherMessageSuccessModal
+                        }
+                        // Send error to tech support
+                       api.notification(args).then(() => {
+                            state.loading = false;
+                            state.header = "Oops!";
+                            state.body = err.message;
+                            state.footer = "Got it";
+                        }).catch(errAPI => {
+                            db.collection(args.type).add({
+                                jobId: null,
+                                created: moment(Date.now()).format('L'),
+                                issue: errAPI.message,
+                                message: "API post call to 'notification' failed. Contact tech support immediately."
+                            });
+                            db.collection(args.type).add({
+                                jobId: null,
+                                created: moment(Date.now()).format('L'),
+                                issue: errCMS.message,
+                                message: state.otherMessageSuccessModal
+                            });
+                        });
+                    }
+                });
             }
             else if(payload.role && payload.firstName && payload.lastName && payload.email && payload.password) {
                 state.slug = slugify(payload.firstName + " " + payload.lastName + " " + random(), {

@@ -66,7 +66,7 @@ export default {
     },
     avatar: {
       type: String,
-      default: "../img/dashboard/profile/client.png"
+      default: "/img/dashboard/client/card-1.jpg"
     }
   },
   data() {

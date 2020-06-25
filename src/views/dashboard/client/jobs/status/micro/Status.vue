@@ -4,17 +4,18 @@
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <md-card class="padding">
       <div v-if="select" class="margin">
-        <md-button class="btn-next md-info button" @click="payment">Payment</md-button>
+        <md-button v-if="!paid" class="btn-next md-info button" @click="payment">Payment</md-button>
         &nbsp;&nbsp;&nbsp;
         <md-button class="btn-next md-success button" @click="edit">Edit</md-button>
-        &nbsp;&nbsp;&nbsp;
-        <md-button class="btn-next md-danger button" @click="remove">Delete</md-button>
+        <!-- &nbsp;&nbsp;&nbsp;
+        <md-button class="btn-next md-danger button" @click="remove">Delete</md-button> -->
       </div>
       <p v-if="select && job.total > 0" class="centre">Your outstanding balance is R{{job.total}}</p>
       
       <Select v-if="select" />
       <Active v-if="active" />
       <Complete v-if="complete" />
+      <Incomplete v-if="incomplete" />
       <Rate v-if="rate" />
     </md-card>
     <!-- Modal: Error handling -->
@@ -43,36 +44,34 @@ import db from '@/firebase/init';
 import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
+import Incomplete from './flow/incomplete/Incomplete.vue';
 import Rate from './flow/rate/Rate.vue';
 import { Modal } from "@/components";
-const axios = require('axios');
 export default {
   components: {
     Select,
     Active,
     Complete,
+    Incomplete,
     Rate,
     Modal
   },
   data() {
     return {
       job: {},
+      paid: false,
       select: false,
       active: false,
       complete: false,
+      incomplete: false,
       rate: false,
       modal: false,
-      incomplete: false,
       loading: false
-
     };
   },
   methods: {
     edit() {
       this.$router.push({ name: 'edit-micro-job', params: {id: this.$route.params.id} });
-    },
-    remove() {
-      
     },
     modalHide() {
       this.modal = false;
@@ -95,6 +94,11 @@ export default {
         this.complete = true;
       else
         this.complete = false;
+      
+      if(this.job.status == "incomplete")
+        this.incomplete = true;
+      else
+        this.incomplete = false;
 
       if(this.job.status == "rate")
         this.rate = true;
@@ -125,6 +129,20 @@ export default {
         if(change.type == 'modified') {
           this.job = change.doc.data();
           this.status();
+        }
+      });
+    });
+    let payment = db.collection('payments');
+    payment.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.paid = doc.data().inboundPayment;
+      });
+    });
+    payment.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.paid = change.doc.data().inboundPayment;
         }
       });
     });

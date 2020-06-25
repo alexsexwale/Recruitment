@@ -11,7 +11,6 @@ import ClientDashboard from "./client/client";
 import ClientAccount from "./client/account/account";
 import StudentAccount from "./student/account/account";
 
-
 Vue.use(Router);
 
 const router = new Router({

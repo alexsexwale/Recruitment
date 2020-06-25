@@ -4,6 +4,7 @@
       <Select v-if="select" />
       <Active v-if="active" />
       <Complete v-if="complete" />
+      <Incomplete v-if="incomplete" />
       <Rate v-if="rate" />
     </md-card>
   </div>
@@ -13,6 +14,7 @@ import db from '@/firebase/init';
 import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
+import Incomplete from './flow/incomplete/Incomplete.vue';
 import Rate from './flow/rate/Rate.vue';
 
 export default {
@@ -20,6 +22,7 @@ export default {
     Select,
     Active,
     Complete,
+    Incomplete,
     Rate
   },
   data() {
@@ -28,11 +31,13 @@ export default {
       select: false,
       active: false,
       complete: false,
+      incomplete: false,
       rate: false
     }
   },
   methods: {
     status() {
+      console.log(this.job.status)
       if(this.job.status == "select")
         this.select = true;
       else
@@ -47,6 +52,11 @@ export default {
         this.complete = true;
       else
         this.complete = false;
+
+      if(this.job.status == "incomplete")
+        this.incomplete = true;
+      else
+        this.incomplete = false;
 
       if(this.job.status == "rate")
         this.rate = true;

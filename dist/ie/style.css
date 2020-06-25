@@ -6,7 +6,7 @@
     border-radius: 300px;
 }
 
-#ieText, #recommend, #jobox, #chrome, #firefox, #brave {
+#ieText, #recommend, #alternative, #jobox, #chrome, #firefox, #brave {
     display: none;
     text-align: center;
 }

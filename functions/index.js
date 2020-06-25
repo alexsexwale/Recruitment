@@ -108,6 +108,13 @@ app.post("/pay", urlencodedParser, (req, res) => {
                     // Get payment gateway data
                     db.collection("Settings").doc("Payment Gateway").get().then(doc => {
                         var paymentGateway = doc.data();
+                        // Format date to be yyymmdd eg. 20200619
+                        Date.prototype.yyyymmdd = function() {
+                            var yyyy = this.getFullYear().toString();
+                            var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+                            var dd  = this.getDate().toString();
+                            return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+                        };
                         // Today
                         var date = new Date();
                         // Tomorrow
@@ -119,14 +126,14 @@ app.post("/pay", urlencodedParser, (req, res) => {
                             date.setDate(date.getDate() + 1);
                             day = (moment(date).format('dddd')).toLowerCase();
                         }
+                        date = date.yyyymmdd();
                         // Access the web service
-                        soap.createClientAsync(paymentGateway.webService).then((client) => {
-                            var commission = 0.1;
-                            var studentSalaryInCents = parseInt(req.body.amount) * (1 - commission) * 100;
+                        soap.createClient(paymentGateway.webService, (err, client) => {
+                            var studentSalaryInCents = parseInt(req.body.amount) * (1 - paymentGateway.studentCommission) * 100;
                             var file = (
-                                ["H", paymentGateway.creditorPaymentServiceKey, "1", "CompactPayments", req.body.jobId, date, paymentGateway.salaryPaymentServiceKey].join('\t') + "\n" +
+                                ["H", paymentGateway.creditorPaymentServiceKey, "1", "Realtime", req.body.jobId, date, paymentGateway.vendorKey].join('\t') + "\n" +
                                 ["K", 101, 102, 131, 132, 133, 134, 135, 136, 162, 201, 202, 252].join('\t') + "\n" +
-                                ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, 1234567890 ].join('\t') + "\n" +
+                                ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
                                 ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
                             );
                             console.log(file)
@@ -135,48 +142,112 @@ app.post("/pay", urlencodedParser, (req, res) => {
                             // Upload single student payment information
                             client.BatchFileUpload(args, (err, result) => {
                                 // Batch Uploaded
-                                if(result.BatchFileUploadResult && result.BatchFileUploadResult !== "FILE NOT READY") {
-                                    console.log("Batch File Successfully Uploaded: " + result.BatchFileUploadResult);
-                                    // Request File Report Upload Parametres
-                                    var argsRFUR = { ServiceKey: paymentGateway.creditorPaymentServiceKey, FileToken: result.BatchFileUploadResult }
-                                    // Insert the file token
-                                    db.collection("payments").doc(req.body.jobId).update({ fileToken: result.BatchFileUploadResult });
-                                    // client.RequestFileUploadReport(argsRFUR, (err, resultRFUR) => {
-                                    //     // Request File Uploded
-                                    //     if(resultRFUR.RequestFileUploadReportResult && resultRFUR.RequestFileUploadReportResult !== "FILE NOT READY") {
-                                    //         console.log("Request File Successfully Uploaded");
-                                    //         db.collection("micros").doc(req.body.jobId).update({
-                                    //             status: "rate",
-                                    //             satisfied: true,
-                                    //             complete: true,
-                                    //             lastModified: moment(Date.now()).format('L')
-                                    //         });
-                                    //         db.collection("payments").doc(req.body.jobId).update({
-                                    //             outboundPayment: true,
-                                    //             lastModified: moment(Date.now()).format('L')
-                                    //         });
-                                            
-                                    //         res.send(resultRFUR.RequestFileUploadReportResult);
-                                    //     } // Request File failed to uploded
-                                    //     else {
-                                    //         console.log("Request File Failed to Upload: " + resultRFUR.RequestFileUploadReportResult);
-                                    //         db.collection("errors").add({
-                                    //             jobId: req.body.jobId,
-                                    //             created: moment(Date.now()).format("L"),
-                                    //             issue: "Payment to " + student.name + " failed at Request File Upload Report: " + resultRFUR.RequestFileUploadReportResult
-                                    //         });
-                                    //     }
-                                    // });
-                                    return res.status(200);
+                                if(result.BatchFileUploadResult !== "100") {
+                                    if(result.BatchFileUploadResult !== "101") {
+                                        if(result.BatchFileUploadResult !== "102") {
+                                            if(result.BatchFileUploadResult !== "200") {
+                                                if(result.BatchFileUploadResult !== "FILE NOT READY") {
+                                                    console.log("Batch File Successfully Uploaded: " + result.BatchFileUploadResult);
+                                                    // Request File Report Upload Parametres
+                                                    // var argsRFUR = { ServiceKey: paymentGateway.creditorPaymentServiceKey, FileToken: result.BatchFileUploadResult }
+                                                    // Insert the file token in payments table
+                                                    db.collection("payments").doc(req.body.jobId).update({ 
+                                                        studentFileToken: result.BatchFileUploadResult,
+                                                        outboundPayment: true
+                                                    });
+                                                    // client.RequestFileUploadReport(argsRFUR, (errRFUR, resultRFUR) => {
+                                                    //     // Request File Uploded
+                                                    //     if(resultRFUR.RequestFileUploadReportResult !== "FILE NOT READY") {
+                                                    //         console.log("Request File Successfully Uploaded");
+                                                    //         db.collection("micros").doc(req.body.jobId).update({
+                                                    //             status: "rate",
+                                                    //             satisfied: true,
+                                                    //             complete: true,
+                                                    //             lastModified: moment(Date.now()).format('L')
+                                                    //         }).then(() => {
+                                                    //             db.collection("payments").doc(req.body.jobId).update({
+                                                    //                 outboundPayment: true,
+                                                    //                 lastModified: moment(Date.now()).format('L')
+                                                    //             }).then(() => {
+                                                    //                 return res.status("Request File Successfully Uploaded");
+                                                    //             }).catch(err => {
+                                                    //                 db.collection("errors").add({
+                                                    //                     jobId: req.body.jobId,
+                                                    //                     created: moment(Date.now()).format("L"),
+                                                    //                     issue: err.message
+                                                    //                 });
+                                                    //             })
+                                                    //         }).catch(err => {
+                                                    //             db.collection("errors").add({
+                                                    //                 jobId: req.body.jobId,
+                                                    //                 created: moment(Date.now()).format("L"),
+                                                    //                 issue: err.message
+                                                    //             });
+                                                    //         });
+                                                    //     } // Request File failed to uploded
+                                                    //     else {
+                                                    //         console.log("Request File Failed to Upload: " + resultRFUR.RequestFileUploadReportResult);
+                                                    //         db.collection("errors").add({
+                                                    //             jobId: req.body.jobId,
+                                                    //             created: moment(Date.now()).format("L"),
+                                                    //             issue: "Payment to " + student.fullName + " failed at Request File Upload Report: " + resultRFUR.RequestFileUploadReportResult
+                                                    //         });
+                                                    //     }
+                                                    // });
+                                                }
+                                                else {
+                                                    db.collection("netcash").add({
+                                                        jobId: req.body.jobId,
+                                                        created: moment(Date.now()).format("L"),
+                                                        code: resultRFUR.RequestFileUploadReportResult,
+                                                        description: resultRFUR.RequestFileUploadReportResult
+                                                    });
+                                                    console.log(resultRFUR.RequestFileUploadReportResult);
+                                                    return res.status(resultRFUR.RequestFileUploadReportResult);
+                                                }
+                                            }
+                                            else {
+                                                db.collection("netcash").add({
+                                                    jobId: req.body.jobId,
+                                                    created: moment(Date.now()).format("L"),
+                                                    code: resultRFUR.RequestFileUploadReportResult,
+                                                    description: "General code exception. Please contact Netcash Technical Support."
+                                                });
+                                                console.log("General code exception. Please contact Netcash Technical Support.");
+                                                return res.status(resultRFUR.RequestFileUploadReportResult);
+                                            }
+                                        }
+                                        else {
+                                            db.collection("netcash").add({
+                                                jobId: req.body.jobId,
+                                                created: moment(Date.now()).format("L"),
+                                                code: resultRFUR.RequestFileUploadReportResult,
+                                                description: "Parameter error. One or more of the parameters in the string is incorrect."
+                                            });
+                                            console.log("Parameter error. One or more of the parameters in the string is incorrect.");
+                                            return res.status(resultRFUR.RequestFileUploadReportResult);
+                                        }
+                                    }
+                                    else {
+                                        db.collection("netcash").add({
+                                            jobId: req.body.jobId,
+                                            created: moment(Date.now()).format("L"),
+                                            code: resultRFUR.RequestFileUploadReportResult,
+                                            description: "Date format error. If the string contains a date, it should be in the format CCYYMMDD."
+                                        });
+                                        console.log("Date format error. If the string contains a date, it should be in the format CCYYMMDD.");
+                                        return res.status(resultRFUR.RequestFileUploadReportResult);
+                                    }
                                 } // Batch failed to uploaded
                                 else {
-                                    console.log("Batch File Failed to Upload");
-                                    db.collection("errors").add({
+                                    db.collection("netcash").add({
                                         jobId: req.body.jobId,
                                         created: moment(Date.now()).format("L"),
-                                        issue: "Payment to " + student.name + " failed at Batch File Upload: " + result.BatchFileUploadResult
+                                        code: resultRFUR.RequestFileUploadReportResult,
+                                        description: "Authentication failure. Ensure that the service key in the method call is correct."
                                     });
-                                    return res.status(result.BatchFileUploadResult);
+                                    console.log("Authentication failure. Ensure that the service key in the method call is correct.");
+                                    return res.status(resultRFUR.RequestFileUploadReportResult);
                                 }
                             });
                         });

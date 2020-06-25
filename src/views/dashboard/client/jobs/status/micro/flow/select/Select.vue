@@ -4,7 +4,7 @@
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <hr><h2 class="centre"><b>Select a Student</b></h2>
   <hr v-if="approved">
-  <p class="centre" v-if="approved">Please be patient while waiting for applicant to respond</p>
+  <p class="centre" v-if="approved">Please be patient while waiting for applicant to respond {{paid}}</p>
   <hr v-if="approved">
   <br v-if="approved">
   <div class="md-layout" v-if="approved">
@@ -19,7 +19,7 @@
           <p class="card-description">
             {{ applicant.bio }}
           </p>
-          <md-button @click="cancelModal=true;" class="md-danger md-round">Cancel</md-button>
+          <md-button @click="cancelModal=true;" class="md-danger md-round">Decline</md-button>
         </md-card-content>
       </md-card>
       <!-- Modal: Cancel -->
@@ -90,6 +90,25 @@
     <br/><br/>
     <h2 class="black centre">{{ feedback }}</h2>
   </div>
+  <!-- Modal:  -->
+  <modal v-if="noPaymentModal" @close="noPaymentModalHide">
+    <template slot="header">
+      <h4 class="modal-title black">Payment has not been made</h4>
+      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noPaymentModalHide">
+        <md-icon>clear</md-icon>
+      </md-button>
+    </template>
+
+    <template slot="body">
+      <p class="black">Please make the upfront payment before selecting a student.</p>
+    </template>
+
+    <template slot="footer">
+      <div class="centre">
+        <md-button class="md-button md-success" @click="noPaymentModalHide">Got it</md-button>
+      </div>
+    </template>
+  </modal>
 </div>
 </template>
 <script>
@@ -111,6 +130,8 @@ export default {
       approvedModal: false,
       cancelModal: false,
       noSelectModal: false,
+      noPaymentModal: false,
+      paid: false,
       index: null,
       loading: true,
       feedback: "Be patient, students will start applying soon"
@@ -132,6 +153,9 @@ export default {
     noSelectModalHide() {
       this.noSelectModal = false;
     },
+    noPaymentModalHide() {
+      this.noPaymentModal = false;
+    },
     async reload() {
       location.reload();
     },
@@ -139,20 +163,26 @@ export default {
       this.reload();
     }, 1500),
     select(id) {
-      if(this.approved) {
-        this.noSelectModal = true;
+      if(this.paid) {
+        if(this.approved) {
+          this.noSelectModal = true;
+        }
+        else {
+          this.loading = true
+          this.selected = true;
+          let applicants = db.collection('applications').doc(id);
+          applicants.update({
+            approved: true
+          });
+          this.debouncedReload();
+        }
       }
       else {
-        this.loading = true
-        this.selected = true;
-        let applicants = db.collection('applications').doc(id);
-        applicants.update({
-          approved: true
-        });
-        this.debouncedReload();
+        this.noPaymentModal = true;
       }
+      
     },
-    cancel(id) {
+    cancel(id) { //decline
       this.loading = true;
       this.cancelApplicant = true;
       let applicants = db.collection('applications').doc(id);
@@ -197,6 +227,20 @@ export default {
             this.approved = false;
             this.feedback = "Cancelling " + applicant.applicant;
           }
+        }
+      });
+    });
+    let payment = db.collection('payments');
+    payment.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.paid = doc.data().inboundPayment;
+      });
+    });
+    payment.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.paid = change.doc.data().inboundPayment;
         }
       });
     });

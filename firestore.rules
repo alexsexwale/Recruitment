@@ -66,6 +66,11 @@ service cloud.firestore {
 
     match /ContentManagement/{ContentManagement} {
       allow read;
+      allow write;
+    }
+
+    match /netcash/{netcash} {
+      allow read;
     }
     
   }

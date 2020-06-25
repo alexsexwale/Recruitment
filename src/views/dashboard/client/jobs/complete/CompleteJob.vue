@@ -38,8 +38,8 @@
       </product-card>
     </div>
   </div>
-  <div v-else-if="completeJobs === false">
-    <h1 class="black" style="text-align:center">You have no complete jobs</h1>
+  <div v-else-if="incompleteJobs === false">
+    <h1 class="black" style="text-align:center">There is no information to display.</h1>
   </div>
 </div>
 </template>
@@ -57,7 +57,7 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      completeJobs: null,
+      incompleteJobs: null,
       loading: true
     };
   },
@@ -75,15 +75,15 @@ export default {
         micro.where('jobId', '==', jobId).where('status', '==', 'complete').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            this.completeJobs = true;
+            this.incompleteJobs = true;
             let job = doc.data();
             job.id = doc.id;
             job.type = jobType;
             this.jobs.push(job);
           });
         });
-        if(this.completeJobs === null) 
-         this.completeJobs = false;
+        if(this.incompleteJobs === null) 
+         this.incompleteJobs = false;
         
         this.loading = false;
 

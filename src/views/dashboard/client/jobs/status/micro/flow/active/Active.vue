@@ -51,6 +51,7 @@
 <script>
 import db from '@/firebase/init';
 import { Modal } from "@/components";
+import moment from "moment";
 export default {
   components: {
     Modal
@@ -73,15 +74,15 @@ export default {
       this.cancelModal = false;  
     },
     cancel(id) {
-    //   this.cancelApplicant = true;
-    //   let applicants = db.collection('applications').doc(id);
-    //   applicants.update({
-    //     approved: false
-    //   });
-    //   db.collection('jobs').doc(id).update({
-    //     status: "select"  
-    //   });
-    //   this.cancelModal = false;
+      this.loading = true;
+        let completeJob = db.collection('micros').doc(this.$route.params.id);
+        completeJob.update({
+          status: "incomplete",
+          satisfied: false,
+          cancelled: true,
+          lastModified: moment(Date.now()).format('L')  
+        });
+        this.loading = false;
     }  
   },
   created() {

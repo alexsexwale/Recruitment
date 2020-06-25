@@ -13,6 +13,7 @@ import db from '@/firebase/init';
 import Select from './micro/flow/select/Select.vue';
 import Active from './micro/flow/active/Active.vue';
 import Complete from './micro/flow/complete/Complete.vue';
+import Incomplete from './micro/flow/incomplete/Incomplete.vue';
 import Rate from './micro/flow/rate/Rate.vue';
 
 export default {
@@ -20,6 +21,7 @@ export default {
     Select,
     Active,
     Complete,
+    Incomplete,
     Rate
   },
   data() {
@@ -28,27 +30,33 @@ export default {
       select: false,
       active: false,
       complete: false,
+      incomplete: false,
       rate: false
     }
   },
   methods: {
     status() {
-      if(this.job.status == "select")
+      if(this.job.status === "select")
         this.select = true;
       else
         this.select = false;
 
-      if(this.job.status == "active")
+      if(this.job.status === "active")
         this.active = true;
       else
         this.active = false;
 
-      if(this.job.status == "complete")
+      if(this.job.status === "complete")
         this.complete = true;
       else
         this.complete = false;
 
-      if(this.job.status == "rate")
+      if(this.job.status === "incomplete")
+        this.incomplete = true;
+      else
+        this.complete = false;
+
+      if(this.job.status === "rate")
         this.rate = true;
       else
         this.rate = false;

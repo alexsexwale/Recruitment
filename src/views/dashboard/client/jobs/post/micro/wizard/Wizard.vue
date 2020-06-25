@@ -249,7 +249,8 @@ export default {
             created: moment(Date.now()).format("L"),
             inboundPayment: false,
             outboundPayment: false,
-            BatchFileUploadResult: null,
+            studentFileToken: null,
+            clientFileToken: null,
             lastModified: null,
             studentAlias: null
           });
