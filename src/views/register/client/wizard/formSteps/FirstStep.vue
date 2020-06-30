@@ -5,7 +5,7 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
-      <div class="md-layout-item md-size-40 md-small-size-100">
+      <!-- <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
             <div v-if="!file">
@@ -18,7 +18,7 @@
           </div>
           <h6 class="description">Profile Picture</h6>
         </div>
-      </div>
+      </div> -->
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('companyName') && touched.companyName },

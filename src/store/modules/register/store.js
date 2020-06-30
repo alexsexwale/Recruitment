@@ -136,7 +136,6 @@ export default {
                     }
                     else {
                         state.role = payload.role; //used to proceed
-                        console.log()
                         firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password).then(cred => {
                             db.collection("users").doc(state.slug).set({
                                 userId: cred.user.uid,
@@ -146,7 +145,7 @@ export default {
                                 surname: payload.lastName,
                                 phone: payload.phoneNumber,
                                 email: payload.email,
-                                role: payload.role,
+                                user: payload.role,
                                 terms_and_conditions: payload.terms,
                                 alias: state.slug
                             });
