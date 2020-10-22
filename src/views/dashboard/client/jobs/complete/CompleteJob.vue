@@ -15,7 +15,7 @@
           {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.description }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -38,8 +38,8 @@
       </product-card>
     </div>
   </div>
-  <div v-else-if="incompleteJobs === false">
-    <h1 class="black" style="text-align:center">There is no information to display.</h1>
+  <div v-else-if="completeJobs === false">
+    <h1 class="black" style="text-align:center">You have no satisfied jobs</h1>
   </div>
 </div>
 </template>
@@ -57,7 +57,7 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      incompleteJobs: null,
+      completeJobs: null,
       loading: true
     };
   },
@@ -72,20 +72,19 @@ export default {
         let jobType = doc.data().jobType;
 
         // display micro jobs
-        micro.where('jobId', '==', jobId).where('status', '==', 'complete').get()
+        micro.where('jobId', '==', jobId).where('status', '==', 'summary').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            this.incompleteJobs = true;
+            this.completeJobs = true;
             let job = doc.data();
             job.id = doc.id;
             job.type = jobType;
-            this.jobs.push(job);
+            db.collection('skills').doc(doc.id).get().then(doc => {
+              job.category = doc.data().category;
+              this.jobs.push(job);
+            });
           });
         });
-        if(this.incompleteJobs === null) 
-         this.incompleteJobs = false;
-        
-        this.loading = false;
 
         // display reccuring jobs
 
@@ -96,6 +95,10 @@ export default {
         // display full-time jobs
       });
     });
+    if(this.completeJobs === null) 
+      this.completeJobs = false;
+
+    this.loading = false;
   }
 };
 </script>

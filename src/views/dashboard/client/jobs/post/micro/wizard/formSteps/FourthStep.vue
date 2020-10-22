@@ -1,21 +1,24 @@
 <template>
   <div>
-    <h5 class="info-text">Have one last final look at the microjob you are about to post</h5>
+    <h5 class="info-text">Have one last final look at the job you are about to post</h5>
     <div class="md-layout">
       <md-card>
         <md-card-content>
-          <collapse :collapse="['Description', 'Details', 'Payment']" icon="keyboard_arrow_down" color-collapse="success">
+          <collapse :collapse="['Job Description', 'Job Information', 'Budget']" icon="keyboard_arrow_down" color-collapse="success">
             <template slot="md-collapse-pane-1">
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social" style="text-align:center;">
-                    <i class="fas fa-list-ul"></i> Description
+                    <i class="fas fa-list-ul"></i> Job Description
                   </h3>
-                  <h4 class="card-title">Name</h4>
+                  <h4 class="card-title">Job Name</h4>
                   <p class="card-description">{{ name }}</p>
 
-                  <h4 class="card-title">Description</h4>
+                  <h4 class="card-title">Job Description</h4>
                   <p class="card-description">{{ description }}</p>
+
+                  <h4 class="card-title">Job Category</h4>
+                    <p class="card-description">{{ category }}</p>
 
                   <h4 class="card-title">Skills Required</h4>
                   <ul v-if="skills">
@@ -28,12 +31,12 @@
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social" style="text-align:center;">
-                    <i class="fas fa-clipboard-list"></i> Details
+                    <i class="fas fa-clipboard-list"></i> Job Information
                   </h3>
                   <h4 class="card-title">Location</h4>
                   <p class="card-description">{{ location }}</p>
 
-                  <h4 class="card-title">Anticipated Duration</h4>
+                  <h4 class="card-title">Estimated Duration</h4>
                   <p class="card-description">{{ deadline }}</p>
                 </md-card-content>
               </md-card>
@@ -42,13 +45,13 @@
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social" style="text-align:center;">
-                  <i class="fas fa-wallet"></i> Payment
+                  <i class="fas fa-wallet"></i> Budget
                   </h3>
                   <h4 class="card-title">Total Budget</h4>
                   <p class="card-description">R{{ total() }}</p>
                   <hr/>
                   <b>Cost Breakdown</b>
-                  <p class="card-description">Freelancer Rate</p> &nbsp;&nbsp; R{{ rate() }}
+                  <p class="card-description">Student Rate</p> &nbsp;&nbsp; R{{ rate() }}
                   <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{ fee() }}
                 </md-card-content>
               </md-card>
@@ -72,6 +75,7 @@ export default {
   props: {
     name: {},
     description: {},
+    category:{},
     skills: {},
     location: {},
     deadline: {},

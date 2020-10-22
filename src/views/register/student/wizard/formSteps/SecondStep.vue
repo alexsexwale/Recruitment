@@ -32,6 +32,7 @@ import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import debounce from "debounce";
+import moment from "moment";
 export default {
   components: {
     SlideYDownTransition
@@ -73,7 +74,8 @@ export default {
         if(doc.exists) {
           if(this.institutions) {
             this.student.update({
-              institution: this.institution
+              institution: this.institution,
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }

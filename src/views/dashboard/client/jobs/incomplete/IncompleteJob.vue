@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout" v-if="completeJobs">
+  <div class="md-layout" v-if="incompleteJobs">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
@@ -11,10 +11,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -40,7 +40,7 @@
   <div v-else>
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <h1 class="black centre">There is no information to display.</h1>
+    <h1 class="black centre">You have no incomplete jobs</h1>
   </div>
 </template>
 
@@ -57,23 +57,47 @@ export default {
     return {
       product1: "/img/dashboard/client/card-1.jpg",
       jobs:[],
-      completeJobs: false,
+      incompleteJobs: false,
       loading: true
     };
   },
   created() {
     let user = firebase.auth().currentUser;
-    let jobs = db.collection('micros');
-    jobs.where('studentId', '==', user.uid).where('status', '==', 'incomplete').get()
+    let jobs = db.collection('jobs');
+    let micro = db.collection('micros');
+    jobs.where('clientId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.completeJobs = true;
-        let job = doc.data();
-        job.id = doc.id;
-        this.jobs.push(job);
+        let jobId = doc.data().jobId;
+        let jobType = doc.data().jobType;
+
+        // display micro jobs
+        micro.where('jobId', '==', jobId).where('status', '==', 'incomplete').get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            this.incompleteJobs = true;
+            let job = doc.data();
+            job.id = doc.id;
+            job.type = jobType;
+            db.collection('skills').doc(doc.id).get().then(doc => {
+              job.category = doc.data().category;
+              this.jobs.push(job);
+            });
+          });
+        });
+
+        // display reccuring jobs
+
+        // display internship jobs
+
+        // display part-time jobs
+
+        // display full-time jobs
       });
-      this.loading = false;
     });
+    if(this.incompleteJobs === null) 
+      this.incompleteJobs = false;
+    this.loading = false;
   }
 };
 </script>

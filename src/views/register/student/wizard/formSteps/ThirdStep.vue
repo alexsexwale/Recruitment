@@ -1,9 +1,9 @@
 <template>
   <div>
     <h5 class="info-text">
-      What are your banking details
+      What are your banking details?
     </h5>
-    <div class="md-layout">
+      <div class="md-layout">
       <notifications></notifications>
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
@@ -32,7 +32,7 @@
           ]">
           <md-icon><i class="fas fa-wallet"></i></md-icon>
           <label>Account Number</label>
-          <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="text" name="accountNumber" required v-validate="modelValidations.accountNumber">
+          <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="number" name="accountNumber" required v-validate="modelValidations.accountNumber">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('accountNumber')">close</md-icon>
@@ -51,8 +51,9 @@
           ]">
           <md-icon><i class="fas fa-piggy-bank"></i></md-icon>
           <label>Account Type</label>
-          <md-input @change="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
-          </md-input>
+          <md-select class="pad" @input="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
+            <md-option v-for="(accountType, index) in accountTypes" :key="index" :value="accountType">{{accountType}}</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('accountType')">close</md-icon>
           </slide-y-down-transition>
@@ -70,8 +71,9 @@
           ]">
           <md-icon><i class="fas fa-university"></i></md-icon>
           <label>Bank Name</label>
-          <md-input @change="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
-          </md-input>
+          <md-select class="pad" @input="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
+            <md-option v-for="(bankName, index) in bankNames" :key="index" :value="bankName">{{bankName}}</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('bankName')">close</md-icon>
           </slide-y-down-transition>
@@ -81,7 +83,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <!-- <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('branchCode') && touched.branchCode },
             { 'md-form-group': true },
@@ -89,7 +91,7 @@
           ]">
           <md-icon><i class="fas fa-stamp"></i></md-icon>
           <label>Branch Code</label>
-          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="text" name="branchCode" required v-validate="modelValidations.branchCode">
+          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="number" name="branchCode" required v-validate="modelValidations.branchCode">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('branchCode')">close</md-icon>
@@ -98,7 +100,7 @@
             <md-icon class="success" v-show="!errors.has('branchCode') && touched.branchCode">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -107,6 +109,7 @@ import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import debounce from "debounce";
+import moment from "moment";
 export default {
   components: {
     SlideYDownTransition
@@ -120,6 +123,8 @@ export default {
       accountType: null,
       bankName: null,
       branchCode: null,
+      accountTypes: [],
+      bankNames: [],
       touched: {
         accountName: false,
         accountNumber: false,
@@ -132,7 +137,9 @@ export default {
           required: true
         },
         accountNumber: {
-          required: true
+          required: true,
+          min: 4,
+          max: 11
         },
         accountType: {
           required: true
@@ -141,7 +148,9 @@ export default {
           required: true
         },
         branchCode: {
-          required: true
+          required: true,
+          min: 6,
+          max: 6
         }
       }
     };
@@ -181,27 +190,89 @@ export default {
         if(doc.exists) {
           if(this.accountName) {
             this.student.update({
-              accountName: this.accountName
+              accountName: this.accountName,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.accountNumber) {
             this.student.update({
-              accountNumber: this.accountNumber
+              accountNumber: this.accountNumber,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.accountType) {
             this.student.update({
-              accountType: this.accountType
+              accountType: this.accountType,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.bankName) {
             this.student.update({
-              bankName: this.bankName
+              bankName: this.bankName,
+              lastModified: moment(Date.now()).format('L')
+            });
+            switch (this.bankName) {
+              case "Absa":
+                this.branchCode = "632005";
+                break
+              case "African Bank":
+                this.branchCode = "430000";
+                break
+              case "Bidvest Bank":
+                this.branchCode = "462005";
+                break
+              case "Capitec Bank":
+                this.branchCode = "470010";
+                break
+              case "Discovery Bank":
+                this.branchCode = "679000";
+                break
+              case "First National Bank":
+                this.branchCode = "250655";
+                break
+              case "Grindrod Bank":
+                this.branchCode = "223626";
+                break
+              case "Habib Overseas Bank":
+                this.branchCode = "";
+                break
+              case "HBZ Bank":
+                this.branchCode = "";
+                break
+              case "Imperial Bank South Africa":
+                this.branchCode = "";
+                break
+              case "Investec Bank":
+                this.branchCode = "580105";
+                break
+              case "Nedbank":
+                this.branchCode = "198765";
+                break
+              case "Sasfin":
+                this.branchCode = "683000";
+                break
+              case "South African Bank of Athens":
+                this.branchCode = "";
+                break
+              case "Standard Bank":
+                this.branchCode = "051001";
+                break
+              case "TymeBank":
+                this.branchCode = "678910";
+                break
+              case "Ubank":
+                this.branchCode = "";
+                break
+            }
+            this.student.update({
+              branchCode: this.branchCode,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.branchCode) {
             this.student.update({
-              branchCode: this.branchCode
+              branchCode: this.branchCode,
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }
@@ -259,6 +330,11 @@ export default {
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        let settings = db.collection('Settings').doc('Drop-down Lists');
+        settings.get().then(doc => {
+          this.accountTypes = doc.data().AccountTypes;
+          this.bankNames = doc.data().Banks;
+        });
         this.student = db.collection('students').doc(doc.id);
         this.student.get().then(doc => {
           if(doc.exists) {

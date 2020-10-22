@@ -3,20 +3,22 @@
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <md-card class="padding">
-      <div v-if="select" class="margin">
-        <md-button v-if="!paid" class="btn-next md-info button" @click="payment">Payment</md-button>
+      <div class="margin">
+        <md-button v-if="!paid" class="btn-next md-info button" @click="payment" style="max-width:110px;">Make payment</md-button>
         &nbsp;&nbsp;&nbsp;
-        <md-button class="btn-next md-success button" @click="edit">Edit</md-button>
-        <!-- &nbsp;&nbsp;&nbsp;
-        <md-button class="btn-next md-danger button" @click="remove">Delete</md-button> -->
+        <md-button v-if="select" class="btn-next md-success button" @click="edit" style="max-width:110px;">Edit Job</md-button>
+        &nbsp;&nbsp;&nbsp;
+        <md-button v-if="select && !paid" class="btn-next md-danger button" @click="cancelJob" style="max-width:110px;">Cancel Job</md-button>
       </div>
-      <p v-if="select && job.total > 0" class="centre">Your outstanding balance is R{{job.total}}</p>
+      <p v-if="job.total > 0 && !paid" class="centre">Your outstanding balance is R{{job.total}}</p>
       
       <Select v-if="select" />
       <Active v-if="active" />
       <Complete v-if="complete" />
       <Incomplete v-if="incomplete" />
+      <Dissatisfied v-if="dissatisfied" />
       <Rate v-if="rate" />
+      <Summary v-if="summary" />
     </md-card>
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
@@ -29,6 +31,7 @@
 
       <template slot="body">
         <p class="black">Your payment is outstanding.</p>
+        <p class="black">Your payment could take up to 5 minutes to reflect depending on your internet speed</p>
       </template>
 
       <template slot="footer">
@@ -45,26 +48,33 @@ import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
 import Incomplete from './flow/incomplete/Incomplete.vue';
+import Dissatisfied from './flow/dissatisfied/Dissatisfied.vue';
 import Rate from './flow/rate/Rate.vue';
+import Summary from './flow/summary/Summary.vue';
 import { Modal } from "@/components";
+import moment from "moment";
 export default {
   components: {
     Select,
     Active,
     Complete,
     Incomplete,
+    Dissatisfied,
     Rate,
+    Summary,
     Modal
   },
   data() {
     return {
       job: {},
-      paid: false,
+      paid: true,
       select: false,
       active: false,
       complete: false,
       incomplete: false,
+      dissatisfied: false,
       rate: false,
+      summary: false,
       modal: false,
       loading: false
     };
@@ -99,18 +109,39 @@ export default {
         this.incomplete = true;
       else
         this.incomplete = false;
+      
+      if(this.job.status == "dissatisfied")
+        this.dissatisfied = true;
+      else
+        this.dissatisfied = false;
 
       if(this.job.status == "rate")
         this.rate = true;
       else
         this.rate = false;
+      if(this.job.status == "summary")
+        this.summary = true;
+      else
+        this.summary = false;
     },
     makePayment: function() {
       this.loading = true;
       this.$store.dispatch('makePayment', this.job);
+    },
+    cancelJob() {
+      this.loading = true;
+      db.collection('micros').doc(this.$route.params.id).update({
+        status: "removed",
+        studentId: null,
+        lastModified: moment(Date.now()).format('L')
+      })
+      .then(() => {
+          this.$router.push({ name: "post-a-job" });
+      });
     }
   },
   created() {
+    window.scrollTo(0,0);
     let jobs = db.collection('micros');
     jobs.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {

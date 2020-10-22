@@ -2,7 +2,10 @@
   <footer class="footer">
     <div class="container">
       <nav>
-        <ul v-if="client">
+        <ul>
+          <li>Contact us: 087 149 4394</li>
+        </ul>
+        <!-- <ul v-if="client">
           <li>
             <router-link :to="{ path: '/client/terms-and-conditions' }">Terms and Conditions</router-link>
           </li>
@@ -23,7 +26,7 @@
           <li>
             <router-link :to="{ path: '/student/faq' }">FAQ</router-link>
           </li>
-        </ul>
+        </ul> -->
       </nav>
       <div class="copyright text-center">
         &copy; {{ new Date().getFullYear() }}
@@ -34,7 +37,7 @@
 </template>
 <script>
 import db from '@/firebase/init';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 export default {
   data() {
     return {

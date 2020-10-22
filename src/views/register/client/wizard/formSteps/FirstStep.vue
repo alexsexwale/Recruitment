@@ -5,7 +5,7 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
-      <!-- <div class="md-layout-item md-size-40 md-small-size-100">
+      <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
             <div v-if="!file">
@@ -14,11 +14,12 @@
             <div v-else>
               <img :src="file" />
             </div>
-            <input type="file" @change="onFileChange" />
+            <input type="file" @change="onFileChange" disabled title="Currently disabled" />
           </div>
-          <h6 class="description">Profile Picture</h6>
+          <!-- <h6 class="description">Profile Picture</h6> -->
+          <h6 class="description">Currently disabled</h6>
         </div>
-      </div> -->
+      </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('companyName') && touched.companyName },
@@ -43,8 +44,8 @@
             { 'md-error': errors.has('companyWebsite') }
           ]">
           <md-icon><i class="fas fa-globe"></i></md-icon>
-          <label>Website</label>
-          <md-input @change="addCompanyWebsite" v-model="companyWebsite" data-vv-name="companyWebsite" type="text" name="companyWebsite" required v-validate="modelValidations.companyWebsite">
+          <label>Company Website</label>
+          <md-input @change="addCompanyWebsite" v-model="companyWebsite" data-vv-name="companyWebsite" type="text" name="companyWebsite" v-validate="modelValidations.companyWebsite">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('companyWebsite')">close</md-icon>
@@ -110,8 +111,8 @@
           { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
           { 'md-error': errors.has('aboutMe') }
         ]">
-        <label v-if="companyName == null || companyName == ''">About Me</label>
-        <label v-else>About Us</label>
+        <!-- <label v-if="companyName == null || companyName == ''">About Me</label> -->
+        <label>About Us</label>
         <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
         <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>
@@ -145,7 +146,7 @@ export default {
       user: null,
       client: null,
       companyName: null,
-      companyWebsite: null,
+      companyWebsite: "http://www.",
       vat: null,
       companySize: null,
       aboutMe: null,
@@ -216,37 +217,44 @@ export default {
         if(doc.exists) {
           if(this.companyName) {
             this.client.update({
-              companyName: this.companyName
+              companyName: this.companyName,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.companyWebsite) {
             this.client.update({
-              website: this.companyWebsite
+              website: this.companyWebsite,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.phoneNumber) {
             this.client.update({
-              phoneNumber: this.phoneNumber
+              phoneNumber: this.phoneNumber,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.vat) {
             this.client.update({
-              vat: this.vat
+              vat: this.vat,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.companySize) {
             this.client.update({
-              companySize: this.companySize
+              companySize: this.companySize,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.industry) {
             this.client.update({
-              industry: this.industry
+              industry: this.industry,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.aboutMe) {
             this.client.update({
-              bio: this.aboutMe
+              bio: this.aboutMe,
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }
@@ -254,7 +262,7 @@ export default {
           this.client.set({
             userId: this.user.uid,
             created: moment(Date.now()).format('L'),
-            lastModified: null,
+            lastModified: moment(Date.now()).format('L'),
             companyName: this.companyName,
             website: this.companyWebsite,
             vat: this.vat,
@@ -262,7 +270,6 @@ export default {
             industry: this.industry,
             bio: this.aboutMe,
             addressLine1: null,
-            addressLine2: null,
             city: null,
             province_state: null,
             postalCode_zipCode: null,

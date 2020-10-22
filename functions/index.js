@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-var soap = require("soap");
+const soap = require("soap");
 
 var serviceAccount = require("./permissions.json");
 
@@ -20,7 +20,11 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey("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");
+
+// Firestore - get single document
+function getDocument(collection, id) {
+    return db.collection(collection).doc(id).get();
+}
 
 // Routes
 app.get("/hello", (req, res) => {
@@ -28,7 +32,11 @@ app.get("/hello", (req, res) => {
 });
 
 // Notifications
-app.post("/notification", urlencodedParser, (req, res) => {
+app.post("/notification", urlencodedParser, async (req, res) => {
+    const doc = await getDocument("Settings", "Email");
+    var settings = doc.data();
+    sgMail.setApiKey(settings.apiKey);
+    
     var msg = null;
     if(req.body.type === "feedback" || req.body.type === "support") {
         msg = {
@@ -45,17 +53,26 @@ app.post("/notification", urlencodedParser, (req, res) => {
             message: req.body.message
         });
     }
-    if(req.body.type === "errors") {
+    if(req.body.type === "active") {
         msg = {
-            to: "tech@jobox.co.za",
+            to: "contact@jobox.co.za",
             from: "admin@jobox.co.za",
             subject: req.body.subject,
             text: req.body.message
         };
+    }
+    if(req.body.type === "errors" || req.body.type === "incomplete" || req.body.type === "cancel" || req.body.type === "dissatisfied") {
+        msg = {
+            to: "contact@jobox.co.za",
+            from: req.body.email,
+            subject: req.body.subject,
+            text: req.body.message
+        };
+
         db.collection(req.body.type).add({
-            jobId: null,
+            jobId: req.body.jobId,
             created: moment(Date.now()).format('L'),
-            issue: req.body.subject,
+            subject: req.body.subject,
             message: req.body.message
         });
     }
@@ -64,15 +81,16 @@ app.post("/notification", urlencodedParser, (req, res) => {
     return res.status(200).send("Sent");
 });
 
-// // Inbound payment
+// Inbound payment
 app.post("/activate", urlencodedParser, (req, res) => {
   if(req.body.TransactionAccepted && req.body.Extra1) {
     db.collection("payments").doc(req.body.Extra1).update({
-      inboundpayment: true,
+      inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
-    res.status(200).redirect("https://joboxstaging.web.app/jobs/micro/status/" + req.Extra1);
-  } else {
+    res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
+  } 
+  else {
     db.collection("errors").add({
       created: moment(Date.now()).format("L"),
       message: "Payment Gateway failed" 
@@ -81,141 +99,473 @@ app.post("/activate", urlencodedParser, (req, res) => {
   }
 });
 
+// Cancel payment
+app.post("/cancelPayment", urlencodedParser, (req, res) => {
+    if(req.body.Extra1) {
+        res.status(200).redirect("https://joboxstaging.web.app/client/jobs/micro/status/" + req.body.Extra1);
+    } 
+    else {
+      db.collection("errors").add({
+        created: moment(Date.now()).format("L"),
+        message: "Payment Gateway failed" 
+      });
+      res.status(200).redirect("https://joboxstaging.web.app/");
+    }
+});
+
+// Decline payment
+app.post("/decline", urlencodedParser, async (req, res) => {
+    if(req.body.Extra1) {
+        db.collection("netcash").add({
+          created: moment(Date.now()).format("L"),
+          message: "Payment Declined" 
+        });
+        const doc = await getDocument("Settings", "Email");
+        var settings = doc.data();
+        sgMail.setApiKey(settings.apiKey);
+        var msg = {
+            to: "contact@jobox.co.za",
+            from: "admin@jobox.co.za",
+            subject: "Netcash Notification - " + req.body.Extra1,
+            text: " The user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined."
+        };
+        sgMail.send(msg);
+        res.status(200).redirect("https://joboxstaging.web.app/client/payment/fail/" + req.body.Extra1);
+    } 
+    else {
+      db.collection("errors").add({
+        created: moment(Date.now()).format("L"),
+        message: "Payment Gateway failed" 
+      });
+      res.status(200).redirect("https://joboxstaging.web.app/");
+    }
+});
+
 function padBranch(branchcode) {
     var code = branchcode + "";
     // Branch code needs to be 6 digits
 	while(code.length < 6)
 	{
-        //add zero(s) in front of branch code values if there are less than 6 digits
+    //add zero(s) in front of branch code values if there are less than 6 digits
 		code = "0" + code;
 	}
 	return code;
 }
 
 // Outbound Payment
-app.post("/pay", urlencodedParser, (req, res) => {
+app.post("/pay", urlencodedParser, async (req, res) => {
+  console.log(req.body);
     if(req.body.jobId && req.body.studentAlias) {
-        // Fetch the student
-        const doc = db.collection("students").doc(req.body.studentAlias).get();
-        const user = db.collection("users").doc(req.body.studentAlias).get();
-        var student = doc.data();
-        student.email = user.data().email;
-        student.phoneNumber = user.data().phone;
-        student.fullName = user.data().name + " " + user.data().surname;
-        if(student) {
-            // Get payment gateway data
-            const settings = db.collection("Settings").doc("Payment Gateway").get();
-            var paymentGateway = settings.data();
-            var url = paymentGateway.webService;
-            // Format date to be yyymmdd eg. 20200619
-            Date.prototype.yyyymmdd = function() {
-                var yyyy = this.getFullYear().toString();
-                var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
-                var dd  = this.getDate().toString();
-                return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
-            };
-            // Today
-            var date = new Date();
-            // Tomorrow
-            date.setDate(date.getDate() + 1);
-            // Day of the week
-            var day = (moment(date).format("dddd")).toLowerCase();
-            // NetCash payment process only happen between Monday to Friday
-            while (day === "saturday" || day === "sunday") {
-                date.setDate(date.getDate() + 1);
-                day = (moment(date).format("dddd")).toLowerCase();
-            }
-            date = date.yyyymmdd();
-            // Access the web service
-            soap.createClient(url, (client) => {
-                var studentSalaryInCents = parseInt(req.body.amount) * (1 - paymentGateway.studentCommission) * 100;
-                var file = (
-                    ["H", paymentGateway.creditorPaymentServiceKey, "1", "Realtime", req.body.jobId, date, paymentGateway.vendorKey].join('\t') + "\n" +
-                    ["K", 101, 102, 131, 132, 133, 134, 135, 136, 162, 201, 202, 252].join('\t') + "\n" +
-                    ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
-                    ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
-                );
-                console.log(file)
-                // // Batch File Upload Parametres
-                var args = { ServiceKey: paymentGateway.creditorPaymentServiceKey, File: file };
-                // // Upload single student payment information
-                client.BatchFileUpload(args, (result) => {
-                    // Batch Uploaded
-                    if(result.BatchFileUploadResult !== "100") {
-                        if(result.BatchFileUploadResult !== "101") {
-                            if(result.BatchFileUploadResult !== "102") {
-                                if(result.BatchFileUploadResult !== "200") {
-                                    if(result.BatchFileUploadResult !== "FILE NOT READY") {
-                                        console.log("Batch File Successfully Uploaded: " + result.BatchFileUploadResult);
-                                        db.collection("payments").doc(req.body.jobId).update({ 
-                                            studentFileToken: result.BatchFileUploadResult,
-                                            outboundPayment: true
-                                        });
-                                    }
-                                    else {
-                                        db.collection("netcash").add({
-                                            jobId: req.body.jobId,
-                                            created: moment(Date.now()).format("L"),
-                                            code: resultRFUR.RequestFileUploadReportResult,
-                                            description: resultRFUR.RequestFileUploadReportResult
-                                        });
-                                        console.log(resultRFUR.RequestFileUploadReportResult);
-                                        return res.status(resultRFUR.RequestFileUploadReportResult);
-                                    }
-                                }
-                                else {
-                                    db.collection("netcash").add({
-                                        jobId: req.body.jobId,
-                                        created: moment(Date.now()).format("L"),
-                                        code: resultRFUR.RequestFileUploadReportResult,
-                                        description: "General code exception. Please contact Netcash Technical Support."
-                                    });
-                                    console.log("General code exception. Please contact Netcash Technical Support.");
-                                    return res.status(resultRFUR.RequestFileUploadReportResult);
-                                }
-                            }
-                            else {
-                                db.collection("netcash").add({
-                                    jobId: req.body.jobId,
-                                    created: moment(Date.now()).format("L"),
-                                    code: resultRFUR.RequestFileUploadReportResult,
-                                    description: "Parameter error. One or more of the parameters in the string is incorrect."
-                                });
-                                console.log("Parameter error. One or more of the parameters in the string is incorrect.");
-                                return res.status(resultRFUR.RequestFileUploadReportResult);
-                            }
-                        }
-                        else {
-                            db.collection("netcash").add({
-                                jobId: req.body.jobId,
-                                created: moment(Date.now()).format("L"),
-                                code: resultRFUR.RequestFileUploadReportResult,
-                                description: "Date format error. If the string contains a date, it should be in the format CCYYMMDD."
-                            });
-                            console.log("Date format error. If the string contains a date, it should be in the format CCYYMMDD.");
-                            return res.status(resultRFUR.RequestFileUploadReportResult);
-                        }
-                    } // Batch failed to uploaded
-                    else {
-                        db.collection("netcash").add({
-                            jobId: req.body.jobId,
-                            created: moment(Date.now()).format("L"),
-                            code: resultRFUR.RequestFileUploadReportResult,
-                            description: "Authentication failure. Ensure that the service key in the method call is correct."
-                        });
-                        console.log("Authentication failure. Ensure that the service key in the method call is correct.");
-                        return res.status(resultRFUR.RequestFileUploadReportResult);
-                    }
-                });
-            });
+      // Fetch the student
+      const doc = await getDocument("students", req.body.studentAlias);
+      const user = await getDocument("users", req.body.studentAlias);
+      var student = doc.data();
+      student.email = user.data().email;
+      student.phoneNumber = user.data().phone;
+      student.fullName = user.data().name + " " + user.data().surname;
+      if(student) {
+        // Get payment gateway data
+        const settings = await getDocument("Settings", "Payment Gateway");
+        var paymentGateway = settings.data();
+        console.log(paymentGateway);
+        var url = paymentGateway.webService;
+        // Format date to be yyyymmdd e.g. 20200619
+        Date.prototype.yyyymmdd = function() {
+          var yyyy = this.getFullYear().toString();
+          var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+          var dd  = this.getDate().toString();
+          return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+        };
+        Date.prototype.mmdd = function() {
+          var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+          var dd  = this.getDate().toString();
+          return (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+        };
+        // Today
+        var date = new Date();
+        // Tomorrow
+        date.setDate(date.getDate() + 1);
+        // Day of the week
+        var day = moment(date.yyyymmdd());
+        day = (moment(date).format("dddd")).toLowerCase();
+        // Month and day, mmdd e.g. 0101
+        var publicHoliday = date.mmdd();
+        // NetCash payment process only happen between Monday to Friday and on non public holiday days
+        while (day === "saturday" || day === "sunday" // Weekend
+            || publicHoliday === "0101" // New Year's Day
+            || publicHoliday === "0321" // Human Rights Day
+            || publicHoliday === "0410" // Good Friday
+            || publicHoliday === "0413" // Family Day
+            || publicHoliday === "0427" // Freedom Day
+            || publicHoliday === "0501" // Worker's Day
+            || publicHoliday === "0616" // Youth Day
+            || publicHoliday === "0809" // Women's Day
+            || publicHoliday === "0924" // Heritage Day
+            || publicHoliday === "1216" // Day of Reconciliation
+            || publicHoliday === "1225" // Christmas Day
+            || publicHoliday === "1226" // Day of Goodwill
+          )
+        {
+        if(publicHoliday === "0101" && day === "sunday" // New Year's Day on Sunday
+          || publicHoliday === "0321" && day === "sunday" // Human Rights Day on Sunday
+          || publicHoliday === "0410" && day === "sunday" // Good Friday on Sunday
+          || publicHoliday === "0413" && day === "sunday" // Family Day on Sunday
+          || publicHoliday === "0427" && day === "sunday" // Freedom Day on Sunday
+          || publicHoliday === "0501" && day === "sunday" // Worker's Day on Sunday
+          || publicHoliday === "0616" && day === "sunday" // Youth Day on Sunday
+          || publicHoliday === "0809" && day === "sunday" // Women's Day on Sunday
+          || publicHoliday === "0924" && day === "sunday" // Heritage Day on Sunday
+          || publicHoliday === "1216" && day === "sunday" // Day of Reconciliation on Sunday
+          || publicHoliday === "1225" && day === "sunday" // Christmas Day on Sunday
+          || publicHoliday === "1226" && day === "sunday" // Day of Goodwill on Sunday
+        ) 
+        {
+          date.setDate(date.getDate() + 2);
+          day = (moment(date).format("dddd")).toLowerCase();
         }
         else {
-            return res.status(400);
+          date.setDate(date.getDate()  + 1);
+          day = (moment(date).format("dddd")).toLowerCase();
+        }         
+      }
+      date = date.yyyymmdd();
+      // Access the web service
+      soap.createClientAsync(url).then(client => {
+        var studentSalaryInCents = parseInt(req.body.amount) * 100;
+        var file = (
+          ["H", paymentGateway.creditorPaymentServiceKey, "1", "Realtime", req.body.jobId, date, paymentGateway.vendorKey].join('\t') + "\n" +
+          ["K", 101, 102, 131, 132, 133, 134, 135, 136, 162, 201, 202, 252].join('\t') + "\n" +
+          ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
+          ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
+        );
+        // Batch File Upload Parametres
+        var args = { ServiceKey: paymentGateway.creditorPaymentServiceKey, File: file };
+        return client.BatchFileUploadAsync(args);
+      })
+      .catch(err => {
+        db.collection("errors").add({
+          jobId: req.body.jobId,
+          created: moment(Date.now()).format("L"),
+          issue: "Soap service failed to work",
+          message: err.message
+        });
+        console.log(err.message);
+      })
+      .then(result => {
+        // Upload single student payment information
+        var batch = result[0].BatchFileUploadResult;
+        // Batch Uploaded
+        if(batch !== "100") {
+          if(batch !== "101") {
+            if(batch !== "102") {
+              if(batch !== "200") {
+                if(batch !== "FILE NOT READY") {
+                  console.log("Batch File Successfully Uploaded: " + batch);
+                  db.collection("payments").doc(req.body.jobId).update({
+                    studentFileToken: batch,
+                    outboundPayment: true,
+                    lastModified: moment(Date.now()).format('L'),
+                    paymentDate: moment(date, "YYYYMMDD").format('LLLL')
+                  });
+                  db.collection("micros").doc(req.body.jobId).update({
+                    status: "rate",
+                    satisfied: true,
+                    lastModified: moment(Date.now()).format('L')
+                  });
+                  return res.status("success");
+                }
+                else {
+                  db.collection("netcash").add({
+                    jobId: req.body.jobId,
+                    created: moment(Date.now()).format("L"),
+                    code: batch,
+                    description: batch
+                  });
+                  console.log(batch);
+                  return res.status(batch);
+                }
+              }
+              else {
+                db.collection("netcash").add({
+                  jobId: req.body.jobId,
+                  created: moment(Date.now()).format("L"),
+                  code: batch,
+                  description: "General code exception. Please contact Netcash Technical Support."
+                });
+                console.log("General code exception. Please contact Netcash Technical Support.");
+                return res.status(batch);
+              }
+            }
+            else {
+             db.collection("netcash").add({
+                jobId: req.body.jobId,
+                created: moment(Date.now()).format("L"),
+                code: batch,
+                description: "Parameter error. One or more of the parameters in the string is incorrect."
+              });
+              console.log("Parameter error. One or more of the parameters in the string is incorrect.");
+              return res.status(batch);
+            }
+          }
+          else {
+            db.collection("netcash").add({
+              jobId: req.body.jobId,
+              created: moment(Date.now()).format("L"),
+              code: batch,
+              description: "Date format error. If the string contains a date, it should be in the format CCYYMMDD."
+            });
+            console.log("Date format error. If the string contains a date, it should be in the format CCYYMMDD.");
+            return res.status(batch);
+          }
+        } // Batch failed to uploaded
+        else {
+          db.collection("netcash").add({
+            jobId: req.body.jobId,
+            created: moment(Date.now()).format("L"),
+            code: batch,
+            description: "Authentication failure. Ensure that the service key in the method call is correct."
+          });
+          console.log("Authentication failure. Ensure that the service key in the method call is correct.");
+          return res.status(batch);
         }
-    } 
-    else {
-        return res.status(400);
+      })
+      .catch(err => {
+        db.collection("netcash").add({
+          jobId: req.body.jobId,
+          created: moment(Date.now()).format("L"),
+          code: batch,
+          description: err.message
+        });
+        console.log(err.message);
+      });
     }
+    else {
+      return res.status(400);
+    }
+  } 
+  else {
+    return res.status(400);
+  }
+});
+
+//Get All Users - PowerBI
+app.get("/users", async (req, res) => {
+  var users = [];
+  const snapshot = await db.collection("users").get();
+  snapshot.forEach(doc => {
+    users.push(doc.data());
+  });
+  return res.status(200).send(users);
+});
+
+//Get All Clients - PowerBI
+app.get("/clients", async (req, res) => {
+  var clients = [];
+  const snapshot = await db.collection("clients").get();
+  snapshot.forEach(doc => {
+    clients.push(doc.data());
+  });
+  return res.status(200).send(clients);
+});
+
+//Get All Students - PowerBI
+app.get("/students", async (req, res) => {
+  var students = [];
+  const snapshot = await db.collection("students").get();
+  snapshot.forEach(doc => {
+    students.push(doc.data());
+  });
+  return res.status(200).send(students);
+});
+
+//Get All Vetted - PowerBI
+app.get("/vetted", async (req, res) => {
+  var vetted = [];
+  const snapshot = await db.collection("vetted").get();
+  snapshot.forEach(doc => {
+    vetted.push(doc.data());
+  });
+  return res.status(200).send(vetted);
+});
+
+//Get All Jobs - PowerBI
+app.get("/jobs", async (req, res) => {
+  var jobs = [];
+  const snapshot = await db.collection("jobs").get();
+  snapshot.forEach(doc => {
+    jobs.push(doc.data());
+  });
+  return res.status(200).send(jobs);
+});
+
+//Get All Micros - PowerBI
+app.get("/micros", async (req, res) => {
+  var micros = [];
+  const snapshot = await db.collection("micros").get();
+  snapshot.forEach(doc => {
+    micros.push(doc.data());
+  });
+  return res.status(200).send(micros);
+});
+
+//Get All Skills - PowerBI
+app.get("/skills", async (req, res) => {
+  var skills = [];
+  const snapshot = await db.collection("skills").get();
+  snapshot.forEach(doc => {
+    skills.push(doc.data());
+  });
+  return res.status(200).send(skills);
+});
+
+//Get All Payments - PowerBI
+app.get("/payments", async (req, res) => {
+  var payments = [];
+  const snapshot = await db.collection("payments").get();
+  snapshot.forEach(doc => {
+    payments.push(doc.data());
+  });
+  return res.status(200).send(payments);
+});
+
+//Get All Applications - PowerBI
+app.get("/applications", async (req, res) => {
+  var applications = [];
+  const snapshot = await db.collection("applications").get();
+  snapshot.forEach(doc => {
+    applications.push(doc.data());
+  });
+  return res.status(200).send(applications);
+});
+
+//Get All Support - PowerBI
+app.get("/support", async (req, res) => {
+  var support = [];
+  const snapshot = await db.collection("support").get();
+  snapshot.forEach(doc => {
+    support.push(doc.data());
+  });
+  return res.status(200).send(support);
+});
+
+//Get All Feedback - PowerBI
+app.get("/feedback", async (req, res) => {
+  var feedback = [];
+  const snapshot = await db.collection("feedback").get();
+  snapshot.forEach(doc => {
+    feedback.push(doc.data());
+  });
+  return res.status(200).send(feedback);
+});
+
+//Get All StudentRatings - PowerBI
+app.get("/studentRatings", async (req, res) => {
+  var studentRatings = [];
+  const snapshot = await db.collection("studentRatings").get();
+  snapshot.forEach(doc => {
+    studentRatings.push(doc.data());
+  });
+  return res.status(200).send(studentRatings);
+});
+
+//Get All ClientRatings - PowerBI
+app.get("/clientRatings", async (req, res) => {
+  var clientRatings = [];
+  const snapshot = await db.collection("clientRatings").get();
+  snapshot.forEach(doc => {
+    clientRatings.push(doc.data());
+  });
+  return res.status(200).send(clientRatings);
+});
+
+//Get All Communication - PowerBI
+app.get("/communication", async (req, res) => {
+  var communication = [];
+  const snapshot = await db.collection("communication").get();
+  snapshot.forEach(doc => {
+    communication.push(doc.data());
+  });
+  return res.status(200).send(communication);
+});
+
+//Get All ProblemSolving - PowerBI
+app.get("/problemSolving", async (req, res) => {
+  var problemSolving = [];
+  const snapshot = await db.collection("problemSolving").get();
+  snapshot.forEach(doc => {
+    problemSolving.push(doc.data());
+  });
+  return res.status(200).send(problemSolving);
+});
+
+//Get All Leadership - PowerBI
+app.get("/leadership", async (req, res) => {
+  var leadership = [];
+  const snapshot = await db.collection("leadership").get();
+  snapshot.forEach(doc => {
+    leadership.push(doc.data());
+  });
+  return res.status(200).send(leadership);
+});
+
+//Get All Organisation - PowerBI
+app.get("/organisation", async (req, res) => {
+  var organisation = [];
+  const snapshot = await db.collection("organisation").get();
+  snapshot.forEach(doc => {
+    organisation.push(doc.data());
+  });
+  return res.status(200).send(organisation);
+});
+
+//Get All Cancel - PowerBI
+app.get("/cancel", async (req, res) => {
+  var cancel = [];
+  const snapshot = await db.collection("cancel").get();
+  snapshot.forEach(doc => {
+    cancel.push(doc.data());
+  });
+  return res.status(200).send(cancel);
+});
+
+//Get All Incomplete - PowerBI
+app.get("/incomplete", async (req, res) => {
+  var incomplete = [];
+  const snapshot = await db.collection("incomplete").get();
+  snapshot.forEach(doc => {
+    incomplete.push(doc.data());
+  });
+  return res.status(200).send(incomplete);
+});
+
+//Get All Dissatisfied - PowerBI
+app.get("/dissatisfied", async (req, res) => {
+  var dissatisfied = [];
+  const snapshot = await db.collection("dissatisfied").get();
+  snapshot.forEach(doc => {
+    dissatisfied.push(doc.data());
+  });
+  return res.status(200).send(dissatisfied);
+});
+
+//Get All Errors - PowerBI
+app.get("/errors", async (req, res) => {
+  var errors = [];
+  const snapshot = await db.collection("errors").get();
+  snapshot.forEach(doc => {
+    errors.push(doc.data());
+  });
+  return res.status(200).send(errors);
+});
+
+//Get All Netcash - PowerBI
+app.get("/netcash", async (req, res) => {
+  var netcash = [];
+  const snapshot = await db.collection("netcash").get();
+  snapshot.forEach(doc => {
+    netcash.push(doc.data());
+  });
+  return res.status(200).send(netcash);
 });
 
 // Export api to Firebase Cloud Functions

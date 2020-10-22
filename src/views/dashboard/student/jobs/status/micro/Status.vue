@@ -5,7 +5,9 @@
       <Active v-if="active" />
       <Complete v-if="complete" />
       <Incomplete v-if="incomplete" />
+      <Dissatisfied v-if="dissatisfied" />
       <Rate v-if="rate" />
+      <Summary v-if="summary" />
     </md-card>
   </div>
 </template>
@@ -15,7 +17,9 @@ import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
 import Incomplete from './flow/incomplete/Incomplete.vue';
+import Dissatisfied from './flow/dissatisfied/Dissatisfied.vue';
 import Rate from './flow/rate/Rate.vue';
+import Summary from './flow/summary/Summary.vue';
 
 export default {
   components: {
@@ -23,7 +27,9 @@ export default {
     Active,
     Complete,
     Incomplete,
-    Rate
+    Dissatisfied,
+    Rate,
+    Summary
   },
   data() {
     return {
@@ -32,12 +38,13 @@ export default {
       active: false,
       complete: false,
       incomplete: false,
-      rate: false
+      dissatisfied: false,
+      rate: false,
+      summary: false
     }
   },
   methods: {
     status() {
-      console.log(this.job.status)
       if(this.job.status == "select")
         this.select = true;
       else
@@ -58,10 +65,20 @@ export default {
       else
         this.incomplete = false;
 
+      if(this.job.status == "dissatisfied")
+        this.dissatisfied = true;
+      else
+        this.dissatisfied = false;
+
       if(this.job.status == "rate")
         this.rate = true;
       else
         this.rate = false;
+      
+      if(this.job.status == "summary")
+        this.summary = true;
+      else
+        this.summary = false;
     }
   },
   created() {

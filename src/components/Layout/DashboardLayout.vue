@@ -12,10 +12,11 @@
         <sidebar-item v-if="client" :link="{ name: 'My Profile', icon: 'person', path: '/client/profile/' + alias }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Post a Job', icon: 'create', path: '/client/jobs/micro/post' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'View Jobs', icon: 'work_outline' }">
+          <sidebar-item :link="{ name: 'View Applications', path: '/client/jobs/pending' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Active Jobs', path: '/client/jobs/active' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Pending Jobs', path: '/client/jobs/pending' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Complete Jobs', path: '/client/jobs/complete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Satisfied Jobs', path: '/client/jobs/complete' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Incomplete Jobs', path: '/client/jobs/incomplete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Dissatisfied Jobs', path: '/client/jobs/dissatisfied' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Get Support', icon: 'contact_support', path: '/client/support' }"></sidebar-item>
         <sidebar-item v-if="client" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/client/feedback' }"></sidebar-item>
@@ -26,10 +27,11 @@
         <sidebar-item v-if="student" :link="{ name: 'My Profile', icon: 'person', path: '/student/profile/' + alias }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Apply For a Job', icon: 'create', path: '/student/apply-for-job' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'View Jobs', icon: 'work_outline' }">
-          <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Applied Jobs', path: '/student/jobs/applied' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Complete Jobs', path: '/student/jobs/complete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Active Jobs', path: '/student/jobs/active' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Satisfied Jobs', path: '/student/jobs/complete' }"></sidebar-item>
           <sidebar-item :link="{ name: 'Incomplete Jobs', path: '/student/jobs/incomplete' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Dissatisfied Jobs', path: '/student/jobs/dissatisfied' }"></sidebar-item>
         </sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Get Support', icon: 'contact_support', path: '/student/support' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
@@ -76,7 +78,7 @@ import MobileMenu from "./Extra/MobileMenu.vue";
 import UserMenu from "./Extra/UserMenu.vue";
 import { ZoomCenterTransition } from "vue2-transitions";
 import db from '@/firebase/init';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 export default {
   components: {

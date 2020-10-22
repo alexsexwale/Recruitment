@@ -2,8 +2,10 @@
   <div class="content">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <hr><h2 class="centre">Currently Active</h2><hr>
-    <br>
+    <hr><h2 class="centre">Work in Progress!</h2><hr>
+    <p class="centre">You are currently working with the client</p>
+    <hr>
+    <h6 class="centre">Client Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
@@ -18,36 +20,38 @@
           </p>
           </md-card-content>
         </md-card>
+        <p style="text-align: center;">Call Jobox at: <b>087 149 4394</b></p>
+        <p style="text-align: center;">Email Jobox at: <b><a style="color:blue" href="mailto:contact@jobox.co.za">contact@jobox.co.za</a></b></p>
       </div>
     </div>
     <div class="centre">
       <md-button @click="cancelModal=true;" class="md-danger" >
-        Cancel
+        Cancel Job
       </md-button>
         &nbsp;&nbsp;&nbsp;
       <md-button @click="complete" class="md-success">
-        Complete
+        Job Completed
       </md-button>
     </div>
 
     <!-- Modal: Cancel -->
     <modal v-if="cancelModal" @close="cancelModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Cancel job</h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="cancelModalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Are you you sure you want to cancel the job?</p>
+        <p class="black">Are you sure you want to abandon the job?</p>
       </template>
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-danger" @click="cancelModalHide">Cancel</md-button>
+          <md-button class="md-button md-danger" @click="cancelModalHide">No</md-button>
             &nbsp;&nbsp;&nbsp;
-          <md-button class="md-button md-success" @click="cancel">Yes</md-button>
+          <md-button class="md-button md-success" @click="studentCancelActive(client)">Yes</md-button>
         </div>
       </template>
     </modal>
@@ -57,6 +61,7 @@
 import db from '@/firebase/init';
 import moment from "moment";
 import { Modal } from "@/components";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     Modal
@@ -76,6 +81,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["studentCancelActive"]),
     cancelModalHide() {
       this.cancelModal = false;
     },

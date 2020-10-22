@@ -2,6 +2,7 @@ import db from "@/firebase/init";
 import firebase from "firebase/app";
 import router from "@/routes/routes";
 import api from "@/store/api/api";
+import moment from "moment";
 
 export default {
     state: {
@@ -33,7 +34,6 @@ export default {
                 auth.signInWithEmailAndPassword(payload.email, payload.password).then(() => {
                     db.collection("users").where('userId', '==', auth.currentUser.uid).get().then(snapshot => {
                         snapshot.forEach(doc => {
-                            console.log(doc.data())
                             state.user = doc.data();
                             if(state.user.user == "client") {
                                 let client = db.collection("clients").doc(doc.id);
@@ -71,7 +71,7 @@ export default {
                             state.modal = true;
                         }).catch(errCMS => {
                             state.loading = false;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                             state.modal = true;
@@ -80,7 +80,7 @@ export default {
                                 // Send error to tech support
                                 api.notification(args).then(() => {
                                     state.loading = false;
-                                    state.header = "Oops!";
+                                    state.header = "Whoa there! ✋";
                                     state.body = err.message;
                                     state.footer = "Got it";
                                 }).catch(errAPI => {
@@ -103,7 +103,7 @@ export default {
                                 // Send error to tech support
                                 api.notification(args).then(() => {
                                     state.loading = false;
-                                    state.header = "Oops!";
+                                    state.header = "Whoa there! ✋";
                                     state.body = err.message;
                                     state.footer = "Got it";
                                 }).catch(errAPI => {
@@ -138,7 +138,7 @@ export default {
                             // Send error to tech support
                             api.notification(args).then(() => {
                                 state.loading = false;
-                                state.header = "Oops!";
+                                state.header = "Whoa there! ✋";
                                 state.body = err.message;
                                 state.footer = "Got it";
                             }).catch(errAPI => {
@@ -161,7 +161,7 @@ export default {
                             // Send error to tech support
                             api.notification(args).then(() => {
                                 state.loading = false;
-                                state.header = "Oops!";
+                                state.header = "Whoa there! ✋";
                                 state.body = err.message;
                                 state.footer = "Got it";
                             }).catch(errAPI => {
@@ -192,7 +192,7 @@ export default {
                     state.modal = true;
                 }).catch(errCMS => {
                     state.loading = false;
-                    state.header = "Oops!";
+                    state.header = "Whoa there! ✋";
                     state.body = "Please select whether you are a student or a client.";
                     state.footer = "Got it";
                     state.modal = true;
@@ -205,7 +205,7 @@ export default {
                         // Send error to tech support
                         api.notification(args).then(() => {
                             state.loading = false;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                         }).catch(errAPI => {
@@ -232,7 +232,7 @@ export default {
                         // Send error to tech support
                         api.notification(args).then(() => {
                             state.loading = false;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                         }).catch(errAPI => {

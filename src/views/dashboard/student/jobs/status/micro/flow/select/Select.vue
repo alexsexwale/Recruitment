@@ -2,9 +2,8 @@
   <div class="content" v-if="!approved">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <hr><h2 class="centre">Apply for Job</h2><hr>
-    <p class="centre">Your application has been sent!</p>
-    <p class="centre">We will let you know when the client has made their decision.</p>
+    <hr><h2 class="centre">Application Sent!</h2><hr>
+    <p class="centre">We will let you know on the outcome of your application</p>
     <hr>
     <h6 class="centre">Client Information</h6>
     <div class="md-layout">
@@ -25,27 +24,27 @@
     </div>
     <div class="centre">
       <md-button @click="cancelModal=true;" class="md-danger">
-        Cancel
+        Withdraw Application
       </md-button>
     </div>
     <!-- Modal: Cancel -->
     <modal v-if="cancelModal" @close="cancelModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Cancel Job</h4>
+        <h4 class="modal-title black">Withdraw Application</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="cancelModalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Canceling the job would mean big big problems. I have not thought of the logic yet</p>
+        <p class="black">You are now choosing to withdraw your application for this job. Would you like to proceed?</p>
       </template>
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-danger" @click="cancelModalHide">Cancel</md-button>
+          <md-button class="md-button md-danger" @click="cancelModalHide">No</md-button>
             &nbsp;&nbsp;&nbsp;
-          <md-button class="md-button md-success" @click="cancel()">Yes</md-button>
+          <md-button class="md-button md-success" @click="studentCancelSelect(applicant)">Yes</md-button>
         </div>
       </template>
     </modal>
@@ -53,9 +52,10 @@
   <div v-else class="content">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+    <hr><h2 class="centre">Application Successful!</h2><hr>
+    <p class="centre">Congratulations you have been selected for the job</p>
     <hr>
-      <h2 class="centre">Apply for Job</h2>
-    <hr>
+    <h6 class="centre">Client Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
@@ -73,33 +73,34 @@
       </div>
     </div>
     <div class="centre">
+      <p><b>I would like to:</b></p>
       <md-button @click="declineModal = true;" class="md-danger" >
-        Decline
+        Decline Job
       </md-button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <md-button @click="accept" class="md-success">
-        Accept
+      <md-button @click="acceptJob(applicant)" class="md-success">
+        Accept Job
       </md-button>
     </div>
 
     <!-- Modal: Decline -->
     <modal v-if="declineModal" @close="declineModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Decline job</h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="declineModalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Are you you sure you want to decline the job?</p>
+        <p class="black">Are you sure you want to turn down the job offer?</p>
       </template>
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-danger" @click="declineModalHide">Cancel</md-button>
+          <md-button class="md-button md-danger" @click="declineModalHide">No</md-button>
             &nbsp;&nbsp;&nbsp;
-          <md-button class="md-button md-success" @click="decline">Yes</md-button>
+          <md-button class="md-button md-success" @click="studentDeclineSelect(applicant)">Yes</md-button>
         </div>
       </template>
     </modal>
@@ -110,6 +111,7 @@ import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import moment from "moment";
 import { Modal } from "@/components";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     Modal
@@ -120,7 +122,8 @@ export default {
       approved: false,
       cancelModal: false,
       declineModal: false,
-      loading: true
+      loading: true,
+      applicant: {}
     };
   },
   props: {
@@ -130,6 +133,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["studentDeclineSelect", "studentCancelSelect", "acceptJob"]),
     cancelModalHide() {
       this.cancelModal = false;  
     },
@@ -147,16 +151,16 @@ export default {
       db.collection('payments').doc(this.client.id).update({
         studentAlias: this.applicant.alias
       });
-      db.collection("applications").where("studentId", "!=", this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          db.collection('applications').doc(doc.id).update({
-            status: "declined"
-          });
-          //To do: Send email to client to notify the student has accepted the job.
-          //To do: Create function that sends email to all students that were not accepted for the job.
-        });
-      });
+      // db.collection("applications").where("studentId", "!=", this.user.uid).get()
+      // .then(snapshot => {
+      //   snapshot.forEach(doc => {
+      //     db.collection('applications').doc(doc.id).update({
+      //       status: "declined"
+      //     });
+      //     //To do: Send email to client to notify the student has accepted the job.
+      //     //To do: Create function that sends email to all students that were not accepted for the job.
+      //   });
+      // });
       this.loading = false;
     }
   },
@@ -166,19 +170,33 @@ export default {
       this.client = doc.data();
       this.client.id = doc.id;
     });  
+    
     this.user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
     applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', this.user.uid).where('approved', '==', true).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.applicant = doc.data();
+        this.applicant.id = doc.id;
         this.approved = true;
       });
-    }); 
+    });
+
+    if(!this.approved) {
+      applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          this.applicant = doc.data();
+          this.applicant.id = doc.id;
+        });
+      });
+    }
     applicants.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if(change.type == 'modified') {
-          this.approved = change.doc.data().approved;
+          this.applicant = change.doc.data();
+          this.applicant.id = change.doc.id;
+          this.approved = this.applicant.approved;
         }
       });
     }); 

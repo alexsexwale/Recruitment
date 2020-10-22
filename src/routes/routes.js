@@ -22,7 +22,14 @@ const router = new Router({
     StudentAccount,
     ClientDashboard,
     StudentDashboard
-  ]
+  ],
+  scrollBehavior: (to, from, savedPosition) => {
+    if (to.hash) {
+      return {selector: to.hash}
+    } else {
+      return { x: 0, y: 0 }
+    }
+  }
 });
 
 function previous(back) {

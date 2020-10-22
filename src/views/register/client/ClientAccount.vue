@@ -12,7 +12,6 @@
         v-bind:industry="industry"
         v-bind:aboutMe="aboutMe"
         v-bind:addressLine1="addressLine1"
-        v-bind:addressLine2="addressLine2"
         v-bind:city="city"
         v-bind:province="province"
         v-bind:postalCode="postalCode"
@@ -23,7 +22,7 @@
           <h3 v-if="emailVerified" class="title" style="color:#000">Build your profile</h3>
           <h5 v-if="emailVerified" class="category">This information will let us know more about you.</h5>
           <div v-else>
-            <p slot="inputs" style="color:red;">Check your inbox to verify that <b>{{email}}</b> is your email address</p>
+            <p slot="inputs" style="color:red;">Please check your inbox to verify that <b>{{email}}</b> is the email address that you are currently using</p>
             <md-button @click="verification" class="btn-next md-success">
               Resend verification
             </md-button>
@@ -58,7 +57,6 @@
           <second-step ref="step2" 
             @on-validated="onStepValidated"
             @addressLine1="addAddressLineOne"
-            @addressLine2="addAddressLineTwo"
             @city="addCity"
             @province="addProvince"
             @postalCode="addPostalCode">
@@ -113,7 +111,6 @@ export default {
       industry: null,
       aboutMe: null,
       addressLine1: null,
-      addressLine2: null,
       city: null,
       province: null,
       postalCode: null,
@@ -192,10 +189,6 @@ export default {
     },
     addAddressLineOne: function(addressLine1) {
       this.addressLine1 = addressLine1;
-      this.refresh();
-    },
-    addAddressLineTwo: function(addressLine2) {
-      this.addressLine2 = addressLine2;
       this.refresh();
     },
     addCity: function(city) {

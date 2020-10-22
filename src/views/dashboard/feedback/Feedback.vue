@@ -8,13 +8,13 @@
           <div class="card-icon">
             <md-icon>mail_outline</md-icon>
           </div>
-          <h4 class="title">Give Feedback</h4>
+          <h4 class="title">Give Us Feedback</h4>
         </md-card-header>
 
         <md-card-content>
             <h4>Pop us a message</h4>
           <md-field>
-            <label for="select">What is your message about?</label>
+            <label for="select">What would you like to discuss?</label>
               <md-select required v-model="subject" name="subject">
                   <md-option v-for="(subject, index) in subjects" :key="index" :value="subject">{{subject}}</md-option>
               </md-select>
@@ -39,7 +39,7 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -58,7 +58,7 @@
     <!-- Modal: Success -->
     <modal v-if="successModal" @close="successModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Feedback Sent!</h4>
+        <h4 class="modal-title black">Feedback Sent! 🎉</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -70,7 +70,7 @@
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="successModalHide">Got it</md-button>
+          <md-button class="md-button md-success" @click="successModalHide">Great!</md-button>
         </div>
       </template>
     </modal>
@@ -89,7 +89,7 @@ export default {
       message: null,
       modal: false,
       successModal: false,
-      success: "We appreciate your feedback. We will continue to make improvements on the platform.",
+      success: "We appreciate your feedback. Keep telling your friends about us",
       error: null,
       subjects:[],
       loading: false
@@ -106,14 +106,20 @@ export default {
       this.loading = true;
       if(this.subject && this.message) {
         let user = firebase.auth().currentUser;
-        this.$store.dispatch('feedback', { id: user.uid, subject: this.subject, message: this.message });
+        let feedback = db.collection('feedback');
+        feedback.add({
+          userId: user.uid,
+          created: moment(Date.now()).format('L'),
+          subject: this.subject,
+          message: this.message
+        });
         this.subject = null;
         this.message = null;
         this.successModal = true;
         this.loading = false;
       } else {
         this.modal = true;
-        this.error = "Please complete all fields before sending feedback.";
+        this.error = "Please let us know what you would like to discuss before you send us your feedback";
         this.loading = false;
       }
     }

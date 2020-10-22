@@ -2,7 +2,10 @@
   <div class="content">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <hr><h2 class="centre">Currently Active</h2><hr>
+    <hr><h2 class="centre">Work in Progress!</h2><hr>
+    <p class="centre">You are currently working with the student</p>
+    <hr>
+    <h6 class="centre">Student Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <br>  
@@ -18,31 +21,33 @@
             </p>
           </md-card-content>
         </md-card>
+        <p style="text-align: center;">Call us at: <b>087 149 4394</b></p>
+        <p style="text-align: center;">Email us at: <b><a style="color:blue" href="mailto:contact@jobox.co.za">contact@jobox.co.za</a></b></p>
       </div>
     </div>
     <div class="centre">
       <md-button @click="cancelModal=true;" class="md-danger">
-        Cancel
+        Cancel Job
       </md-button>
     </div>
     <!-- Modal: Cancel -->
     <modal v-if="cancelModal" @close="cancelModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Cancel Job </h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="cancelModalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Canceling the job would mean that big big problems. I have not thought of the logic yet</p>
+        <p class="black">Are you sure you want to abandon the job?</p>
       </template>
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-danger" @click="cancelModalHide">Cancel</md-button>
+          <md-button class="md-button md-danger" @click="cancelModalHide">No</md-button>
             &nbsp;&nbsp;&nbsp;
-          <md-button class="md-button md-success" @click="cancel()">Yes</md-button>
+          <md-button class="md-button md-success" @click="clientCancelActive(job)">Yes</md-button>
         </div>
       </template>
     </modal>
@@ -52,6 +57,7 @@
 import db from '@/firebase/init';
 import { Modal } from "@/components";
 import moment from "moment";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     Modal
@@ -60,6 +66,7 @@ export default {
     return {
       cancelModal: false,
       applicant: {},
+      job: {},
       loading: true
     }
   },
@@ -70,22 +77,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["clientCancelActive"]),
     cancelModalHide() {
-      this.cancelModal = false;  
-    },
-    cancel(id) {
-      this.loading = true;
-        let completeJob = db.collection('micros').doc(this.$route.params.id);
-        completeJob.update({
-          status: "incomplete",
-          satisfied: false,
-          cancelled: true,
-          lastModified: moment(Date.now()).format('L')  
-        });
-        this.loading = false;
-    }  
+      this.cancelModal = false;
+    } 
   },
   created() {
+    db.collection('micros').doc(this.$route.params.id).get().then(doc => {
+      this.job = doc.data();
+    });
     db.collection('applications').where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', true).get()
     .then(snapshot => {
       snapshot.forEach(doc => {

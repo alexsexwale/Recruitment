@@ -11,6 +11,8 @@
         v-bind:budget="budget"
         v-bind:payment="payment">
         <template slot="header">
+          <md-button class="btn-next md-success button" @click="$router.go(-1)">Go back</md-button>
+          <br><br>
           <h3 class="title">Edit {{ name }}</h3>
         </template>
 

@@ -12,10 +12,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -39,7 +39,7 @@
     </div>
   </div>
   <div v-else-if="appliedJobs === false">
-    <h1 class="black centre">You have not applied to any jobs</h1>
+    <h1 class="black centre">You have no open applications</h1>
   </div>
 </div>
 </template>
@@ -79,15 +79,17 @@ export default {
             let job = doc.data();
             job.id = doc.id;
             job.type = jobType;
-            this.jobs.push(job);
+            db.collection('skills').doc(doc.id).get().then(doc => {
+              job.category = doc.data().category;
+              this.jobs.push(job);
+            });
           });
         });
         if(this.appliedJobs === null) 
          this.appliedJobs = false;
-
-        this.loading = false;
       });
     });
+    this.loading = false;
   }
 };
 </script>

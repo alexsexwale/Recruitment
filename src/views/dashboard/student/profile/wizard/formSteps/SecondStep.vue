@@ -30,7 +30,9 @@
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import debounce from "debounce";
+import moment from "moment";
 export default {
   components: {
     SlideYDownTransition
@@ -84,8 +86,31 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 300),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.institutions) {
+            this.student.update({
+              institution: this.institution
+            });
+          }
+        }
+      });
+      this.$notify(
+      {
+        message: 'Your data has been automatically saved!',
+        icon: 'add_alert',
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: 'success'
+      });
+    },
     addInstitution: function() {
       this.$emit("institution", this.institution);
+      this.debouncedUpdate();
     }
   },
   watch: {

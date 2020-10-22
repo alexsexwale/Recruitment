@@ -1,92 +1,135 @@
 <template>
-<div>
-  <div v-if="loading" class="background"></div>
-  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-  <div class="md-layout" v-if="activeJobs">
-    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
-      <product-card header-animation="false">
-        <img class="img" slot="imageHeader" :src="product1" />
-        <md-icon slot="fixed-button">build</md-icon>
-        <template slot="first-button">
-          <md-icon>art_track</md-icon>
-          <md-tooltip md-direction="bottom">View</md-tooltip>
-        </template>
-        <h4 slot="title" class="title">
-          {{ job.name }}
-        </h4>
-        <div slot="description" class="card-description">
-          {{ job.description }}
-        </div>
-        <template slot="footer">
-          <div class="price">
-            <i class="fas fa-money-bill-wave"></i> budget
-            <h4 class="centre">{{ job.budget }}</h4>
+  <form @submit.prevent="cancel" class="md-layout">
+    <div class="md-layout-item md-small-size-100">
+      <md-card>
+        <md-card-header class="md-card-header-icon md-card-header-green">
+          <div class="card-icon">
+            <md-icon>mail_outline</md-icon>
           </div>
-          <div class="price">
-            <router-link v-if="job.type == 'micro'" :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
-              <md-button class="md-success">View</md-button>
-            </router-link>
-          </div>
-          <div class="stats">
-            <div class="price">
-              <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" class="centre">on-site</h4>
-              <h4 v-else class="centre">{{ job.location }}</h4>
+          <h4 class="title">Cancelled Job</h4>
+        </md-card-header>
+
+        <md-card-content>
+          <h4>We are sad to hear that you have cancelled the job. We will be able to reach out within in 24 hours after completing the form below.</h4>
+          <md-field>
+            <label for="select">Let us know what your issue is?</label>
+            <md-select v-model="reason" name="select">
+              <md-option value="Reason 1">Reason 1</md-option>
+              <md-option value="Reason 2">Reason 2</md-option>
+              <md-option value="Reason 3">Reason 3</md-option>
+              <md-option value="Reason 4">Reason 4</md-option>
+            </md-select>
+          </md-field>
+          <md-field>
+            <label>Please give a full description as to why you cancelled</label>
+            <md-textarea v-model="description" type="text"></md-textarea>
+          </md-field>
+        </md-card-content>
+
+        <md-card-actions md-alignment="left">
+          <button class="md-button md-success md-theme-default">
+            <div class="md-ripple">
+              <div class="md-button-content">
+                Submit
+              </div>
             </div>
-          </div>
-        </template>
-      </product-card>
+          </button>
+        </md-card-actions>
+      </md-card>
     </div>
-  </div>
-  <div v-else-if="activeJobs === false">
-    <h1 class="black centre">You currently have no active jobs</h1>
-  </div>
-</div>
+    <!-- Modal: Error handling -->
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Oops!</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">Please complete all fields so that we examine the problem before we contact you.</p>
+      </template>
+
+      <template slot="footer">
+        <div class="centre">
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal>
+    <!-- Modal: Success -->
+    <modal v-if="successModal" @close="successModalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Help is on its way!</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">We appreciate you taking the time to complete the form. As promised we will reach out to you at our earliest convenience.</p>
+      </template>
+
+      <template slot="footer">
+        <div class="centre">
+          <md-button class="md-button md-success" @click="post">Got it</md-button>
+        </div>
+      </template>
+    </modal>
+  </form>
 </template>
-
 <script>
-import { ProductCard } from "@/components";
-import db from '@/firebase/init';
-import firebase from 'firebase/app';
-
+import db from "@/firebase/init";
+import firebase from "firebase/app";
+import moment from "moment";
+import { Modal } from "@/components";
 export default {
-  components: {
-    ProductCard
-  },
+  components: { Modal },
   data() {
     return {
-      product1: "/img/dashboard/client/card-1.jpg",
-      jobs:[],
-      activeJobs: null,
-      loading: true
+      reason: null,
+      description: null,
+      modal: false,
+      successModal: false,
+      error: null
     };
   },
-  created() {
-    let user = firebase.auth().currentUser;
-    let jobs = db.collection('jobs');
-    let micro = db.collection('micros');
-    jobs.where('clientId', '==', user.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        let jobId = doc.data().jobId;
-        let jobType = doc.data().jobType;
-        // display micro jobs
-        micro.where('jobId', '==', jobId).where('status', '==', 'active').get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.activeJobs = true;
-            let job = doc.data();
-            job.id = doc.id;
-            job.type = jobType;
-            this.jobs.push(job);
-          });
-        });
-        if(this.activeJobs === null) 
-         this.activeJobs = false;
-        
-        this.loading = false;
-      });
-    });
+  methods: {
+    modalHide() {
+      this.modal = false;
+    },
+    successModalHide() {
+      this.successModal = false;
+    },
+    cancel() {
+      if(this.reason && this.description) {
+        let user = firebase.auth().currentUser;
+        let cancel = db.collection('cancelled');
+        cancel.add({
+          userId: user.uid,
+          jobId: this.$route.params.id,
+          created: moment(Date.now()).format('L'),
+          reason: this.reason,
+          description: this.description
+        })
+        this.reason = null;
+        this.description = null;
+        this.successModal = true;
+      }
+      else {
+        this.modal = true;
+      }
+    },
+    post() {
+      this.$router.push({ name: 'post-a-job' });
+    }
   }
-};
+}
 </script>
+<style lang="scss" scoped>
+.md-card .md-card-actions {
+  border: none;
+}
+.centre {
+  text-align: center;  
+}
+</style>

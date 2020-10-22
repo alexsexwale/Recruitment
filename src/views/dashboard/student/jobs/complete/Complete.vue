@@ -11,10 +11,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -64,16 +64,19 @@ export default {
   created() {
     let user = firebase.auth().currentUser;
     let jobs = db.collection('micros');
-    jobs.where('studentId', '==', user.uid).where('status', '==', 'rate').get()
+    jobs.where('studentId', '==', user.uid).where('status', '==', 'summary').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.completeJobs = true;
         let job = doc.data();
         job.id = doc.id;
-        this.jobs.push(job);
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job);
+        });
       });
-      this.loading = false;
     });
+    this.loading = false;
   }
 };
 </script>

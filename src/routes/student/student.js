@@ -4,7 +4,6 @@ import Support from "@/views/dashboard/support/Support.vue";
 import Feedback from "@/views/dashboard/feedback/Feedback.vue";
 
 import StudentDashboard from "@/views/dashboard/student/StudentDashboard.vue";
-import StudentIncompleteJob from "@/views/dashboard/student/jobs/incomplete/IncompleteJob";
 import StudentProfile from "@/views/dashboard/student/profile/Profile.vue";
 import ClientProfile from "@/views/dashboard/client/profile/Profile.vue";
 import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vue";
@@ -12,11 +11,16 @@ import EditStudentProfile from "@/views/dashboard/student/profile/EditProfile.vu
 import Jobs from "@/views/dashboard/student/jobs/Jobs.vue";
 import MicroApplication from "@/views/dashboard/student/jobs/application/micro/Application.vue";
 
-import Applied from "@/views/dashboard/student/jobs/applied/Applied.vue";
-import ActiveStudentJob from "@/views/dashboard/student/jobs/active/Active.vue";
-import CompleteStudentJob from "@/views/dashboard/student/jobs/complete/Complete.vue";
+// Dissatisfied Job
+import DissatisfiedJob from "@/views/dashboard/student/jobs/dissatisfied/Dissatisfied.vue";
 
-import StudentStatus from "@/views/dashboard/student/jobs/status/Status.vue";
+// Student Job
+import Applied from "@/views/dashboard/student/jobs/applied/Applied.vue";
+import ActiveJob from "@/views/dashboard/student/jobs/active/Active.vue";
+import CompleteJob from "@/views/dashboard/student/jobs/complete/Complete.vue";
+import IncompleteJob from "@/views/dashboard/student/jobs/incomplete/IncompleteJob.vue";
+
+import StudentStatus from "@/views/dashboard/student/jobs/status/micro/Status.vue";
 export default {
     path: "/student",
     component: DashboardLayout,
@@ -57,7 +61,7 @@ export default {
       {
         path: "jobs/active",
         name: "active-student-jobs",
-        components: { default: ActiveStudentJob },
+        components: { default: ActiveJob },
         meta: {
           requiresAuth: true,
           userRole: "student",
@@ -77,7 +81,7 @@ export default {
       {
         path: "jobs/complete",
         name: "complete-student-jobs",
-        components: { default: CompleteStudentJob },
+        components: { default: CompleteJob },
         meta: {
           requiresAuth: true,
           userRole: "student",
@@ -86,8 +90,18 @@ export default {
       },
       {
         path: "jobs/incomplete",
-        name: "complete-jobs",
-        components: { default: StudentIncompleteJob },
+        name: "incomplete-student-jobs",
+        components: { default: IncompleteJob },
+        meta: {
+          requiresAuth: true,
+          userRole: "student",
+          emailVerified: true
+        }
+      },
+      {
+        path: "jobs/dissatisfied",
+        name: "dissatisfied-student-jobs",
+        component: DissatisfiedJob,
         meta: {
           requiresAuth: true,
           userRole: "student",

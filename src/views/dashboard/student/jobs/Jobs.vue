@@ -19,10 +19,10 @@
           <md-tooltip md-direction="bottom" @click="deleteJob(job.id)">Remove</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          <router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: job.clientAlias}}"><a>{{ job.clientName }}</a></router-link>
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -71,13 +71,18 @@ export default {
   },
   created() {
     // display available micro jobs
+
+    // to do: do not display the job if the student has already applied to the job
     db.collection('micros').where('status', '==', 'select').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.postedJobs = true;
         let job = doc.data();
         job.id = doc.id;
-        this.jobs.push(job); // can push other job types to the same array or seperate the jobs
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job); // can push other job types to the same array or seperate the jobs
+        });
       });
       this.loading = false;
     });

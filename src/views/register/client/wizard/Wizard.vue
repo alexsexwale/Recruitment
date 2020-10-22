@@ -130,9 +130,6 @@ export default {
     addressLine1: {
       required: true
     },
-    addressLine2: {
-      required: true
-    },
     city: {
       required: true
     },
@@ -231,64 +228,70 @@ export default {
           if(doc.exists) {
             if(this.companyName) {
               clients.update({
-                companyName: this.companyName
+                companyName: this.companyName,
+                lastModified: moment(Date.now()).format('L')
               });
               this.modal = true;
             }
             if(this.companyWebsite) {
               clients.update({
-                website: this.companyWebsite
+                website: this.companyWebsite,
+                lastModified: moment(Date.now()).format('L')
               });
               this.modal = true;
             }
             if(this.vat) {
               clients.update({
-                vat: this.vat
+                vat: this.vat,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.companySize) {
               clients.update({
-                companySize: this.companySize
+                companySize: this.companySize,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.industry) {
               clients.update({
-                industry: this.industry
+                industry: this.industry,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.aboutMe) {
               clients.update({
-                bio: this.aboutMe
+                bio: this.aboutMe,
+                lastModified: moment(Date.now()).format('L')
               });
               this.modal = true;
             }
             if(this.addressLine1) {
               clients.update({
-                addressLine1: this.addressLine1
-              });
-            }
-            if(this.addressLine2) {
-              clients.update({
-                addressLine2: this.addressLine2
+                addressLine1: this.addressLine1,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.city) {
               clients.update({
-                city: this.city
+                city: this.city,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.province) {
               clients.update({
-                province_state: this.province
+                province_state: this.province,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.postalCode) {
               clients.update({
-                postalCode_zipCode: this.postalCode
+                postalCode_zipCode: this.postalCode,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             clients.update({
-              accountCreated: true
+              accountCreated: true,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           else {
@@ -303,8 +306,8 @@ export default {
 
             clients.set({
               userId: this.user.uid,
-              created: moment(Date.now()).format('L'),
-              lastModified: null,
+              created: null,
+              lastModified: moment(Date.now()).format('L'),
               companyName: this.companyName,
               website: this.companyWebsite,
               vat: this.vat,
@@ -312,7 +315,6 @@ export default {
               industry: this.industry,
               bio: this.aboutMe,
               addressLine1: this.addressLine1,
-              addressLine2: this.addressLine2,
               city: this.city,
               province_state: this.province,
               postalCode_zipCode: this.postalCode,
@@ -321,7 +323,7 @@ export default {
               accountCreated: true
             });
           }
-          this.$router.push({ name: "client-profile", params: { id: this.alias } });
+          this.$router.push({ name: "post-a-job" });
           this.loading = false;
         });
         

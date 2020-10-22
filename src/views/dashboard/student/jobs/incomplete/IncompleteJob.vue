@@ -11,10 +11,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -40,7 +40,7 @@
   <div v-else>
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <h1 class="black centre">There is no information to display.</h1>
+    <h1 class="black centre">You have no incomplete jobs</h1>
   </div>
 </template>
 
@@ -70,7 +70,10 @@ export default {
         this.completeJobs = true;
         let job = doc.data();
         job.id = doc.id;
-        this.jobs.push(job);
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job);
+        });
       });
       this.loading = false;
     });

@@ -23,7 +23,7 @@
           {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.description }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div v-else-if="pendingJobs===false">
-    <h1 class="black" style="text-align:center">You currently have no pending jobs</h1>
+    <h1 class="black" style="text-align:center">You have no open jobs</h1>
   </div>
 </div>
 </template>
@@ -101,19 +101,21 @@ export default {
             let job = doc.data();
             job.id = doc.id;
             job.type = jobType;
-            this.jobs.push(job);
+            db.collection('skills').doc(doc.id).get().then(doc => {
+              job.category = doc.data().category;
+              this.jobs.push(job);
+            });
           });
         });
-        if(this.pendingJobs === null) 
-         this.pendingJobs = false;
-        
-        this.loading = false;
         // display reccuring jobs
         // display internship jobs
         // display part-time jobs
         // display full-time jobs
-      })
+      });
     });
+    if(this.pendingJobs === null) 
+      this.pendingJobs = false;
+    this.loading = false;
   }
 };
 </script>

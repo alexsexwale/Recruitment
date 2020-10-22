@@ -21,7 +21,7 @@
           </md-field>
           <md-field>
             <label>Tell us more</label>
-            <md-textarea v-model="message" type="text"></md-textarea>
+            <md-textarea required v-model="message" type="text"></md-textarea>
           </md-field>
         </md-card-content>
 
@@ -39,7 +39,7 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -58,7 +58,7 @@
     <!-- Modal: Success -->
     <modal v-if="successModal" @close="successModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Support is on it's way!</h4>
+        <h4 class="modal-title black">Support is on its way!</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -89,7 +89,7 @@ export default {
       message: null,
       modal: false,
       successModal: false,
-      success: "We will investigate on the matter at our earliest convenience.",
+      success: "We will investigate the matter as soon as possible",
       error: null,
       subjects:[],
       loading: true
@@ -120,7 +120,7 @@ export default {
       }
       else {
         this.modal = true;
-        this.error = "Please complete all fields before sending feedback.";
+        this.error = "Please let us know what your issue is";
         this.loading = false;
       }
     }

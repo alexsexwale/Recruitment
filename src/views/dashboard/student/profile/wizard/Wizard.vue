@@ -219,7 +219,7 @@ export default {
     },
     debouncedUpdate: debounce(function() {
       this.updateAccount();
-    }, 1500),
+    }, 300),
     async updateAccount() {
       let ref = db.collection('users');
       let user = firebase.auth().currentUser;
@@ -306,12 +306,6 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.major) {
-            student.update({
-              major: this.major,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
           if(this.year) {
             student.update({
               year: this.year,
@@ -330,15 +324,9 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.accountName) {
-            student.update({
-              accountName: this.accountName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
           if(this.accountNumber) {
             student.update({
-              accountNumber: this.accountNumber,
+              accountNumber: this.accountNumber.toString(),
               lastModified: moment(Date.now()).format('L')
             });
           }
@@ -356,7 +344,7 @@ export default {
           }
           if(this.branchCode) {
             student.update({
-              branchCode: this.branchCode,
+              branchCode: this.branchCode.toString(),
               lastModified: moment(Date.now()).format('L')
             });
           }

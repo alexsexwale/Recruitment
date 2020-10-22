@@ -5,7 +5,7 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
-      <!-- <div class="md-layout-item md-size-40 md-small-size-100">
+      <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
             <div v-if="!image">
@@ -14,11 +14,12 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="onFileChange" />
+            <input type="file" @change="onFileChange" disabled title="Currently disabled" />
           </div>
-          <h6 class="description">Profile Picture</h6>
+          <!-- <h6 class="description">Profile Picture</h6> -->
+          <h6 class="description">Currently disabled</h6>
         </div>
-      </div> -->
+      </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
           :class="[
@@ -174,22 +175,26 @@ export default {
         if(doc.exists) {
           if(this.dob) {
             this.student.update({
-              dateOfBirth: moment(this.dob).format('L')
+              dateOfBirth: moment(this.dob).format('L'),
+              lastModified: moment(Date.now()).format('L'),
             });
           }
           if(this.gender) {
             this.student.update({
-              gender: this.gender
+              gender: this.gender,
+              lastModified: moment(Date.now()).format('L'),
             });
           }
           if(this.race) {
             this.student.update({
-              race: this.race
+              race: this.race,
+              lastModified: moment(Date.now()).format('L'),
             });
           }
           if(this.bio) {
             this.student.update({
-              bio: this.bio
+              bio: this.bio,
+              lastModified: moment(Date.now()).format('L'),
             });
           }
         }
@@ -197,7 +202,7 @@ export default {
           this.student.set({
             userId: this.user.uid,
             created: moment(Date.now()).format('L'),
-            lastModified: null,
+            lastModified: moment(Date.now()).format('L'),
             dateOfBirth: moment(this.dob).format('L'),
             gender: this.gender,
             race: this.race,
@@ -215,7 +220,12 @@ export default {
             accountType: null,
             bankName: null,
             branchCode: null,
-            accountCreated: false
+            accountCreated: false,
+            portfolio: null,
+            linkedIn: null,
+            facebook: null,
+            twitter: null,
+            instagram: null
           });
         }
         this.$notify(

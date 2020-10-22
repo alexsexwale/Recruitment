@@ -9,7 +9,7 @@
         </div>
         <md-card-content>
           <hr v-if="edit">
-          <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit</md-button>
+          <md-button v-if="edit" class="btn-next md-success button" @click="editProfile">Edit Profile</md-button>
           <hr v-if="edit">
           <!-- <p v-if="rating"><b>{{ rating }}</b></p> -->
           <!-- <p v-if="rating" class="card-title"><star-rating :increment="0.01" :rating="rating" :read-only="true" :inline="true" :glow="10" :show-rating="false" class="stars"></star-rating></p> -->
@@ -19,6 +19,18 @@
           <p v-if="profile.institution" class="card-description"><b>Institution: </b>{{ profile.institution }}</p>
           <p v-if="profile.graduateStatus" class="card-description"><b>Graduate Status: </b> {{ profile.graduateStatus }}</p>
           <p v-if="profile.bio" class="card-description"><b>About Me: </b>{{ profile.bio }}</p>
+          <md-button v-if="profile.portfolio" class="btn-next md-info button" @click="portfolio">View Portfolio</md-button>
+          <p v-if="(profile.github && profile.github !== '') || (profile.linkedIn && profile.linkedIn !== '') || (profile.facebook && profile.facebook !== '') || (profile.twitter && profile.twitter !== '') || (profile.instagram && profile.instagram !== '')">
+            <md-icon v-if="profile.linkedIn && profile.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
+            <span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span>
+            <md-icon v-if="profile.github && profile.github !== ''"><i class="fab fa-github" style="color: #000; cursor: pointer" @click="github"></i></md-icon>
+            <span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span>
+            <md-icon v-if="profile.facebook && profile.facebook !== ''"><i class="fab fa-facebook" style="color:#3b5998; cursor: pointer" @click="facebook"></i></md-icon>
+            <span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span>
+            <md-icon v-if="profile.twitter && profile.twitter !== ''"><i class="fab fa-twitter" style="color:#00acee; cursor: pointer" @click="twitter"></i></md-icon>
+            <span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span>
+            <md-icon v-if="profile.instagram && profile.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
+          </p>
           
           <!-- <el-carousel trigger="click" :interval="5000">
             <el-carousel-item>
@@ -134,6 +146,24 @@ export default {
     editProfile() {
       this.loading = true;
       this.$router.push({ name: 'edit-student-profile', params: {id: this.$route.params.id} });
+    },
+    portfolio() {
+      window.open(this.profile.portfolio, '_blank');
+    },
+    linkedin() {
+      window.open(this.profile.linkedIn, '_blank');
+    },
+    github() {
+      window.open(this.profile.github, '_blank');
+    },
+    facebook() {
+      window.open(this.profile.facebook, '_blank');
+    },
+    twitter() {
+      window.open(this.profile.twitter, '_blank');
+    },
+    instagram() {
+      window.open(this.profile.instagram, '_blank');
     }
   },
   created() {

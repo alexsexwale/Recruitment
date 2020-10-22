@@ -1,11 +1,10 @@
 <template>
   <div class="full-page" :class="{ 'nav-open': $sidebar.showSidebar }">
     <md-toolbar md-elevation="0" class="md-transparent md-toolbar-absolute">
-    <!-- <div class="background"></div>
-    <div class="lds-circle"><div><img src="@/assets/img/logo.png"></div></div> -->
       <div class="md-toolbar-row md-offset">
         <div class="md-toolbar-section-start">
-          <h3 class="md-title">{{ $route.name }}</h3>
+          <!-- <h3 class="md-title">{{ $route.name }}</h3> -->
+          <img src="@/assets/img/Jobox-Logo.png" height="125px" width="125px">
         </div>
         <div class="md-toolbar-section-end">
           <md-button class="md-just-icon md-simple md-round md-toolbar-toggle" :class="{ toggled: $sidebar.showSidebar }" @click="toggleSidebar">
@@ -16,18 +15,16 @@
 
           <div class="md-collapse" :class="{ 'off-canvas-sidebar': responsive }">
             <md-list>
-              <!-- <md-list-item @click="linkClick">
-                <router-link :to="{ path: '/partner' }"><md-icon>person_add</md-icon> Become a partner</router-link>
-              </md-list-item> -->
-              <!-- <md-list-item @click="linkClick">
-                <router-link :to="{ path: '/contact' }"><md-icon>phone</md-icon> Contact</router-link>
-              </md-list-item> -->
-              <md-list-item @click="linkClick">
-                <router-link :to="{ path: '/login' }"><md-icon>fingerprint</md-icon> Login</router-link>
-              </md-list-item>
-              <md-list-item @click="linkClick"> 
-                <router-link :to="{ path: '/register' }"><md-icon>person_add</md-icon> Register</router-link>
-              </md-list-item>
+              <router-link :to="{ path: '/login' }">
+                <md-list-item @click="linkClick">
+                 <md-icon>fingerprint</md-icon> Login
+                </md-list-item>
+              </router-link>
+              <router-link :to="{ path: '/register' }">
+                <md-list-item @click="linkClick"> 
+                  <md-icon>person_add</md-icon> Register
+                </md-list-item>
+              </router-link>
             </md-list>
           </div>
         </div>

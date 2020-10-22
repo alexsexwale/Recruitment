@@ -58,7 +58,7 @@ export default {
                 })
                 .catch(errCMS => {
                     state.loading = false;
-                    state.header = "Oops!";
+                    state.header = "Whoa there! ✋";
                     state.body = "Please agree to the terms and conditions";
                     state.footer = "Got it";
                     state.modal = true;
@@ -72,7 +72,7 @@ export default {
                         // Send error to tech support
                        api.notification(args).then(() => {
                             state.loading = false;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                         }).catch(errAPI => {
@@ -99,7 +99,7 @@ export default {
                         // Send error to tech support
                        api.notification(args).then(() => {
                             state.loading = false;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                         }).catch(errAPI => {
@@ -129,7 +129,7 @@ export default {
                     if(doc.exists) {
                         state.loading = false;
                         state.modal = true;
-                        state.header = "Oops!";
+                        state.header = "hmmm 🤔";
                         state.body = "Well this is awkward... Try register again";
                         state.footer = "Got it";
                         state.error = true;
@@ -140,7 +140,7 @@ export default {
                             db.collection("users").doc(state.slug).set({
                                 userId: cred.user.uid,
                                 created: moment(Date.now()).format('L'),
-                                lastModified: null,
+                                lastModified: moment(Date.now()).format('L'),
                                 name: payload.firstName,
                                 surname: payload.lastName,
                                 phone: payload.phoneNumber,
@@ -155,7 +155,7 @@ export default {
                             .catch(err => {
                                 state.loading = false;
                                 state.modal = true;
-                                state.header = "Oops!";
+                                state.header = "Whoa there! ✋";
                                 state.body = err.message;
                                 state.footer = "Got it";
                                 state.error = true;
@@ -167,13 +167,13 @@ export default {
                                 state.loading = false;
                                 state.modal = true;
                                 state.header = "Verify Email!";
-                                state.body = "You have been successfully registered.\n\nCheck your inbox and verify your email";
+                                state.body = "Awesome, you have been successfully registered! Please check your inbox and verify your email";
                                 state.footer = "Got it";
                                 state.success = true;
                             }).catch(err => {
                                 state.loading = false;
                                 state.modal = true;
-                                state.header = "Oops!";
+                                state.header = "Whoa there! ✋";
                                 state.body = err.message;
                                 state.footer = "Got it";
                                 state.error = true;
@@ -182,7 +182,7 @@ export default {
                         .catch(err => {
                             state.loading = false;
                             state.modal = true;
-                            state.header = "Oops!";
+                            state.header = "Whoa there! ✋";
                             state.body = err.message;
                             state.footer = "Got it";
                             state.error = true;
@@ -193,8 +193,8 @@ export default {
             else {
                 state.loading = false;
                 state.modal = true;
-                state.header = "Oops!";
-                state.body = "Please select whether you are a student or a client.";
+                state.header = "Whoa there! ✋";
+                state.body = "Please select whether you are a student or a client";
                 state.footer = "Got it";
                 state.error = true;
             }
@@ -206,6 +206,7 @@ export default {
             else
                 router.push({ name: "create-client-account" });
             state.role = null;
+            state.modal = false;
             state.loading = false;
         },
         termsAndCondition: () => {

@@ -239,93 +239,110 @@ export default {
           if(doc.exists) {
             if(this.dateOfBirth) {
               students.update({
-                dateOfBirth: moment(this.dob).format('L')
+                dateOfBirth: moment(this.dob).format('L'),
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.gender) {
               students.update({
-                gender: this.gender
+                gender: this.gender,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.race) {
               students.update({
-                race: this.race
+                race: this.race,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.bio) {
               students.update({
-                bio: this.bio
+                bio: this.bio,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.institution) {
               students.update({
-                institution: this.institution
+                institution: this.institution,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.campus) {
               students.update({
-                campus: this.campus
+                campus: this.campus,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.studentNo) {
               students.update({
-                studentNo: this.studentNo
+                studentNo: this.studentNo,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.faculty) {
               students.update({
-                faculty: this.faculty
+                faculty: this.faculty,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.degree) {
               students.update({
-                degree: this.degree
+                degree: this.degree,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.year) {
               students.update({
-                year: this.year
+                year: this.year,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.graduateStatus) {
               students.update({
-                graduateStatus: this.graduateStatus
+                graduateStatus: this.graduateStatus,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.accountName) {
               students.update({
-                accountName: this.accountName
+                accountName: this.accountName,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.accountNumber) {
               students.update({
-                accountNumber: this.accountNumber
+                accountNumber: this.accountNumber.toString(),
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.accountType) {
               students.update({
-                accountType: this.accountType
+                accountType: this.accountType,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.bankName) {
               students.update({
-                bankName: this.bankName
+                bankName: this.bankName,
+                lastModified: moment(Date.now()).format('L')
               });
             }
             if(this.branchCode) {
               students.update({
-                branchCode: this.branchCode
+                branchCode: this.branchCode.toString(),
+                lastModified: moment(Date.now()).format('L')
               });
             }
             students.update({
-              accountCreated: true
+              accountCreated: true,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           else {
             students.set({
               userId: this.user.uid,
               created: moment(Date.now()).format('L'),
-              lastModified: null,
+              lastModified: moment(Date.now()).format('L'),
               dateOfBirth: moment(this.dob).format('L'),
               gender: this.gender,
               race: this.race,
@@ -339,14 +356,35 @@ export default {
               year: this.year,
               graduateStatus: this.graduateStatus,
               accountName: this.accountName,
-              accountNumber: this.accountNumber,
+              accountNumber: this.accountNumber.toString(),
               accountType: this.accountType,
               bankName: this.bankName,
-              branchCode: this.branchCode,
-              accountCreated: true
+              branchCode: this.branchCode.toString(),
+              accountCreated: true,
+              portfolio: null,
+              linkedIn: null,
+              facebook: null,
+              twitter: null,
+              instagram: null
             });
           }
-          this.$router.push({ name: "student-profile", params: { id: this.alias } });
+          db.collection('vetted').doc(this.alias).set({
+            userId: this.user.uid,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format('L'),
+            blogWriter: false,
+            brandStrategy: false,
+            copywriter: false,
+            dataEntry: false,
+            graphicDesigner: false,
+            photographer: false,
+            promoter: false,
+            salesperson: false,
+            socialMediaManager: false,
+            translater: false,
+            webDeveloper: false
+          });
+          this.$router.push({ name: "apply" });
           this.loading = false;
         });
       } else {

@@ -214,7 +214,7 @@ export default {
     },
     debouncedUpdate: debounce(function() {
       this.updateAccount();
-    }, 1500),
+    }, 300),
     async updateAccount() {
       let ref = db.collection('users');
       let user = firebase.auth().currentUser;

@@ -4,7 +4,7 @@
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <hr><h2 class="centre"><b>Select a Student</b></h2>
   <hr v-if="approved">
-  <p class="centre" v-if="approved">Please be patient while waiting for applicant to respond {{paid}}</p>
+  <p class="centre" v-if="approved">You have chosen a student, please be patient while we wait for them to respond</p>
   <hr v-if="approved">
   <br v-if="approved">
   <div class="md-layout" v-if="approved">
@@ -19,25 +19,25 @@
           <p class="card-description">
             {{ applicant.bio }}
           </p>
-          <md-button @click="cancelModal=true;" class="md-danger md-round">Decline</md-button>
+          <md-button @click="cancelModal=true;" class="md-danger md-round">Withdraw Selection</md-button>
         </md-card-content>
       </md-card>
       <!-- Modal: Cancel -->
       <modal v-if="cancelModal" @close="cancelModalHide">
         <template slot="header">
-          <h4 class="modal-title black">Cancel Student</h4>
+          <h4 class="modal-title black">Whoa there! 🤚</h4>
           <md-button class="md-simple md-just-icon md-round modal-default-button" @click="cancelModalHide">
             <md-icon>clear</md-icon>
           </md-button>
         </template>
 
         <template slot="body">
-          <p class="black">The student selection is about to undone. Would you like to continue?</p>
+          <p class="black">You are about to withdraw the selection of the student. Are you sure you want to continue with this?</p>
         </template>
 
         <template slot="footer">
           <div style="text-align:center;">
-            <md-button class="md-button md-danger" @click="cancelModalHide">Cancel</md-button>
+            <md-button class="md-button md-danger" @click="cancelModalHide">No</md-button>
               &nbsp;&nbsp;&nbsp;
             <md-button class="md-button md-success" @click="cancel(applicant.id)">Yes</md-button>
           </div>
@@ -50,6 +50,30 @@
   <hr v-if="available || !approved">
   <br>
   <div class="md-layout" v-if="available">
+    <!-- <md-table v-model="applicants" table-header-color="green">
+      <md-table-row slot="md-table-row" slot-scope="{ item }">
+        <md-table-cell md-label="Name">{{ item.applicant }}</md-table-cell>
+        <md-table-cell md-label="Degree">{{ item.degree }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+    <modal v-if="noSelectModal" @close="noSelectModalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Cannot select {{ applicant.applicant }}</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noSelectModalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+
+      <template slot="body">
+        <p class="black">You have already selected a student. You will have to cancel the student you have approved in order to select {{ applicant.applicant }}</p>
+      </template>
+
+      <template slot="footer">
+        <div class="centre">
+          <md-button class="md-button md-success" @click="noSelectModalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal> -->
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="(applicant, index) in applicants" :key="index">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
@@ -75,7 +99,7 @@
         </template>
 
         <template slot="body">
-          <p class="black">You have already selected a student. You will have to cancel the student you have approved in order to select {{ applicant.applicant }}</p>
+          <p class="black">You have already selected a student. You will have to decline the student you have approved in order to select {{ applicant.applicant }}</p>
         </template>
 
         <template slot="footer">
@@ -134,7 +158,10 @@ export default {
       paid: false,
       index: null,
       loading: true,
-      feedback: "Be patient, students will start applying soon"
+      feedback: "Please be patient, students will start applying soon",
+      //paginated table
+      
+
     };
   },
   props: {
@@ -163,24 +190,18 @@ export default {
       this.reload();
     }, 1500),
     select(id) {
-      if(this.paid) {
-        if(this.approved) {
-          this.noSelectModal = true;
-        }
-        else {
-          this.loading = true
-          this.selected = true;
-          let applicants = db.collection('applications').doc(id);
-          applicants.update({
-            approved: true
-          });
-          this.debouncedReload();
-        }
+      if(this.approved) {
+        this.noSelectModal = true;
       }
       else {
-        this.noPaymentModal = true;
+        this.loading = true
+        this.selected = true;
+        let applicants = db.collection('applications').doc(id);
+        applicants.update({
+          approved: true
+        });
+        this.debouncedReload();
       }
-      
     },
     cancel(id) { //decline
       this.loading = true;
@@ -227,20 +248,6 @@ export default {
             this.approved = false;
             this.feedback = "Cancelling " + applicant.applicant;
           }
-        }
-      });
-    });
-    let payment = db.collection('payments');
-    payment.where('jobId', '==', this.$route.params.id).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.paid = doc.data().inboundPayment;
-      });
-    });
-    payment.onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if(change.type == 'modified') {
-          this.paid = change.doc.data().inboundPayment;
         }
       });
     });

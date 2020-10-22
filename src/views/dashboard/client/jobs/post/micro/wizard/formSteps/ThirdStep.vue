@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5 class="info-text">Let us know what your budget is</h5>
+    <h5 class="info-text">Let us know what your budget is. Minimum amount is R400.00</h5>
     <div class="md-layout">
       <div class="md-layout-item mt-4 md-size-100">
         <md-field
@@ -20,6 +20,7 @@
           </slide-y-down-transition>
         </md-field>
       </div>
+      <p>Jobox service fee at 13.5%<br>Payment facilitation fee at R10.00 <br>Total: R{{ total() }} </p>
     </div>
   </div>
 </template>
@@ -41,7 +42,7 @@ export default {
       modelValidations: {
         budget: {
           required: true,
-          min: 2
+          min_value: 400
         }
       }
     };
@@ -62,6 +63,10 @@ export default {
     },
     addBudget: function() {
       this.$emit("budget", this.budget);
+    },
+    total() {
+      let total = ((this.budget * 1.135).toFixed(2)) + 10;
+      return total;
     }
   },
   watch: {

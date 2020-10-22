@@ -1,10 +1,10 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let's start with the basic information (with validation)
+      Let's start with the basic information
     </h5>
     <div class="md-layout">
-      <!-- <div class="md-layout-item md-size-40 md-small-size-100">
+      <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
             <div v-if="!image">
@@ -13,11 +13,12 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="onFileChange" />
+            <input type="file" @change="onFileChange" disabled title="Currently disabled" />
           </div>
-          <h6 class="description">Profile Picture</h6>
+          <!-- <h6 class="description">Profile Picture</h6> -->
+          <h6 class="description">Currently disabled</h6>
         </div>
-      </div> -->
+      </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-field
           :class="[
@@ -169,8 +170,8 @@
             { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
             { 'md-error': errors.has('aboutMe') }
           ]">
-          <label v-if="companyName == null || companyName == ''">About Me</label>
-          <label v-else>About Us</label>
+          <!-- <label v-if="companyName == null || companyName == ''">About Me</label> -->
+          <label>About Us</label>
           <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('aboutMe')">close</md-icon>

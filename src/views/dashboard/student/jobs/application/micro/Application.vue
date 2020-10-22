@@ -8,18 +8,27 @@
         <md-button class="md-success" @click="apply">Apply for job</md-button>
         <md-card>
           <md-card-content>
-            <collapse :collapse="['Description', 'Details', 'Payment']" icon="keyboard_arrow_down" color-collapse="success">
+            <collapse :collapse="['Job Description', 'Job Information', 'Budget']" icon="keyboard_arrow_down" color-collapse="success">
               <template slot="md-collapse-pane-1">
                 <md-card class="bg-success">
                   <md-card-content>
                     <h3 class="card-category card-category-social" style="text-align:center;">
-                      <i class="far fa-newspaper" /> Description
+                      <i class="far fa-newspaper" /> Job Description
                     </h3>
-                    <h4 class="card-title">Name</h4>
+                    <h4 class="card-title">Job Name</h4>
                     <p class="card-description">{{ job.name }}</p>
+
+                    <h4 class="card-title">Company Name</h4>
+                    <p class="card-description">{{ job.companyName }}</p>
+
+                    <h4 class="card-title">Client Name</h4>
+                    <p class="card-description">{{ job.clientName }}</p>
 
                     <h4 class="card-title">Description</h4>
                     <p class="card-description">{{ job.description }}</p>
+
+                    <h4 class="card-title">Job Category</h4>
+                    <p class="card-description">{{ skills.category }}</p>
 
                     <h4 class="card-title">Skills Required</h4>
                     <ul>
@@ -32,12 +41,12 @@
                 <md-card class="bg-success">
                   <md-card-content>
                     <h3 class="card-category card-category-social centre">
-                      <i class="far fa-newspaper" /> Details
+                      <i class="far fa-newspaper" /> Job Information
                     </h3>
-                    <h4 class="card-title">Location</h4>
+                    <h4 class="card-title">Job Location</h4>
                     <p class="card-description">{{ job.location }}</p>
 
-                    <h4 class="card-title">Anticipated Duration</h4>
+                    <h4 class="card-title">Estimated Duration</h4>
                     <p class="card-description">{{ job.duration }}</p>
                   </md-card-content>
                 </md-card>
@@ -46,7 +55,7 @@
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social centre">
-                    <i class="far fa-newspaper" /> Payment
+                    <i class="far fa-newspaper" /> Budget
                   </h3>
                   <h4 class="card-title">Budget</h4>
                   <p class="card-description">R{{ job.budget }}</p>
@@ -64,19 +73,23 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
-        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
-          <md-icon>clear</md-icon>
-        </md-button>
+        <h4 class="modal-title black">{{ header }}</h4>
       </template>
 
       <template slot="body">
-        <p class="black">This job is currently unavailable</p>
+        <p class="black">{{ feedback }}</p>
       </template>
 
       <template slot="footer">
         <div class="centre">
-          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+          <!-- Sent Test -->
+          <router-link :to="{ name: 'apply' }"> 
+              <md-button v-if="sentTest" class="md-button md-success">Got it</md-button>
+          </router-link>
+          <!-- Send Test -->
+          <md-button v-if="!sentTest" class="md-button md-danger" @click="modalHide">No</md-button>
+          &nbsp;&nbsp;
+          <md-button v-if="!sentTest" class="md-button md-success" @click="test">Yes</md-button>
         </div>
       </template>
     </modal>
@@ -99,7 +112,10 @@ export default {
       job: {},
       skills: {},
       student: {},
+      vetted: {},
+      sentTest: false,
       feedback: null,
+      header: null,
       user: null,
       auth: null,
       slug: null,
@@ -127,25 +143,45 @@ export default {
             this.$router.push({ name: 'student-micro-status', params: {id: this.$route.params.id} });
           }
           else {
-            application.set({
-              jobId: this.job.id,
-              jobType: 'micro',
-              studentId: this.auth.uid,
-              appliedDate: moment(Date.now()).format('L'),
-              applicant: this.auth.displayName,
-              degree: this.student.degree,
-              bio: this.student.bio, 
-              alias: this.user.alias,
-              email: this.user.email,
-              approved: false,
-              status: 'applied'
-            });
-            this.$router.push({ name: 'student-micro-status', params: {id: this.job.id} });
+            if(
+              // Vetted as a salesperson
+              this.vetted.sales && this.skills.category === "Salesperson" ||
+              // Vetted as a Social Media Manager
+              this.vetted.socialMediaManager && this.skills.category === "Social Media Manager" ||
+              // Vetted as a Blog Writer
+              this.vetted.blogWriter && this.skills.category === "Blog Writer" ||
+              // Vetted as a Graphic Designer
+              this.vetted.graphicDesigner && this.skills.category === "Graphic Designer") {
+              application.set({
+                jobId: this.job.id,
+                jobType: 'micro',
+                studentId: this.auth.uid,
+                created: moment(Date.now()).format('L'),
+                lastModified: moment(Date.now()).format('L'), 
+                applicant: this.auth.displayName,
+                degree: this.student.degree,
+                bio: this.student.bio, 
+                alias: this.user.alias,
+                email: this.user.email,
+                approved: false,
+                status: 'applied'
+              });
+              this.$router.push({ name: 'student-micro-status', params: {id: this.job.id} });
+            }
+            else {
+              this.modal = true;
+              this.loading = false;
+              this.modal = true;
+              this.header = "Whoa there! ⛔️";
+              this.feedback = "You are not vetted to work as a " + this.skills.category + ". \n\nWould you like to take the test so that you can be a vetted " + this.skills.category + "?";
+            }
           }
         });
       }
       else {
         this.modal = true;
+        this.feedback = "This job is currently unavailable";
+        this.header = "Oops!";
         let error = db.collection('errors');
         error.add({
           jobId: this.job.id,
@@ -158,6 +194,19 @@ export default {
     },
     back() {
       this.$router.go(-1);
+    },
+    test() {
+      this.header = this.skills.category + " test sent!";
+      this.feedback = "The " + this.skills.category +  " test is open on a new tab. Once you have completed the test, Jobox will get in touch with you.";
+      this.sentTest = true;
+      if(this.skills.category === "Salesperson")
+        window.open("https://bit.ly/30YUz9Y", '_blank');
+      else if(this.skills.category === "Social Media Manager")
+        window.open("https://bit.ly/2EsolfT", '_blank');
+      else if(this.skills.category === "Blog Writer")
+        window.open("https://bit.ly/2EtmM1h", '_blank');
+      else if(this.skills.category === "Graphic Designer")
+        window.open("https://bit.ly/2CLzUOR", '_blank');
     }
   },
   created() {
@@ -184,16 +233,20 @@ export default {
               if(doc.exists && doc.data().jobId == this.$route.params.id) {
                 this.$router.push({ name: 'student-micro-status', params: {id: this.$route.params.id} });
               }
+              else {
+                this.loading = false;
+              }
             });
           });
-          let students = db.collection('students').doc(this.user.alias);
-          students.get().then(doc => {
+          db.collection('students').doc(this.user.alias).get().then(doc => {
             this.student = doc.data();
+            db.collection('vetted').doc(this.user.alias).get().then(doc => {
+              this.vetted = doc.data();
+            });
           });
         });
       });
     });
-    this.loading = false;
   }
 };
 </script>

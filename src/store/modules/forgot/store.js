@@ -2,6 +2,7 @@ import db from '@/firebase/init';
 import firebase from "firebase/app";
 import router from "@/routes/routes";
 import api from "@/store/api/api";
+import moment from "moment";
 
 export default {
     state: {
@@ -58,12 +59,13 @@ export default {
                                 message: state.messageSuccessModal + state.solutionSuccessModal
                             }
                             // Send error to tech support
-                           api.notification(args).then(() => {
+                            api.notification(args).then(() => {
                                 state.loading = false;
                                 state.header = "Oops!";
                                 state.body = err.message;
                                 state.footer = "Got it";
                             }).catch(errAPI => {
+                                state.loading = false;
                                 db.collection(args.type).add({
                                     jobId: null,
                                     created: moment(Date.now()).format('L'),

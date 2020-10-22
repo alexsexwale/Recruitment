@@ -206,7 +206,7 @@ export default {
             jobId: this.slug,
             clientId: this.user.uid,
             created: moment(Date.now()).format('L'),
-            lastModified: null,
+            lastModified: moment(Date.now()).format("L"),
             name: this.name,
             jobType: "micro",
           });
@@ -229,10 +229,9 @@ export default {
             complete: false,
             clientRatingComplete: false,
             studentRatingComplete: false,
-            paid: false,
             cancelled: false,
             created: moment(Date.now()).format('L'),
-            lastModified: null,
+            lastModified: moment(Date.now()).format("L"),
           });
 
           db.collection('skills').doc(this.slug).set({
@@ -240,25 +239,31 @@ export default {
             category: this.category,
             skills: this.skills,
             created: moment(Date.now()).format('L'),
-            lastModified: null
+            lastModified: moment(Date.now()).format("L"),
           });
 
           db.collection('payments').doc(this.slug).set({
             jobId: this.slug,
-            amount: (this.budget * 1.1).toFixed(2),
+            amount: (this.budget * 1).toFixed(2),
             created: moment(Date.now()).format("L"),
+            paymentDate: null,
+            paymentMethod: null,
+            requestTrace: null,
+            reference: null,
             inboundPayment: false,
             outboundPayment: false,
             studentFileToken: null,
             clientFileToken: null,
-            lastModified: null,
-            studentAlias: null
+            lastModified: moment(Date.now()).format("L"),
+            studentAlias: null,
+            serviceFee: 0.135,
+            facilitationCost: "10.00",
+            totalCostPaid: null
           });
-
         });
       })
       .then(() => {
-        this.$router.push({ name: "pending-jobs" });
+        this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
       })
       .catch(err => {
         this.feedback = err.message;

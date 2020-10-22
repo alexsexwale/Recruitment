@@ -23,13 +23,17 @@ import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatis
 // Client Job
 import PendingJob from "@/views/dashboard/client/jobs/pending/PendingJob.vue";
 import ActiveJob from "@/views/dashboard/client/jobs/active/ActiveJob.vue";
-import ClientCompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
-import ClientIncompleteJob from "@/views/dashboard/client/jobs/incomplete/IncompleteJob";
+import CompleteJob from "@/views/dashboard/client/jobs/complete/CompleteJob.vue";
+import IncompleteJob from "@/views/dashboard/client/jobs/incomplete/IncompleteJob";
 
 // Job Statuses
 import MicroStatus from "@/views/dashboard/client/jobs/status/micro/Status.vue";
 
 import StudentProfile from "@/views/dashboard/student/profile/Profile.vue";
+
+import PaymentSuccess from "@/views/dashboard/client/jobs/payment/success/Success.vue";
+
+import PaymentFail from "@/views/dashboard/client/jobs/payment/fail/Fail.vue";
 
 export default {
     path: "/client",
@@ -45,6 +49,26 @@ export default {
           requiresAuth: true,
           userRole: "client",
           emailVerified: true
+        }
+      },
+      {
+        path: "payment/success/:id",
+        name: "payment-success",
+        components: { default: PaymentSuccess},
+        meta: {
+          requiresAuth: true,
+          userRole: "client",
+          emailVerified: true,
+        }
+      },
+      {
+        path: "payment/fail/:id",
+        name: "payment-failed",
+        components: { default: PaymentFail},
+        meta: {
+          requiresAuth: true,
+          userRole: "client",
+          emailVerified: true,
         }
       },
       {
@@ -91,7 +115,7 @@ export default {
       {
         path: "jobs/complete",
         name: "complete-jobs",
-        components: { default: ClientCompleteJob },
+        components: { default: CompleteJob },
         meta: {
           requiresAuth: true,
           userRole: "client",
@@ -100,8 +124,18 @@ export default {
       },
       {
         path: "jobs/incomplete",
-        name: "complete-jobs",
-        components: { default: ClientIncompleteJob },
+        name: "incomplete-jobs",
+        components: { default: IncompleteJob },
+        meta: {
+          requiresAuth: true,
+          userRole: "client",
+          emailVerified: true
+        }
+      },
+      {
+        path: "jobs/dissatisfied",
+        name: "dissatisfied-jobs",
+        component: DissatisfiedJob,
         meta: {
           requiresAuth: true,
           userRole: "client",
@@ -179,46 +213,6 @@ export default {
           userRole: "client",
           emailVerified: true
         }
-      },
-      {
-        path: "dissatisfied/:id",
-        name: "client-dissatisfied",
-        component: DissatisfiedJob,
-        meta: {
-          requiresAuth: true,
-          userRole: "client",
-          emailVerified: true
-        }
-      },
-    //   {
-    //     path: "/faq",
-    //     name: "Faq",
-    //     component: Faq,
-    //     meta: {
-    //       requiresAuth: true,
-    //       userRole: "client",
-    //       emailVerified: true
-    //     }
-    //   },
-    //   {
-    //     path: "/privacy-policy",
-    //     name: "privacy-policy",
-    //     component: PrivacyPolicy,
-    //     meta: {
-    //       requiresAuth: true,
-    //       userRole: "client",
-    //       emailVerified: true
-    //     }
-    //   },
-    //   {
-    //     path: "/terms-and-conditions",
-    //     name: "terms-and-conditions",
-    //     component: TermsAndConditions,
-    //     meta: {
-    //       requiresAuth: true,
-    //       userRole: "client",
-    //       emailVerified: true
-    //     }
-    //   }
+      }
     ]
   };

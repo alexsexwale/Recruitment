@@ -1,7 +1,7 @@
 <template>
 <div>
   <div v-if="loading" class="background"></div>
-    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
+  <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="activeJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
@@ -12,10 +12,10 @@
           <md-tooltip md-direction="bottom">View</md-tooltip>
         </template>
         <h4 slot="title" class="title">
-          {{ job.clientName }}
+          {{ job.name }}
         </h4>
         <div slot="description" class="card-description">
-          {{ job.name }}
+          {{ job.category }}
         </div>
         <template slot="footer">
           <div class="price">
@@ -70,11 +70,37 @@ export default {
         this.activeJobs = true;
         let job = doc.data();
         job.id = doc.id;
-        this.jobs.push(job);
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job);
+        });
       });
-      this.loading = false;
     });
-    
+    jobs.where('studentId', '==', user.uid).where('status', '==', 'complete').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.activeJobs = true;
+        let job = doc.data();
+        job.id = doc.id;
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job);
+        });
+      });
+    });
+    jobs.where('studentId', '==', user.uid).where('status', '==', 'rate').get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.activeJobs = true;
+        let job = doc.data();
+        job.id = doc.id;
+        db.collection('skills').doc(doc.id).get().then(doc => {
+          job.category = doc.data().category;
+          this.jobs.push(job);
+        });
+      });
+    });
+    this.loading = false;
   }
 };
 </script>

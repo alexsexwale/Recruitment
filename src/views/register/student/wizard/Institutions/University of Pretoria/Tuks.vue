@@ -945,6 +945,7 @@ import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import debounce from "debounce";
+import moment from "moment";
 export default {
   name: 'tuks',
   components: {
@@ -1050,32 +1051,38 @@ export default {
         if(doc.exists) {
           if(this.faculty) {
             this.student.update({
-              faculty: this.faculty
+              faculty: this.faculty,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.graduateStatus) {
             this.student.update({
-              graduateStatus: this.graduateStatus
+              graduateStatus: this.graduateStatus,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.year) {
             this.student.update({
-              year: this.year
+              year: this.year,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.degree) {
             this.student.update({
-              degree: this.degree
+              degree: this.degree,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.campus) {
             this.student.update({
-              campus: this.campus
+              campus: this.campus,
+              lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.studentNo) {
             this.student.update({
-              studentNo: this.studentNo
+              studentNo: this.studentNo,
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }

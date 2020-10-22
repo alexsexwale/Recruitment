@@ -28,7 +28,7 @@
             This information will let us know more about you.
           </h5>
           <div v-else>
-            <p slot="inputs" style="color:red;">Check your inbox to verify that <b>{{email}}</b> is your email address</p>
+            <p slot="inputs" style="color:red;">Please check your inbox to verify that <b>{{email}}</b> is the email address that you are currently using</p>
             <md-button @click="verification" class="btn-next md-success">
               Resend verification
             </md-button>
@@ -84,7 +84,7 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
+        <h4 class="modal-title black">Check your inbox!</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>

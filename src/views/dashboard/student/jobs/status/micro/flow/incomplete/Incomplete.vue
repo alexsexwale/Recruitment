@@ -3,7 +3,7 @@
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <hr><h2 class="centre">Incomplete Job</h2>
-    <hr><p class="centre">Jobox is undergoing investigation as to why the job is incomplete.</p>
+    <hr><p class="centre">Jobox is currently investigating as to why the job is incomplete.</p>
     <p class="centre">Please note that you will be contacted by the Jobox team.</p><hr>
     <h6 class="centre">Client Information</h6>
     <div class="md-layout">
@@ -18,6 +18,8 @@
             <p class="card-description">{{ client.description }}</p>
           </md-card-content>
         </md-card>
+        <p style="text-align: center;">Call Jobox at: <b>087 149 4394</b></p>
+        <p style="text-align: center;">Email Hobox at: <b><a style="color:blue" href="mailto:contact@jobox.co.za">contact@jobox.co.za</a></b></p>
       </div>
     </div>
   </div>

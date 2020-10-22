@@ -2,7 +2,7 @@
   <div class="content">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <hr><h2 class="centre">Confirm Completion</h2><hr>
+    <hr><h2 class="centre">Please Confirm That the Job Was Completed To Your Satisfaction</h2><hr>
     <h6 class="centre">Student Information</h6>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
@@ -19,32 +19,49 @@
       </div>
     </div>
     <div class="centre">
-      <md-button @click="dissatisfied" class="md-danger">
+      <p>Are you satisfied with the student's completion of the job?</p>
+      <md-button @click="dissatisfied(client)" class="md-danger">
         I am not satisfied
       </md-button>
         &nbsp;&nbsp;&nbsp;
-      <md-button @click="confirmComplete" class="md-success">
-        Confirm completion
+      <md-button @click="complete({id: client.id, paid: paid})" class="md-success">
+        I am satisfied
       </md-button>
     </div>
     <!-- Modal: Cancel -->
     <modal v-if="cancelModal" @close="cancelModalHide">
       <template slot="header">
-        <h4 class="modal-title black">Cancel Job </h4>
+        <h4 class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="cancelModalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Canceling the job would mean that big big problems. I have not thought of the logic yet</p>
+        <p class="black">Are you sure that you want to report that you are dissatisfied with the student’s completion of the job?</p>
       </template>
 
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-danger" @click="cancelModalHide">Cancel</md-button>
+          <md-button class="md-button md-danger" @click="cancelModalHide">No</md-button>
             &nbsp;&nbsp;&nbsp;
-          <md-button class="md-button md-success" @click="cancel()">Yes</md-button>
+          <md-button class="md-button md-success" @click="dissatisfied(client)">Yes</md-button>
+        </div>
+      </template>
+    </modal>
+    <!-- Modal: No Payment  -->
+    <modal v-if="modal" @close="noPaymentModalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Whoa there! ✋</h4>
+      </template>
+
+      <template slot="body">
+        <p class="black">Please make sure that the payment has been made before you confirm the completion of the job</p>
+      </template>
+
+      <template slot="footer">
+        <div class="centre">
+          <md-button class="md-button md-success" @click="noPaymentModalHide">Got it</md-button>
         </div>
       </template>
     </modal>
@@ -54,7 +71,7 @@
 import db from '@/firebase/init';
 import moment from "moment";
 import { Modal } from "@/components";
-import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     Modal
@@ -64,7 +81,7 @@ export default {
       cancelModal: false,
       client: {},
       applicant: {},
-      loading: true
+      paid: false,
     }
   },
   props: {
@@ -73,19 +90,16 @@ export default {
       default: "/img/dashboard/client/card-1.jpg"
     }
   },
+  computed: {
+    ...mapGetters({
+      loading: "loadingCC",
+      modal: "modalP"
+    })
+  },
   methods: {
+    ...mapActions(["complete", "dissatisfied", "noPaymentModalHide"]),
     cancelModalHide() {
       this.cancelModal = false;  
-    },
-    dissatisfied() {
-      this.loading = true;
-      let job = db.collection('micros').doc(this.client.id);
-      job.update({
-        complete: false,
-        satisfied: false,
-        lastModified: moment(Date.now()).format('L')  
-      });
-      this.$router.push({ name: 'client-dissatisfied', params: {id: job.id} });
     },
     cancel() {
       let job = db.collection('micros').doc(this.client.id);
@@ -94,13 +108,10 @@ export default {
         lastModified: moment(Date.now()).format('L')  
       });
       this.$router.push({ name: 'client-cancel', params: {id: job.id} });
-    },
-    confirmComplete() {
-      this.$store.dispatch("complete", this.client.id);
-    } 
+    }
   },
   created() {
-    db.collection('jobs').doc(this.$route.params.id).get().then(doc => {
+    db.collection('micros').doc(this.$route.params.id).get().then(doc => {
       this.client = doc.data();
       this.client.id = doc.id;
     });
@@ -112,8 +123,22 @@ export default {
         this.applicant = doc.data();
         this.applicant.id = doc.id;
       });
-    });  
-    this.loading = false;
+    });
+
+    let payment = db.collection('payments');
+    payment.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.paid = doc.data().inboundPayment;
+      });
+    });
+    payment.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.paid = change.doc.data().inboundPayment;
+        }
+      });
+    });
   }
 }
 </script>

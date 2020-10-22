@@ -14,6 +14,7 @@ import ElementUI from 'element-ui';
 import router from "./routes/routes";
 
 import firebase from "firebase/app";
+require('firebase/auth');
 
 Vue.config.productionTip = false;
 Vue.use(Carousel);

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let us where your workplace located?
+      What are your banking details?
     </h5>
     <div class="md-layout">
 
@@ -32,7 +32,7 @@
           ]">
           <md-icon><i class="fas fa-wallet"></i></md-icon>
           <label>Account Number</label>
-          <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="text" name="accountNumber" required v-validate="modelValidations.accountNumber">
+          <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="number" name="accountNumber" required v-validate="modelValidations.accountNumber">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('accountNumber')">close</md-icon>
@@ -51,8 +51,9 @@
           ]">
           <md-icon><i class="fas fa-piggy-bank"></i></md-icon>
           <label>Account Type</label>
-          <md-input @change="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
-          </md-input>
+          <md-select class="pad" @input="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
+            <md-option v-for="(accountType, index) in accountTypes" :key="index" :value="accountType">{{accountType}}</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('accountType')">close</md-icon>
           </slide-y-down-transition>
@@ -70,8 +71,9 @@
           ]">
           <md-icon><i class="fas fa-university"></i></md-icon>
           <label>Bank Name</label>
-          <md-input @change="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
-          </md-input>
+          <md-select class="pad" @input="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
+            <md-option v-for="(bankName, index) in bankNames" :key="index" :value="bankName">{{bankName}}</md-option>
+          </md-select>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('bankName')">close</md-icon>
           </slide-y-down-transition>
@@ -89,7 +91,7 @@
           ]">
           <md-icon><i class="fas fa-stamp"></i></md-icon>
           <label>Branch Code</label>
-          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="text" name="branchCode" required v-validate="modelValidations.branchCode">
+          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="number" name="branchCode" required v-validate="modelValidations.branchCode">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('branchCode')">close</md-icon>
@@ -105,18 +107,22 @@
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
   },
   data() {
     return {
+      studentId: null,
       accountName: null,
       accountNumber: null,
       accountType: null,
       bankName: null,
       branchCode: null,
+      accountTypes: [],
+      bankNames: [],
       touched: {
         accountName: false,
         accountNumber: false,
@@ -129,7 +135,9 @@ export default {
           required: true
         },
         accountNumber: {
-          required: true
+          required: true,
+          min: 4,
+          max: 11
         },
         accountType: {
           required: true
@@ -138,7 +146,9 @@ export default {
           required: true
         },
         branchCode: {
-          required: true
+          required: true,
+          min: 6,
+          max: 6
         }
       }
     };
@@ -170,20 +180,68 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      let student = db.collection('students').doc(this.studentId);
+      student.get().then(doc => {
+        if(doc.exists) {
+          if(this.accountName) {
+            student.update({
+              accountName: this.accountName
+            });
+          }
+          if(this.accountNumber) {
+            student.update({
+              accountNumber: this.accountNumber
+            });
+          }
+          if(this.accountType) {
+            student.update({
+              accountType: this.accountType
+            });
+          }
+          if(this.bankName) {
+            student.update({
+              bankName: this.bankName
+            });
+          }
+          if(this.branchCode) {
+            student.update({
+              branchCode: this.branchCode
+            });
+          }
+        }
+      });
+      this.$notify(
+      {
+        message: 'Your data has been automatically saved!',
+        icon: 'add_alert',
+        horizontalAlign: 'center',
+        verticalAlign: 'top',
+        type: 'success'
+      });
+    },
     addAccountName: function() {
       this.$emit("accountName", this.accountName);
+      this.debouncedUpdate();
     },
     addAccountNumber: function() {
       this.$emit("accountNumber", this.accountNumber);
+      this.debouncedUpdate();
     },
     addAccountType: function() {
       this.$emit("accountType", this.accountType);
+      this.debouncedUpdate();
     },
     addBankName: function() {
       this.$emit("bankName", this.bankName);
+      this.debouncedUpdate();
     },
     addBranchCode: function() {
       this.$emit("branchCode", this.branchCode);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -206,9 +264,15 @@ export default {
   created() {
     let user = firebase.auth().currentUser;
     let student = db.collection('students');
+    let settings = db.collection('Settings').doc('Drop-down Lists');
+    settings.get().then(doc => {
+      this.accountTypes = doc.data().AccountTypes;
+      this.bankNames = doc.data().Banks;
+    });
     student.where('userId', '==', user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.studentId = doc.id;
         this.accountName = doc.data().accountName;
         this.accountNumber = doc.data().accountNumber;
         this.accountType = doc.data().accountType;

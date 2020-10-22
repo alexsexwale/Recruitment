@@ -951,6 +951,7 @@ export default {
   },
   data() {
     return {
+      studentId: null,
       user: null,
       student: null,
       graduates: null,
@@ -1041,36 +1042,40 @@ export default {
     }
   },
   methods: {
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 300),
     updateAccount() {
-      this.student.get().then(doc => {
+      let student = db.collection('students').doc(this.studentId);
+      student.get().then(doc => {
         if(doc.exists) {
           if(this.faculty) {
-            this.student.update({
+            student.update({
               faculty: this.faculty
             });
           }
           if(this.graduateStatus) {
-            this.student.update({
+            student.update({
               graduateStatus: this.graduateStatus
             });
           }
           if(this.year) {
-            this.student.update({
+            student.update({
               year: this.year
             });
           }
           if(this.degree) {
-            this.student.update({
+            student.update({
               degree: this.degree
             });
           }
           if(this.campus) {
-            this.student.update({
+            student.update({
               campus: this.campus
             });
           }
           if(this.studentNo) {
-            this.student.update({
+            student.update({
               studentNo: this.studentNo
             });
           }
@@ -1090,24 +1095,30 @@ export default {
       // if(this.graduateStatus){this.graduateStatus = null;}
       // if(this.year){this.year = null;}
       // if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addGraduateStatus: function() {
       this.$emit("graduateStatus", this.graduateStatus);
       // if(this.year){this.year = null;}
       // if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addYear: function() {
       this.$emit("year", this.year);
       // if(this.degree){this.degree = null;}
+      this.debouncedUpdate();
     },
     addDegree: function() {
       this.$emit("degree", this.degree);
+      this.debouncedUpdate();
     },
     addCampus: function() {
       this.$emit("campus", this.campus);
+      this.debouncedUpdate();
     },
     addStudentNo: function() {
       this.$emit("studentNo", this.studentNo);
+      this.debouncedUpdate();
     },
     validate() {
       return this.$validator.validateAll().then(res => {
@@ -1204,6 +1215,7 @@ export default {
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.studentId = doc.id;
         this.student = db.collection('students').doc(doc.id);
         this.student.get().then(doc => {
           if(doc.exists) {

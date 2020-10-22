@@ -15,5 +15,8 @@ export default {
           userRole: "client"
         }
       }
-    ]
+    ],
+    scrollBehavior() {
+      return {x: 0, y: 0}
+    }
   }

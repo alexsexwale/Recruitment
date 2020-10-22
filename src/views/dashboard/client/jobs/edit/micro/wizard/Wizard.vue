@@ -223,7 +223,7 @@ export default {
       }
       if(this.deadline) {
         jobs.update({
-          deadline: this.deadline,
+          duration: this.deadline,
           lastModified: moment(Date.now()).format('L')
         });
         this.modal = true;
@@ -240,6 +240,15 @@ export default {
       if(this.category) {
         jobSkills.update({
           category: this.category,
+          lastModified: moment(Date.now()).format('L')
+        });
+        this.modal = true;
+      }
+      if(this.budget) {
+        jobs.update({
+          budget: (this.budget * 1).toFixed(2),
+          commission: (this.budget * 0.1).toFixed(2),
+          total: (this.budget * 1.1).toFixed(2),
           lastModified: moment(Date.now()).format('L')
         });
         this.modal = true;

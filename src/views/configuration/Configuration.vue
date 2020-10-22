@@ -7,7 +7,7 @@
         <login-card header-color="green">
           <h3 slot="title" class="title">Email Verified</h3>
           <h4 slot="inputs" class="black">{{ feedback }}</h4> 
-          <md-button slot="footer" class="md-button md-success" @click="proceed">Continue</md-button>
+          <md-button slot="footer" class="md-button md-success" @click="account">Continue</md-button>
         </login-card>
       </div>
     </div>
@@ -46,7 +46,7 @@
       <!-- Modal: Error handling -->
       <modal v-if="modal" @close="modalHide">
         <template slot="header">
-          <h4 class="modal-title black">Oops!</h4>
+          <h4 class="modal-title black">Whoa there! ✋</h4>
           <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
             <md-icon>clear</md-icon>
           </md-button>
@@ -102,6 +102,9 @@ export default {
   },
   data() {
     return {
+      clientAccount: false,
+      studentAccount: false,
+      user: null,
       password: null,
       mode: null,
       code: null,
@@ -146,12 +149,40 @@ export default {
       firebase.auth().applyActionCode(this.code)
       .then(() => {
         this.loading = false;
-        this.feedback = "Your email account has been Verified.";
+        var user = firebase.auth().currentUser;
+        if(user) {
+          this.feedback = "Your email account has been Verified.";
+        }
+        else {
+          this.feedback = "Your email account has been Verified. Login to continue creating your account.";
+        }
       })
       .catch(err => {
         this.loading = false;
         this.feedback = err.message;
       });
+    },
+    account() {
+      this.loading = true;
+      var user = firebase.auth().currentUser;
+      if(user) {
+        db.collection('users').where('userId', '==', user.uid).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            if(doc.data().user === "client") {
+              this.$router.push({ name: "create-client-account" });
+            }
+            else {
+              this.$router.push({ name: "create-student-account" });
+            }
+          });
+        });
+      }
+      else {
+        this.$router.push({ name: "Login" });
+      }
+      
+      this.loading = false;
     }
   },
   watch: {
