@@ -88,18 +88,37 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-    </div> 
+    </div>
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Age Restriction</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+      <template slot="body">
+        <p class="black">Unfortunately, you are too young to sign up to the platform.</p>
+      </template>
+      <template slot="footer">
+        <div class="centre">
+          <!-- Modal: Verify Email and continue creating account -->
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal> 
   </div>
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
 import debounce from "debounce";
 export default {
   components: {
-    SlideYDownTransition
+    SlideYDownTransition,
+    Modal
   },
   props: {
     avatar: {
@@ -110,6 +129,7 @@ export default {
   data() {
     return {
       image: "",
+      modal: false,
       user: null,
       student: null,
       dob: null,
@@ -141,6 +161,19 @@ export default {
     };
   },
   methods: {
+    calculateAge(birthday) {
+      var today = new Date();
+      var birthDate = new Date(birthday);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+      }
+      return age;
+    },
+    modalHide() {
+      this.modal = false;
+    },
     handlePreview(file) {
       this.model.imageUrl = URL.createObjectURL(file.raw);
     },
@@ -239,8 +272,15 @@ export default {
       });
     },
     addDob: function() {
-      this.$emit("dob", this.dob);
-      this.debouncedUpdate();
+      console.log(this.calculateAge(this.dob))
+      if(this.calculateAge(this.dob) > 17) {
+        this.$emit("dob", this.dob);
+        this.debouncedUpdate();
+      }
+      else {
+        this.dob = null;
+        this.modal = true;
+      }
     },
     addGender: function() {
       this.$emit("gender", this.gender);

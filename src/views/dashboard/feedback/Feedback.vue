@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="feedback" class="md-layout">
+  <form @submit.prevent="feedback({subject, message})" class="md-layout">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
@@ -10,7 +10,6 @@
           </div>
           <h4 class="title">Give Us Feedback</h4>
         </md-card-header>
-
         <md-card-content>
             <h4>Pop us a message</h4>
           <md-field>
@@ -24,7 +23,6 @@
             <md-textarea required v-model="message" type="text"></md-textarea>
           </md-field>
         </md-card-content>
-
         <md-card-actions md-alignment="left">
           <button class="md-button md-success md-theme-default">
             <div class="md-ripple">
@@ -36,41 +34,23 @@
         </md-card-actions>
       </md-card>
     </div>
-    <!-- Modal: Error handling -->
+    <!-- Modal -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Whoa there! ✋</h4>
+        <h4 v-if="success" class="modal-title black">Feedback Sent! 🎉</h4>
+        <h4 v-if="error" class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
-
       <template slot="body">
-        <p class="black">{{error}}</p>
+        <p v-if="success" class="black">We appreciate your feedback. Keep telling your friends about us</p>
+        <p v-if="error" class="black">Please let us know what you would like to discuss before you send us your feedback.</p>
       </template>
-
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
-        </div>
-      </template>
-    </modal>
-    <!-- Modal: Success -->
-    <modal v-if="successModal" @close="successModalHide">
-      <template slot="header">
-        <h4 class="modal-title black">Feedback Sent! 🎉</h4>
-        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template>
-
-      <template slot="body">
-        <p class="black">{{success}}</p>
-      </template>
-
-      <template slot="footer">
-        <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="successModalHide">Great!</md-button>
+          <md-button v-if="success" class="md-button md-success" @click="modalHide">Great!</md-button>
+          <md-button v-if="error" class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
     </modal>
@@ -78,65 +58,34 @@
 </template>
 <script>
 import db from "@/firebase/init";
-import firebase from "firebase/app";
-import moment from "moment";
 import { Modal } from "@/components";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: { Modal },
   data() {
     return {
-      subject: null,
-      message: null,
-      modal: false,
-      successModal: false,
-      success: "We appreciate your feedback. Keep telling your friends about us",
-      error: null,
       subjects:[],
-      loading: false
+      subject: "",
+      message: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      modal: 'modalFeedback',
+      loading: "loadingFeedback",
+      success: "successFeedback",
+      error: "errorFeedback"
+    })
+  },
   methods: {
-    modalHide() {
-      this.modal = false;
-    },
-    successModalHide() {
-      this.successModal = false;
-    },
-    feedback() {
-      this.loading = true;
-      if(this.subject && this.message) {
-        let user = firebase.auth().currentUser;
-        let feedback = db.collection('feedback');
-        feedback.add({
-          userId: user.uid,
-          created: moment(Date.now()).format('L'),
-          subject: this.subject,
-          message: this.message
-        });
-        this.subject = null;
-        this.message = null;
-        this.successModal = true;
-        this.loading = false;
-      } else {
-        this.modal = true;
-        this.error = "Please let us know what you would like to discuss before you send us your feedback";
-        this.loading = false;
-      }
-    }
+    ...mapActions(["feedback", "modalHide"])
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.subjects = doc.data().FeedbackSubjects;
     });
-    this.loading = false;
-  },
-  // computed: {
-  //   subjects() {
-  //     console.log(this.$store.getters.dropdown.FeedbackSubjects);
-  //     return this.$store.getters.dropdown.FeedbackSubjects;
-  //   }
-  // }
+  }
 };
 </script>
 <style lang="scss" scoped>

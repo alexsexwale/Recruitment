@@ -7,6 +7,8 @@ import Forgot from "./modules/forgot/store";
 import Register from "./modules/register/store";
 import ClientAccount from "./modules/register/client/store";
 import StudentAccount from "./modules/register/student/store";
+import Feedback from "./modules/feedback/store";
+import Support from "./modules/support/store";
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -17,6 +19,8 @@ export const store = new Vuex.Store({
         Forgot,
         Register,
         ClientAccount,
-        StudentAccount
+        StudentAccount,
+        Feedback,
+        Support
     }
 });

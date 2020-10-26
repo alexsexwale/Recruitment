@@ -12,26 +12,26 @@ export default {
         message: ""
     },
     getters: {
-        modalFeedback: state => state.modal,
-        loadingFeedback: state => state.loading, 
-        errorFeedback: state => state.error,
-        successFeedback: state => state.success
+        modalSupport: state => state.modal,
+        loadingSupport: state => state.loading, 
+        successSupport: state => state.success,
+        errorSupport: state => state.error
     },
     mutations: {
-        feedback: (state, payload) => {
+        support: (state, payload) => {
             state.loading = true;
             if(payload.subject && payload.message) {
                 var args = {
-                  type: "feedback",
-                  subject: "User Feedback - " + payload.subject, 
+                  type: "support",
+                  subject: "User Support - " + payload.subject, 
                   message: payload.message
                 }
-                // Send feedback
+                // Send support
                 api.notification(args).then(() => {
                   state.modal = true;
                   state.success = true;
                   state.loading = false;
-                  db.collection('feedback').add({
+                  db.collection('support').add({
                     userId: user.uid,
                     created: moment(Date.now()).format('L'),
                     subject: payload.subject,
@@ -54,8 +54,8 @@ export default {
         }
     },
     actions: {
-        feedback: (context, payload) => {
-            context.commit("feedback", payload);
+        support: (context, payload) => {
+            context.commit("support", payload);
         },
         modalHide: context => {
             context.commit("modalHide");

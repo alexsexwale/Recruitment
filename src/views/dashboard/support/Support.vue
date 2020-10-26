@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="support" class="md-layout">
+  <form @submit.prevent="support({subject, message})" class="md-layout">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <div class="md-layout-item md-small-size-100">
@@ -36,41 +36,22 @@
         </md-card-actions>
       </md-card>
     </div>
-    <!-- Modal: Error handling -->
+    <!-- Modal -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Whoa there! ✋</h4>
+        <h4 v-if="success" class="modal-title black">Support is on its way!</h4>
+        <h4 v-if="error" class="modal-title black">Whoa there! ✋</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
-
       <template slot="body">
-        <p class="black">{{error}}</p>
+        <p v-if="success" class="black">We will investigate the matter as soon as possible.</p>
+        <p v-if="error" class="black">Please let us know what your issue is.</p>
       </template>
-
       <template slot="footer">
         <div style="text-align:center;">
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
-        </div>
-      </template>
-    </modal>
-    <!-- Modal: Success -->
-    <modal v-if="successModal" @close="successModalHide">
-      <template slot="header">
-        <h4 class="modal-title black">Support is on its way!</h4>
-        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="successModalHide">
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template>
-
-      <template slot="body">
-        <p class="black">{{success}}</p>
-      </template>
-
-      <template slot="footer">
-        <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="successModalHide">Got it</md-button>
         </div>
       </template>
     </modal>
@@ -79,51 +60,27 @@
 <script>
 import db from "@/firebase/init";
 import firebase from "firebase/app";
-import moment from "moment";
 import { Modal } from "@/components";
+import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { Modal },
   data() {
     return {
-      subject: null,
-      message: null,
-      modal: false,
-      successModal: false,
-      success: "We will investigate the matter as soon as possible",
-      error: null,
       subjects:[],
-      loading: true
+      subject: "",
+      message: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      modal: 'modalSupport',
+      loading: "loadingSupport",
+      success: "successSupport",
+      error: "errorSupport"
+    })
+  },
   methods: {
-    modalHide() {
-      this.modal = false;
-    },
-    successModalHide() {
-      this.successModal = false;
-    },
-    support() {
-      this.loading = true;
-      if(this.subject && this.message) {
-        let user = firebase.auth().currentUser;
-        let support = db.collection('support');
-        support.add({
-          userId: user.uid,
-          created: moment(Date.now()).format('L'),
-          subject: this.subject,
-          message: this.message
-        });
-        this.subject = null;
-        this.message = null;
-        this.successModal = true;
-        this.loading = false;
-      }
-      else {
-        this.modal = true;
-        this.error = "Please let us know what your issue is";
-        this.loading = false;
-      }
-    }
+    ...mapActions(["support", "modalHide"])
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
