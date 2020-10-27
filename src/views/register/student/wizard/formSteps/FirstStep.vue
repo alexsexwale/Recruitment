@@ -91,7 +91,7 @@
     </div>
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Age Restriction</h4>
+        <h4 class="modal-title black">Under The Age Limit!</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -258,7 +258,10 @@ export default {
             linkedIn: null,
             facebook: null,
             twitter: null,
-            instagram: null
+            instagram: null,
+            gitHub: null,
+            portfolio: null,
+            personalWebsite: null
           });
         }
         this.$notify(
@@ -272,7 +275,6 @@ export default {
       });
     },
     addDob: function() {
-      console.log(this.calculateAge(this.dob))
       if(this.calculateAge(this.dob) > 17) {
         this.$emit("dob", this.dob);
         this.debouncedUpdate();

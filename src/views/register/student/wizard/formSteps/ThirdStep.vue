@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      What are your banking details?
+      What are your banking details, so that we can pay you for every job?
     </h5>
       <div class="md-layout">
       <notifications></notifications>

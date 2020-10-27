@@ -20,6 +20,13 @@
         v-bind:bankName="bankName"
         v-bind:branchCode="branchCode"
         v-bind:email="email"
+        v-bind:linkedIn="linkedIn"
+        v-bind:facebook="facebook"
+        v-bind:twitter="twitter"
+        v-bind:instagram="instagram"
+        v-bind:github="github"
+        v-bind:portfolio="portfolio"
+        v-bind:personalWebsite="personalWebsite"
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
@@ -79,6 +86,24 @@
             @branchCode="addBranchCode">
           </third-step>
         </wizard-tab>
+
+        <wizard-tab :before-change="() => validateStep('step4')">
+          <template slot="label">
+            <div class="pc-view">Portfolio</div>
+            <div class="mobi-view"><i class="fas fa-globe-africa"></i></div>
+          </template>
+          <fourth-step ref="step4" 
+            @on-validated="onStepValidated"
+            @linkedIn="addLinkedIn"
+            @facebook="addFacebook"
+            @twitter="addTwitter"
+            @instagram="addInstagram"
+            @github="addGithub"
+            @portfolio="addPortfolio"
+            @personalWebsite="addPersonalWebsite"
+            >
+          </fourth-step>
+        </wizard-tab>
       </simple-wizard>
     </div>
     <!-- Modal: Error handling -->
@@ -109,6 +134,7 @@ import SimpleWizard from "./wizard/Wizard.vue";
 import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
+import FourthStep from "./wizard/formSteps/FourthStep.vue";
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import Tuks from './wizard/Institutions/University of Pretoria/Tuks';
@@ -136,6 +162,13 @@ export default {
       accountType: null,
       bankName: null,
       branchCode: null,
+      linkedIn: null,
+      facebook: null,
+      twitter: null,
+      instagram: null,
+      github: null,
+      portfolio: null,
+      personalWebsite: null,
       email: null,
       emailVerified: null,
       modal: false
@@ -145,6 +178,7 @@ export default {
     FirstStep,
     SecondStep,
     ThirdStep,
+    FourthStep,
     SimpleWizard,
     WizardTab,
     Modal,
@@ -242,6 +276,34 @@ export default {
     },
     addBranchCode: function(branchCode) {
       this.branchCode = branchCode;
+      this.refresh();
+    },
+    addLinkedIn: function(linkedIn) {
+      this.linkedIn = linkedIn;
+      this.refresh();
+    },
+    addFacebook: function(facebook) {
+      this.facebook = facebook;
+      this.refresh();
+    },
+    addTwitter: function(twitter) {
+      this.twitter = twitter;
+      this.refresh();
+    },
+    addInstagram: function(instagram) {
+      this.instagram = instagram;
+      this.refresh();
+    },
+    addGithub: function(github) {
+      this.github = github;
+      this.refresh();
+    },
+    addPortfolio: function(portfolio) {
+      this.portfolio = portfolio;
+      this.refresh();
+    },
+    addPersonalWebsite: function(personalWebsite) {
+      this.personalWebsite = personalWebsite;
       this.refresh();
     },
     addFeedback: function(feedback) {
