@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <h5 class="info-text">
       Social Media Accounts and Additional Documents
     </h5>
@@ -80,11 +82,29 @@
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
+            { 'md-valid': !errors.has('github') && touched.github },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('github') }
+          ]">
+          <md-icon><i class="fab fa-github"></i></md-icon>
+          <label>Github</label>
+          <md-input @change="addGithub" v-model="github" data-vv-name="github" type="text" name="github" v-validate="modelValidations.github"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('github')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('github') && touched.github">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
             { 'md-valid': !errors.has('personalWebsite') && touched.personalWebsite },
             { 'md-form-group': true },
             { 'md-error': errors.has('personalWebsite') }
           ]">
-          <md-icon><i class="fas fa-wifi"></i></md-icon>
+          <md-icon><i class="fas fa-globe"></i></md-icon>
           <label>Personal Website</label>
           <md-input @change="addPersonalWebsite" v-model="personalWebsite" data-vv-name="personalWebsite" type="text" name="personalWebsite" v-validate="modelValidations.personalWebsite"></md-input>
           <slide-y-down-transition>
@@ -98,12 +118,29 @@
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
+            { 'md-valid': !errors.has('id') && touched.id },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('id') }
+          ]">
+          <label>ID</label>
+          <md-file @change="previewID" v-model="id" data-vv-name="id" name="id" required v-validate="modelValidations.id" />
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('id')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('id') && touched.id">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+      
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
             { 'md-valid': !errors.has('cv') && touched.cv },
             { 'md-form-group': true },
             { 'md-error': errors.has('cv') }
           ]">
           <label>CV</label>
-          <md-file @change="previewCV" v-model="cvData.name" data-vv-name="cv" name="cv" required v-validate="modelValidations.cv" />
+          <md-file @change="previewCV" v-model="cv" data-vv-name="cv" name="cv" required v-validate="modelValidations.cv" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('cv')">close</md-icon>
           </slide-y-down-transition>
@@ -120,7 +157,7 @@
             { 'md-error': errors.has('portfolio') }
           ]">
           <label>Portfolio</label>
-          <md-file @change="addPortfolio" v-model="portfolio" data-vv-name="portfolio" name="portfolio" v-validate="modelValidations.portfolio" />
+          <md-file @change="previewPortfolio" v-model="portfolio" data-vv-name="portfolio" name="portfolio" v-validate="modelValidations.portfolio" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('portfolio')">close</md-icon>
           </slide-y-down-transition>
@@ -137,7 +174,7 @@
             { 'md-error': errors.has('certificate1') }
           ]">
           <label>Certificate #1</label>
-          <md-file @change="addCertificate1" v-model="certificate1" data-vv-name="certificate1" name="certificate1" v-validate="modelValidations.certificate1" />
+          <md-file @change="previewCertificate1" v-model="certificate1" data-vv-name="certificate1" name="certificate1" v-validate="modelValidations.certificate1" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('certificate1')">close</md-icon>
           </slide-y-down-transition>
@@ -154,7 +191,7 @@
             { 'md-error': errors.has('certificate2') }
           ]">
           <label>Certificate #2</label>
-          <md-file @change="addCertificate2" v-model="certificate2" data-vv-name="certificate2" name="certificate2" v-validate="modelValidations.certificate2" />
+          <md-file @change="previewCertificate2" v-model="certificate2" data-vv-name="certificate2" name="certificate2" v-validate="modelValidations.certificate2" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('certificate2')">close</md-icon>
           </slide-y-down-transition>
@@ -171,7 +208,7 @@
             { 'md-error': errors.has('certificate3') }
           ]">
           <label>Certificate #3</label>
-          <md-file @change="addCertificate3" v-model="certificate3" data-vv-name="certificate3" name="certificate3" v-validate="modelValidations.certificate3" />
+          <md-file @change="previewCertificate3" v-model="certificate3" data-vv-name="certificate3" name="certificate3" v-validate="modelValidations.certificate3" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('certificate3')">close</md-icon>
           </slide-y-down-transition>
@@ -180,22 +217,43 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-
     </div>
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">Whoa there! ✋</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+      <template slot="body">
+        <p class="black">You cannot exceed the file limit of 2MB</p>
+      </template>
+      <template slot="footer">
+        <div class="centre">
+          <!-- Modal: Verify Email and continue creating account -->
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal> 
   </div>
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase, { storage } from 'firebase/app';
 import debounce from "debounce";
 import moment from "moment";
 export default {
   components: {
-    SlideYDownTransition
+    SlideYDownTransition,
+    Modal
   },
   data() {
     return {
+      modal: null,
+      alias: null,
+      loading: false,
       linkedIn: null,
       facebook: null,
       twitter: null,
@@ -208,7 +266,6 @@ export default {
       personalWebsite: null,
       id: null,
       cv: null,
-      cvData: null,
       uploadCV: 0,
       transcript: null,
       touched: {
@@ -249,6 +306,9 @@ export default {
           required: true,
           min: 6
         },
+        portfolio: {
+          required: true
+        },
         certificate1: {
           required: true
         },
@@ -271,17 +331,69 @@ export default {
     };
   },
   methods: {
+    previewID(event) {
+      this.uploadValue = 0;
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "ID");
+      }
+      else {
+        this.modal = true;
+      }
+    },
     previewCV(event) {
       this.uploadValue = 0;
-      this.cv = null;
-      this.cvData = event.target.files[0];
-      console.log(event);
-      this.cvUpload();
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "CV");
+      }
+      else {
+        this.modal = true;
+      }
     },
-    cvUpload() {
-      this.cv = null;
-      console.log(this.cvData);
-      const storageRef = firebase.storage().ref(`${ this.cvData.name}`).put(this.cvData);
+    previewPortfolio(event) {
+      this.uploadValue = 0;
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "Portfolio");
+      }
+      else {
+        this.modal = true;
+      }
+    },
+    previewCertificate1(event) {
+      this.uploadValue = 0;
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "certificate-1");
+      }
+      else {
+        this.modal = true;
+      }
+    },
+    previewCertificate2(event) {
+      this.uploadValue = 0;
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "certificate-2");
+      }
+      else {
+        this.modal = true;
+      }
+    },
+    previewCertificate3(event) {
+      this.uploadValue = 0;
+      var file = event.target.files[0];
+      if(file.size <= 2 * 1024 * 1024) {
+        this.fileUpload(file, "certificate-3");
+      }
+      else {
+        this.modal = true;
+      }
+    },
+    fileUpload(data, location) {
+      this.loading = true;
+      const storageRef = firebase.storage().ref().child('users/students/' + this.alias + '/' + location + '/' + data.name).put(data);
       storageRef.on(`state_changed`, snapshot => {
         this.uploadCV = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
       }, error => {
@@ -289,35 +401,65 @@ export default {
       }, () => {
         this.uploadCV = 100;
         storageRef.snapshot.ref.getDownloadURL().then(url => {
-          this.cv = url;
-        })
+          if(location === "ID") {
+            this.id = url;
+            this.student.update({
+              id: this.id,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+          if(location === "CV") {
+            this.cv = url;
+            this.student.update({
+              cv: this.cv,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+          if(location === "Portfolio") {
+            this.portfolio = url;
+            this.student.update({
+              portfolio: this.portfolio,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+          if(location === "certificate-1") {
+            this.certificate1 = url;
+            this.student.update({
+              certificate1: this.certificate1,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+          if(location === "certificate-2") {
+            this.certificate2 = url;
+            this.student.update({
+              certificate2: this.certificate2,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+          if(location === "certificate-3") {
+            this.certificate3 = url;
+            this.student.update({
+              certificate3: this.certificate3,
+              lastModified: moment(Date.now()).format('L')
+            });
+            this.loading = false;
+          }
+        });
       })
     },
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
-    },
-    getError(fieldName) {
-      return this.errors.first(fieldName);
+    modalHide() {
+      this.modal = false;
     },
     validate() {
       return this.$validator.validateAll().then(res => {
         this.$emit("on-validated", res);
         return res;
       });
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
     },
     debouncedUpdate: debounce(function() {
       this.updateAccount();
@@ -352,6 +494,24 @@ export default {
           if(this.github) {
             this.student.update({
               github: this.github,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.personalWebsite) {
+            this.student.update({
+              personalWebsite: this.personalWebsite,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.id) {
+            this.student.update({
+              id: this.id,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.cv) {
+            this.student.update({
+              cv: this.cv,
               lastModified: moment(Date.now()).format('L')
             });
           }
@@ -430,7 +590,6 @@ export default {
       this.$emit("portfolio", this.portfolio);
     },
     addCV: function() {
-      this.cvUpload();
       this.$emit("cv", this.cv);
       this.debouncedUpdate();
     }
@@ -451,6 +610,12 @@ export default {
     github() {
       this.touched.github = true;
     },
+    personalWebsite() {
+      this.touched.personalWebsite = true;
+    },
+    portfolio() {
+      this.touched.portfolio = true;
+    },
     certificate1() {
       this.touched.certificate1 = true;
     },
@@ -463,6 +628,9 @@ export default {
     personalWebsite() {
       this.touched.personalWebsite = true;
     },
+    id() {
+      this.touched.id = true;
+    },
     cv() {
       this.touched.cv = true;
     }
@@ -473,11 +641,7 @@ export default {
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        let settings = db.collection('Settings').doc('Drop-down Lists');
-        settings.get().then(doc => {
-          this.twitters = doc.data().twitters;
-          this.instagrams = doc.data().Banks;
-        });
+        this.alias = doc.id;
         this.student = db.collection('students').doc(doc.id);
         this.student.get().then(doc => {
           if(doc.exists) {
@@ -486,6 +650,13 @@ export default {
             this.twitter = doc.data().twitter;
             this.instagram = doc.data().instagram;
             this.github = doc.data().github;
+            this.personalWebsite = doc.data().personalWebsite;
+            this.portfolio = doc.data().portfolio;
+            this.id = doc.data().id;
+            this.cv = doc.data().cv;
+            this.certificate1 = doc.data().certificate1;
+            this.certificate2 = doc.data().certificate2;
+            this.certificate3 = doc.data().certificate3;
           }
         })
         .catch(err => {

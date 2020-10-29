@@ -74,16 +74,18 @@
 
         <wizard-tab :before-change="() => validateStep('step3')">
           <template slot="label">
-            <div class="pc-view">Banking</div>
-            <div class="mobi-view"><i class="fas fa-piggy-bank"></i></div>
+            <div class="pc-view">Experience</div>
+            <div class="mobi-view"><i class="fas fa-briefcase"></i></div>
           </template>
           <third-step ref="step3" 
             @on-validated="onStepValidated"
-            @accountName="addAccountName"
-            @accountNumber="addAccountNumber"
-            @accountType="addAccountType"
-            @bankName="addBankName"
-            @branchCode="addBranchCode">
+            @linkedIn="addLinkedIn"
+            @facebook="addFacebook"
+            @twitter="addTwitter"
+            @instagram="addInstagram"
+            @github="addGithub"
+            @portfolio="addPortfolio"
+            @personalWebsite="addPersonalWebsite">
           </third-step>
         </wizard-tab>
 
@@ -100,9 +102,23 @@
             @instagram="addInstagram"
             @github="addGithub"
             @portfolio="addPortfolio"
-            @personalWebsite="addPersonalWebsite"
-            >
+            @personalWebsite="addPersonalWebsite">
           </fourth-step>
+        </wizard-tab>
+
+        <wizard-tab :before-change="() => validateStep('step5')">
+          <template slot="label">
+            <div class="pc-view">Banking</div>
+            <div class="mobi-view"><i class="fas fa-piggy-bank"></i></div>
+          </template>
+          <fifth-step ref="step5" 
+            @on-validated="onStepValidated"
+            @accountName="addAccountName"
+            @accountNumber="addAccountNumber"
+            @accountType="addAccountType"
+            @bankName="addBankName"
+            @branchCode="addBranchCode">
+          </fifth-step>
         </wizard-tab>
       </simple-wizard>
     </div>
@@ -135,6 +151,7 @@ import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";
 import FourthStep from "./wizard/formSteps/FourthStep.vue";
+import FifthStep from "./wizard/formSteps/FifthStep";
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import Tuks from './wizard/Institutions/University of Pretoria/Tuks';
@@ -179,6 +196,7 @@ export default {
     SecondStep,
     ThirdStep,
     FourthStep,
+    FifthStep,
     SimpleWizard,
     WizardTab,
     Modal,
