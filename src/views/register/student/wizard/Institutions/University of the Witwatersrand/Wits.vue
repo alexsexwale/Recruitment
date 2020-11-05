@@ -12,7 +12,38 @@ import moment from "moment";
 export default {
     name: 'wits',
     components: {
-        SlideYDownTransition
+      SlideYDownTransition
+    },
+    data() {
+        return {
+          user: null,
+          student: null,
+          graduates: null,
+          faculty: null,
+          degree: null,
+          year: null,
+          graduateStatus: null,
+        }
+    },
+    methods: {
+      debouncedUpdate: debounce(function() {
+        this.updateAccount();
+      }, 1500),
+      validate() {
+        return this.$validator.validateAll().then(res => {
+          this.$emit("on-validated", res);
+          return res;
+        });
+      }
+    },
+    watch: {
+
+    },
+    created() {
+      let settings = db.collection('Settings').doc('Drop-down Lists');
+      settings.get().then(doc => {
+        this.graduates = doc.data().Graduates;
+      });
     }
 }
 </script>

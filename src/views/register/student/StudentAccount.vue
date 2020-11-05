@@ -70,6 +70,10 @@
           <tuks ref="step2" v-if="institution === 'University of Pretoria'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
             @year="addYear" @graduateStatus="addGraduateStatus" @campus="addCampus" @studentNo="addStudentNo">
           </tuks>
+          <!-- CodeSpace -->
+          <code-space ref="step2" v-if="institution === 'CodeSpace'" @on-validated="onStepValidated" @course="addCourse"  >
+
+          </code-space>
         </wizard-tab>
 
         <wizard-tab :before-change="() => validateStep('step3')">

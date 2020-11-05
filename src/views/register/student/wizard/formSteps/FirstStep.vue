@@ -210,7 +210,7 @@ export default {
   methods: {
     previewImage(event) {
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) { // less than 2MB
+      if(file.size < 2 * 1024 * 1024) { // less than 2MB
         this.fileUpload(file);
       }
       else {

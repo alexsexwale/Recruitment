@@ -908,8 +908,9 @@
         ]">
         <md-icon>school</md-icon>
         <label>Campus</label>
-        <md-input @change="addCampus" v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
-        </md-input>
+        <md-select class="pad" @input="addCampus" v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
+          <md-option v-for="(campus, index) in campuses" :key="index" :value="campus">{{campus}}</md-option>
+        </md-select>
         <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('campus')">close</md-icon>
         </slide-y-down-transition>
@@ -965,6 +966,7 @@ export default {
       undergraduateYears: [],
       postgraduateYears: [],
       faculties: [],
+      campuses: [],
       
       // Undergraduate Degrees
       economicsAndManagementScienceUndergraduateDegrees: [],
@@ -1163,6 +1165,9 @@ export default {
     Dropdowns.get().then(doc => {
       // Faculties
       this.faculties = doc.data().Faculties;
+
+      // Campuses
+      this.campuses = doc.data().Campuses;
 
       // Graduate Status
       this.undergraduateYears = doc.data().UndergraduateYears;

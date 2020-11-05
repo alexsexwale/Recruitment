@@ -109,6 +109,7 @@ export default {
   },
   data() {
     return {
+      url: {},
       job: {},
       skills: {},
       student: {},
@@ -151,7 +152,17 @@ export default {
               // Vetted as a Blog Writer
               this.vetted.blogWriter && this.skills.category === "Blog Writer" ||
               // Vetted as a Graphic Designer
-              this.vetted.graphicDesigner && this.skills.category === "Graphic Designer") {
+              this.vetted.graphicDesigner && this.skills.category === "Graphic Designer" ||
+              // Vetted as a Software Developer
+              this.vetted.softwareDeveloper && this.skills.category === "Software Developer" ||
+              // Vetted as a Database Administrator
+              this.vetted.databaseAdministrator && this.skills.category === "Database Administrator" ||
+              // Vetted as a IT Technician
+              this.vetted.itTechnician && this.skills.category === "IT Technician" ||
+              // Vetted as a Video Editor 
+              this.vetted.videoEditor && this.skills.category === "Video Editor"
+              ) 
+              {
               application.set({
                 jobId: this.job.id,
                 jobType: 'micro',
@@ -200,19 +211,31 @@ export default {
       this.feedback = "The " + this.skills.category +  " test is open on a new tab. Once you have completed the test, Jobox will get in touch with you.";
       this.sentTest = true;
       if(this.skills.category === "Salesperson")
-        window.open("https://bit.ly/30YUz9Y", '_blank');
+        window.open(this.url.sales_person, '_blank');
       else if(this.skills.category === "Social Media Manager")
-        window.open("https://bit.ly/2EsolfT", '_blank');
+        window.open(this.url.social_media_manager, '_blank');
       else if(this.skills.category === "Blog Writer")
-        window.open("https://bit.ly/2EtmM1h", '_blank');
+        window.open(this.url.blog_writer, '_blank');
       else if(this.skills.category === "Graphic Designer")
-        window.open("https://bit.ly/2CLzUOR", '_blank');
+        window.open(this.url.graphic_designer, '_blank');
+      else if(this.skills.category === "Software Developer")
+        window.open(this.url.it_technician, '_blank');
+      else if(this.skills.category === "Database Administrator")
+        window.open(this.url.database_admistrator, '_blank');
+      else if(this.skills.category === "IT Technician")
+        window.open(this.url.it_technician, '_blank');
+      else if(this.skills.category === "Video Editor")
+        window.open(this.url.video_editor, '_blank');
     }
   },
   created() {
     this.auth = firebase.auth().currentUser;
     let job = db.collection('micros').doc(this.$route.params.id);
     let skills = db.collection('skills').doc(this.$route.params.id);
+    let settings = db.collection('Settings').doc("Vetting Process URL");
+    settings.get().then().then(doc => {
+      this.url = doc.data();
+    });
     job.get().then(doc => {
       this.job = doc.data();
       this.job.id = doc.id;

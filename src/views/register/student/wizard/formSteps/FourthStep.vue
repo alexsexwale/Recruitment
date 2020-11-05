@@ -334,7 +334,7 @@ export default {
     previewID(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "ID");
       }
       else {
@@ -344,7 +344,7 @@ export default {
     previewCV(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "CV");
       }
       else {
@@ -354,7 +354,7 @@ export default {
     previewPortfolio(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "Portfolio");
       }
       else {
@@ -364,7 +364,7 @@ export default {
     previewCertificate1(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-1");
       }
       else {
@@ -374,7 +374,7 @@ export default {
     previewCertificate2(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-2");
       }
       else {
@@ -384,7 +384,7 @@ export default {
     previewCertificate3(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
-      if(file.size <= 2 * 1024 * 1024) {
+      if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-3");
       }
       else {
