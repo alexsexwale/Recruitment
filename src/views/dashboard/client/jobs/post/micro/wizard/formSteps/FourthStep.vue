@@ -52,7 +52,8 @@
                   <hr/>
                   <b>Cost Breakdown</b>
                   <p class="card-description">Student Rate</p> &nbsp;&nbsp; R{{ rate() }}
-                  <p class="card-description">Jobox Service Fee (10%)</p> &nbsp;&nbsp; R{{ fee() }}
+                  <p class="card-description">Jobox Service Fee (15%)</p> &nbsp;&nbsp; R{{ fee() }}
+                  <p class="card-description">Jobox Facilitation Cost </p> &nbsp;&nbsp; R100.00
                 </md-card-content>
               </md-card>
             </template>
@@ -89,7 +90,7 @@ export default {
   },
   methods: {
     total() {
-      let total = (this.budget * 1.1).toFixed(2);
+      let total = (this.budget * 1.15).toFixed(2);
       return total;
     },
     rate() {
@@ -97,7 +98,7 @@ export default {
       return rate;
     },
     fee() {
-      let fee = (this.budget * 0.1).toFixed(2);
+      let fee = ((this.budget * 0.15) + 100).toFixed(2);
       return fee;
     }
   }

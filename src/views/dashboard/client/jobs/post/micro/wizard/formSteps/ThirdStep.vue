@@ -20,7 +20,7 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <p>Jobox service fee at 13.5%<br>Payment facilitation fee at R10.00 <br>Total: R{{ total() }} </p>
+      <p>Jobox service fee at 15%<br>Payment facilitation fee at R100.00 <br>Total: R{{ total() }} </p>
     </div>
   </div>
 </template>
@@ -65,7 +65,7 @@ export default {
       this.$emit("budget", this.budget);
     },
     total() {
-      let total = ((this.budget * 1.135).toFixed(2)) + 10;
+      let total = (((this.budget * 1.15) + 100).toFixed(2));
       return total;
     }
   },
