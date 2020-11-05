@@ -382,7 +382,16 @@ export default {
             salesperson: false,
             socialMediaManager: false,
             translater: false,
-            webDeveloper: false
+            videoEditor: false,
+            webDeveloper: false,
+            itTechnician: false,
+            databaseAdministrator: false,
+            pythonDeveloper: false,
+            jsDeveloper: false,
+            angularDeveloper: false,
+            vueDeveloper: false,
+            reactDevloper: false,
+            sqlDeveloper: false
           });
           this.$router.push({ name: "apply" });
           this.loading = false;

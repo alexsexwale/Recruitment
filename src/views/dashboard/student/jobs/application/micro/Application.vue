@@ -154,7 +154,12 @@ export default {
               // Vetted as a Graphic Designer
               this.vetted.graphicDesigner && this.skills.category === "Graphic Designer" ||
               // Vetted as a Software Developer
-              this.vetted.softwareDeveloper && this.skills.category === "Software Developer" ||
+              this.vetted.pythonDeveloper && this.skills.category === "Software Developer" ||
+              this.vetted.jsDeveloper && this.skills.category === "Software Developer" ||
+              this.vetted.angularDeveloper && this.skills.category === "Software Developer" ||
+              this.vetted.vueDeveloper && this.skills.category === "Software Developer" ||
+              this.vetted.reactDevloper && this.skills.category === "Software Developer" ||
+              this.vetted.sqlDeveloper && this.skills.category === "Software Developer" ||
               // Vetted as a Database Administrator
               this.vetted.databaseAdministrator && this.skills.category === "Database Administrator" ||
               // Vetted as a IT Technician
