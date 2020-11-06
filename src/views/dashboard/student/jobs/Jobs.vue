@@ -70,26 +70,25 @@ export default {
     };
   },
   created() {
-    // display available micro jobs
-
     // to do: do not display the job if the student has already applied to the job
     db.collection('micros').where('status', '==', 'select').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.postedJobs = true;
         let job = doc.data();
         job.id = doc.id;
-        db.collection('skills').doc(doc.id).get().then(doc => {
-          job.category = doc.data().category;
-          this.jobs.push(job); // can push other job types to the same array or seperate the jobs
+        db.collection('jobs').doc(doc.id).get().then(doc => {
+          if(doc.data().verified === true) {
+            db.collection('skills').doc(doc.id).get().then(doc => {
+            job.category = doc.data().category;
+              this.jobs.push(job);
+              this.postedJobs = true;
+            });
+          }
         });
+        
       });
       this.loading = false;
     });
-    // display available reccuring jobs
-    // display available internship jobs
-    // display available part-time jobs
-    // display available full-time jobs
   }
 };
 </script>

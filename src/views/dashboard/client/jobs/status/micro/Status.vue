@@ -10,6 +10,7 @@
         &nbsp;&nbsp;&nbsp;
         <md-button v-if="select && !paid" class="btn-next md-danger button" @click="cancelJob" style="max-width:110px;">Cancel Job</md-button>
       </div>
+      <p v-if="!verified" class="centre bold">Jobox takes up to 24 hours to validate a job and prepare the candidate vetting process. Please note that you may recieve a call from the Jobox team.</p>
       <p v-if="job.total > 0 && !paid" class="centre">Your outstanding balance is R{{job.total}}</p>
       
       <Select v-if="select" />
@@ -75,6 +76,7 @@ export default {
       dissatisfied: false,
       rate: false,
       summary: false,
+      verified: false,
       modal: false,
       loading: false
     };
@@ -141,9 +143,8 @@ export default {
     }
   },
   created() {
-    window.scrollTo(0,0);
-    let jobs = db.collection('micros');
-    jobs.where('jobId', '==', this.$route.params.id).get()
+    let task_project = db.collection('micros');
+    task_project.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
@@ -155,7 +156,8 @@ export default {
         this.status();
       });
     });
-    jobs.onSnapshot(snapshot => {
+
+    task_project.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if(change.type == 'modified') {
           this.job = change.doc.data();
@@ -163,6 +165,23 @@ export default {
         }
       });
     });
+
+    let job = db.collection('jobs');
+    job.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => { 
+      snapshot.forEach(doc => {
+        this.verified = doc.data().verified;
+      });
+    });
+
+    job.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.verified = change.doc.data().verified;
+        }
+      });
+    });
+
     let payment = db.collection('payments');
     payment.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
@@ -170,6 +189,7 @@ export default {
         this.paid = doc.data().inboundPayment;
       });
     });
+
     payment.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if(change.type == 'modified') {
@@ -186,6 +206,9 @@ export default {
 }
 .centre {
     text-align: center;
+}
+.bold {
+  font-weight: bold;
 }
 .button {
   max-width: 88px;

@@ -205,6 +205,7 @@ export default {
           db.collection('jobs').doc(this.slug).set({
             jobId: this.slug,
             clientId: this.user.uid,
+            verified: false,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format("L"),
             name: this.name,
