@@ -50,30 +50,6 @@
   <hr v-if="available || !approved">
   <br>
   <div class="md-layout" v-if="available">
-    <!-- <md-table v-model="applicants" table-header-color="green">
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Name">{{ item.applicant }}</md-table-cell>
-        <md-table-cell md-label="Degree">{{ item.degree }}</md-table-cell>
-      </md-table-row>
-    </md-table>
-    <modal v-if="noSelectModal" @close="noSelectModalHide">
-      <template slot="header">
-        <h4 class="modal-title black">Cannot select {{ applicant.applicant }}</h4>
-        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noSelectModalHide">
-          <md-icon>clear</md-icon>
-        </md-button>
-      </template>
-
-      <template slot="body">
-        <p class="black">You have already selected a student. You will have to cancel the student you have approved in order to select {{ applicant.applicant }}</p>
-      </template>
-
-      <template slot="footer">
-        <div class="centre">
-          <md-button class="md-button md-success" @click="noSelectModalHide">Got it</md-button>
-        </div>
-      </template>
-    </modal> -->
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="(applicant, index) in applicants" :key="index">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
@@ -158,10 +134,7 @@ export default {
       paid: false,
       index: null,
       loading: true,
-      feedback: "Please be patient, students will start applying soon",
-      //paginated table
-      
-
+      feedback: "Please be patient, students will start applying soon"
     };
   },
   props: {
@@ -192,6 +165,9 @@ export default {
     select(id) {
       if(this.approved) {
         this.noSelectModal = true;
+      }
+      else if(this.paid === false) {
+        this.noPaymentModal = true;
       }
       else {
         this.loading = true
@@ -251,6 +227,22 @@ export default {
         }
       });
     });
+
+    let payment = db.collection('payments');
+    payment.where('jobId', '==', this.$route.params.id).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.paid = doc.data().inboundPayment;
+      });
+    });
+    payment.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.paid = change.doc.data().inboundPayment;
+        }
+      });
+    });
+
     this.loading = false;
   }   
 }

@@ -154,19 +154,18 @@ export default {
               // Vetted as a Graphic Designer
               this.vetted.graphicDesigner && this.skills.category === "Graphic Designer" ||
               // Vetted as a Software Developer
-              this.vetted.pythonDeveloper && this.skills.category === "Software Developer" ||
-              this.vetted.jsDeveloper && this.skills.category === "Software Developer" ||
-              this.vetted.angularDeveloper && this.skills.category === "Software Developer" ||
-              this.vetted.vueDeveloper && this.skills.category === "Software Developer" ||
-              this.vetted.reactDevloper && this.skills.category === "Software Developer" ||
-              this.vetted.sqlDeveloper && this.skills.category === "Software Developer" ||
+              (this.vetted.pythonDeveloper && (this.skills.skills.includes("Python") || this.skills.skills.includes("Python") || this.skills.skills.includes("python")) && this.skills.category === "Software Developer") ||
+              (this.vetted.jsDeveloper && (this.skills.skills.includes("JavaScript") || this.skills.skills.includes("Javascript") || this.skills.skills.includes("javascript")) && this.skills.category === "Software Developer") ||
+              (this.vetted.angularDeveloper && (this.skills.skills.includes("Angular") || this.skills.skills.includes("angular")) && this.skills.category === "Software Developer") ||
+              (this.vetted.vueDeveloper && (this.skills.skills.includes("Vue") || this.skills.skills.includes("vue")) && this.skills.category === "Software Developer") ||
+              (this.vetted.reactDevloper && (this.skills.skills.includes("React") || this.skills.skills.includes("react")) && this.skills.category === "Software Developer") ||
+              (this.vetted.sqlDeveloper && (this.skills.skills.includes("SQL") || this.skills.skills.includes("sql")) && this.skills.category === "Software Developer") ||
               // Vetted as a Database Administrator
               this.vetted.databaseAdministrator && this.skills.category === "Database Administrator" ||
               // Vetted as a IT Technician
               this.vetted.itTechnician && this.skills.category === "IT Technician" ||
               // Vetted as a Video Editor 
-              this.vetted.videoEditor && this.skills.category === "Video Editor"
-              ) 
+              this.vetted.videoEditor && this.skills.category === "Video Editor") 
               {
               application.set({
                 jobId: this.job.id,

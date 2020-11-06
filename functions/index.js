@@ -13,11 +13,15 @@ admin.initializeApp({
   databaseURL: "https://joboxza.firebaseio.com"
 });
 
+const authMiddleware = require("./authMiddleware");
+
 const db = admin.firestore();
 
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
+// authenticates all routes
+app.use(authMiddleware);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -90,11 +94,29 @@ app.post("/notification", urlencodedParser, async (req, res) => {
 
 // Inbound payment
 app.post("/activate", urlencodedParser, (req, res) => {
-  if(req.body.TransactionAccepted && req.body.Extra1) {
+  if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
+    // Email client after payment has been made
+    // const doc = await getDocument("Settings", "Email");
+    // var settings = doc.data();
+    // sgMail.setApiKey(settings.apiKey);
+    var msg = null;
+
+    var subject = "";
+    var message = "";
+
+    msg = {
+      to: req.body.Extra2,
+      from: "admin@jobox.co.za",
+      subject: subject,
+      text: message
+    };
+
+    sgMail.send(msg);
+
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
   else {

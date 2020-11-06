@@ -35,6 +35,7 @@ export default {
                         p3 : job.name,
                         m3 : meta_data.sageGUID,
                         m4 : job.id,
+                        m5 : job.email,
                         p4 : parseInt(job.total),
                         m9 : job.email,
                         m11: job.phone
