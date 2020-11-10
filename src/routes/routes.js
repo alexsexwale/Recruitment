@@ -16,7 +16,7 @@ Vue.use(Router);
 const router = new Router({
   mode: "history",
   routes: [
-    { path: "/", redirect: "login", name: "Home" },
+    { path: "/", redirect: "login", name: "Login" },
     Auth,
     ClientAccount,
     StudentAccount,
@@ -24,11 +24,7 @@ const router = new Router({
     StudentDashboard
   ],
   scrollBehavior: (to, from, savedPosition) => {
-    if (to.hash) {
-      return {selector: to.hash}
-    } else {
-      return { x: 0, y: 0 }
-    }
+    return { x: 0, y: 0 }
   }
 });
 

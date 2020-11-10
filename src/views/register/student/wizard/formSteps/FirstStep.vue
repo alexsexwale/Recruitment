@@ -227,12 +227,9 @@ export default {
         console.log(error.message);
       }, () => {
         storageRef.snapshot.ref.getDownloadURL().then(url => {
-            this.image = url;
-            this.student.update({
-              profile: this.image,
-              lastModified: moment(Date.now()).format('L')
-            });
-            this.loading = false;
+          this.image = url;
+          this.updateAccount();
+          this.loading = false;
         });
       })
     },
@@ -342,7 +339,8 @@ export default {
             instagram: null,
             gitHub: null,
             portfolio: null,
-            personalWebsite: null
+            personalWebsite: null,
+            profile: null
           });
         }
         this.$notify(
@@ -422,9 +420,9 @@ export default {
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.alias = doc.id;
         this.student = db.collection('students').doc(doc.id);
         this.student.get().then(doc => {
-          this.alias = doc.id;
           if(doc.exists) {
             this.dob = new Date(doc.data().dateOfBirth);
             this.gender = doc.data().gender;

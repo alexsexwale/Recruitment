@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <h5 class="info-text">
       Let's start with the basic information
     </h5>
@@ -8,16 +10,16 @@
       <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
-            <div v-if="!file">
+            <div v-if="!image">
               <img :src="avatar" class="picture-src" title="" />
             </div>
             <div v-else>
-              <img :src="file" />
+              <img :src="image" />
             </div>
-            <input type="file" @change="onFileChange" disabled title="Currently disabled" />
+            <input type="file" @change="previewImage" title="Profile Picture" />
           </div>
-          <!-- <h6 class="description">Profile Picture</h6> -->
-          <h6 class="description">Currently disabled</h6>
+          <h6 class="description">Profile Picture</h6>
+          <!-- <h6 class="description">Currently disabled</h6> -->
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
@@ -122,17 +124,36 @@
         </slide-y-down-transition>
       </md-field>
     </div>
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">{{ header }}</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+      <template slot="body">
+        <p class="black">{{ body }}</p>
+      </template>
+      <template slot="footer">
+        <div class="centre">
+          <!-- Modal: Verify Email and continue creating account -->
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal> 
   </div>
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
 import debounce from "debounce";
 export default {
   components: {
-    SlideYDownTransition
+    SlideYDownTransition,
+    Modal
   },
   props: {
     avatar: {
@@ -142,7 +163,13 @@ export default {
   },
   data() {
     return {
+      alias: null,
       file: null,
+      image:"",
+      loading: null,
+      modal: false,
+      header: "",
+      body: "",
       user: null,
       client: null,
       companyName: null,
@@ -186,28 +213,42 @@ export default {
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
+    previewImage(event) {
+      var file = event.target.files[0];
+      if(!file) {
+        
+      }
+      else if(file.size < 2 * 1024 * 1024) { // less than 2MB
+        this.fileUpload(file);
+      }
+      else {
+        this.modal = true;
+        this.header = "Whoa there! ✋";
+        this.body = "You cannot exceed the file limit of 2MB";
+      }
+    },
+    fileUpload(data) {
+      this.loading = true;
+      const storageRef = firebase.storage().ref().child('users/clients/' + this.alias + '/profile/' + data.name).put(data);
+      storageRef.on(`state_changed`, snapshot => {
+      }, error => {
+        console.log(error.message);
+      }, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.image = url;
+          this.updateAccount();
+          this.loading = false;
+        });
+      });
+    },
+    modalHide() {
+      this.modal = false;
     },
     validate() {
       return this.$validator.validateAll().then(res => {
         this.$emit("on-validated", res);
         return res;
       });
-    },
-    onFileChange(e) {
-      this.file = e.target.files;
-      this.createImage(this.file[0]);
-      this.$emit("file", this.file[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.file = e.target.result;
-      };
-      reader.readAsDataURL(file);
     },
     debouncedUpdate: debounce(function() {
       this.updateAccount();
@@ -257,6 +298,12 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          if(this.image) {
+            this.client.update({
+              profile: this.image,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
         }
         if(doc.exists === false) {
           this.client.set({
@@ -275,8 +322,15 @@ export default {
             postalCode_zipCode: null,
             country: "South Africa",
             profilePicture: null,
-            accountCreated: false
+            accountCreated: false,
+            profile: this.image
           });
+          if(this.image) {
+            this.client.update({
+              profile: this.image,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
         }
         this.$notify(
         {
@@ -345,6 +399,7 @@ export default {
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.alias = doc.id;
         this.client = db.collection('clients').doc(doc.id);
         this.client.get().then(doc => {
           if(doc.exists) {
@@ -354,6 +409,7 @@ export default {
             this.companySize = doc.data().companySize;
             this.industry = doc.data().industry;
             this.aboutMe = doc.data().bio;
+            this.image = doc.data().profile;
           }
         })
         .catch(err => {
