@@ -10,8 +10,8 @@
             'SECTION 2 - GENERAL CONDITIONS',
             'SECTION 3 - ACCURACY, COMPLETENESS AND TIMELINESS OF INFORMATION',
             'SECTION 4 - SERVICE AND PRICES',
-            'SECTION 5 - MICROJOB ACCEPTANCE',
-            'SECTION 6 - MICROJOB CANCELLATION',
+            'SECTION 5 - JOB ACCEPTANCE',
+            'SECTION 6 - JOB CANCELLATION',
             'SECTION 7 - PRODUCTS AND SERVICES',
             'SECTION 8 - SUSPENSION OF PROFILE',
             'SECTION 9 - ACCOUNT INFORMATION',
@@ -33,31 +33,35 @@
           icon="keyboard_arrow_down"
           color-collapse="success">
             <template slot="md-collapse-pane-1">
-              <p><b>“Jobox”, “we”, “us” and “our”</b> refers to Jobox (Pty) Ltd Registration Number K2015143706.</p>
-              <p><b>“Client”</b> means the user which offers Microjobs for Freelancers to bid for or to apply to and buys a service from a Freelancers.</p>
-              <p><b>“Freelancer”</b> means the user which performs the Microjob and sells a service to the client </p>
-              <p><b>“Escrow”</b> means a financial instrument held by a third party on behalf of the other two parties in a transaction. The funds are held by the escrow service until it receives the appropriate written or oral instructions or until obligations have been fulfilled.</p>
-              <p><b>“Mircojob”</b> means any project offered, advertised or awarded by a Client to a freelancer on the Website.</p>
-              <p><b>“Mircojob Contract”</b> means an agreement that is entered into between a client and a freelancer upon agreement to begin a microjob. The agreement is for a freelancer to provide the agreed upon work and for the client to make a payment in monetary terms for the work agreed upon at the payment timing option that the client and freelancer agreed upon.</p>
-              <p><b>"Profile”</b> means the profile you create when you register on the Website.</p>
-              <p><b>“Proximate Microjob”</b> mean a microjob that is started and/or completed at a location that is requested by a client.</p>
-              <p><b>“Remote Microjob”</b> means a microjob that is started and/or completed at any location that the freelancers chooses.</p>
-              <p><b>“Service”</b> means providing a marketplace for freelancers and clients to find each and to enter into an agreement between themselves for the completion of a microjob and facilitating the payment process.</p>
-              <p><b>"you", ‘user”, “client and “freelancer”</b> refer to any subscriber, registered user, person (including Juristic person) with a profile on the website or a visitor of this website.</p>
-              <p><b>“Website"</b> means the websites operated by Jobox and any related Jobox service, tool or application.</p>
+              <p><b>“You”, “User”, “Client” and “Student”</b> refer to any person (including a juristic person) with a registered Account on the Website or a visitor of this Website.</p>
+              <p><b>“Account”</b> means the profile You create when You register on the Website and which is associated with your email address;</p>
+              <p><b>“Client/s”</b> means the User which offers jobs for Students to bid for or to apply to and purchases a Service from a Student;</p>
+              <p><b>“Data Protection Laws”</b> means the South African Protection of Personal Information Act 4 of 2013 (“POPIA”) and the European Union General Data Protection Regulation (“GDPR”);</p>
+              <p><b>“Escrow”</b> means a financial instrument held by a third party on behalf of the other two parties in a transaction. The funds are held by the escrow service until it receives the appropriate written or oral instructions or until obligations have been fulfilled;</p>
+              <p><b>“Fee”</b> means a percentage applied to the cost the Client intends to pay for the Job or in accordance with the membership pricing structure subscribed to, as more detailed in Schedule 1, and as may be amended from time to time, at Jobox’s sole discretion;</p>
+              <p><b>"Fixed Term Contract”</b> means an agreement using the template in Schedule 2 that is entered into between a Client and a Student upon agreement to begin a Job. The agreement is for a Student to provide the agreed upon work and for the Client to make a payment in monetary terms for the work agreed upon;</p>
+              <p><b>“Job”</b> means any On-site or Remote project, task, part-time work or internship offered, advertised or awarded by a Client to a Student through the Website;</p>
+              <p><b>“Jobox”, “We”, “Us” and “Our”</b> refers to Jobox (Pty) Ltd, a company duly incorporated in terms of the company laws of South Africa with Registration Number 2015/143706/07 and its principal place of business at 26 Merano Crescent, Kyalami Estates , Johannesburg, Gauteng, 1684.</p>
+              <p><b>“Intellectual Property”</b> means all intellectual property, whether registered or not, including but not limited to designs; processes; know-how; trade secrets; research results; business names; domain names; patents and patent applications; trademarks and trade mark applications; copyright (including rights in any reports, presentation slide shows, software source code, photographs, literary works, computer software and typography rights); confidential and proprietary knowledge and information and any rights protecting same; business goodwill and reputation and rights protecting same; database rights; and all intellectual property rights and forms of protection of a similar nature to any of the foregoing or having an equivalent effect anywhere in the world belonging to Jobox or its affiliates;</p>
+              <p><b>“On-site Job”</b> means a Job that is started and/or completed at a location that is requested by a Client.</p>
+              <p><b>“Remote Job"</b> means the websites operated by Jobox and any related Jobox service, tool or application.</p>
+              <p><b>Service</b> means providing a marketplace for Students and Clients to interact and to enter into an agreement between themselves for the completion of a Job and facilitating the payment process.</p>
+              <p><b>Student/s</b> means the User which performs a Job and sells a service to the Client</p>
+              <p><b>Website</b> means the site <a href="https://app.jobox.co.za/">https://app.jobox.co.za/</a> operated by Jobox and any related Jobox service, tool or application and is inclusive of any social media platforms.</p>
             </template>
             <template slot="md-collapse-pane-2">
-              <p>This website is operated by Jobox. Jobox offers this website, including all information, tools and services available from this site to you, the user, conditioned upon your acceptance of all terms, conditions, policies and notices stated here.</p>
-              <p>Jobox is an online venue where Users buy and sell Microjobs. Clients and Freelancers must register for a Profile in order to buy or sell a Microjob and/or items. Jobox enables Users to find each other online to complete and pay for Microjobs, buy and sell items and to use the services that we provide.</p>
-              <p>By visiting our site and/or registering with us, you engage in our “Service” and agree to be bound by the following terms and conditions (“Terms and Conditions”, “Terms”), including those additional terms and conditions and policies referenced herein and/or available by hyperlink. These Terms and Conditions apply to all users of the site, including without limitation users who are browsers, vendors, customers, merchants, and/ or contributors of content.</p>
-              <p>Please read these Terms and Conditions carefully before accessing or using our Website. By accessing or using any part of the site, you agree to be bound by these Terms and Conditions. If you do not agree to all the terms and conditions of this agreement, then you may not access the Website or use any services. If these Terms and Conditions are considered an offer, acceptance is expressly limited to these Terms and Conditions.</p>
-              <p>Any new features or tools which are added to the Website shall also be subject to these Terms and Conditions. You can review the most current version of the Terms and Conditions at any time on this page. We reserve the right to update, change or replace any part of the Terms and Conditions by posting updates and/or changes to our website. It is your responsibility to check this page periodically for changes. Your continued use of or access to the website following the posting of any changes constitutes acceptance of those changes.</p>
+              <p>This Website is operated by Jobox. Jobox offers this Website, including all information, tools and Services available from this Website to You, the User, conditioned upon your acceptance of all terms, conditions, policies and notices stated here.</p>
+              <p>Jobox is an online platform where Users buy and sell Jobs. Clients and Students must register for an account in order to buy or sell a Job and/or items. Jobox enables Users to find each other online, to complete and pay for Jobs, buy and sell items and to use the Services that We provide.</p>
+              <p>By visiting Our Website and/or registering with Us, You engage in Our “Service” and agree to be bound by the following terms and conditions (“Terms and Conditions”, “Terms”), including those additional terms and conditions and policies referenced herein and/or available by hyperlink. These Terms and Conditions apply to all Users of the Website, including without limitation Users who are browsers, vendors, suppliers, customers, merchants, and/ or contributors of content.</p>
+              <p>Please read these Terms and Conditions carefully before accessing or using Our Website. By accessing or using any part of the Website, You agree to be bound by these Terms and Conditions. If You do not agree to all the terms and conditions of this agreement, then You may not access the Website or use any services. If these Terms and Conditions are considered an offer, acceptance is expressly limited to these Terms and Conditions.</p>
+              <p>Any new features or tools which are added to the Website shall also be subject to these Terms and Conditions. You can review the most current version of the Terms and Conditions at any time on this page. We reserve the right to update, change or replace any part of the Terms and Conditions by posting updates and/or changes to Our Website. It is your responsibility to check this page periodically for changes. Your continued use of or access to the Website following the posting of any changes constitutes acceptance of those changes.</p>
             </template>
             <template slot="md-collapse-pane-3">
-              <p>By agreeing to these Terms and Conditions, you represent that you are at least the age of majority in the Republic of South Africa or that you are the age of majority and you have given us your consent to allow any of your minor dependents to use this Website.</p>
-              <p>You may not use our services for any illegal or unauthorised purpose nor may you, in the use of the Service, violate any laws in your jurisdiction (including but not limited to copyright laws).</p>
+              <p>By agreeing to these Terms and Conditions, You represent that You are at least the age of majority in the Republic of South Africa or that You are the age of majority and You have given Us your consent to allow any of your minor dependents to use this Website.</p>
+              <p>You may not use Our services for any illegal or unauthorised purpose nor may You, in the use of the Service, violate any laws in your jurisdiction (including but not limited to copyright laws).</p>
               <p>You must not transmit any worms or viruses or any code of a destructive nature.</p>
               <p>A breach or violation of any of the Terms will result in an immediate termination of your Profile.</p>
+              <p>A breach or violation of any of the Terms will result in an immediate termination of your Account and further legal proceedings should We deem necessary. </p>
             </template>
             <template slot="md-collapse-pane-4">
               <p>We reserve the right to refuse service to anyone for any reason at any time.</p>

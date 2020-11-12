@@ -48,12 +48,12 @@
                   <i class="fas fa-wallet"></i> Budget
                   </h3>
                   <h4 class="card-title">Total Budget</h4>
-                  <p class="card-description">R{{ total() }}</p>
+                  <p class="card-description"><b>R{{ total() }}</b> = <b>R{{ rate() }}</b> + <b>R{{ fee() }}</b> + <b>R{{ price.facilitationFee }}</b></p>
                   <hr/>
-                  <b>Cost Breakdown</b>
-                  <p class="card-description">Student Rate</p> &nbsp;&nbsp; R{{ rate() }}
-                  <p class="card-description">Jobox Service Fee (15%)</p> &nbsp;&nbsp; R{{ fee() }}
-                  <p class="card-description">Jobox Facilitation Cost </p> &nbsp;&nbsp; R100.00
+                  <h4 class="card-title">Cost Breakdown</h4>
+                  <p class="card-description">Student Rate:  <b>R{{ rate() }}</b></p> 
+                  <p class="card-description">Jobox Service Fee ({{ percentage() }}%): <b>R{{ fee() }}</b></p> 
+                  <p class="card-description">Jobox Facilitation Cost: <b>R{{ price.facilitationFee }}</b></p>
                 </md-card-content>
               </md-card>
             </template>
@@ -66,6 +66,7 @@
 <script>
 import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
 
 export default {
   components: {
@@ -85,12 +86,13 @@ export default {
   },
   data() {
     return {
-      deadlineReview: null
+      deadlineReview: null,
+      price: {}
     };
   },
   methods: {
     total() {
-      let total = (this.budget * 1.15).toFixed(2);
+      let total = ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2);
       return total;
     },
     rate() {
@@ -98,9 +100,18 @@ export default {
       return rate;
     },
     fee() {
-      let fee = ((this.budget * 0.15) + 100).toFixed(2);
+      let fee = ((this.budget * this.price.serviceFee)).toFixed(2);
       return fee;
+    },
+    percentage() {
+      return this.price.serviceFee * 100;
     }
+  },
+  created() {
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
   }
 };
 </script>

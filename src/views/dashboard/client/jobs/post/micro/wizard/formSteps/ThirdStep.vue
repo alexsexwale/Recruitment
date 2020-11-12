@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5 class="info-text">Let us know what your budget is. Minimum amount is R400.00</h5>
+    <h5 class="info-text">Let us know what your budget is. Minimum amount is <b><u>R400.00</u></b></h5>
     <div class="md-layout">
       <div class="md-layout-item mt-4 md-size-100">
         <md-field
@@ -20,13 +20,14 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <p>Jobox service fee at 15%<br>Payment facilitation fee at R100.00 <br>Total: R{{ total() }} </p>
+      <p>Jobox service fee ({{ percentage() }}%): <b>R{{ fee() }}</b><br>Payment facilitation fee: <b>R{{ price.facilitationFee }} </b> <br>Total: <b>R{{ total() }}</b></p>
     </div>
   </div>
 </template>
 <script>
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
 
 export default {
   components: {
@@ -36,6 +37,7 @@ export default {
   data() {
     return {
       budget: null,
+      price: {},
       touched: {
         budget: false,
       },
@@ -65,14 +67,27 @@ export default {
       this.$emit("budget", this.budget);
     },
     total() {
-      let total = (((this.budget * 1.15) + 100).toFixed(2));
+      let total = (((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2));
       return total;
-    }
+    },
+    percentage() {
+      return this.price.serviceFee * 100;
+    },
+    fee() {
+      let fee = ((this.budget * this.price.serviceFee)).toFixed(2);
+      return fee;
+    },
   },
   watch: {
     budget() {
       this.touched.budget = true;
-    }
+    },
+  },
+  created() {
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
   }
 };
 </script>

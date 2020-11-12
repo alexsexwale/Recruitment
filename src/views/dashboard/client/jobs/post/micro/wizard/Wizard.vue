@@ -145,6 +145,7 @@ export default {
       user: null,
       feedback: null,
       client: {},
+      price:{},
       loading: true
     };
   },
@@ -223,9 +224,9 @@ export default {
             location: this.location,
             duration: this.deadline,
             budget: (this.budget * 1).toFixed(2),
-            commission: (this.budget * 0.15).toFixed(2),
-            facilitation: 100.00,
-            total: ((this.budget * 1.15) + 100).toFixed(2),
+            commission: (this.budget * this.price.serviceFee).toFixed(2),
+            facilitation: (this.price.facilitationFee * 1).toFixed(2),
+            total: ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2),
             status: "select",
             satisfied: null,
             complete: false,
@@ -258,8 +259,8 @@ export default {
             clientFileToken: null,
             lastModified: moment(Date.now()).format("L"),
             studentAlias: null,
-            serviceFee: 0.135,
-            facilitationCost: "10.00",
+            serviceFee: this.price.serviceFee,
+            facilitationCost: (this.price.facilitationFee * 1).toFixed(2),
             totalCostPaid: null
           });
         });
@@ -382,6 +383,10 @@ export default {
         this.alias = doc.id;
       });
     });
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
     this.loading = false;
   }
 };

@@ -170,6 +170,7 @@ export default {
     job.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => { 
       snapshot.forEach(doc => {
+        console.log(doc.data())
         this.verified = doc.data().verified;
       });
     });

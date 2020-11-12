@@ -58,7 +58,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <!-- <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('vat') && touched.vat },
             { 'md-form-group': true },
@@ -69,7 +69,7 @@
           <md-input @change="addVat" v-model="vat" data-vv-name="vat" type="number" name="vat">
           </md-input>
         </md-field>
-      </div>
+      </div> -->
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
