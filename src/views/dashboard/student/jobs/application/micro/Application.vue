@@ -223,7 +223,7 @@ export default {
       else if(this.skills.category === "Graphic Designer")
         window.open(this.url.graphic_designer, '_blank');
       else if(this.skills.category === "Software Developer")
-        window.open(this.url.it_technician, '_blank');
+        window.open(this.url.software_developer, '_blank');
       else if(this.skills.category === "Database Administrator")
         window.open(this.url.database_admistrator, '_blank');
       else if(this.skills.category === "IT Technician")

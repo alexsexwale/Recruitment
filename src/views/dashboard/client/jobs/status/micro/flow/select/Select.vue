@@ -57,7 +57,8 @@
         </div>
         <md-card-content>
           <h6 class="category text-gray"> {{ applicant.degree }}</h6>
-          <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link>
+          <md-button class="md-button md-success" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
+          <!-- <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link> -->
           <p class="card-description">
             {{ applicant.bio }}
           </p>
@@ -109,6 +110,25 @@
       </div>
     </template>
   </modal>
+  <!-- View Profile:  -->
+  <modal v-if="profileModal" @close="profileModalHide">
+    <template slot="header">
+      <h4 class="modal-title black">{{ profile.name }}</h4>
+      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noPaymentModalHide">
+        <md-icon>clear</md-icon>
+      </md-button>
+    </template>
+
+    <template slot="body">
+      <p class="black">Please make the upfront payment before selecting a student.</p>
+    </template>
+
+    <template slot="footer">
+      <div class="centre">
+        <md-button class="md-button md-success" @click="profileModalHide">Got it</md-button>
+      </div>
+    </template>
+  </modal>
 </div>
 </template>
 <script>
@@ -131,6 +151,8 @@ export default {
       cancelModal: false,
       noSelectModal: false,
       noPaymentModal: false,
+      profileModal: true,
+      profile: {},
       paid: false,
       index: null,
       loading: true,
@@ -156,12 +178,23 @@ export default {
     noPaymentModalHide() {
       this.noPaymentModal = false;
     },
+    profileModalHide() {
+      this.profileModal = false;
+    },
     async reload() {
       location.reload();
     },
     debouncedReload: debounce(function() {
       this.reload();
     }, 1500),
+    profile(alias) {
+      this.loading = true;
+      db.collection('students').doc(alias).get().then(doc => {
+        this.profile = doc.data();
+        this.profileModal = true;
+        this.loading = false;
+      });
+    },
     select(id) {
       if(this.approved) {
         this.noSelectModal = true;
