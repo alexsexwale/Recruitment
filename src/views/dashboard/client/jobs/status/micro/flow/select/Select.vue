@@ -4,7 +4,7 @@
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <hr><h2 class="centre"><b>Select a Student</b></h2>
   <hr v-if="approved">
-  <p class="centre" v-if="approved">You have chosen a student, please be patient while we wait for them to respond</p>
+  <p class="centre" v-if="approved">You have selected a candidate, please be patient while we wait for them to respond</p>
   <hr v-if="approved">
   <br v-if="approved">
   <div class="md-layout" v-if="approved">
@@ -57,12 +57,12 @@
         </div>
         <md-card-content>
           <h6 class="category text-gray"> {{ applicant.degree }}</h6>
-          <md-button class="md-button md-success" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
+          <md-button class="md-round md-success" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
           <!-- <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link> -->
           <p class="card-description">
             {{ applicant.bio }}
           </p>
-          <md-button @click="select(applicant.id)" class="md-success md-round">Select</md-button>
+          <md-button @click="select(applicant.id)" class="md-success md-button">Select</md-button>
         </md-card-content>
       </md-card>
       
@@ -113,14 +113,30 @@
   <!-- View Profile:  -->
   <modal v-if="profileModal" @close="profileModalHide">
     <template slot="header">
-      <h4 class="modal-title black">{{ profile.name }}</h4>
+      <h4 class="modal-title black">{{ student.accountName }}</h4>
       <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noPaymentModalHide">
         <md-icon>clear</md-icon>
       </md-button>
     </template>
 
     <template slot="body">
-      <p class="black">Please make the upfront payment before selecting a student.</p>
+      <p class="black">
+        <b>{{ student.name + " " + student.surname }}</b> <br>
+        {{ student.bio }}
+      </p>
+      <p class="black">
+        <b>Qualifications</b> <br>
+        Institution: {{ student.institution }} <br>
+        Degree: {{ student.degree }} <br>
+        Year of Study: {{ student.year }} <br>
+        Graduate Status: {{ student.graduateStatus }}
+      </p>
+        <b>Contact Information</b> <br>
+        Email Address: {{ student.email || "Make payment" }} <br>
+        Phone Number: {{student.phone || "Make payment" }}
+
+
+      
     </template>
 
     <template slot="footer">
@@ -151,8 +167,8 @@ export default {
       cancelModal: false,
       noSelectModal: false,
       noPaymentModal: false,
-      profileModal: true,
-      profile: {},
+      profileModal: false,
+      student: {},
       paid: false,
       index: null,
       loading: true,
@@ -190,9 +206,18 @@ export default {
     profile(alias) {
       this.loading = true;
       db.collection('students').doc(alias).get().then(doc => {
-        this.profile = doc.data();
-        this.profileModal = true;
-        this.loading = false;
+        this.student = doc.data();
+        db.collection('users').doc(alias).get().then(doc => {
+          this.student.name = doc.data().name;
+          this.student.surname = doc.data().surname;
+          if(this.paid === true) {
+            this.student.email = doc.data().email;
+            this.student.phone = doc.data().phone;
+          }
+          this.profileModal = true;
+          this.loading = false;
+        })
+                
       });
     },
     select(id) {
@@ -283,5 +308,9 @@ export default {
 <style scoped>
 .centre {
   text-align: center;
+}
+/* Pop up modal */
+.modal-container {
+  max-width: 800px !important;
 }
 </style>
