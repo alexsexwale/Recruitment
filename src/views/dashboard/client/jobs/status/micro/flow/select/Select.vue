@@ -114,7 +114,7 @@
   <modal v-if="profileModal" @close="profileModalHide">
     <template slot="header">
       <h4 class="modal-title black">{{ student.accountName }}</h4>
-      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="noPaymentModalHide">
+      <md-button class="md-simple md-just-icon md-round modal-default-button" @click="profileModalHide">
         <md-icon>clear</md-icon>
       </md-button>
     </template>
@@ -131,9 +131,38 @@
         Year of Study: {{ student.year }} <br>
         Graduate Status: {{ student.graduateStatus }}
       </p>
+      <p class="black">
         <b>Contact Information</b> <br>
         Email Address: {{ student.email || "Make payment" }} <br>
         Phone Number: {{student.phone || "Make payment" }}
+      </p>
+      <p class="black">
+        <b>Certificates</b> <br>
+        Click on the buttons below to download the Certificates <br>
+        <md-button class="md-round md-success">Certificate 1</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-success">Certificate 2</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-success">Certificate 3</md-button>
+      </p>
+      <p class="black">
+        <b>Resume</b> <br>
+        <md-button class="md-round md-success">Download CV</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-success">Download Portfolio</md-button> &nbsp;&nbsp;&nbsp;
+      </p>
+      <p class="black">
+        <b>Social Media Handles</b>
+        <md-icon v-if="profile.linkedIn && profile.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
+        <span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span>
+        <md-icon v-if="profile.github && profile.github !== ''"><i class="fab fa-github" style="color: #000; cursor: pointer" @click="github"></i></md-icon>
+        <span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span>
+        <md-icon v-if="profile.facebook && profile.facebook !== ''"><i class="fab fa-facebook" style="color:#3b5998; cursor: pointer" @click="facebook"></i></md-icon>
+        <span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span>
+        <md-icon v-if="profile.twitter && profile.twitter !== ''"><i class="fab fa-twitter" style="color:#00acee; cursor: pointer" @click="twitter"></i></md-icon>
+        <span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span>
+        <md-icon v-if="profile.instagram && profile.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
+      </p>
+
+
+
 
 
       
@@ -305,12 +334,12 @@ export default {
   }   
 }
 </script>
-<style scoped>
+<style>
 .centre {
   text-align: center;
 }
 /* Pop up modal */
 .modal-container {
-  max-width: 800px !important;
+  width: 800px !important;
 }
 </style>
