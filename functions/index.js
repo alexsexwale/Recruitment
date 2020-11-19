@@ -599,3 +599,48 @@ app.get("/netcash", async (req, res) => {
 
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
+
+
+// Firestore trigger to send emails
+exports.feedback = functions.firestore.document('feedback/{feedback}')
+  .onCreate(async (snap, context) => {
+    const value = snap.data();
+
+    const doc = await getDocument("Settings", "Email");
+    var settings = doc.data();
+    console.log(settings.apiKey)
+    
+    sgMail.setApiKey(settings.apiKey);
+    
+    var msg = null;
+    msg = {
+        to: "contact@jobox.co.za",
+        from: value.email,
+        subject: value.subject,
+        text: value.message
+    };
+    sgMail.send(msg);
+
+    return null;
+  });
+
+  exports.support = functions.firestore.document('support/{support}')
+    .onCreate(async (snap, context) => {
+      const value = snap.data();
+
+      const doc = await getDocument("Settings", "Email");
+      var settings = doc.data();
+    
+      sgMail.setApiKey(settings.apiKey);
+    
+      var msg = null;
+      msg = {
+          to: "contact@jobox.co.za",
+          from: value.email,
+          subject: value.subject,
+          text: value.message
+      };
+      sgMail.send(msg);
+
+      return null;
+    });

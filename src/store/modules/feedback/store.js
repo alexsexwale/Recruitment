@@ -1,6 +1,6 @@
 import db from "@/firebase/init";
-import api from "@/store/api/api";
 import moment from "moment";
+import firebase from 'firebase/app';
 
 export default {
     state: {
@@ -21,25 +21,24 @@ export default {
         feedback: (state, payload) => {
             state.loading = true;
             if(payload.subject && payload.message) {
-                var args = {
-                  type: "feedback",
-                  subject: "User Feedback - " + payload.subject, 
-                  message: payload.message
-                }
-                // Send feedback
-                api.notification(args).then(() => {
-                  state.modal = true;
-                  state.success = true;
-                  state.loading = false;
-                  db.collection('feedback').add({
-                    userId: user.uid,
-                    created: moment(Date.now()).format('L'),
-                    subject: payload.subject,
-                    message: payload.message
+                db.collection("users").where("userId", "==", firebase.auth().currentUser.uid).get()
+                .then(snapshot => {
+                  snapshot.forEach(doc => {
+                    db.collection('feedback').add({
+                      userId: firebase.auth().currentUser.uid,
+                      name: doc.data().name,
+                      surname: doc.data().surname,
+                      email: doc.data().email,
+                      phone: doc.data().phone,
+                      created: moment(Date.now()).format('L'),
+                      subject: payload.subject,
+                      message: payload.message + " \n\nYou can contact " + doc.data().name + " " + doc.data().surname + " at " + doc.data().phone
+                    });
+                    state.modal = true;
+                    state.success = true;
+                    state.loading = false;
                   });
-                }).catch(err => {
-                    console.log(err.message);
-                });;
+                });
             }
             else {
               state.modal = true;
