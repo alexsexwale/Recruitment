@@ -40,6 +40,8 @@ export default {
             db.collection('micros').doc(payload.jobId).update({
                 status: "active",
                 studentId: payload.studentId,
+                studentEmail: payload.studentEmail,
+                studentName: student.applicant,
                 studentAlias: payload.alias,
                 lastModified: moment(Date.now()).format('L')
             });

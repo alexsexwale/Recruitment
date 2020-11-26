@@ -99,23 +99,6 @@ app.post("/activate", urlencodedParser, (req, res) => {
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
-    // Email client after payment has been made
-    // const doc = await getDocument("Settings", "Email");
-    // var settings = doc.data();
-    // sgMail.setApiKey(settings.apiKey);
-    var msg = null;
-
-    var subject = "";
-    var message = "";
-
-    msg = {
-      to: req.body.Extra2,
-      from: "admin@jobox.co.za",
-      subject: subject,
-      text: message
-    };
-
-    sgMail.send(msg);
 
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
@@ -600,47 +583,202 @@ app.get("/netcash", async (req, res) => {
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
 
-
-// Firestore trigger to send emails
+// Send typed out emails
+function standardEmail(receiver, sender, subject, message) {
+  return {
+    to: receiver,
+    from: sender,
+    subject: subject,
+    text: message
+  }
+}
+// New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
-  .onCreate(async (snap, context) => {
-    const value = snap.data();
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
+  return null;
+});
+// New support document created
+exports.support = functions.firestore.document('support/{support}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  sgMail.send(standardEmail(setting.getSupport, value.email, value.subject, value.message));
+  return null;
+});
+// Send alert for new job posts
+function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jobId, phone) {
+  return {
+    to: receiver,
+    from: sender,
+    subject: "New " + jobType + " job post",
+    text: "Dear Jobox Team,\n\n" + clientName + "from" + companyName + " has posted a new " + jobType + " job on the platform, "
+          + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
+          clientName + " on their phone number, " + phone + ".\n\nKind regards,\nAlex Sexwale" 
+  }
+}
+// New job document created
+exports.jobPost = functions.firestore.document('jobs/{jobId}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  return null;
+});
+// Send alert to candidate selected
+function applicantSelected(receiver, sender, jobName, jobType, jobId, applicantName) {
+  return {
+    to: receiver,
+    from: sender,
+    subject: "You have been selected for the job",
+    text: "Hey " + applicantName + ",\n\nWould you look at that, you just got select for the " + jobType + " job: " + jobName
+         + " (" + jobId + ").\n\nTo accept/decline the job click here to login - https://app.jobox.co.za/login.\n\n✌️\nJobox"
+  }
+}
+function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantName, clientName) {
+  return {
+    to: receiver,
+    from: sender,
+    subject: "Applicant has declined the job",
+    text: "hey " + clientName + ",\n\nUnfortunetly " + applicantName + " has declined the job offer for " + jobType + " job: " + jobName
+          + " (" + jobId + ").\n\nPlease select another applicant for the job. Click here to login - https://app.jobox.co.za/login.\n\n✌️\nJobox"
+  }
+}
 
-    const doc = await getDocument("Settings", "Email");
-    var settings = doc.data();
-    console.log(settings.apiKey)
-    
-    sgMail.setApiKey(settings.apiKey);
-    
-    var msg = null;
-    msg = {
-        to: "contact@jobox.co.za",
-        from: value.email,
-        subject: value.subject,
-        text: value.message
-    };
-    sgMail.send(msg);
+// Application document updated
+exports.applicantDecision = functions.firestore.document('applications/{applicationsId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  if(previousValue.approved === false && newValue.approved === true) {
+    sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
+  }
+  if(newValue.approved === false && newValue.status === "decline") {
+    sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
+  }
+  return null;
+});
 
-    return null;
-  });
+// Send alert to client
+function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, applicantName) {
+  var subject = null;
+  var message = null;
+  if(messageType === "application") {
+    subject = applicantName + " has applied for your job";
+    message = "Hey " + clientName + ",\n\nGreat news!"+ applicantName + " just applied for the job you posted:" 
+  }
+  if(messageType === "accept") {
+    subject = applicantName + " has accepted the job you have posted" + jobName + " (" + jobId +
+    ").\n\nTo confirm completion click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
+    message = "Hey " + clientName + ",\n\n" + applicantName + " has accepted the job: " + jobName + " (" + jobId +
+              ").\n\nThis job is now active. You will receive a notification once the student has completed the job.\n\n✌️\nJobox";
+  }
+  if(messageType === "complete") {
+    subject = applicantName + " has completed the job";
+    message = "Hey " + clientName + ",\n\n" + applicantName + " has completed the job you posted: " + jobName + " (" + jobId +
+              ").\n\nTo confirm completion click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
+  }
+  if(messageType === "studentRatingClient") {
+    subject = applicantName + " has rated the job you have posted";
+    message = "Hey " + clientName + ",\n\n" + applicantName + " has given you a rating on the job you posted:" + jobName + " (" + jobId +
+    ").\n\nTo view your rating, rate the student. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
+  }
+  if(messageType === "summary") {
+    subject = "";
+    message = "";
+  }
+  return {
+    to: receiver,
+    from: sender,
+    subject: subject,
+    text: message
+  }
+}
 
-  exports.support = functions.firestore.document('support/{support}')
-    .onCreate(async (snap, context) => {
-      const value = snap.data();
-
-      const doc = await getDocument("Settings", "Email");
-      var settings = doc.data();
-    
-      sgMail.setApiKey(settings.apiKey);
-    
-      var msg = null;
-      msg = {
-          to: "contact@jobox.co.za",
-          from: value.email,
-          subject: value.subject,
-          text: value.message
-      };
-      sgMail.send(msg);
-
-      return null;
-    });
+// Send alert to client
+function studentEmail(messageType, receiver, sender, jobName, jobId, clientName, studentName) {
+  var subject = null;
+  var message = null;
+  if(messageType === "accept") {
+    subject = "You have accepted the job";
+    message = "Hey " + studentName + ",\n\nYou have accepted the job: " + jobName + " (" + jobId +
+    ").\n\nTo view the details of this job, remember to login and head over to the active jobs tab.\n\nOnce you have completed the job, remember to indicate completion on the job page in order to get paid.\n\n✌️\nJobox";
+  }
+  if(messageType === "rate") {
+    subject = "Looks like the client has confirmed completion of the job!";
+    message = "Hey " + studentName + ",\n\n" + clientName + " has confirmed completion of " + jobName + " (" + jobId +
+    ").\n\nTo rate and review the order click here to login - https://app.jobox.co.za/login \n\nYour review will only become available once you have reviewed the client.\n\n✌️\nJobox";
+  }
+  if(messageType === "clientRatingStudent") {
+    subject = "";
+    message = "hey " + studentName + ",\n\n" + applicantName + " has given you a rating on the job you posted:" + jobName + " (" + jobId +
+    ").\n\nTo view your rating, rate the client. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
+  }
+  if(messageType === "summary") {
+    subject = "";
+    message = "";
+  }
+  return {
+    to: receiver,
+    from: sender,
+    subject: subject,
+    text: message
+  }
+}
+// New application
+exports.newApplication = functions.firestore.document('applications/{applicationsId}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  sgMail.send(clientEmail("application", value.clientEmail, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  return null;
+});
+// Updates in Micro table
+exports.jobStatus = functions.firestore.document('micros/{microsId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
+  sgMail.setApiKey(setting.apiKey);
+  // Student accepts job
+  if(previousValue.status === "select" && newValue.status === "active") {
+    sgMail.send(clientEmail("accept", newValue.clientEmail, setting.active, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+    sgMail.send(studentEmail("accept", newValue.studentEmail, setting.active, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  // Student completes job
+  if(previousValue.status === "active" && newValue.status === "complete") {
+    sgMail.send(clientEmail("complete", newValue.clientEmail, setting.complete, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  // Client confirms completion
+  if(previousValue.status === "complete" && newValue.status === "rate") {
+    sgMail.send(studentEmail("rate", newValue.studentEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  // Student rates client
+  if(previousValue.studentRatingComplete === false && newValue.studentRatingComplete === true) {
+    sgMail.send(clientEmail("studentRatingClient", newValue.clientEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  // Client rates student
+  if(previousValue.clientRatingComplete === false && newValue.clientRatingComplete === true) {
+    sgMail.send(studentEmail("clientRatingStudent", newValue.studentEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  // Client confirms completion
+  if(previousValue.status === "rate" && newValue.status === "summary") {
+    //sgMail.send(clientEmail("summary", newValue.clientEmail, setting.summary, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+    //sgMail.send(studentEmail("summary", newValue.studentEmail, setting.summary, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  }
+  return null;
+});

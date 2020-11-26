@@ -20,7 +20,10 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <p>Jobox service fee ({{ percentage() }}%): <b>R{{ fee() }}</b><br>Payment facilitation fee: <b>R{{ price.facilitationFee }} </b> <br>Total: <b>R{{ total() }}</b></p>
+      <p>Jobox service fee ({{ percentage() }}%): <b>R{{ fee() }}</b><br>
+         Payment facilitation fee: <b>R{{ price.facilitationFee }}.00</b> <br><br>
+         <span style="font-size: 20px;">Total: <b><u>R{{ total() }}</u></b></span>
+      </p>
     </div>
   </div>
 </template>

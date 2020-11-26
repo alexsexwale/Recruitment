@@ -139,29 +139,6 @@ export default {
     },
     declineModalHide() {
       this.declineModal = false;
-    },
-    accept() {
-      this.loading = true;
-      db.collection('micros').doc(this.client.id).update({
-        status: "active",
-        studentId: this.user.uid,
-        studentAlias: this.applicant.alias,
-        lastModified: moment(Date.now()).format('L')
-      });
-      db.collection('payments').doc(this.client.id).update({
-        studentAlias: this.applicant.alias
-      });
-      // db.collection("applications").where("studentId", "!=", this.user.uid).get()
-      // .then(snapshot => {
-      //   snapshot.forEach(doc => {
-      //     db.collection('applications').doc(doc.id).update({
-      //       status: "declined"
-      //     });
-      //     //To do: Send email to client to notify the student has accepted the job.
-      //     //To do: Create function that sends email to all students that were not accepted for the job.
-      //   });
-      // });
-      this.loading = false;
     }
   },
   created() {

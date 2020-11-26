@@ -170,14 +170,17 @@ export default {
               application.set({
                 jobId: this.job.id,
                 jobType: 'micro',
+                jobName: this.job.name,
                 studentId: this.auth.uid,
                 created: moment(Date.now()).format('L'),
                 lastModified: moment(Date.now()).format('L'), 
                 applicant: this.auth.displayName,
+                clientName: this.job.clientName,
                 degree: this.student.degree,
                 bio: this.student.bio, 
                 alias: this.user.alias,
-                email: this.user.email,
+                applicantEmail: this.user.email,
+                clientEmail: this.job.clientEmail,
                 approved: false,
                 status: 'applied'
               });

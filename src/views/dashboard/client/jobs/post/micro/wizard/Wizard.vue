@@ -146,7 +146,8 @@ export default {
       feedback: null,
       client: {},
       price:{},
-      loading: true
+      loading: true,
+      person: {}
     };
   },
   computed: {
@@ -190,6 +191,7 @@ export default {
   },
   methods: {
     createJob() {
+      console.log(this.client)
       this.loading = true;
       this.user = firebase.auth().currentUser;
       let ref = db.collection('clients');
@@ -202,7 +204,6 @@ export default {
             remove: /[$*_+~.()'"!\-:@]/g,
             lower: true
           });
-          
           db.collection('jobs').doc(this.slug).set({
             jobId: this.slug,
             clientId: this.user.uid,
@@ -211,13 +212,20 @@ export default {
             lastModified: moment(Date.now()).format("L"),
             name: this.name,
             jobType: "micro",
+            clientName: this.person.name + " " + this.person.surname,
+            companyName: this.client.companyName,
+            email: this.person.email,
+            phone: this.person.phone
           });
 
           db.collection('micros').doc(this.slug).set({
             jobId: this.slug,
             studentId: null,
+            studentEmail: null,
+            studentName: null,
             companyName: this.client.companyName,
             clientName: this.user.displayName,
+            clientEmail: this.person.email,
             clientAlias: this.alias,
             name: this.name,
             description: this.description,
@@ -380,6 +388,7 @@ export default {
     users.where('userId', '==', auth.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.person = doc.data();
         this.alias = doc.id;
       });
     });
