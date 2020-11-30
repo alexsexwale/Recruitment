@@ -67,7 +67,7 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Oops!</h4>
+        <h4 class="modal-title black">{{ header }}</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
@@ -100,6 +100,7 @@ export default {
       wizardModel: {},
       auth: null,
       user: null,
+      header: null,
       feedback: null,
       file: null,
       firstName: null,
@@ -139,9 +140,11 @@ export default {
     verification() {
       this.user.sendEmailVerification().then(() => {
         this.modal = true;
+        this.header = "Sent!";
         this.feedback = "Email Sent. Check your inbox and verify your email!";
       }).catch(err => {
         this.modal = true;
+        this.header = "Oops";
         this.feedback = err.message;
       });
     },

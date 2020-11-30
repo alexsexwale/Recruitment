@@ -70,6 +70,10 @@
           <tuks ref="step2" v-if="institution === 'University of Pretoria'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
             @year="addYear" @graduateStatus="addGraduateStatus" @campus="addCampus" @studentNo="addStudentNo">
           </tuks>
+          <!-- University of the Witwatersrand -->
+          <wits ref="step2" v-if="institution === 'University of the Witwatersrand'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
+            @year="addYear" @graduateStatus="addGraduateStatus" @campus="addCampus" @studentNo="addStudentNo">
+          </wits>
           <!-- CodeSpace -->
           <code-space ref="step2" v-if="institution === 'CodeSpace'" @on-validated="onStepValidated" @course="addCourse"  >
 
