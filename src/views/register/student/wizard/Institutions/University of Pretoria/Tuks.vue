@@ -899,27 +899,6 @@
       </md-field>
     </div>
 
-    <!-- Campus -->
-    <div class="md-layout-item ml-auto mt-4 md-small-size-100" v-if="faculty">
-      <md-field :class="[
-          { 'md-valid': !errors.has('campus') && touched.campus },
-          { 'md-form-group': true },
-          { 'md-error': errors.has('campus') }
-        ]">
-        <md-icon>school</md-icon>
-        <label>Campus</label>
-        <md-select class="pad" @input="addCampus" v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
-          <md-option v-for="(campus, index) in campuses" :key="index" :value="campus">{{campus}}</md-option>
-        </md-select>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('campus')">close</md-icon>
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon class="success" v-show="!errors.has('campus') && touched.campus">done</md-icon>
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-
     <!-- Student Number -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty">
       <md-field :class="[

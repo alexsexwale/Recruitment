@@ -701,30 +701,6 @@
       </md-field>
     </div>
 
-    <!-- Postgraduate Science Doctorates Degrees -->
-    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
-      v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
-      <md-field :class="[
-          { 'md-valid': !errors.has('degree') && touched.degree },
-          { 'md-form-group': true },
-          { 'md-error': errors.has('degree') }
-        ]">
-        <md-icon>school</md-icon>
-        <label>Degree</label>
-        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
-          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentPostgraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
-        </md-select>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-
-
-
     <!-- Postgraduate Occasional Studies Science Degrees -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
       v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
@@ -884,19 +860,66 @@ export default {
         this.updateAccount();
       }, 1500),
       updateAccount() {
-
+        this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.faculty) {
+            this.student.update({
+              faculty: this.faculty,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.graduateStatus) {
+            this.student.update({
+              graduateStatus: this.graduateStatus,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.year) {
+            this.student.update({
+              year: this.year,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.degree) {
+            this.student.update({
+              degree: this.degree,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.campus) {
+            this.student.update({
+              campus: this.campus,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.studentNo) {
+            this.student.update({
+              studentNo: this.studentNo,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+        });
       },
       addFaculty: function() {
         this.$emit("faculty", this.faculty);
-        //if(this.graduateStatus){this.graduateStatus = null;}
-        //if(this.year){this.year = null;}
-        //if(this.degree){this.degree = null;}
+        if(this.graduateStatus){this.graduateStatus = null;}
+        if(this.year){this.year = null;}
+        if(this.degree){this.degree = null;}
         this.debouncedUpdate();
       },
       addGraduateStatus: function() {
         this.$emit("graduateStatus", this.graduateStatus);
-        //if(this.year){this.year = null;}
-        //if(this.degree){this.degree = null;}
+        if(this.year){this.year = null;}
+        if(this.degree){this.degree = null;}
         this.debouncedUpdate();
       },
       addYear: function() {
@@ -924,7 +947,21 @@ export default {
       }
     },
     watch: {
-
+      faculty() {
+        this.touched.faculty = true;
+      },
+      degree() {
+        this.touched.degree = true;
+      },
+      year() {
+        this.touched.year = true;
+      },
+      graduateStatus() {
+        this.touched.graduateStatus = true;
+      },
+      studentNo() {
+        this.touched.studentNo = true;
+      }
     },
     created() {
       let settings = db.collection('Settings').doc('Drop-down Lists');

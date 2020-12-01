@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      Tell us about your studies
+      Tell us about your most recent studies
     </h5>
     <div class="md-layout">
       <notifications></notifications>
