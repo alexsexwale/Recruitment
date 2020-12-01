@@ -85,6 +85,687 @@
       </md-field>
     </div>
 
+    <!-- Undergraduate Commerce, Law And Management Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Commerce, Law And Management' 
+       && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in commerceLawAndManagementUndergraduateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Commerce, Law And Management Postgraduate Diplomas -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Commerce, Law And Management' && graduateStatus === 'Postgraduate' && year === 'Postgraduate Diploma/Certificates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Diploma/Higher Certificate</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in commerceLawAndManagementPostgraduateDiplomas" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Commerce, Law And Management Honours Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Commerce, Law And Management' && graduateStatus === 'Postgraduate' && year === 'Honours' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in commerceLawAndManagementMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Commerce, Law And Management Masters Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Commerce, Law And Management' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in commerceLawAndManagementMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Commerce, Law And Management Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Commerce, Law And Management' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in commerceLawAndManagementDoctorateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Engineering And Built Environment Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Engineering And Built Environment' 
+       && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentUndergradateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Occasional Studies Engineering And Built Environment Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Engineering And Built Environment' 
+       && graduateStatus === 'Undergraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentUndergraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Engineering And Built Environment Postgraduate Diplomas -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Engineering And Built Environment' && graduateStatus === 'Postgraduate' && year === 'Postgraduate Diploma/Certificates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Diploma/Higher Certificate</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentPostgraduateDiplomas" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Engineering And Built Environment Honours Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Engineering And Built Environment' && graduateStatus === 'Postgraduate' && year === 'Honours' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentHonoursDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Engineering And Built Environment Masters Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Engineering And Built Environment' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Engineering And Built Environment Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Engineering And Built Environment' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentDoctoratesDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Occasional Studies Engineering And Built Environment Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Engineering And Built Environment' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentPostgraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Health Sciences Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Health Sciences' 
+       && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesUndergradateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Occasional Studies Health Sciences Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Health Sciences' 
+       && graduateStatus === 'Undergraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesUndergraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Health Sciences Postgraduate Diplomas -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Health Sciences' && graduateStatus === 'Postgraduate' && year === 'Postgraduate Diploma/Certificates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Diploma/Higher Certificate</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesPostgraduateDiplomas" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Health Sciences Honours Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Health Sciences' && graduateStatus === 'Postgraduate' && year === 'Honours' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesHonoursDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Health Sciences Masters Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Health Sciences' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Health Sciences Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Health Sciences' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesDoctoratesDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Occasional Studies Health Sciences -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Health Sciences' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in healthSciencesUndergraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Humanities Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Humanities' 
+       && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in humanitiesUndergraduateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Humanities Postgraduate Diplomas -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Postgraduate Diploma/Certificates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Diploma/Higher Certificate</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in humanitiesPostgraduateDiplomas" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Humanities Honours Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Honours' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in humanitiesHonoursDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Humanities Masters Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in humanitiesMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Humanities Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Humanities' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in humanitiesDoctorateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Science Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Science' 
+       && graduateStatus === 'Undergraduate' && (year === '1st Year' || year === '2nd Year' || year === '3rd Year' || year === '4th Year' || year === '5th Year' )">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in scienceUndergraduateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Undergraduate Occasional Studies Science Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty === 'Science' 
+       && graduateStatus === 'Undergraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in scienceUndergraduateOccasionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Science Masters Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Masters' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in scienceMastersDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Science Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Doctorates' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in scienceDoctorateDegrees" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Postgraduate Science Doctorates Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in engineeringAndBuiltEnvironmentPostgraduateOccassionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+
+
+    <!-- Postgraduate Occasional Studies Science Degrees -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" 
+      v-if="faculty === 'Science' && graduateStatus === 'Postgraduate' && year === 'Occasional Studies' ">
+      <md-field :class="[
+          { 'md-valid': !errors.has('degree') && touched.degree },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('degree') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Degree</label>
+        <md-select class="pad" @input="addDegree" v-model="degree" data-vv-name="degree" type="text" name="degree" required v-validate="modelValidations.degree">
+          <md-option v-for="(degree, index) in scienceUndergraduateOccasionalStudies" :key="index" :value="degree">{{degree}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('degree')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('degree') && touched.degree">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
+
+    <!-- Student Number -->
+    <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty">
+      <md-field :class="[
+          { 'md-valid': !errors.has('studentNo') && touched.studentNo },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('studentNo') }
+        ]">
+        <md-icon>school</md-icon>
+        <label>Student ID</label>
+        <md-input @change="addStudentNo" v-model="studentNo" data-vv-name="studentNo" type="text" name="studentNo" required v-validate="modelValidations.studentNo">
+        </md-input>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('studentNo')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('studentNo') && touched.studentNo">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
+    </div>
 
     </div>
 </template>
@@ -150,7 +831,6 @@ export default {
         commerceLawAndManagementPostgraduateDiplomas: [],
         engineeringAndBuiltEnvironmentPostgraduateDiplomas: [],
         healthSciencesPostgraduateDiplomas: [],
-        humanitiesPostgraduateCertificates: [],
         humanitiesPostgraduateDiplomas: [],
 
         // Honours Degrees
@@ -173,6 +853,14 @@ export default {
         humanitiesDoctorateDegrees: [],
         scienceDoctorateDegrees: [],
         touched: {
+          faculty: false,
+          degree: false,
+          year: false,
+          graduateStatus: false,
+          campus: false,
+          studentNo: false,
+        },
+        modelValidations: {
           faculty: {
             required: true
           },
@@ -197,6 +885,36 @@ export default {
       }, 1500),
       updateAccount() {
 
+      },
+      addFaculty: function() {
+        this.$emit("faculty", this.faculty);
+        //if(this.graduateStatus){this.graduateStatus = null;}
+        //if(this.year){this.year = null;}
+        //if(this.degree){this.degree = null;}
+        this.debouncedUpdate();
+      },
+      addGraduateStatus: function() {
+        this.$emit("graduateStatus", this.graduateStatus);
+        //if(this.year){this.year = null;}
+        //if(this.degree){this.degree = null;}
+        this.debouncedUpdate();
+      },
+      addYear: function() {
+      this.$emit("year", this.year);
+      if(this.degree){this.degree = null;}
+        this.debouncedUpdate();
+      },
+      addDegree: function() {
+        this.$emit("degree", this.degree);
+        this.debouncedUpdate();
+      },
+      addCampus: function() {
+        this.$emit("campus", this.campus);
+        this.debouncedUpdate();
+      },
+      addStudentNo: function() {
+        this.$emit("studentNo", this.studentNo);
+        this.debouncedUpdate();
       },
       validate() {
         return this.$validator.validateAll().then(res => {
@@ -235,15 +953,13 @@ export default {
 
         // Postgraduate Occasional Studies 
         this.engineeringAndBuiltEnvironmentPostgraduateOccassionalStudies = doc.data().EngineeringAndBuiltEnvironmentPostgraduateOccassionalStudies;
-        this.healthSciencesPostgraduateOccasionalStudies = doc.data().HealthSciencesPostgraduateOccasionalStudies()
-        this.sciencePostgraduateOccasionalStudies = doc.data().SciencePostgraduateOccasionalStudies
-
+        this.healthSciencesPostgraduateOccasionalStudies = doc.data().HealthSciencesPostgraduateOccasionalStudies;
+        this.sciencePostgraduateOccasionalStudies = doc.data().SciencePostgraduateOccasionalStudies;
 
         // Postgraduate Diploma/Certificates
         this.commerceLawAndManagementPostgraduateDiplomas = doc.data().CommerceLawAndManagementPostgraduateDiplomas;
         this.engineeringAndBuiltEnvironmentPostgraduateDiplomas = doc.data().EngineeringAndBuiltEnvironmentPostgraduateDiplomas;
         this.healthSciencesPostgraduateDiplomas = doc.data().HealthSciencesPostgraduateDiplomas;
-        this.humanitiesPostgraduateCertificates = doc.data().HumanitiesPostgraduateCertificates;
         this.humanitiesPostgraduateDiplomas = doc.data().HumanitiesPostgraduateDiplomas;
 
         // Undergraduate Occasional Studies 
@@ -286,11 +1002,12 @@ export default {
         snapshot.forEach(doc => {
           this.student = db.collection('students').doc(doc.id);
           this.student.get().then(doc => {
+            console.log(doc.data())
             if(doc.exists) {
               this.faculty = doc.data().faculty;
-              // this.graduateStatus = doc.data().graduateStatus;
-              // this.degree = doc.data().degree;
-              // this.year = doc.data().year;
+              this.graduateStatus = doc.data().graduateStatus;
+              this.degree = doc.data().degree;
+              this.year = doc.data().year;
               this.studentNo = doc.data().studentNo;
             }
           })

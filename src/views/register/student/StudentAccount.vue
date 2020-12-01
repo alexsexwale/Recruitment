@@ -163,6 +163,7 @@ import FifthStep from "./wizard/formSteps/FifthStep";
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import Tuks from './wizard/Institutions/University of Pretoria/Tuks';
+import Wits from './wizard/Institutions/University of the Witwatersrand/Wits';
 export default {
   data() {
     return {
@@ -208,7 +209,8 @@ export default {
     SimpleWizard,
     WizardTab,
     Modal,
-    Tuks
+    Tuks,
+    Wits
   },
   methods: {
     modalHide() {
