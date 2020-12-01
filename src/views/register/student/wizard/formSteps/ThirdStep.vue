@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5 class="info-text">
-      What is your most recent employment experience along?
+      Tell us about your most recent work experience?
     </h5>
       <div class="md-layout">
       <notifications></notifications>
@@ -145,13 +145,11 @@ export default {
       modelValidations: {
         jobTitle1: {
           required: true,
-          min: 4,
-          max: 11
+          min: 2
         },
         employer1: {
           required: true,
-          min: 4,
-          max: 11
+          min: 2
         },
         startDate1: {
           required: true
