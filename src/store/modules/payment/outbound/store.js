@@ -14,15 +14,17 @@ export default {
     mutations: {
         complete: (state, payload) => {
             state.loading = true;
-            if(payload.paid) {
-              api.pay(doc.data()).then(() => {
-                state.loading = false;
-              });
-            }
-            else {
-                state.loading = false;
-                state.modal = true;
-            }
+            db.collection('payments').doc(payload.id).get().then(doc => {
+                if(doc.data().inboundPayment === true) {
+                  api.pay(doc.data()).then(() => {
+                    state.loading = false;
+                  });
+                }
+                else {
+                  console.log("You have not made the inbound payment for the job.");
+                }
+            });
+
         },
         dissatisfied: (state, payload) => {
             state.loading = true;

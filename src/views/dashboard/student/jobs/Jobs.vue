@@ -56,6 +56,7 @@
 <script>
 import { ProductCard } from "@/components";
 import db from '@/firebase/init';
+import firebase from 'firebase/app';
 
 export default {
   components: {

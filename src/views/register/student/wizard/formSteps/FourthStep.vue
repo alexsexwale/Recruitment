@@ -18,10 +18,10 @@
           <label>LinkedIn</label>
           <md-input @change="addLinkedIn" v-model="linkedIn" data-vv-name="linkedIn" type="text" name="linkedIn" required v-validate="modelValidations.linkedIn"></md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('linkedIn')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('linkedIn') && touched.linkedIn">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -122,8 +122,8 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('id') }
           ]">
-          <label>ID</label>
-          <md-file @change="previewID" v-model="id" data-vv-name="id" name="id" required v-validate="modelValidations.id" />
+          <label>ID/Passport</label>
+          <md-file @change="previewID" v-model="id" data-vv-name="id" name="id" v-validate="modelValidations.id" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('id')">close</md-icon>
           </slide-y-down-transition>
@@ -140,7 +140,7 @@
             { 'md-error': errors.has('cv') }
           ]">
           <label>CV</label>
-          <md-file @change="previewCV" v-model="cv" data-vv-name="cv" name="cv" required v-validate="modelValidations.cv" />
+          <md-file @change="previewCV" v-model="cv" data-vv-name="cv" name="cv" v-validate="modelValidations.cv" />
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('cv')">close</md-icon>
           </slide-y-down-transition>
@@ -283,49 +283,37 @@ export default {
       },
       modelValidations: {
         linkedIn: {
-          required: true,
           min: 6
         },
         facebook: {
-          required: true,
           min: 6
         },
         twitter: {
-          required: true,
           min: 6
         },
         instagram: {
-          required: true,
           min: 6
         },
         github: {
-          required: true,
           min: 6
         },
         personalWebsite: {
-          required: true,
           min: 6
         },
         portfolio: {
-          required: true
         },
         certificate1: {
-          required: true
         },
         certificate2: {
-          required: true
         },
         certificate3: {
-          required: true
         },
         id: {
-          required: true
         },
         cv: {
           required: true
         },
         transcript: {
-          required: true
         }
       }
     };

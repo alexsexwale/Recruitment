@@ -40,8 +40,8 @@ export default {
             db.collection('micros').doc(payload.jobId).update({
                 status: "active",
                 studentId: payload.studentId,
-                studentEmail: payload.studentEmail,
-                studentName: student.applicant,
+                studentEmail: payload.applicantEmail,
+                studentName: payload.applicant,
                 studentAlias: payload.alias,
                 lastModified: moment(Date.now()).format('L')
             });
@@ -86,22 +86,13 @@ export default {
             db.collection("users").doc(payload.alias).get().then(doc => {
                 state.user = doc.data();
                 var userId = doc.id;
-                var args = {
-                    jobId: payload.jobId, 
-                    email: state.user.email, 
-                    type: "cancel", 
-                    subject: "The student, " + payload.applicant + " has turned down the job offer - " + payload.jobId, 
-                    message: "The student has turned down the offer. Contact " + payload.applicant + " at " + doc.data().phone + "." 
-                };
-                api.notification(args).then(() => {
-                    db.collection("applications").doc(payload.id).update({
-                        approved: false,
-                        status: 'decline',
-                        jobId: null, 
-                        lastModified: moment(Date.now()).format('L'),
-                    });
-                    router.push({ name: "student-profile", params: {id: userId} });
+                db.collection("applications").doc(payload.id).update({
+                    approved: false,
+                    status: 'decline',
+                    jobId: null, 
+                    lastModified: moment(Date.now()).format('L'),
                 });
+                router.push({ name: "student-profile", params: {id: userId} });
             });
             state.loading = false;
         },
@@ -109,15 +100,14 @@ export default {
             state.loading = true;
             console.log(payload)
             db.collection("users").doc(payload.alias).get().then(doc => {
-                db.collection("applications").doc(payload.id).update({
-                    status: 'cancel', 
-                    jobId: null,
-                    lastModified: moment(Date.now()).format('L'),
-                });
-                router.push({ name: "student-profile", params: {id: doc.id} });
-                state.loading = false;
+              db.collection("applications").doc(payload.id).update({
+                status: 'cancel', 
+                jobId: null,
+                lastModified: moment(Date.now()).format('L'),
+              });
+              router.push({ name: "student-profile", params: {id: doc.id} });
+              state.loading = false;
             });
-            
         }
     },
     actions: {

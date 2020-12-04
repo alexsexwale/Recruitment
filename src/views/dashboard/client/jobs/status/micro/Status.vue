@@ -45,6 +45,7 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import firebase from 'firebase/app';
 import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
@@ -143,15 +144,27 @@ export default {
     }
   },
   created() {
+    this.loading = true;
     let task_project = db.collection('micros');
     task_project.where('jobId', '==', this.$route.params.id).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
         this.job.id = doc.id;
-        db.collection('users').doc(this.job.clientAlias).get().then(doc => {
-          this.job.email = doc.data().email;
-          this.job.phone = doc.data().phone;
+        
+        db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            if(this.job.clientAlias === doc.data().alias) {
+              this.loading = false;
+              this.job.email = doc.data().email;
+              this.job.phone = doc.data().phone;
+            }
+            else {
+              // To do: put 404 page
+              this.$router.go(-1); 
+            }
+          });
         });
         this.status();
       });

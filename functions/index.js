@@ -21,14 +21,14 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 // authenticates all routes
-app.use(authMiddleware);
+//app.use(authMiddleware);
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 const sgMail = require("@sendgrid/mail");
 
@@ -618,7 +618,7 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
     to: receiver,
     from: sender,
     subject: "New " + jobType + " job post",
-    text: "Dear Jobox Team,\n\n" + clientName + "from" + companyName + " has posted a new " + jobType + " job on the platform, "
+    text: "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
           + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
           clientName + " on their phone number, " + phone + ".\n\nKind regards,\nAlex Sexwale" 
   }
@@ -661,11 +661,11 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
-  if(previousValue.approved === false && newValue.approved === true) {
+  if(newValue.approved === true) {
     sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
   }
   if(newValue.approved === false && newValue.status === "decline") {
-    sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
+    sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
   }
   return null;
 });
@@ -679,8 +679,7 @@ function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, 
     message = "Hey " + clientName + ",\n\nGreat news!"+ applicantName + " just applied for the job you posted:" 
   }
   if(messageType === "accept") {
-    subject = applicantName + " has accepted the job you have posted" + jobName + " (" + jobId +
-    ").\n\nTo confirm completion click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
+    subject = "Student has accepted the job you have posted";
     message = "Hey " + clientName + ",\n\n" + applicantName + " has accepted the job: " + jobName + " (" + jobId +
               ").\n\nThis job is now active. You will receive a notification once the student has completed the job.\n\n✌️\nJobox";
   }
@@ -756,29 +755,29 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
   sgMail.setApiKey(setting.apiKey);
   // Student accepts job
   if(previousValue.status === "select" && newValue.status === "active") {
-    sgMail.send(clientEmail("accept", newValue.clientEmail, setting.active, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
-    sgMail.send(studentEmail("accept", newValue.studentEmail, setting.active, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+    sgMail.send(clientEmail("accept", newValue.clientEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    sgMail.send(studentEmail("accept", newValue.studentEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Student completes job
-  if(previousValue.status === "active" && newValue.status === "complete") {
-    sgMail.send(clientEmail("complete", newValue.clientEmail, setting.complete, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  if(newValue.status === "complete") {
+    sgMail.send(clientEmail("complete", newValue.clientEmail, setting.complete, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client confirms completion
-  if(previousValue.status === "complete" && newValue.status === "rate") {
-    sgMail.send(studentEmail("rate", newValue.studentEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  if(newValue.status === "rate") {
+    sgMail.send(studentEmail("rate", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Student rates client
   if(previousValue.studentRatingComplete === false && newValue.studentRatingComplete === true) {
-    sgMail.send(clientEmail("studentRatingClient", newValue.clientEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+    sgMail.send(clientEmail("studentRatingClient", newValue.clientEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client rates student
   if(previousValue.clientRatingComplete === false && newValue.clientRatingComplete === true) {
-    sgMail.send(studentEmail("clientRatingStudent", newValue.studentEmail, setting.rate, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+    sgMail.send(studentEmail("clientRatingStudent", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client confirms completion
-  if(previousValue.status === "rate" && newValue.status === "summary") {
-    //sgMail.send(clientEmail("summary", newValue.clientEmail, setting.summary, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
-    //sgMail.send(studentEmail("summary", newValue.studentEmail, setting.summary, newValue.jobName, newValue.jobId, newValue.clientName, newValue.studentName));
+  if(newValue.status === "summary") {
+    //sgMail.send(clientEmail("summary", newValue.clientEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    //sgMail.send(studentEmail("summary", newValue.studentEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   return null;
 });

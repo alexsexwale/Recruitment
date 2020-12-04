@@ -53,7 +53,7 @@
                   <h4 class="card-title">Cost Breakdown</h4>
                   <p class="card-description">Student Rate:  <b>R{{ rate() }}</b></p> 
                   <p class="card-description">Jobox Service Fee ({{ percentage() }}%): <b>R{{ fee() }}</b></p> 
-                  <p class="card-description">Jobox Facilitation Cost: <b>R{{ price.facilitationFee }}</b></p>
+                  <p class="card-description">Jobox Facilitation Cost: <b>R{{ price.facilitationFee }}.00</b></p>
                 </md-card-content>
               </md-card>
             </template>

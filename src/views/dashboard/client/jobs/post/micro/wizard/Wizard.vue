@@ -191,7 +191,6 @@ export default {
   },
   methods: {
     createJob() {
-      console.log(this.client)
       this.loading = true;
       this.user = firebase.auth().currentUser;
       let ref = db.collection('clients');

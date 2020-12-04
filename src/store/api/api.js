@@ -4,10 +4,7 @@ import axios from "axios";
 var api = null;
 db.collection("Settings").doc("Backend").get().then(doc => {
     api = axios.create({
-        // Dev (comment below before deploying)
-        baseURL: doc.data().api, // run local backend server
-        // Production (uncomment below before deploying)
-        //baseURL: doc.data().api
+        baseURL: doc.data().api
     })
 });
 

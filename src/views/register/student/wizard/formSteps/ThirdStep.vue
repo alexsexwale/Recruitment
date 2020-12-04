@@ -61,7 +61,7 @@
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" required v-validate="modelValidations.endDate1"
+        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" required v-validate="modelValidations.endDate1"
           :class="[
             { 'md-valid': !errors.has('endDate1') && touched.endDate1 },
             { 'md-form-group': true },
@@ -75,6 +75,7 @@
             <md-icon class="success" v-show="!errors.has('endDate1') && touched.endDate1">done</md-icon>
           </slide-y-down-transition>
         </md-datepicker>
+        <md-checkbox v-model="work" @click="hideEndDate">I currently work here.</md-checkbox>
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
@@ -134,6 +135,7 @@ export default {
       employer1: null,
       startDate1: null,
       endDate1: null,
+      work: false,
       description1: null,
       touched: {
         jobTitle1: false,
@@ -169,18 +171,20 @@ export default {
     modalHide() {
       this.modal = false;
     },
+    hideEndDate() {
+      this.work = !this.work;
+      if(this.work === true){
+        this.endDate1 = null;
+        this.addEndDate1();
+      }
+    },
     futureDate(idate) {
-      var today = new Date();
-      // Format date to be yyyymmdd e.g. 20200619
-      Date.prototype.ddmmyyyy = function() {
-        var yyyy = this.getFullYear().toString();
-        var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
-        var dd  = this.getDate().toString();
-        return (dd[1]?dd:"0"+dd[0]) + (mm[1]?mm:"0"+mm[0]) + yyyy; // padding
-      };
-      idate = idate.ddmmyyyy();
-      today = today.ddmmyyyy();
-      return (today - idate) < 0;
+      //idate = moment(idate).format('L');
+      var today = new Date();//, idate = idate.split("/");
+      //idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
+      idate = new Date(idate);
+      console.log(today > idate)
+      return today > idate;
     },
     getError(fieldName) {
       return this.errors.first(fieldName);
@@ -211,13 +215,13 @@ export default {
           }
           if(this.startDate1) {
             this.student.update({
-              startDate1: this.startDate1,
+              startDate1: moment(this.startDate1).format('L'),
               lastModified: moment(Date.now()).format('L')
             });
           }
           if(this.endDate1) {
             this.student.update({
-              endDate1: this.endDate1,
+              endDate1: moment(this.endDate1).format('L'),
               lastModified: moment(Date.now()).format('L')
             });
           }
@@ -247,26 +251,29 @@ export default {
       this.debouncedUpdate();
     },
     addStartDate1: function() {
-      console.log(this.futureDate(this.startDate1))
-      if(this.futureDate(this.startDate1)) {
-        this.startDate1 = null;
-        this.modal = true;
-      }
-      else {
-        this.$emit("startDate1", this.startDate1);
+      // if(this.futureDate(this.startDate1 && !this.startDate1)) {
+      //   this.startDate1 = null;
+      //   this.modal = true;
+      // }
+      // else {
+      //   this.$emit("startDate1", this.startDate1);
+      //   this.debouncedUpdate();
+      // }
+      this.$emit("startDate1", this.startDate1);
         this.debouncedUpdate();
-      }
       
     },
     addEndDate1: function() {
-      if(this.futureDate(this.endDate1)) {
-        this.endDate1 = null;
-        this.modal = true;
-      }
-      else {
-        this.$emit("endDate1", this.endDate1);
+      // if(this.futureDate(this.endDate1)) {
+      //   this.endDate1 = null;
+      //   this.modal = true;
+      // }
+      // else {
+      //   this.$emit("endDate1", this.endDate1);
+      //   this.debouncedUpdate();
+      // }
+      this.$emit("endDate1", this.endDate1);
         this.debouncedUpdate();
-      }
     },
     addDescription1: function() {
       this.$emit("description1", this.description1);
@@ -301,8 +308,11 @@ export default {
           if(doc.exists) {
             this.jobTitle1 = doc.data().jobTitle1;
             this.employer1 = doc.data().employer1;
-            this.startDate1 = doc.data().startDate1;
-            this.endDate1 = doc.data().endDate1;
+            this.startDate1 = new Date(doc.data().startDate1);
+            if(doc.data().endDate1)
+              this.endDate1 = new Date(doc.data().endDate1);
+            else
+              this.endDate1 = null;
             this.description1 = doc.data().description1;
           }
         })
