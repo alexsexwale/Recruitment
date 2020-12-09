@@ -95,7 +95,8 @@ export default {
         TermsAndConditions: "./img/termsAndConditions/Terms_And_Conditions.jpeg",
         Lock: "./img/lock.jpg",
         StudentAccount: "./img/register/Sign_Up.jpeg",
-        ClientAccount: "./img/register/Sign_Up.jpeg"
+        ClientAccount: "./img/register/Sign_Up.jpeg",
+        NotFound: "./img/404.jpeg"
       };
       return {
         backgroundImage: `url(${images[this.$route.name]})`

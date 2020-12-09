@@ -8,6 +8,7 @@ import Faq from "@/views/faq/Faq.vue";
 import PrivacyPolicy from "@/views/privacyPolicy/PrivacyPolicy.vue";
 import TermsAndConditions from "@/views/T&Cs/TermsAndConditions.vue";
 import Partner from "@/views/partner/Partner.vue";
+import NotFound from "@/views/notFound/NotFound.vue";
 
 export default {
     path: "/",
@@ -58,6 +59,11 @@ export default {
         path: "/register",
         name: "Register",
         component: Register
+      },
+      {
+        path: "/not-found",
+        name: "not-found",
+        name: NotFound
       }
     ]
   };

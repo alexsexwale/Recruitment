@@ -5,7 +5,8 @@
     <div class="md-layout-item md-small-size-100">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
-          <img class="img" :src="cardUserImage" />
+          <img v-if="profile.profile" class="img" :src="profile.profile" />
+          <img v-if="!profile.profile" class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
           <hr v-if="edit">

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <img :src="notFound">
+        <h1 style="text-align:centre">404</h1>
     </div>
 </template>
 <script>
@@ -11,6 +11,9 @@ export default {
             type: String,
             default: "/img/404.jpeg"
         }
+    },
+    created() {
+        console.log("hey there")
     }
 }
 </script>

@@ -2,6 +2,8 @@
   <div class="user">
     <div class="photo">
       <img :src="avatar" alt="avatar" />
+      <img v-if="student && student.profile" :src="student.profile" alt="avatar" />
+      <img v-if="client && client.profile" :src="student.profile" alt="avatar" />
     </div>
     <div class="user-info">
       <a data-toggle="collapse" :aria-expanded="!isClosed" @click.stop="toggleMenu" @click.capture="clicked">
@@ -77,7 +79,9 @@ export default {
       username: null,
       student: null,
       client: null,
-      alias: null
+      alias: null,
+      client: {},
+      student: {}
     };
   },
   methods: {
@@ -101,6 +105,10 @@ export default {
         let userPermission = doc.data().user;
         if(userPermission == "student") {
           this.student = true;
+          let student = db.collection('students').doc(this.alias);
+          student.get().then(student => {
+            this.student = student.data(); 
+          });
         }
         else {
           this.client = true;
