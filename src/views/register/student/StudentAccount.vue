@@ -86,14 +86,7 @@
             <div class="mobi-view"><i class="fas fa-briefcase"></i></div>
           </template>
           <third-step ref="step3" 
-            @on-validated="onStepValidated"
-            @linkedIn="addLinkedIn"
-            @facebook="addFacebook"
-            @twitter="addTwitter"
-            @instagram="addInstagram"
-            @github="addGithub"
-            @portfolio="addPortfolio"
-            @personalWebsite="addPersonalWebsite">
+            @on-validated="onStepValidated">
           </third-step>
         </wizard-tab>
 

@@ -267,6 +267,12 @@ export default {
               lastModified: moment(Date.now()).format('L'),
             });
           }
+          if(this.image) {
+            this.student.update({
+              profile: this.image,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
           if(this.gender) {
             this.student.update({
               gender: this.gender,

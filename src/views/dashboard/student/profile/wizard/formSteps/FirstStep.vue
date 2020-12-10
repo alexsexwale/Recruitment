@@ -1,9 +1,12 @@
 <template>
   <div>
+    <div v-if="loading" class="background"></div>
+    <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <h5 class="info-text">
       Tell us a little about yourself
     </h5>
     <div class="md-layout">
+      <notifications></notifications>
       <div class="md-layout-item md-size-40 md-small-size-100">
         <div class="picture-container">
           <div class="picture">
@@ -13,68 +16,16 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="onFileChange" disabled title="Currently disabled" />
+            <input type="file" @change="previewImage" title="Profile Picture" />
           </div>
-          <!-- <h6 class="description">Profile Picture</h6> -->
-          <h6 class="description">Currently disabled</h6>
+          <h6 class="description">Profile Picture</h6>
+          <!-- <h6 class="description">Currently disabled</h6> -->
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
-        <md-field
-          :class="[
-            { 'md-valid': !errors.has('firstName') && touched.firstName },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('firstName') }
-          ]">
-          <md-icon>face</md-icon>
-          <label>First Name</label>
-          <md-input @change="addFirstName" v-model="firstName" data-vv-name="firstName" type="text" name="firstName" required v-validate="modelValidations.firstName"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('firstName')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('firstName') && touched.firstName">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-
-        <md-field :class="[
-            { 'md-valid': !errors.has('lastName') && touched.lastName },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('lastName') }
-          ]">
-          <md-icon>record_voice_over</md-icon>
-          <label>Last Name</label>
-          <md-input @change="addLastName" v-model="lastName" data-vv-name="lastName" type="text" name="lastName" required v-validate="modelValidations.lastName"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('lastName')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('lastName') && touched.lastName">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-
-        <md-field :class="[
-            { 'md-valid': !errors.has('phone') && touched.phone },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('phone') }
-          ]">
-          <md-icon>phone</md-icon>
-          <label>Phone Number</label>
-          <md-input @change="addPhone" v-model="phone" data-vv-name="phone" type="text" name="phone" required v-validate="modelValidations.phone">
-          </md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('phone')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('phone') && touched.phone">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
         <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
           :class="[
-              { 'md-valid': !errors.has('dob') && touched.dob },
+              { 'md-valid': !errors.has('dob') && touched.gender },
               { 'md-form-group': true },
               { 'md-error': errors.has('dob') }
             ]">
@@ -83,12 +34,10 @@
           <md-icon class="error" v-show="errors.has('dob')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('dob') && touched.dob" style="position: absolute">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('dob') && touched.dob">done</md-icon>
           </slide-y-down-transition>
         </md-datepicker>
-      </div>
-
-      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
+          
         <md-field :class="[
               { 'md-valid': !errors.has('gender') && touched.gender },
               { 'md-form-group': true },
@@ -96,7 +45,7 @@
             ]">
           <md-icon>face</md-icon>
           <label for="gender">Gender</label>
-          <md-select style="margin-left: 10px;" @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
+          <md-select class="pad" @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
             <md-option v-for="(gender, index) in genders" :key="index" :value="gender">{{gender}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -108,7 +57,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item md-size-33 ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
               { 'md-valid': !errors.has('race') && touched.race },
               { 'md-form-group': true },
@@ -116,7 +65,7 @@
             ]">
           <md-icon>face</md-icon>
           <label for="race">Race</label>
-          <md-select style="margin-left: 10px;" @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
+          <md-select class="pad" @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
             <md-option v-for="(race, index) in races" :key="index" :value="race">{{race}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -126,16 +75,49 @@
               <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
             </slide-y-down-transition>
         </md-field>
-      </div>
 
-      <div class="md-layout-item md-size-100 ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+              { 'md-valid': !errors.has('licence') && touched.licence },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('licence') }
+            ]">
+          <md-icon><i class="far fa-id-badge"></i></md-icon>
+          <label for="licence">Do you have a Driver's licence?</label>
+          <md-select class="pad" @input="addLicence" v-model="licence" data-vv-name="licence" name="licence" required v-validate="modelValidations.licence">
+            <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('licence')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('licence') && touched.licence">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+
+        <md-field v-if="licence == 'Yes'" :class="[
+              { 'md-valid': !errors.has('vehicle') && touched.vehicle },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('vehicle') }
+            ]">
+          <md-icon><i class="fas fa-car"></i></md-icon>
+          <label for="vehicle">Do you have your own vehicle?</label>
+          <md-select class="pad" @input="addVehicle" v-model="vehicle" data-vv-name="vehicle" name="vehicle" required v-validate="modelValidations.vehicle">
+            <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('vehicle')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('vehicle') && touched.vehicle">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+        
         <md-field :class="[
             { 'md-valid': !errors.has('bio') && touched.bio },
-            { 'md-form-group': true },
             { 'md-error': errors.has('bio') }
           ]">
-          <label>About Me</label>
-          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" required v-validate="modelValidations.bio"></md-textarea>
+          <label>Professional Summary</label>
+          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" aria-placeholder="2 to 3 Sentences about your overall experience" required v-validate="modelValidations.bio"></md-textarea>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('bio')">close</md-icon>
           </slide-y-down-transition>
@@ -144,16 +126,37 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-    </div> 
+    </div>
+    <modal v-if="modal" @close="modalHide">
+      <template slot="header">
+        <h4 class="modal-title black">{{ header }}</h4>
+        <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+          <md-icon>clear</md-icon>
+        </md-button>
+      </template>
+      <template slot="body">
+        <p class="black">{{ body }}</p>
+      </template>
+      <template slot="footer">
+        <div class="centre">
+          <!-- Modal: Verify Email and continue creating account -->
+          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+        </div>
+      </template>
+    </modal> 
   </div>
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import moment from "moment";
+import debounce from "debounce";
 export default {
   components: {
-    SlideYDownTransition
+    SlideYDownTransition,
+    Modal
   },
   props: {
     avatar: {
@@ -163,33 +166,32 @@ export default {
   },
   data() {
     return {
+      alias: null,
       image: "",
-      firstName: null,
-      lastName: null,
+      loading: null,
+      modal: false,
+      header: "",
+      body: "",
+      user: null,
+      student: null,
       dob: null,
       gender: null,
       race: null,
-      phone: null,
+      licence: null,
+      vehicle: "No",
       bio: null,
       genders:[],
       races:[],
+      yes_no:[],
       touched: {
-        firstName: false,
-        lastName: false,
         dob: false,
         gender: false,
         race: false,
-        phone: false,
         bio: false
       },
       modelValidations: {
-        firstName: {
-          required: true,
-          min: 2
-        },
-        lastName: {
-          required: true,
-          min: 2
+        dob: {
+          required: true
         },
         gender: {
           required: true
@@ -197,20 +199,53 @@ export default {
         race: {
           required: true
         },
-        phone: {
+        bio: {
           required: true,
           min: 10,
-          max: 10
-        },
-        bio: {
-          required: true
+          max: 100
         }
       }
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
+    previewImage(event) {
+      var file = event.target.files[0];
+      if(file.size < 2 * 1024 * 1024) { // less than 2MB
+        this.fileUpload(file);
+      }
+      else {
+        this.modal = true;
+        this.header = "Whoa there! ✋";
+        this.body = "You cannot exceed the file limit of 2MB";
+      }
+    },
+    fileUpload(data) {
+      this.loading = true;
+      const storageRef = firebase.storage().ref().child('users/students/' + this.alias + '/profile/' + data.name).put(data);
+      storageRef.on(`state_changed`, snapshot => {
+      }, error => {
+        console.log(error.message);
+      }, () => {
+        storageRef.snapshot.ref.getDownloadURL().then(url => {
+          this.image = url;
+          console.log(this.image)
+          this.updateAccount();
+          this.loading = false;
+        });
+      })
+    },
+    calculateAge(birthday) {
+      var today = new Date();
+      var birthDate = new Date(birthday);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+      }
+      return age;
+    },
+    modalHide() {
+      this.modal = false;
     },
     getError(fieldName) {
       return this.errors.first(fieldName);
@@ -221,49 +256,149 @@ export default {
         return res;
       });
     },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
-    addFirstName: function() {
-      this.$emit("firstName", this.firstName);
-    },
-    addLastName: function() {
-      this.$emit("lastName", this.lastName);
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.student.get().then(doc => {
+        if(doc.exists) {
+          if(this.dob) {
+            this.student.update({
+              dateOfBirth: moment(this.dob).format('L'),
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+          if(this.image) {
+            this.student.update({
+              profile: this.image,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+          if(this.gender) {
+            this.student.update({
+              gender: this.gender,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+          if(this.race) {
+            this.student.update({
+              race: this.race,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+          if(this.licence === "No") {
+            this.vehicle = "No";
+            this.student.update({
+              vehicle: this.vehicle,
+              licence: this.licence,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          else {
+            this.student.update({
+              licence: this.licence,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.vehicle) {
+            this.student.update({
+              vehicle: this.vehicle,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.bio) {
+            this.student.update({
+              bio: this.bio,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+        }
+        
+        if(doc.exists === false) {
+          this.student.set({
+            userId: this.user.uid,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format('L'),
+            dateOfBirth: moment(this.dob).format('L'),
+            gender: this.gender,
+            race: this.race,
+            licence: this.licence,
+            vehicle: this.vehicle,
+            bio: this.bio,
+            institution: null,
+            institutionType: "University",
+            campus: null,
+            studentNo: null,
+            faculty: null,
+            degree: null,
+            year: null,
+            jobTitle1: null,
+            employer1: null,
+            startDate1: null,
+            endDate1: null,
+            description1: null,
+            graduateStatus: null,
+            accountName: null,
+            accountNumber: null,
+            accountType: null,
+            bankName: null,
+            branchCode: null,
+            accountCreated: false,
+            portfolio: null,
+            linkedIn: null,
+            facebook: null,
+            twitter: null,
+            instagram: null,
+            gitHub: null,
+            portfolio: null,
+            personalWebsite: null,
+            profile: null
+          });
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addDob: function() {
-      this.$emit("dob", this.dob);
+      if(this.calculateAge(this.dob) > 17) {
+        this.$emit("dob", this.dob);
+        this.debouncedUpdate();
+      }
+      else {
+        this.dob = null;
+        this.modal = true;
+        this.header = "Under The Age Limit! ✋";
+        this.body = "Unfortunately, you are too young to sign up to the platform.";
+      }
     },
     addGender: function() {
       this.$emit("gender", this.gender);
+      this.debouncedUpdate();
     },
     addRace: function() {
       this.$emit("race", this.race);
+      this.debouncedUpdate();
     },
-    addPhone: function() {
-      this.$emit("phone", this.phone);
+    addLicence: function() {
+      this.$emit("licence", this.licence);
+      this.debouncedUpdate();
+    },
+    addVehicle: function() {
+      this.$emit("vehicle", this.vehicle);
+      this.debouncedUpdate();
     },
     addBio: function() {
       this.$emit("bio", this.bio);
+      this.debouncedUpdate();
     }
   },
   watch: {
-    firstName() {
-      this.touched.firstName = true;
-    },
-    lastName() {
-      this.touched.lastName = true;
-    },
     dob() {
       this.touched.dob = true;
     },
@@ -273,40 +408,56 @@ export default {
     race() {
       this.touched.race = true;
     },
-    phone() {
-      this.touched.phone = true;
-    },
     bio() {
       this.touched.bio = true;
+    },
+    licence() {
+      this.touched.licence = true;
+    },
+    vehicle() {
+      this.touched.vehicle = true;
     }
   },
   created() {
-    let user = firebase.auth().currentUser;
-    let student = db.collection('students');
-    let studentUser = db.collection('users');
-    studentUser.where('userId', '==', user.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.firstName = doc.data().name;
-        this.lastName = doc.data().surname;
-        this.phone = doc.data().phone;
-      });
-    });
-    student.where('userId', '==', user.uid).get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        this.dob = new Date(doc.data().dateOfBirth);
-        this.gender = doc.data().gender;
-        this.race = doc.data().race;
-        this.bio = doc.data().bio;
-      });
-    });
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.genders = doc.data().Genders;
-      this.races = doc.data().Races; 
+      this.races = doc.data().Races;
+      this.yes_no = doc.data().yes_no;
+
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.id;
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.dob = new Date(doc.data().dateOfBirth);
+            this.gender = doc.data().gender;
+            this.race = doc.data().race;
+            this.bio = doc.data().bio;
+            this.licence = doc.data().licence;
+            this.vehicle = doc.data().vehicle;
+            this.image = doc.data().profile;
+            console.log(doc.data())
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
     });
   }
 };
 </script>
-<style></style>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .md-field label {
+    font-size: 11px;
+  }
+}
+</style>

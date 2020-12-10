@@ -1,7 +1,8 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="updateAccount" @input="fieldUpdate">
-      <notifications></notifications>
+    <form @submit.prevent="createAccount">
+      <div v-if="loading" class="background"></div>
+      <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -38,24 +39,24 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                <div class="pc-view">Previous</div>
+                <div class="pc-view">{{ prevButtonText }}</div>
                 <div class="mobi-view"><i class="fas fa-arrow-left"></i></div>
               </md-button>
             </div>
 
             <div>
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
-                <div class="pc-view">Next</div>
+                <div class="pc-view">{{ nextButtonText }}</div>
                 <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
-              <!-- <button v-else class="md-button md-success md-theme-default" slot="footer">
+              <button v-else class="md-button md-success md-theme-default" slot="footer">
                 <div class="md-ripple">
                   <div class="md-button-content">
-                    <div class="pc-view">Update</div>
+                    <div class="pc-view">{{ finishButtonText }}</div>
                     <div class="mobi-view"><i class="fa fa-check"></i></div>
                   </div>
                 </div>
-              </button> -->
+              </button>
             </div>
           </slot>
         </md-card-actions>
@@ -68,7 +69,7 @@ import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import moment from "moment";
-import { debounce } from "debounce";
+
 export default {
   name: "simple-wizard",
   props: {
@@ -84,14 +85,20 @@ export default {
       type: String,
       default: "Subtitle"
     },
+    prevButtonText: {
+      type: String,
+      default: "Previous"
+    },
+    nextButtonText: {
+      type: String,
+      default: "Next"
+    },
+    finishButtonText: {
+      type: String,
+      default: "Finish"
+    },
     vertical: {
       type: Boolean
-    },
-    firstName: {
-      required: true
-    },
-    lastName: {
-      required: true
     },
     dob: {
       required: true
@@ -100,9 +107,6 @@ export default {
       required: true
     },
     race: {
-      required: true
-    },
-    phone: {
       required: true
     },
     bio: {
@@ -146,7 +150,8 @@ export default {
     },
     branchCode: {
       required: true
-    }
+    },
+    email: {}
   },
   components: {
     TabItemContent: {
@@ -168,7 +173,11 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
+      user: null,
+      emailVerified: null,
       feedback: null,
+      alias: null,
+      loading: true
     };
   },
   computed: {
@@ -214,156 +223,184 @@ export default {
     addFeedback: function() {
       this.$emit("feedback", this.feedback);
     },
-    fieldUpdate() {
-      this.debouncedUpdate();
+    addEmailVerified: function() {
+      this.$emit("emailVerified", this.emailVerified);
     },
-    debouncedUpdate: debounce(function() {
-      this.updateAccount();
-    }, 300),
-    async updateAccount() {
-      let ref = db.collection('users');
-      let user = firebase.auth().currentUser;
-      ref.where('userId', '==', user.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-          let student = db.collection('students').doc(doc.id);
-          let users = db.collection('users').doc(doc.id);
-          if(this.firstName) {
-            users.update({
-              name: this.firstName,
+    createAccount() {
+      this.loading = true;
+      this.user.reload().then(() => {
+        this.emailVerified = this.user.emailVerified;
+        this.addEmailVerified();
+      });
+
+      if(this.user.emailVerified) {
+        let students = db.collection('students').doc(this.alias);
+        students.get().then(doc => {
+          if(doc.exists) {
+            if(this.dateOfBirth) {
+              students.update({
+                dateOfBirth: moment(this.dob).format('L'),
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.gender) {
+              students.update({
+                gender: this.gender,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.race) {
+              students.update({
+                race: this.race,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.bio) {
+              students.update({
+                bio: this.bio,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.institution) {
+              students.update({
+                institution: this.institution,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.campus) {
+              students.update({
+                campus: this.campus,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.studentNo) {
+              students.update({
+                studentNo: this.studentNo,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.faculty) {
+              students.update({
+                faculty: this.faculty,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.degree) {
+              students.update({
+                degree: this.degree,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.year) {
+              students.update({
+                year: this.year,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.graduateStatus) {
+              students.update({
+                graduateStatus: this.graduateStatus,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.accountName) {
+              students.update({
+                accountName: this.accountName,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.accountNumber) {
+              students.update({
+                accountNumber: this.accountNumber.toString(),
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.accountType) {
+              students.update({
+                accountType: this.accountType,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.bankName) {
+              students.update({
+                bankName: this.bankName,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.branchCode) {
+              students.update({
+                branchCode: this.branchCode.toString(),
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            students.update({
+              accountCreated: true,
               lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.lastName) {
-            users.update({
-              surname: this.lastName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          } 
-          if(this.phone) {
-            users.update({
-              phoneNumber: this.phone,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.dob) {
-            student.update({
+          else {
+            students.set({
+              userId: this.user.uid,
+              created: moment(Date.now()).format('L'),
+              lastModified: moment(Date.now()).format('L'),
               dateOfBirth: moment(this.dob).format('L'),
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.gender) {
-            student.update({
               gender: this.gender,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.race) {
-            student.update({
               race: this.race,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.bio) {
-            student.update({
               bio: this.bio,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.institution) {
-            student.update({
               institution: this.institution,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.campus) {
-            student.update({
+              institutionType: "University",
               campus: this.campus,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.studentNo) {
-            student.update({
               studentNo: this.studentNo,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.faculty) {
-            student.update({
               faculty: this.faculty,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.degree) {
-            student.update({
               degree: this.degree,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.major) {
-            student.update({
-              major: this.major,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.year) {
-            student.update({
               year: this.year,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.graduateStatus) {
-            student.update({
               graduateStatus: this.graduateStatus,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountName) {
-            student.update({
               accountName: this.accountName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountNumber) {
-            student.update({
               accountNumber: this.accountNumber.toString(),
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.accountType) {
-            student.update({
               accountType: this.accountType,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.bankName) {
-            student.update({
               bankName: this.bankName,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.branchCode) {
-            student.update({
               branchCode: this.branchCode.toString(),
-              lastModified: moment(Date.now()).format('L')
+              accountCreated: true,
+              portfolio: null,
+              linkedIn: null,
+              facebook: null,
+              twitter: null,
+              instagram: null
             });
           }
+          db.collection('vetted').doc(this.alias).set({
+            userId: this.user.uid,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format('L'),
+            blogWriter: false,
+            brandStrategy: false,
+            copywriter: false,
+            dataEntry: false,
+            graphicDesigner: false,
+            photographer: false,
+            promoter: false,
+            salesperson: false,
+            socialMediaManager: false,
+            translater: false,
+            videoEditor: false,
+            webDeveloper: false,
+            itTechnician: false,
+            databaseAdministrator: false,
+            pythonDeveloper: false,
+            jsDeveloper: false,
+            angularDeveloper: false,
+            vueDeveloper: false,
+            reactDevloper: false,
+            sqlDeveloper: false
+          });
+          this.$router.push({ name: "apply" });
+          this.loading = false;
         });
-      })
-      .then(() => {
-        this.$notify(
-        {
-          message: 'Your data has been automatically saved!',
-          icon: 'add_alert',
-          horizontalAlign: 'center',
-          verticalAlign: 'top',
-          type: 'success'
-        });
-      })
-      .catch(err => {
-        // An error happened.
-        this.feedback = err.message;
-      })
+      } else {
+        this.feedback = "You have not verified that " + this.email + " is your email address."
+        this.loading = false;
+        this.addFeedback();
+      }
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -403,6 +440,11 @@ export default {
       }
     },
     async nextTab() {
+      if(!this.user.emailVerified){
+        this.user.reload();
+        this.emailVerified = this.user.emailVerified;
+        this.addEmailVerified();
+      }
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
@@ -410,6 +452,11 @@ export default {
       return isValid;
     },
     prevTab() {
+      if(!this.user.emailVerified){
+        this.user.reload();
+        this.emailVerified = this.user.emailVerified;
+        this.addEmailVerified();
+      }
       this.activeTabIndex--;
     },
     async navigateToTab(index) {
@@ -462,6 +509,17 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
+  },
+  created() {
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.alias = doc.id;
+      });
+    });
+    this.loading = false;
   }
 };
 </script>
@@ -476,7 +534,9 @@ export default {
   }
 }
 
-/** Extra niceties. Display error tabs and disable navigation unvisited tabs */
+/**
+    Extra niceties. Display error tabs and disable navigation unvisited tabs
+   */
 .wizard-navigation .nav-link {
   &.active,
   &.checked {
@@ -486,5 +546,17 @@ export default {
 
 .disabled-wizard-link {
   cursor: not-allowed;
+}
+
+@media only screen and (max-width: 768px) {
+  .pc-view {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobi-view {
+    display: none;
+  }
 }
 </style>

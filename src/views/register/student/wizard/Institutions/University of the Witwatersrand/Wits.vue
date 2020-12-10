@@ -911,20 +911,14 @@ export default {
       },
       addFaculty: function() {
         this.$emit("faculty", this.faculty);
-        if(this.graduateStatus){this.graduateStatus = null;}
-        if(this.year){this.year = null;}
-        if(this.degree){this.degree = null;}
         this.debouncedUpdate();
       },
       addGraduateStatus: function() {
         this.$emit("graduateStatus", this.graduateStatus);
-        if(this.year){this.year = null;}
-        if(this.degree){this.degree = null;}
         this.debouncedUpdate();
       },
       addYear: function() {
       this.$emit("year", this.year);
-      if(this.degree){this.degree = null;}
         this.debouncedUpdate();
       },
       addDegree: function() {

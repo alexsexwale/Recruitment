@@ -1,161 +1,190 @@
 <template>
   <div>
     <h5 class="info-text">
-      What are your banking details?
+      Tell us about your most recent work experience?
     </h5>
-    <div class="md-layout">
-
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout">
+      <notifications></notifications>
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('accountName') && touched.accountName },
+            { 'md-valid': !errors.has('jobTitle1') && touched.jobTitle1 },
             { 'md-form-group': true },
-            { 'md-error': errors.has('accountName') }
+            { 'md-error': errors.has('jobTitle1') }
           ]">
-          <md-icon><i class="fas fa-address-card"></i></md-icon>
-          <label>Account Holder</label>
-          <md-input @change="addAccountName" v-model="accountName" data-vv-name="accountName" type="text" name="accountName" required v-validate="modelValidations.accountName">
+          <md-icon><i class="fas fa-briefcase"></i></md-icon>
+          <label>Job Title</label>
+          <md-input @change="addJobTitle1" v-model="jobTitle1" data-vv-name="jobTitle1" type="text" name="jobTitle1" required v-validate="modelValidations.jobTitle1">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('jobTitle1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('jobTitle1') && touched.email">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('accountNumber') && touched.accountNumber },
+            { 'md-valid': !errors.has('employer1') && touched.employer1 },
             { 'md-form-group': true },
-            { 'md-error': errors.has('accountNumber') }
+            { 'md-error': errors.has('employer1') }
           ]">
-          <md-icon><i class="fas fa-wallet"></i></md-icon>
-          <label>Account Number</label>
-          <md-input @change="addAccountNumber" v-model="accountNumber" data-vv-name="accountNumber" type="number" name="accountNumber" required v-validate="modelValidations.accountNumber">
+          <md-icon><i class="fas fa-user-tie"></i></md-icon>
+          <label>Employer</label>
+          <md-input @change="addEmployer1" v-model="employer1" data-vv-name="employer1" type="text" name="employer1" required v-validate="modelValidations.employer1">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('accountNumber')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('employer1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('accountNumber') && touched.accountNumber">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('accountemployer1Number') && touched.employer1">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('accountType') && touched.accountType },
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+        <md-datepicker @input="addStartDate1" v-model="startDate1" data-vv-name="startDate1" required v-validate="modelValidations.startDate1"
+          :class="[
+            { 'md-valid': !errors.has('startDate1') && touched.startDate1 },
             { 'md-form-group': true },
-            { 'md-error': errors.has('accountType') }
+            { 'md-error': errors.has('startDate1') }
           ]">
-          <md-icon><i class="fas fa-piggy-bank"></i></md-icon>
-          <label>Account Type</label>
-          <md-select class="pad" @input="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
-            <md-option v-for="(accountType, index) in accountTypes" :key="index" :value="accountType">{{accountType}}</md-option>
-          </md-select>
+          <label>Start Date</label>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('accountType')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('startDate1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('accountType') && touched.accountType">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('startDate1') && touched.startDate1">done</md-icon>
           </slide-y-down-transition>
-        </md-field>
+        </md-datepicker>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('bankName') && touched.bankName },
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" required v-validate="modelValidations.endDate1"
+          :class="[
+            { 'md-valid': !errors.has('endDate1') && touched.endDate1 },
             { 'md-form-group': true },
-            { 'md-error': errors.has('bankName') }
+            { 'md-error': errors.has('endDate1') }
           ]">
-          <md-icon><i class="fas fa-university"></i></md-icon>
-          <label>Bank Name</label>
-          <md-select class="pad" @input="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
-            <md-option v-for="(bankName, index) in bankNames" :key="index" :value="bankName">{{bankName}}</md-option>
-          </md-select>
+          <label>End Date</label>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('bankName')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('endDate1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('bankName') && touched.bankName">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('endDate1') && touched.endDate1">done</md-icon>
           </slide-y-down-transition>
-        </md-field>
+        </md-datepicker>
+        <md-checkbox v-model="work" @click="hideEndDate">I currently work here.</md-checkbox>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('branchCode') && touched.branchCode },
+            { 'md-valid': !errors.has('description1') && touched.description1 },
             { 'md-form-group': true },
-            { 'md-error': errors.has('branchCode') }
+            { 'md-error': errors.has('description1') }
           ]">
-          <md-icon><i class="fas fa-stamp"></i></md-icon>
-          <label>Branch Code</label>
-          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="number" name="branchCode" required v-validate="modelValidations.branchCode">
-          </md-input>
+          <label>Description of experience</label>
+          <md-textarea class="pad" @input="addDescription1" v-model="description1" data-vv-name="description1" type="description1" name="description1" required v-validate="modelValidations.description1">
+          </md-textarea>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('branchCode')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('description1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('branchCode') && touched.branchCode">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('description1') && touched.description1">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
+      <modal v-if="modal" @close="modalHide">
+        <template slot="header">
+          <h4 class="modal-title black">Whoa there! ✋</h4>
+          <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
+            <md-icon>clear</md-icon>
+          </md-button>
+        </template>
+        <template slot="body">
+          <p class="black">You cannot select a future date.</p>
+        </template>
+        <template slot="footer">
+          <div class="centre">
+            <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+          </div>
+        </template>
+      </modal>
     </div>
   </div>
 </template>
 <script>
 import { SlideYDownTransition } from "vue2-transitions";
+import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
 import debounce from "debounce";
+import moment from "moment";
 export default {
   components: {
-    SlideYDownTransition
+    SlideYDownTransition,
+    Modal
   },
   data() {
     return {
-      studentId: null,
-      accountName: null,
-      accountNumber: null,
-      accountType: null,
-      bankName: null,
-      branchCode: null,
-      accountTypes: [],
-      bankNames: [],
+      user: null,
+      modal: false,
+      student: null,
+      jobTitle1: null,
+      employer1: null,
+      startDate1: null,
+      endDate1: null,
+      work: false,
+      description1: null,
       touched: {
-        accountName: false,
-        accountNumber: false,
-        accountType: false,
-        bankName: false,
-        branchCode: false
+        jobTitle1: false,
+        employer1: false,
+        startDate1: false,
+        endDate1: false,
+        description1: false
       },
       modelValidations: {
-        accountName: {
-          required: true
-        },
-        accountNumber: {
+        jobTitle1: {
           required: true,
-          min: 4,
-          max: 11
+          min: 2
         },
-        accountType: {
-          required: true
-        },
-        bankName: {
-          required: true
-        },
-        branchCode: {
+        employer1: {
           required: true,
-          min: 6,
-          max: 6
+          min: 2
+        },
+        startDate1: {
+          required: true
+        },
+        endDate1: {
+          required: true
+        },
+        description1: {
+          required: true,
+          min: 10,
+          max: 100
         }
       }
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
+    modalHide() {
+      this.modal = false;
+    },
+    hideEndDate() {
+      this.work = !this.work;
+      if(this.work === true){
+        this.endDate1 = null;
+        this.addEndDate1();
+      }
+    },
+    futureDate(idate) {
+      //idate = moment(idate).format('L');
+      var today = new Date();//, idate = idate.split("/");
+      //idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
+      idate = new Date(idate);
+      console.log(today > idate)
+      return today > idate;
     },
     getError(fieldName) {
       return this.errors.first(fieldName);
@@ -166,50 +195,40 @@ export default {
         return res;
       });
     },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
     debouncedUpdate: debounce(function() {
       this.updateAccount();
     }, 1500),
     updateAccount() {
-      let student = db.collection('students').doc(this.studentId);
-      student.get().then(doc => {
+      this.student.get().then(doc => {
         if(doc.exists) {
-          if(this.accountName) {
-            student.update({
-              accountName: this.accountName
+          if(this.jobTitle1) {
+            this.student.update({
+              jobTitle1: this.jobTitle1,
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.accountNumber) {
-            student.update({
-              accountNumber: this.accountNumber
+          if(this.employer1) {
+            this.student.update({
+              employer1: this.employer1,
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.accountType) {
-            student.update({
-              accountType: this.accountType
+          if(this.startDate1) {
+            this.student.update({
+              startDate1: moment(this.startDate1).format('L'),
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.bankName) {
-            student.update({
-              bankName: this.bankName
+          if(this.endDate1) {
+            this.student.update({
+              endDate1: moment(this.endDate1).format('L'),
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.branchCode) {
-            student.update({
-              branchCode: this.branchCode
+          if(this.description1) {
+            this.student.update({
+              description1: this.description1,
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }
@@ -223,64 +242,92 @@ export default {
         type: 'success'
       });
     },
-    addAccountName: function() {
-      this.$emit("accountName", this.accountName);
+    addJobTitle1: function() {
+      this.$emit("jobTitle1", this.jobTitle1);
       this.debouncedUpdate();
     },
-    addAccountNumber: function() {
-      this.$emit("accountNumber", this.accountNumber);
+    addEmployer1: function() {
+      this.$emit("employer1", this.employer1);
       this.debouncedUpdate();
     },
-    addAccountType: function() {
-      this.$emit("accountType", this.accountType);
-      this.debouncedUpdate();
+    addStartDate1: function() {
+      // if(this.futureDate(this.startDate1 && !this.startDate1)) {
+      //   this.startDate1 = null;
+      //   this.modal = true;
+      // }
+      // else {
+      //   this.$emit("startDate1", this.startDate1);
+      //   this.debouncedUpdate();
+      // }
+      this.$emit("startDate1", this.startDate1);
+        this.debouncedUpdate();
+      
     },
-    addBankName: function() {
-      this.$emit("bankName", this.bankName);
-      this.debouncedUpdate();
+    addEndDate1: function() {
+      // if(this.futureDate(this.endDate1)) {
+      //   this.endDate1 = null;
+      //   this.modal = true;
+      // }
+      // else {
+      //   this.$emit("endDate1", this.endDate1);
+      //   this.debouncedUpdate();
+      // }
+      this.$emit("endDate1", this.endDate1);
+        this.debouncedUpdate();
     },
-    addBranchCode: function() {
-      this.$emit("branchCode", this.branchCode);
+    addDescription1: function() {
+      this.$emit("description1", this.description1);
       this.debouncedUpdate();
     }
   },
   watch: {
-    accountName() {
-      this.touched.accountName = true;
+    jobTitle1() {
+      this.touched.jobTitle1 = true;
     },
-    accountNumber() {
-      this.touched.accountNumber = true;
+    employer1() {
+      this.touched.employer1 = true;
     },
-    accountType() {
-      this.touched.accountType = true;
+    startDate1() {
+      this.touched.startDate1 = true;
     },
-    bankName() {
-      this.touched.bankName = true;
+    endDate1() {
+      this.touched.endDate1 = true;
     },
-    branchCode() {
-      this.touched.branchCode = true;
+    description1() {
+      this.touched.description1 = true;
     }
   },
   created() {
-    let user = firebase.auth().currentUser;
-    let student = db.collection('students');
-    let settings = db.collection('Settings').doc('Drop-down Lists');
-    settings.get().then(doc => {
-      this.accountTypes = doc.data().AccountTypes;
-      this.bankNames = doc.data().Banks;
-    });
-    student.where('userId', '==', user.uid).get()
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.studentId = doc.id;
-        this.accountName = doc.data().accountName;
-        this.accountNumber = doc.data().accountNumber;
-        this.accountType = doc.data().accountType;
-        this.bankName = doc.data().bankName;
-        this.branchCode = doc.data().branchCode;
-      })
-    })
+        this.student = db.collection('students').doc(doc.id);
+        this.student.get().then(doc => {
+          if(doc.exists) {
+            this.jobTitle1 = doc.data().jobTitle1;
+            this.employer1 = doc.data().employer1;
+            this.startDate1 = new Date(doc.data().startDate1);
+            if(doc.data().endDate1)
+              this.endDate1 = new Date(doc.data().endDate1);
+            else
+              this.endDate1 = null;
+            this.description1 = doc.data().description1;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
+    });
   }
 };
 </script>
-<style></style>
+<style scoped>
+@media only screen and (max-width: 768px) {
+  .md-field label {
+    font-size: 11px;
+  }
+}
+</style>
