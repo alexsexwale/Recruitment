@@ -1,9 +1,8 @@
 <template>
   <div class="user">
     <div class="photo">
-      <img :src="avatar" alt="avatar" />
-      <img v-if="student && student.profile" :src="student.profile" alt="avatar" />
-      <img v-if="client && client.profile" :src="student.profile" alt="avatar" />
+      <img v-if="!student.profile" :src="avatar" alt="avatar" />
+      <img v-if="student.profile" :src="student.profile" alt="avatar" />
     </div>
     <div class="user-info">
       <a data-toggle="collapse" :aria-expanded="!isClosed" @click.stop="toggleMenu" @click.capture="clicked">
@@ -62,13 +61,9 @@ export default {
     CollapseTransition
   },
   props: {
-    title: {
-      type: String,
-      default: "Lesedi Nkosi"
-    },
     avatar: {
       type: String,
-      default: "/img/dashboard/client/card-1.jpg"
+      default: "./img/default-avatar.png"
     }
   },
   data() {
@@ -108,6 +103,7 @@ export default {
           let student = db.collection('students').doc(this.alias);
           student.get().then(student => {
             this.student = student.data(); 
+            console.log(this.student)
           });
         }
         else {

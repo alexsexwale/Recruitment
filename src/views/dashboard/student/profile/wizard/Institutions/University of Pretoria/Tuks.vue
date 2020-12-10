@@ -898,26 +898,6 @@
       </md-field>
     </div>
 
-    <!-- Campus -->
-    <div class="md-layout-item ml-auto mt-4 md-small-size-100" v-if="faculty">
-      <md-field :class="[
-          { 'md-valid': !errors.has('campus') && touched.campus },
-          { 'md-form-group': true },
-          { 'md-error': errors.has('campus') }
-        ]">
-        <md-icon>school</md-icon>
-        <label>Campus</label>
-        <md-input @change="addCampus" v-model="campus" data-vv-name="campus" type="text" name="campus" required v-validate="modelValidations.campus">
-        </md-input>
-        <slide-y-down-transition>
-          <md-icon class="error" v-show="errors.has('campus')">close</md-icon>
-        </slide-y-down-transition>
-        <slide-y-down-transition>
-          <md-icon class="success" v-show="!errors.has('campus') && touched.campus">done</md-icon>
-        </slide-y-down-transition>
-      </md-field>
-    </div>
-
     <!-- Student Number -->
     <div class="md-layout-item  ml-auto mt-4 md-small-size-100" v-if="faculty">
       <md-field :class="[
@@ -959,7 +939,6 @@ export default {
       degree: null,
       year: null,
       graduateStatus: null,
-      campus: null,
       studentNo: null,
       undergraduateYears: [],
       postgraduateYears: [],
@@ -1016,7 +995,6 @@ export default {
         degree: false,
         year: false,
         graduateStatus: false,
-        campus: false,
         studentNo: false,
       },
       modelValidations: {
@@ -1030,9 +1008,6 @@ export default {
           required: true
         },
         graduateStatus: {
-          required: true
-        },
-        campus: {
           required: true
         },
         studentNo: {
@@ -1067,11 +1042,6 @@ export default {
           if(this.degree) {
             student.update({
               degree: this.degree
-            });
-          }
-          if(this.campus) {
-            student.update({
-              campus: this.campus
             });
           }
           if(this.studentNo) {
@@ -1112,10 +1082,6 @@ export default {
       this.$emit("degree", this.degree);
       this.debouncedUpdate();
     },
-    addCampus: function() {
-      this.$emit("campus", this.campus);
-      this.debouncedUpdate();
-    },
     addStudentNo: function() {
       this.$emit("studentNo", this.studentNo);
       this.debouncedUpdate();
@@ -1139,9 +1105,6 @@ export default {
     },
     graduateStatus() {
       this.touched.graduateStatus = true;
-    },
-    campus() {
-      this.touched.campus = true;
     },
     studentNo() {
       this.touched.studentNo = true;
@@ -1223,7 +1186,6 @@ export default {
             this.graduateStatus = doc.data().graduateStatus;
             this.degree = doc.data().degree;
             this.year = doc.data().year;
-            this.campus = doc.data().campus;
             this.studentNo = doc.data().studentNo;
           }
         })
