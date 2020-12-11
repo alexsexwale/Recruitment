@@ -43,7 +43,7 @@ export default {
   props: {
     cardUserImage: {
       type: String,
-      default: "/img/dashboard/client/card-1.jpg"
+      default: "/img/default-avatar.png"
     }
   },
   methods: {

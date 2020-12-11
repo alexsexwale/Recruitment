@@ -1,8 +1,8 @@
 <template>
   <div class="user">
     <div class="photo">
-      <img v-if="!student.profile" :src="avatar" alt="avatar" />
-      <img v-if="student.profile" :src="student.profile" alt="avatar" />
+      <img v-if="!user.profile" :src="avatar" alt="avatar" />
+      <img v-if="user.profile" :src="user.profile" alt="avatar" />
     </div>
     <div class="user-info">
       <a data-toggle="collapse" :aria-expanded="!isClosed" @click.stop="toggleMenu" @click.capture="clicked">
@@ -63,7 +63,7 @@ export default {
   props: {
     avatar: {
       type: String,
-      default: "./img/default-avatar.png"
+      default: "/img/default-avatar.png"
     }
   },
   data() {
@@ -74,9 +74,8 @@ export default {
       username: null,
       student: null,
       client: null,
-      alias: null,
-      client: {},
-      student: {}
+      user: null,
+      alias: null
     };
   },
   methods: {
@@ -102,12 +101,22 @@ export default {
           this.student = true;
           let student = db.collection('students').doc(this.alias);
           student.get().then(student => {
-            this.student = student.data(); 
-            console.log(this.student)
+            this.user = student.data();
+            if(this.user.profile === null) {
+              this.user.profile = this.avatar;
+            }
           });
         }
         else {
           this.client = true;
+          let client = db.collection('client').doc(this.alias);
+          client.get().then(client => {
+            this.user = client.data(); 
+            console.log(this.user)
+            if(this.user.profile === null) {
+              this.user.profile = this.avatar;
+            }
+          })
         }
       });
     });

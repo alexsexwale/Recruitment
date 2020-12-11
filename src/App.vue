@@ -79,4 +79,8 @@ label, legend {
     transform: rotateY(3600deg);
   }
 }
+/* Profile picture on profile page */
+.md-card-profile .md-card-avatar + .md-card-content, .card-testimonial .md-card-avatar + .md-card-content {
+  margin-top: -10px;
+}
 </style>
