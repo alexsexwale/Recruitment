@@ -13,7 +13,7 @@
           ]">
           <md-icon><i class="fas fa-briefcase"></i></md-icon>
           <label>Job Title</label>
-          <md-input @change="addJobTitle1" v-model="jobTitle1" data-vv-name="jobTitle1" type="text" name="jobTitle1" required v-validate="modelValidations.jobTitle1">
+          <md-input @change="addJobTitle1" v-model="jobTitle1" data-vv-name="jobTitle1" type="text" name="jobTitle1" v-validate="modelValidations.jobTitle1">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('jobTitle1')">close</md-icon>
@@ -32,7 +32,7 @@
           ]">
           <md-icon><i class="fas fa-user-tie"></i></md-icon>
           <label>Employer</label>
-          <md-input @change="addEmployer1" v-model="employer1" data-vv-name="employer1" type="text" name="employer1" required v-validate="modelValidations.employer1">
+          <md-input @change="addEmployer1" v-model="employer1" data-vv-name="employer1" type="text" name="employer1" v-validate="modelValidations.employer1">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('employer1')">close</md-icon>
@@ -44,7 +44,7 @@
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addStartDate1" v-model="startDate1" data-vv-name="startDate1" required v-validate="modelValidations.startDate1"
+        <md-datepicker @input="addStartDate1" v-model="startDate1" data-vv-name="startDate1" v-validate="modelValidations.startDate1"
           :class="[
             { 'md-valid': !errors.has('startDate1') && touched.startDate1 },
             { 'md-form-group': true },
@@ -61,7 +61,7 @@
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" required v-validate="modelValidations.endDate1"
+        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" v-validate="modelValidations.endDate1"
           :class="[
             { 'md-valid': !errors.has('endDate1') && touched.endDate1 },
             { 'md-form-group': true },
@@ -146,21 +146,16 @@ export default {
       },
       modelValidations: {
         jobTitle1: {
-          required: true,
           min: 2
         },
         employer1: {
-          required: true,
           min: 2
         },
         startDate1: {
-          required: true
         },
         endDate1: {
-          required: true
         },
         description1: {
-          required: true,
           min: 10,
           max: 100
         }

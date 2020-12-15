@@ -5,7 +5,8 @@
     <div class="md-layout-item md-small-size-100">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
-          <img class="img" :src="cardUserImage" />
+          <img v-if="profile.profile" class="img" :src="profile.profile" />
+          <img v-if="!profile.profile" class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
           <hr v-if="edit">
@@ -66,11 +67,9 @@ export default {
     //   });
     // });
     let user = db.collection('users').doc(this.$route.params.id);
-    let auth = null;
     user.get().then(user => {
         this.user = user.data();
-        auth = firebase.auth().currentUser.uid;
-        if(auth == this.user.userId)
+        if(firebase.auth().currentUser.uid == this.user.userId)
           this.edit = true;
     });
 

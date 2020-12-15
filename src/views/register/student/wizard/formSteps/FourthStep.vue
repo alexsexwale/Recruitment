@@ -16,7 +16,7 @@
           ]">
           <md-icon><i class="fab fa-linkedin"></i></md-icon>
           <label>LinkedIn</label>
-          <md-input @change="addLinkedIn" v-model="linkedIn" data-vv-name="linkedIn" type="text" name="linkedIn" required v-validate="modelValidations.linkedIn"></md-input>
+          <md-input @change="addLinkedIn" v-model="linkedIn" data-vv-name="linkedIn" type="text" name="linkedIn" v-validate="modelValidations.linkedIn"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('linkedIn')">close</md-icon>
           </slide-y-down-transition>
@@ -254,16 +254,16 @@ export default {
       modal: null,
       alias: null,
       loading: false,
-      linkedIn: null,
-      facebook: null,
-      twitter: null,
-      instagram: null,
-      github: null,
+      linkedIn: "https://www.linkedin.com/in/",
+      facebook: "https://www.facebook.com/",
+      twitter: "https://www.twitter.com/",
+      instagram: "https://www.instagram.com/",
+      github: "https://www.github.com/",
       portfolio: null,
       certificate1: null,
       certificate2: null,
       certificate3: null,
-      personalWebsite: null,
+      personalWebsite: "https://www.",
       id: null,
       cv: null,
       uploadCV: 0,
@@ -283,22 +283,40 @@ export default {
       },
       modelValidations: {
         linkedIn: {
-          min: 6
+          min: 6,
+          url: {
+            require_protocol: true 
+          }
         },
         facebook: {
-          min: 6
+          min: 6,
+          url: { 
+            require_protocol: true 
+          }
         },
         twitter: {
-          min: 6
+          min: 6,
+          url: { 
+            require_protocol: true 
+          }
         },
         instagram: {
-          min: 6
+          min: 6,
+          url: { 
+            require_protocol: true 
+          }
         },
         github: {
-          min: 6
+          min: 6,
+          url: {
+            require_protocol: true 
+          }
         },
         personalWebsite: {
-          min: 6
+          min: 6,
+          url: {
+            require_protocol: true 
+          }
         },
         portfolio: {
         },

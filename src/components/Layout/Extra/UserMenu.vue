@@ -74,7 +74,7 @@ export default {
       username: null,
       student: null,
       client: null,
-      user: null,
+      user: {},
       alias: null
     };
   },
@@ -109,10 +109,9 @@ export default {
         }
         else {
           this.client = true;
-          let client = db.collection('client').doc(this.alias);
+          let client = db.collection('clients').doc(this.alias);
           client.get().then(client => {
             this.user = client.data(); 
-            console.log(this.user)
             if(this.user.profile === null) {
               this.user.profile = this.avatar;
             }
