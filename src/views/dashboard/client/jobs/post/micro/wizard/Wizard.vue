@@ -214,7 +214,8 @@ export default {
             clientName: this.person.name + " " + this.person.surname,
             companyName: this.client.companyName,
             email: this.person.email,
-            phone: this.person.phone
+            phone: this.person.phone,
+            clientProfile: this.person.profile
           });
 
           db.collection('micros').doc(this.slug).set({
@@ -389,6 +390,13 @@ export default {
       snapshot.forEach(doc => {
         this.person = doc.data();
         this.alias = doc.id;
+        if(this.person.user === "client") {
+          db.collection('clients').doc(this.alias).get()
+          .then(doc => {
+            // To do: Move the profile to the users document. Not necessary to call two api's
+            this.person.profile = doc.data().profile;
+          }); 
+        }
       });
     });
     let businessModel = db.collection('Settings').doc('Business Model');

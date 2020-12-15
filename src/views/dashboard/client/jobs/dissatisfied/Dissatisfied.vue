@@ -5,7 +5,8 @@
   <div class="md-layout" v-if="dissatisfiedJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
-        <img class="img" slot="imageHeader" :src="product1" />
+        <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
+        <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
           <md-icon>art_track</md-icon>
@@ -92,7 +93,7 @@ export default {
       snapshot.forEach(doc => {
         let jobId = doc.data().jobId;
         let jobType = doc.data().jobType;
-
+        let profilePicture = doc.data().clientProfile;
         // display micro jobs
         micro.where('jobId', '==', jobId).where('status', '==', 'dissatisfied').get()
         .then(snapshot => {
@@ -101,16 +102,14 @@ export default {
             let job = doc.data();
             job.id = doc.id;
             job.type = jobType;
+            
             db.collection('skills').doc(doc.id).get().then(doc => {
-            job.category = doc.data().category;
+              job.category = doc.data().category;
+              job.profilePicture = profilePicture;
               this.jobs.push(job);
             });
           });
         });
-        // display reccuring jobs
-        // display internship jobs
-        // display part-time jobs
-        // display full-time jobs
       });
     });
     if(this.dissatisfiedJobs === null) 

@@ -443,7 +443,6 @@ export default {
             this.licence = doc.data().licence;
             this.vehicle = doc.data().vehicle;
             this.image = doc.data().profile;
-            console.log(doc.data())
           }
         })
         .catch(err => {

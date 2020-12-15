@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5 class="info-text">Let us know what your budget is. Minimum amount is R10.00</h5>
+    <h5 class="info-text">Let us know what your budget is. Minimum amount is <b><u>R400.00</u></b></h5>
     <div class="md-layout">
       <div class="md-layout-item mt-4 md-size-100">
         <md-field
@@ -11,7 +11,7 @@
           ]">
           <md-icon>face</md-icon>
           <label>Budget</label>
-          <md-input @change="addBudget" v-model="budget" data-vv-name="budget" type="number" name="budget" required v-validate="modelValidations.budget"  :disabled="paid == true"></md-input>
+          <md-input @change="addBudget" v-model="budget" data-vv-name="budget" type="number" min="10" step=".01" name="budget" required v-validate="modelValidations.budget" :disabled="paid == true"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('budget')">close</md-icon>
           </slide-y-down-transition>
@@ -20,14 +20,17 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-       <p>Jobox service fee at 10% <br>Total: R{{ total() }} </p>
+      <p>Jobox service fee ({{ percentage() }}%): <b>R{{ fee() }}</b><br>
+         Payment facilitation fee: <b>R{{ price.facilitationFee }}.00</b> <br><br>
+         <span style="font-size: 20px;">Total: <b><u>R{{ total() }}</u></b></span>
+      </p>
     </div>
   </div>
 </template>
 <script>
-import db from '@/firebase/init';
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import db from '@/firebase/init';
 
 export default {
   components: {
@@ -38,13 +41,14 @@ export default {
     return {
       budget: null,
       paid: null,
+      price: {},
       touched: {
-        budget: false
+        budget: false,
       },
       modelValidations: {
         budget: {
           required: true,
-          min_value: 10
+          min_value: 400
         }
       }
     };
@@ -67,16 +71,27 @@ export default {
       this.$emit("budget", this.budget);
     },
     total() {
-      let total = (this.budget * 1.1).toFixed(2);
+      let total = (((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2));
       return total;
-    }
+    },
+    percentage() {
+      return this.price.serviceFee * 100;
+    },
+    fee() {
+      let fee = ((this.budget * this.price.serviceFee)).toFixed(2);
+      return fee;
+    },
   },
   watch: {
     budget() {
       this.touched.budget = true;
-    }
+    },
   },
   created() {
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
     let job = db.collection('micros').doc(this.$route.params.id);
     job.get().then(doc => {
       this.budget = doc.data().budget;
@@ -85,7 +100,6 @@ export default {
         this.paid = doc.data().inboundPayment;
       });
     });
-    
   }
 };
 </script>
