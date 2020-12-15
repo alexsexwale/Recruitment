@@ -42,6 +42,15 @@
     <div class="main-panel">
       <top-navbar></top-navbar>
 
+      <fixed-plugin
+        :color.sync="sidebarBackground"
+        :colorBg.sync="sidebarBackgroundColor"
+        :sidebarMini.sync="sidebarMini"
+        :sidebarImg.sync="sidebarImg"
+        :image.sync="sidebarBackgroundImage"
+      >
+      </fixed-plugin>
+
       <div :class="{ content: !$route.meta.hideContent }" @click="toggleSidebar">
         <zoom-center-transition :duration="200" mode="out-in">
           <!-- your content here -->
@@ -75,6 +84,7 @@ function initScrollbar(className) {
 import TopNavbar from "./TopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import MobileMenu from "./Extra/MobileMenu.vue";
+import FixedPlugin from "./FixedPlugin.vue";
 import UserMenu from "./Extra/UserMenu.vue";
 import { ZoomCenterTransition } from "vue2-transitions";
 import db from '@/firebase/init';
@@ -85,7 +95,7 @@ export default {
     TopNavbar,
     ContentFooter,
     MobileMenu,
-    // FixedPlugin,
+    FixedPlugin,
     UserMenu,
     ZoomCenterTransition
   },
@@ -93,8 +103,8 @@ export default {
     return {
       sidebarBackgroundColor: "black",
       sidebarBackground: "green",
-      sidebarBackgroundImage: "./img/sidebar-2.jpg",
-      sidebarMini: true,
+      sidebarBackgroundImage: "/img/sidebar-2.jpg",
+      sidebarMini: false,
       sidebarImg: true,
       student: null,
       client: null,

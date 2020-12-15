@@ -70,7 +70,7 @@ export default {
     },
     backgroundImage: {
       type: String,
-      default: "./img/sidebar-2.jpg"
+      default: "/img/sidebar-2.jpg"
     },
     backgroundColor: {
       type: String,

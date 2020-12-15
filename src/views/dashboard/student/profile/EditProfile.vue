@@ -30,17 +30,10 @@
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
-          <h3 v-if="emailVerified" class="title" style="color:#000">Build your profile</h3>
-          <h5 v-if="emailVerified" class="category">
-            This information will let us know more about you.
-          </h5>
-          <div v-else>
-            <p slot="inputs" style="color:red;">Please check your inbox to verify that <b>{{email}}</b> is the email address that you are currently using</p>
-            <md-button @click="verification" class="btn-next md-success">
-              Resend verification
-            </md-button>
-            <br/><br/>
-          </div>
+          <md-button class="btn-next md-success" @click="back">Go Back</md-button>
+          <p></p>
+          <h3 class="title">Edit Your profile</h3>
+          <h5 class="category">This information will let us know more about you.</h5>
         </template>
 
         <wizard-tab :before-change="() => validateStep('step1')">
@@ -206,6 +199,9 @@ export default {
     Wits
   },
   methods: {
+    back() {
+      this.$router.go(-1);
+    },
     modalHide() {
       this.modal = false;
     },
@@ -214,16 +210,6 @@ export default {
     },
     onStepValidated(validated, model) {
       this.wizardModel = { ...this.wizardModel, ...model };
-    },
-    verification() {
-      this.user.sendEmailVerification().then(() => {
-        this.modal = true;
-        this.feedback = "Email Sent. Check your inbox and verify!";
-      }).catch(err => {
-        // An error happened.
-        this.modal = true;
-        this.feedback = err.message;
-      });
     },
     refresh() {
       if(!this.emailVerified) {

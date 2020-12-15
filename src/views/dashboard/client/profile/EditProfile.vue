@@ -18,6 +18,8 @@
         v-bind:postalCode="postalCode"
         @feedback="addFeedback">
         <template slot="header">
+          <md-button class="btn-next md-success" @click="back">Go Back</md-button>
+          <p></p>
           <h3 class="title">Edit Your profile</h3>
           <h5 class="category">This information will let us know more about you.</h5>
         </template>
@@ -115,6 +117,9 @@ export default {
     Modal
   },
   methods: {
+    back() {
+      this.$router.go(-1);
+    },
     modalHide() {
       this.modal = false;
     },

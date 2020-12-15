@@ -1,8 +1,23 @@
 <template>
-  <component :is="baseComponent" :to="link.path ? link.path : '/'" :class="{ active: isActive }" tag="li">
-    <a v-if="isMenu" href="#" class="nav-link sidebar-menu-item" :aria-expanded="!collapsed" data-toggle="collapse" @click.prevent="collapseMenu">
+  <component
+    :is="baseComponent"
+    :to="link.path ? link.path : '/'"
+    :class="{ active: isActive }"
+    tag="li"
+  >
+    <a
+      v-if="isMenu"
+      href="#"
+      class="nav-link sidebar-menu-item"
+      :aria-expanded="!collapsed"
+      data-toggle="collapse"
+      @click.prevent="collapseMenu"
+    >
       <md-icon>{{ link.icon }}</md-icon>
-      <p> {{ link.name }} <b class="caret"></b> </p>
+      <p>
+        {{ link.name }}
+        <b class="caret"></b>
+      </p>
     </a>
 
     <collapse-transition>
@@ -13,8 +28,19 @@
       </div>
     </collapse-transition>
 
-    <slot name="title" v-if="children.length === 0 && !$slots.default && link.path">
-      <component :to="link.path" @click.native="linkClick" :is="elementType(link, false)" :class="{ active: link.active }" class="nav-link" :target="link.target" :href="link.path">
+    <slot
+      name="title"
+      v-if="children.length === 0 && !$slots.default && link.path"
+    >
+      <component
+        :to="link.path"
+        @click.native="linkClick"
+        :is="elementType(link, false)"
+        :class="{ active: link.active }"
+        class="nav-link"
+        :target="link.target"
+        :href="link.path"
+      >
         <template v-if="addLink">
           <span class="sidebar-mini">{{ linkPrefix }}</span>
           <span class="sidebar-normal">{{ link.name }}</span>
@@ -118,6 +144,10 @@ export default {
       return matches.join("");
     },
     linkClick() {
+      if (!this.addLink) {
+        this.$sidebar.collapseAllMenus();
+      }
+
       if (
         this.autoClose &&
         this.$sidebar &&
@@ -127,6 +157,11 @@ export default {
       }
     },
     collapseMenu() {
+      if (this.collapsed) {
+        this.$sidebar.addSidebarLink(this);
+        this.$sidebar.collapseAllMenus();
+      }
+
       this.collapsed = !this.collapsed;
     },
     collapseSubMenu(link) {
@@ -145,6 +180,7 @@ export default {
     }
   },
   destroyed() {
+    this.$sidebar.removeSidebarLink(this);
     if (this.$el && this.$el.parentNode) {
       this.$el.parentNode.removeChild(this.$el);
     }

@@ -4,6 +4,7 @@ import SidebarItem from "./SidebarItem.vue";
 const SidebarStore = {
   showSidebar: false,
   sidebarLinks: [],
+  linksStore: [],
   isMinimized: false,
   displaySidebar(value) {
     this.showSidebar = value;
@@ -21,6 +22,18 @@ const SidebarStore = {
     }, 1000);
 
     this.isMinimized = !this.isMinimized;
+  },
+  addSidebarLink(link) {
+    this.linksStore.push(link);
+  },
+  removeSidebarLink(link) {
+    const index = this.sidebarLinks.indexOf(this);
+    this.linksStore.splice(index, 1);
+  },
+  collapseAllMenus() {
+    this.linksStore.forEach(link => {
+      link.collapsed = true;
+    });
   }
 };
 
