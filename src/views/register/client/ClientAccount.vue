@@ -9,6 +9,7 @@
         v-bind:companyWebsite="companyWebsite"
         v-bind:vat="vat"
         v-bind:companySize="companySize"
+        v-bind:companyCategory="companyCategory"
         v-bind:industry="industry"
         v-bind:aboutMe="aboutMe"
         v-bind:addressLine1="addressLine1"
@@ -44,6 +45,7 @@
             @companyWebsite="addCompanyWebsite"
             @vat="addVat"
             @companySize="addCompanySize"
+            @companyCategory="addCompanyCategory"
             @industry="addIndustry"
             @aboutMe="addAboutMe">
           </first-step>
@@ -109,6 +111,7 @@ export default {
       companyWebsite: null,
       vat: null,
       companySize: null,
+      companyCategory: null,
       industry: null,
       aboutMe: null,
       addressLine1: null,
@@ -180,6 +183,10 @@ export default {
     },
     addCompanySize: function(companySize) {
       this.companySize = companySize;
+      this.refresh();
+    },
+    addCompanyCategory: function(companyCategory) {
+      this.companyCategory = companyCategory;
       this.refresh();
     },
     addIndustry: function(industry) {

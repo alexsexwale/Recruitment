@@ -109,6 +109,9 @@ export default {
     race: {
       required: true
     },
+    citizenship: {
+      required: true
+    },
     bio: {
       required: true
     },

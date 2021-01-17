@@ -6,7 +6,7 @@
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
-        <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />
+        <img v-if="job.profilePicture" class="img img-block" slot="imageHeader" :src="job.profilePicture" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
           <md-icon>art_track</md-icon>

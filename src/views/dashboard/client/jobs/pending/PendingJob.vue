@@ -4,7 +4,7 @@
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="pendingJobs">
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
-      <product-card header-animation="false">
+      <product-card header-animation="true">
         <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
         <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />
         <md-icon slot="fixed-button">build</md-icon>
@@ -117,9 +117,3 @@ export default {
   }
 };
 </script>
-<style>
-.img {
-  width: 100%;
-  height: 250px;
-}
-</style>

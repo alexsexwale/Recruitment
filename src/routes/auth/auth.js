@@ -28,10 +28,7 @@ export default {
       {
         path: "/configuration",
         name: "Configuration",
-        component: Configuration,
-        meta: {
-          requiresAuth: true
-        }
+        component: Configuration
       },
       {
         path: "/contact",

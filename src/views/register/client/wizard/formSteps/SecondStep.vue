@@ -5,6 +5,7 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
+
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine1') && touched.addressLine1 },
@@ -13,16 +14,75 @@
           ]">
           <md-icon><i class="fas fa-map-pin"></i></md-icon>
           <label>Address</label>
-          <md-input @change="addAddressLine1" placeholder="" id="search_input" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1">
+          <!-- <md-input @change="addAddressLine1" placeholder="" id="search_input" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1"> -->
+            <md-input @change="addAddressLine1" placeholder="" id="search_input" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1">
           </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('addAddressLine1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('addAddressLine1') && touched.addAddressLine1">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
+      
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('city') && touched.city },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('city') }
+          ]">
+          <md-icon><i class="fas fa-map-marker-alt"></i></md-icon>
+          <label>City</label>
+          <md-input @change="addCity" v-model="city" data-vv-name="city" type="text" name="city" required v-validate="modelValidations.city">
+          </md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('city')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('city') && touched.city">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('city') && touched.city },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('city') }
+          ]">
+          <md-icon><i class="fas fa-map-pin"></i></md-icon>
+          <label>Province</label>
+          <md-input @change="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.city">
+          </md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('city')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('city') && touched.city">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('postalCode') && touched.postalCode },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('postalCode') }
+          ]">
+          <md-icon><i class="fas fa-map-marker-alt"></i></md-icon>
+          <label>Postal Code</label>
+          <md-input @change="addPostalCode" v-model="postalCode" data-vv-name="postalCode" type="text" name="postalCode" required v-validate="modelValidations.postalCode">
+          </md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('postalCode')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('postalCode') && touched.postalCode">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+
     </div>
   </div>
 </template>

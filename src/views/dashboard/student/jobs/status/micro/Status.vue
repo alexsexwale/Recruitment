@@ -87,6 +87,21 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
+
+        db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            if(this.job.clientAlias === doc.data().alias) {
+              this.loading = false;
+              this.job.email = doc.data().email;
+              this.job.phone = doc.data().phone;
+            }
+            else {
+              // To do: put 404 page
+              this.$router.go(-1); 
+            }
+          });
+        });
         this.status();
       });
     });

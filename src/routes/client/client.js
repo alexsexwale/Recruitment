@@ -10,6 +10,7 @@ import EditClientProfile from "@/views/dashboard/client/profile/EditProfile.vue"
 
 // Post Jobs
 import PostMicro from "@/views/dashboard/client/jobs/post/micro/PostJob.vue";
+import PostPartTime from "@/views/dashboard/client/jobs/post/part-time/PostJob.vue"; 
 
 // Edit Job
 import EditMicro from "@/views/dashboard/client/jobs/edit/micro/EditJob.vue";
@@ -80,6 +81,17 @@ export default {
           userRole: "client",
           emailVerified: true,
           jobType: "micro"
+        }
+      },
+      {
+        path: "jobs/part-time/post",
+        name: "post-a-part-time-job",
+        components: { default: PostPartTime},
+        meta: {
+          requiresAuth: true,
+          userRole: "client",
+          emailVerified: true,
+          jobType: "part-time"
         }
       },
       {

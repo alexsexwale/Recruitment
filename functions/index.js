@@ -166,7 +166,6 @@ function padBranch(branchcode) {
 
 // Outbound Payment
 app.post("/pay", urlencodedParser, async (req, res) => {
-  console.log(req.body);
     if(req.body.jobId && req.body.studentAlias) {
       // Fetch the student
       const doc = await getDocument("students", req.body.studentAlias);
@@ -250,7 +249,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
           ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
         );
-        // Batch File Upload Parametres
+        // Batch File Upload Parameters
         var args = { ServiceKey: paymentGateway.creditorPaymentServiceKey, File: file };
         return client.BatchFileUploadAsync(args);
       })

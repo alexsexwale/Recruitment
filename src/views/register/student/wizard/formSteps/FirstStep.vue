@@ -16,14 +16,14 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="previewImage" title="Profile Picture" />
+            <input type="file" @change="previewImage" title="Profile Picture" accept="image/*" />
           </div>
           <h6 class="description">Profile Picture</h6>
           <!-- <h6 class="description">Currently disabled</h6> -->
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
-        <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
+        <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob" md-immediately
           :class="[
               { 'md-valid': !errors.has('dob') && touched.gender },
               { 'md-form-group': true },
@@ -64,7 +64,7 @@
               { 'md-error': errors.has('race') }
             ]">
           <md-icon>face</md-icon>
-          <label for="race">Race</label>
+          <label for="race">Ethnicity</label>
           <md-select class="pad" @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
             <md-option v-for="(race, index) in races" :key="index" :value="race">{{race}}</md-option>
           </md-select>
@@ -75,7 +75,39 @@
               <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
             </slide-y-down-transition>
         </md-field>
-
+        <md-field :class="[
+              { 'md-valid': !errors.has('citizenship') && touched.citizenship },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('citizenship') }
+            ]">
+          <md-icon><i class="far fa-user-circle"></i></md-icon>
+          <label for="citizenship">Citizenship</label>
+          <md-select class="pad" @input="addCitizenship" v-model="citizenship" data-vv-name="citizenship" name="citizenship" required v-validate="modelValidations.citizenship">
+            <md-option v-for="(citizenship, index) in citizenships" :key="index" :value="citizenship">{{citizenship}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('citizenship')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('citizenship') && touched.citizenship">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+        
+        <md-field v-if="citizenship === 'South African'" :class="[
+            { 'md-valid': !errors.has('identification') && touched.identification },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('identification') }
+          ]">
+          <md-icon><i class="fab fa-linkedin"></i></md-icon>
+          <label>ID Number</label>
+          <md-input @change="addIdentification" v-model="identification" data-vv-name="identification" type="text" name="identification" v-validate="modelValidations.identification"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('identification')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('identification') && touched.identification">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
         <md-field :class="[
               { 'md-valid': !errors.has('licence') && touched.licence },
               { 'md-form-group': true },
@@ -177,11 +209,15 @@ export default {
       dob: null,
       gender: null,
       race: null,
+      citizenship: null,
+      identification: "",
+      passport: null,
       licence: null,
       vehicle: "No",
       bio: null,
       genders:[],
       races:[],
+      citizenships: [],
       yes_no:[],
       touched: {
         dob: false,
@@ -197,6 +233,12 @@ export default {
           required: true
         },
         race: {
+          required: true
+        },
+        citizenship: {
+          required: true
+        },
+        identification: {
           required: true
         },
         bio: {
@@ -285,6 +327,18 @@ export default {
               lastModified: moment(Date.now()).format('L'),
             });
           }
+          if(this.citizenship) {
+            this.student.update({
+              citizenship: this.citizenship,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
+          if(this.identification) {
+            this.student.update({
+              identification: this.identification,
+              lastModified: moment(Date.now()).format('L'),
+            });
+          }
           if(this.licence === "No") {
             this.vehicle = "No";
             this.student.update({
@@ -321,6 +375,8 @@ export default {
             dateOfBirth: moment(this.dob).format('L'),
             gender: this.gender,
             race: this.race,
+            citizenship: this.citizenship,
+            identification: this.identification,
             licence: this.licence,
             vehicle: this.vehicle,
             bio: this.bio,
@@ -384,6 +440,14 @@ export default {
       this.$emit("race", this.race);
       this.debouncedUpdate();
     },
+    addCitizenship: function() {
+      this.$emit("citizenship", this.citizenship);
+      this.debouncedUpdate();
+    },
+    addIdentification: function() {
+      this.$emit("identification", this.identification);
+      this.debouncedUpdate();
+    },
     addLicence: function() {
       this.$emit("licence", this.licence);
       this.debouncedUpdate();
@@ -407,6 +471,12 @@ export default {
     race() {
       this.touched.race = true;
     },
+    citizenship() {
+      this.touched.citizenship = true;
+    },
+    identification() {
+      this.identification = true;
+    },
     bio() {
       this.touched.bio = true;
     },
@@ -422,8 +492,8 @@ export default {
     settings.get().then(doc => {
       this.genders = doc.data().Genders;
       this.races = doc.data().Races;
+      this.citizenships = doc.data().Citizenship;
       this.yes_no = doc.data().yes_no;
-
     });
 
     this.user = firebase.auth().currentUser;
@@ -438,6 +508,8 @@ export default {
             this.dob = new Date(doc.data().dateOfBirth);
             this.gender = doc.data().gender;
             this.race = doc.data().race;
+            this.citizenship = doc.data().citizenship;
+            this.identification = doc.data().identification;
             this.bio = doc.data().bio;
             this.licence = doc.data().licence;
             this.vehicle = doc.data().vehicle;

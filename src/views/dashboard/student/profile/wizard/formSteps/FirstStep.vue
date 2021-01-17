@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
-        <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob"
+        <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob" md-immediately
           :class="[
               { 'md-valid': !errors.has('dob') && touched.gender },
               { 'md-form-group': true },

@@ -16,7 +16,7 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="previewImage" title="Profile Picture" />
+            <input type="file" @change="previewImage" title="Profile Picture" accept="image/*" />
           </div>
           <h6 class="description">Profile Picture</h6>
           <!-- <h6 class="description">Currently disabled</h6> -->
@@ -70,6 +70,25 @@
           </md-input>
         </md-field>
       </div> -->
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
+            { 'md-valid': !errors.has('companyCategory') && touched.companyCategory },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('companyCategory') }
+          ]">
+          <md-icon><i class="fas fa-sitemap"></i></md-icon>
+          <label>Company Category</label>
+          <md-select class="pad" @input="addCompanyCategory" v-model="companyCategory" data-vv-name="companyCategory" name="select" required v-validate="modelValidations.companyCategory">
+            <md-option v-for="(companyCategory, index) in companyCategorys" :key="index" :value="companyCategory">{{companyCategory}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('companyCategory')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('companyCategory') && touched.companyCategory">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
@@ -176,10 +195,12 @@ export default {
       companyWebsite: "http://www.",
       vat: null,
       companySize: null,
+      companyCategory: null,
       aboutMe: null,
       sizeTypes: [],
       industry: null,
       industries: [],
+      companyCategorys: [],
       touched: {
         companyName: false,
         companyWebsite: false,
@@ -280,6 +301,12 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          if(this.companyCategory) {
+            this.client.update({
+              companyCategory: this.companyCategory,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
           if(this.companySize) {
             this.client.update({
               companySize: this.companySize,
@@ -314,6 +341,7 @@ export default {
             website: this.companyWebsite,
             vat: this.vat,
             companySize: this.companySize,
+            companyCategory: this.companyCategory,
             industry: this.industry,
             bio: this.aboutMe,
             addressLine1: null,
@@ -358,6 +386,10 @@ export default {
       this.$emit("companySize", this.companySize);
       this.debouncedUpdate();
     },
+    addCompanyCategory: function() {
+      this.$emit("companySize", this.companyCategory);
+      this.debouncedUpdate();
+    },
     addIndustry: function() {
       this.$emit("industry", this.industry);
       this.debouncedUpdate();
@@ -392,6 +424,7 @@ export default {
     settings.get().then(doc => {
       this.industries = doc.data().Industries;
       this.sizeTypes = doc.data().CompanySizes;
+      this.companyCategorys = doc.data().CompanyCategory;
     });
 
     this.user = firebase.auth().currentUser;
@@ -407,6 +440,7 @@ export default {
             this.companyWebsite = doc.data().website;
             this.vat = doc.data().vat;
             this.companySize = doc.data().companySize;
+            this.companyCategory = doc.data().companyCategory;
             this.industry = doc.data().industry;
             this.aboutMe = doc.data().bio;
             this.image = doc.data().profile;

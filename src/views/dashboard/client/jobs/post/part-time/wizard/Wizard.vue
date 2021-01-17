@@ -2,7 +2,7 @@
   <div class="wizard-container">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <form @submit.prevent="createAccount">
+    <form @submit.prevent="createJob">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -13,7 +13,18 @@
         </md-card-header>
         <div class="wizard-navigation">
           <ul class="nav nav-pills" role="tablist">
-            <li v-for="(tab, index) in tabs" :key="tab.title" role="tab" :tabindex="tab.checked ? 0 : ''" :id="`step-${tab.tabId}`" :aria-controls="tab.tabId" :aria-disabled="tab.active" :aria-selected="tab.active" :ref="`tab-${index}`" class="nav-item wizard-tab-link" :style="linkWidth">
+            <li
+              v-for="(tab, index) in tabs"
+              :key="tab.title"
+              role="tab"
+              :tabindex="tab.checked ? 0 : ''"
+              :id="`step-${tab.tabId}`"
+              :aria-controls="tab.tabId"
+              :aria-disabled="tab.active"
+              :aria-selected="tab.active"
+              :ref="`tab-${index}`"
+              class="nav-item wizard-tab-link"
+              :style="linkWidth">
               <a class="nav-link" @click="navigateToTab(index)"
                 :class="[
                   { 'disabled-wizard-link': !tab.checked },
@@ -39,20 +50,20 @@
           <slot name="footer" :next-tab="nextTab" :prev-tab="prevTab">
             <div>
               <md-button v-if="activeTabIndex > 0" @click.native="prevTab" class="btn-previous">
-                <div class="pc-view">{{ prevButtonText }}</div>
+                <div class="pc-view">Previous</div>
                 <div class="mobi-view"><i class="fas fa-arrow-left"></i></div>
               </md-button>
             </div>
 
             <div>
               <md-button v-if="activeTabIndex < tabCount - 1" @click.native="nextTab" class="btn-next md-success">
-                <div class="pc-view">{{ nextButtonText }}</div>
+                <div class="pc-view">Next</div>
                 <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
-              <button v-else class="md-button md-success md-theme-default" slot="footer">
+              <button v-else class="md-button md-success md-theme-default">
                 <div class="md-ripple">
                   <div class="md-button-content">
-                    <div class="pc-view">{{ finishButtonText }}</div>
+                    <div class="pc-view">Finish</div>
                     <div class="mobi-view"><i class="fa fa-check"></i></div>
                   </div>
                 </div>
@@ -66,9 +77,11 @@
 </template>
 <script>
 import { throttle } from "./throttle";
-import db from '@/firebase/init';
-import firebase, { storage } from 'firebase/app';
+import db from "@/firebase/init";
+import firebase from "firebase/app";
 import moment from "moment";
+import slugify from "slugify";
+import { Modal } from "@/components";
 
 export default {
   name: "simple-wizard",
@@ -85,64 +98,26 @@ export default {
       type: String,
       default: "Subtitle"
     },
-    prevButtonText: {
-      type: String,
-      default: "Previous"
-    },
-    nextButtonText: {
-      type: String,
-      default: "Next"
-    },
-    finishButtonText: {
-      type: String,
-      default: "Finish"
-    },
     vertical: {
       type: Boolean
     },
-    file: {
+    name: {
       required: true
     },
-    firstName: {
+    description: {
       required: true
     },
-    lastName: {
+    category:{
       required: true
     },
-    companyName: {
+    skills: {
       required: true
     },
-    companyWebsite: {
+    location: {},
+    deadline: {},
+    budget: {
       required: true
-    },
-    vat: {
-      required: true
-    },
-    companySize: {
-      required: true
-    },
-    companyCategory: {
-      required: true
-    },
-    industry: {
-      required: true
-    },
-    aboutMe: {
-      required: true
-    },
-    addressLine1: {
-      required: true
-    },
-    city: {
-      required: true
-    },
-    province: {
-      required: true
-    },
-    postalCode: {
-      required: true
-    },
-    email: {}
+    }
   },
   components: {
     TabItemContent: {
@@ -150,7 +125,8 @@ export default {
       render(h) {
         return h("span", [this.tab.$slots.label || this.tab.label]);
       }
-    }
+    },
+    Modal
   },
   provide() {
     return {
@@ -164,12 +140,14 @@ export default {
       activeTabIndex: 0,
       tabLinkWidth: 0,
       tabLinkHeight: 50,
-      user: null,
-      emailVerified: null,
-      feedback: null,
-      profile: null,
+      slug: null,
       alias: null,
-      loading: true
+      user: null,
+      feedback: null,
+      client: {},
+      price:{},
+      loading: true,
+      person: {}
     };
   },
   computed: {
@@ -212,135 +190,96 @@ export default {
     }
   },
   methods: {
-    addFeedback: function() {
-      this.$emit("feedback", this.feedback);
-    },
-    addEmailVerified: function() {
-      this.$emit("emailVerified", this.emailVerified);
-    },
-    createAccount() {
+    createJob() {
       this.loading = true;
-      this.user.reload().then(() => {
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      });
+      this.user = firebase.auth().currentUser;
+      let ref = db.collection('clients');
+      ref.where('userId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          this.client = doc.data();
+          this.slug = slugify(this.name + " " + Date.now(), {
+            replacement: '-',
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          });
+          db.collection('jobs').doc(this.slug).set({
+            jobId: this.slug,
+            clientId: this.user.uid,
+            verified: false,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+            name: this.name,
+            jobType: "micro",
+            clientName: this.person.name + " " + this.person.surname,
+            companyName: this.client.companyName,
+            email: this.person.email,
+            phone: this.person.phone,
+            clientProfile: this.person.profile
+          });
 
-      if(this.user.emailVerified) {
-        let clients = db.collection('clients').doc(this.alias);
-        clients.get().then(doc => {
-          if(doc.exists) {
-            if(this.companyName) {
-              clients.update({
-                companyName: this.companyName,
-                lastModified: moment(Date.now()).format('L')
-              });
-              this.modal = true;
-            }
-            if(this.companyWebsite) {
-              clients.update({
-                website: this.companyWebsite,
-                lastModified: moment(Date.now()).format('L')
-              });
-              this.modal = true;
-            }
-            if(this.vat) {
-              clients.update({
-                vat: this.vat,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.companySize) {
-              clients.update({
-                companySize: this.companySize,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.companyCategory) {
-              clients.update({
-                companyCategory: this.companyCategory,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.industry) {
-              clients.update({
-                industry: this.industry,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.aboutMe) {
-              clients.update({
-                bio: this.aboutMe,
-                lastModified: moment(Date.now()).format('L')
-              });
-              this.modal = true;
-            }
-            if(this.addressLine1) {
-              clients.update({
-                addressLine1: this.addressLine1,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.city) {
-              clients.update({
-                city: this.city,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.province) {
-              clients.update({
-                province_state: this.province,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            if(this.postalCode) {
-              clients.update({
-                postalCode_zipCode: this.postalCode,
-                lastModified: moment(Date.now()).format('L')
-              });
-            }
-            clients.update({
-              accountCreated: true,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          else {
-            //upload profile picture
-            //let storageRef = firebase.storage().ref('profiles/' + this.file.name);
-            // let uploadTask = storageRef.put(this.file).then(snapshot => {
-            //   // Handle successful uploads on complete
-            //   uploadTask.snapshot.ref.getDownloadURL().then(downloadUrl => {
-            //     this.profile = downloadUrl;
-            //   });
-            // });
+          db.collection('micros').doc(this.slug).set({
+            jobId: this.slug,
+            studentId: null,
+            studentEmail: null,
+            studentName: null,
+            companyName: this.client.companyName,
+            clientName: this.user.displayName,
+            clientEmail: this.person.email,
+            clientAlias: this.alias,
+            name: this.name,
+            description: this.description,
+            location: this.location,
+            duration: this.deadline,
+            budget: (this.budget * 1).toFixed(2),
+            commission: (this.budget * this.price.serviceFee).toFixed(2),
+            facilitation: (this.price.facilitationFee * 1).toFixed(2),
+            total: ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2),
+            status: "select",
+            satisfied: null,
+            complete: false,
+            clientRatingComplete: false,
+            studentRatingComplete: false,
+            cancelled: false,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+          });
 
-            clients.set({
-              userId: this.user.uid,
-              created: null,
-              lastModified: moment(Date.now()).format('L'),
-              companyName: this.companyName,
-              website: this.companyWebsite,
-              vat: this.vat,
-              companySize: this.companySize,
-              industry: this.industry,
-              bio: this.aboutMe,
-              addressLine1: this.addressLine1,
-              city: this.city,
-              province_state: this.province,
-              postalCode_zipCode: this.postalCode,
-              country: "South Africa",
-              profilePicture: this.profile,
-              accountCreated: true
-            });
-          }
-          this.$router.push({ name: "post-a-job" });
-          this.loading = false;
+          db.collection('skills').doc(this.slug).set({
+            jobId: this.slug,
+            category: this.category,
+            skills: this.skills,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+          });
+
+          db.collection('payments').doc(this.slug).set({
+            jobId: this.slug,
+            amount: (this.budget * 1).toFixed(2),
+            created: moment(Date.now()).format("L"),
+            paymentDate: null,
+            paymentMethod: null,
+            requestTrace: null,
+            reference: null,
+            inboundPayment: false,
+            outboundPayment: false,
+            studentFileToken: null,
+            clientFileToken: null,
+            lastModified: moment(Date.now()).format("L"),
+            studentAlias: null,
+            serviceFee: this.price.serviceFee,
+            facilitationCost: (this.price.facilitationFee * 1).toFixed(2),
+            totalCostPaid: null
+          });
         });
-        
-      } else {
-        this.feedback = "You have not verified that " + this.email + " is your email address."
+      })
+      .then(() => {
+        this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
+      })
+      .catch(err => {
+        this.feedback = err.message;
         this.loading = false;
-        this.addFeedback();
-      }
+      })
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -380,11 +319,6 @@ export default {
       }
     },
     async nextTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
@@ -392,12 +326,8 @@ export default {
       return isValid;
     },
     prevTab() {
-      if(!this.user.emailVerified){
-        this.user.reload();
-        this.emailVerified = this.user.emailVerified;
-        this.addEmailVerified();
-      }
       this.activeTabIndex--;
+      window.scrollTo(0, 0);
     },
     async navigateToTab(index) {
       if (this.tabs[index].checked) {
@@ -428,7 +358,9 @@ export default {
       this.tabs[this.activeTabIndex].checked = true;
       this.onResize();
     });
-    window.addEventListener("resize", () => {
+    window.addEventListener(
+      "resize",
+      () => {
         throttle(this.onResize, 40);
       },
       false
@@ -451,19 +383,31 @@ export default {
     }
   },
   created() {
-    this.user = firebase.auth().currentUser;
+    let auth = firebase.auth().currentUser;
     let users = db.collection('users');
-    users.where('userId', '==', this.user.uid).get()
+    users.where('userId', '==', auth.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        this.person = doc.data();
         this.alias = doc.id;
+        if(this.person.user === "client") {
+          db.collection('clients').doc(this.alias).get()
+          .then(doc => {
+            // To do: Move the profile to the users document. Not necessary to call two api's
+            this.person.profile = doc.data().profile;
+          }); 
+        }
       });
     });
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
     this.loading = false;
   }
 };
 </script>
-<style scoped lang="scss">
+<style lang="scss">
 /* Tab content animation */
 .tab-content {
   display: flex; // to avoid horizontal scroll when animating
@@ -498,5 +442,9 @@ export default {
   .mobi-view {
     display: none;
   }
+}
+/* Loader */
+.lds-circle {
+  position: absolute;
 }
 </style>

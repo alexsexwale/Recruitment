@@ -1,54 +1,41 @@
 <template>
   <div>
     <h5 class="info-text">
-      Let us where your workplace located?
+      Let us know where your workplace is located?
     </h5>
     <div class="md-layout">
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <notifications></notifications>
+
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine1') && touched.addressLine1 },
             { 'md-form-group': true },
             { 'md-error': errors.has('addressLine1') }
           ]">
-          <md-icon>school</md-icon>
-          <label>Address Line 1</label>
-          <md-input @change="addAddressLine1" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1"></md-input>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('email')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('email') && touched.email">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('addressLine2') && touched.addressLine2 },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('addressLine2') }
-          ]">
           <md-icon><i class="fas fa-map-pin"></i></md-icon>
-          <label>Address Line 2</label>
-          <md-input @change="addAddressLine2" v-model="addressLine2" data-vv-name="addressLine2" type="text" name="addressLine2"></md-input>
+          <label>Address</label>
+          <!-- <md-input @change="addAddressLine1" placeholder="" id="search_input" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1"> -->
+            <md-input @change="addAddressLine1" placeholder="" id="search_input" v-model="addressLine1" data-vv-name="addressLine1" type="text" name="addressLine1" required v-validate="modelValidations.addressLine1">
+          </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('addressLine2')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('addAddressLine1')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('addressLine2') && touched.addressLine2">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('addAddressLine1') && touched.addAddressLine1">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
-
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('city') && touched.city },
             { 'md-form-group': true },
             { 'md-error': errors.has('city') }
           ]">
-          <md-icon><i class="fas fa-city"></i></md-icon>
+          <md-icon><i class="fas fa-map-marker-alt"></i></md-icon>
           <label>City</label>
-          <md-input @change="addCity" v-model="city" data-vv-name="city" type="text" name="city" required v-validate="modelValidations.city"></md-input>
+          <md-input @change="addCity" v-model="city" data-vv-name="city" type="text" name="city" required v-validate="modelValidations.city">
+          </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('city')">close</md-icon>
           </slide-y-down-transition>
@@ -58,35 +45,35 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('province') && touched.province },
+            { 'md-valid': !errors.has('city') && touched.city },
             { 'md-form-group': true },
-            { 'md-error': errors.has('province') }
+            { 'md-error': errors.has('city') }
           ]">
-          <md-icon><i class="fas fa-map-marked-alt"></i></md-icon>
-          <label for="select">Province</label>
-          <md-select class="pad" @input="addProvince" v-model="province" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
-            <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
-          </md-select>
+          <md-icon><i class="fas fa-map-pin"></i></md-icon>
+          <label>Province</label>
+          <md-input @change="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
+          </md-input>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('province')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('city')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('province') && touched.province">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('city') && touched.city">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('postalCode') && touched.postalCode },
             { 'md-form-group': true },
             { 'md-error': errors.has('postalCode') }
           ]">
-          <md-icon><i class="fas fa-mail-bulk"></i></md-icon>
+          <md-icon><i class="fas fa-map-marker-alt"></i></md-icon>
           <label>Postal Code</label>
-          <md-input @change="addPostalCode" v-model="postalCode" data-vv-name="postalCode" type="number" name="postalCode" required v-validate="modelValidations.postalCode"></md-input>
+          <md-input @change="addPostalCode" v-model="postalCode" data-vv-name="postalCode" type="text" name="postalCode" required v-validate="modelValidations.postalCode">
+          </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('postalCode')">close</md-icon>
           </slide-y-down-transition>
@@ -95,6 +82,7 @@
           </slide-y-down-transition>
         </md-field>
       </div>
+
     </div>
   </div>
 </template>
@@ -102,6 +90,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import moment from "moment";
+import debounce from "debounce";
 export default {
   components: {
     SlideYDownTransition
@@ -114,10 +104,13 @@ export default {
   },
   data() {
     return {
+      user: null,
+      client: null,
       addressLine1: null,
       addressLine2: null,
       city: null,
-      province: null,
+      province_state: null,
+      country: null,
       postalCode: null,
       provinces:[],
       touched: {
@@ -145,46 +138,104 @@ export default {
     };
   },
   methods: {
-    handlePreview(file) {
-      this.model.imageUrl = URL.createObjectURL(file.raw);
-    },
-    getError(fieldName) {
-      return this.errors.first(fieldName);
-    },
     validate() {
       return this.$validator.validateAll().then(res => {
         this.$emit("on-validated", res);
         return res;
       });
     },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      this.createImage(files[0]);
-    },
-    createImage(file) {
-      var reader = new FileReader();
-      var vm = this;
-
-      reader.onload = e => {
-        vm.image = e.target.result;
-      };
-      reader.readAsDataURL(file);
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.client.get().then(doc => {
+        if(doc.exists) {
+          if(this.addressLine1) {
+            this.client.update({
+              addressLine1: this.addressLine1,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.addressLine2) {
+            this.client.update({
+              addressLine2: this.addressLine2,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.city) {
+            this.client.update({
+              city: this.city,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.province_state) {
+            this.client.update({
+              province_state: this.province_state,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.postalCode) {
+            this.client.update({
+              postalCode_zipCode: this.postalCode,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addAddressLine1: function() {
+      var searchInput = 'search_input';
+      var autocomplete;
+      autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput)), {
+        types: ['geocode'],
+        componentRestrictions: {
+          country: "ZA"
+        }
+      });
+
+      google.maps.event.addListener(autocomplete, 'place_changed', () => {
+        var near_place = autocomplete.getPlace();
+        var address = near_place.address_components;
+        var addressLine = "";
+        for(var i = 0; i < address.length - 4; i++) {
+          addressLine += address[i].long_name + ", ";
+        }
+        addressLine = addressLine.substring(0, addressLine.length - 1);
+        addressLine = addressLine.substring(0, addressLine.length - 1);
+        this.addressLine1 = addressLine;
+
+        this.city = address[address.length - 4].long_name;
+        this.province_state = address[address.length - 3].long_name;
+        this.country = address[address.length - 2].long_name;
+        this.postalCode = address[address.length - 1].long_name;
+      });
+
       this.$emit("addressLine1", this.addressLine1);
+      this.debouncedUpdate();
     },
-    addAddressLine2: function() {
-      this.$emit("addressLine2", this.addressLine2);
-    },
+    // addAddressLine2: function() {
+    //   this.$emit("addressLine2", this.addressLine2);
+    //   this.debouncedUpdate();
+    // },
     addCity: function() {
       this.$emit("city", this.city);
+      this.debouncedUpdate();
     },
     addProvince: function() {
-      this.$emit("province", this.province);
+      this.$emit("province", this.province_state);
+      this.debouncedUpdate();
     },
     addPostalCode: function() {
       this.$emit("postalCode", this.postalCode);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -209,18 +260,23 @@ export default {
     settings.get().then(doc => {
       this.provinces = doc.data().Provinces;
     });
-    let user = firebase.auth().currentUser;
-    let client = db.collection('clients');
-    client.where('userId', '==', user.uid).get()
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('users');
+    ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        this.addressLine1 = doc.data().addressLine1;
-        this.addressLine2 = doc.data().addressLine2;
-        this.city = doc.data().city;
-        this.province = doc.data().province_state;
-        this.postalCode = doc.data().postalCode_zipCode;
-      })
-    })
+        this.client = db.collection('clients').doc(doc.id);
+        this.client.get().then(doc => {
+          if(doc.exists) {
+            this.addressLine1 = doc.data().addressLine1;
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      });
+    });
   }
 };
 </script>

@@ -5,7 +5,7 @@
     </h5>
       <div class="md-layout">
       <notifications></notifications>
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('jobTitle1') && touched.jobTitle1 },
             { 'md-form-group': true },
@@ -24,7 +24,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('employer1') && touched.employer1 },
             { 'md-form-group': true },
@@ -43,8 +43,8 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addStartDate1" v-model="startDate1" data-vv-name="startDate1" v-validate="modelValidations.startDate1"
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-datepicker @input="addStartDate1" v-model="startDate1" data-vv-name="startDate1" v-validate="modelValidations.startDate1" md-immediately
           :class="[
             { 'md-valid': !errors.has('startDate1') && touched.startDate1 },
             { 'md-form-group': true },
@@ -60,8 +60,8 @@
         </md-datepicker>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" v-validate="modelValidations.endDate1"
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-datepicker v-if="work === false" @input="addEndDate1" v-model="endDate1" data-vv-name="endDate1" v-validate="modelValidations.endDate1" md-immediately
           :class="[
             { 'md-valid': !errors.has('endDate1') && touched.endDate1 },
             { 'md-form-group': true },
@@ -78,7 +78,7 @@
         <md-checkbox v-model="work" @click="hideEndDate">I currently work here.</md-checkbox>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('description1') && touched.description1 },
             { 'md-form-group': true },
