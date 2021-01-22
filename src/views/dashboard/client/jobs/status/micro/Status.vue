@@ -155,14 +155,12 @@ export default {
         db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
         .then(snapshot => {
           snapshot.forEach(doc => {
-            if(this.job.clientAlias === doc.data().alias) {
-              this.loading = false;
-              this.job.email = doc.data().email;
-              this.job.phone = doc.data().phone;
+            if(this.job.clientAlias !== doc.data().alias) {
+              // To do: create a 404 page or component
+              this.$router.go(-1); 
             }
             else {
-              // To do: put 404 page
-              this.$router.go(-1); 
+              this.loading = false;
             }
           });
         });

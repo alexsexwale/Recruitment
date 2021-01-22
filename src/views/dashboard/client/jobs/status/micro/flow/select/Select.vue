@@ -1,5 +1,6 @@
 <template>
 <div>
+  <div v-if="pop" class="profile"></div>
   <div v-if="loading" class="background"></div>
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <hr><h2 class="centre"><b>Select a Student</b></h2>
@@ -57,7 +58,7 @@
         </div>
         <md-card-content>
           <h6 class="category text-gray"> {{ applicant.degree }}</h6>
-          <md-button class="md-round md-success" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
+          <md-button class="md-round md-success md-sm" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
           <!-- <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link> -->
           <p class="card-description">
             {{ applicant.bio }}
@@ -113,64 +114,67 @@
   <!-- View Profile:  -->
   <modal v-if="profileModal" @close="profileModalHide">
     <template slot="header">
-      <h4 class="modal-title black">{{ student.accountName }}</h4>
+      <div class="md-card-avatar avatar">
+          <img class="img radius" :src="cardUserImage" />
+      </div>
+      
       <md-button class="md-simple md-just-icon md-round modal-default-button" @click="profileModalHide">
         <md-icon>clear</md-icon>
       </md-button>
     </template>
 
     <template slot="body">
-      <p class="black">
-        <b>{{ student.name + " " + student.surname }}</b> <br>
+      <h2 class="modal-title black"><b><u>{{ student.name + " " + student.surname }}</u></b></h2>
+      <p v-if="!paid" class="red left">To view the entire candidates profile, please make an upfront payment.</p>
+      <p class="black left">
         {{ student.bio }}
       </p>
-      <p class="black">
-        <b>Qualifications</b> <br>
-        Institution: {{ student.institution }} <br>
-        Degree: {{ student.degree }} <br>
-        Year of Study: {{ student.year }} <br>
-        Graduate Status: {{ student.graduateStatus }}
+      <b class="large-font"><u>Qualifications</u></b> <br>
+      <p class="black left">
+        <b>Institution:</b> {{ student.institution }} <br>
+        <b>Degree:</b> {{ student.degree }} <br>
+        <b>Year of Study:</b> {{ student.year }} <br>
+        <b>Graduate Status:</b> {{ student.graduateStatus }}
       </p>
-      <p class="black">
-        <b>Contact Information</b> <br>
-        Email Address: {{ student.email || "Make payment" }} <br>
-        Phone Number: {{student.phone || "Make payment" }}
-      </p>
-      <p class="black">
-        <b>Certificates</b> <br>
-        Click on the buttons below to download the Certificates <br>
-        <md-button class="md-round md-success">Certificate 1</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-success">Certificate 2</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-success">Certificate 3</md-button>
-      </p>
-      <p class="black">
-        <b>Resume</b> <br>
-        <md-button class="md-round md-success">Download CV</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-success">Download Portfolio</md-button> &nbsp;&nbsp;&nbsp;
-      </p>
-      <p class="black">
-        <b>Social Media Handles</b>
-        <md-icon v-if="profile.linkedIn && profile.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
-        <span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span><span v-if="profile.linkedIn && profile.linkedIn !== ''">&nbsp;</span>
-        <md-icon v-if="profile.github && profile.github !== ''"><i class="fab fa-github" style="color: #000; cursor: pointer" @click="github"></i></md-icon>
-        <span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span><span v-if="profile.github && profile.github !== ''">&nbsp;</span>
-        <md-icon v-if="profile.facebook && profile.facebook !== ''"><i class="fab fa-facebook" style="color:#3b5998; cursor: pointer" @click="facebook"></i></md-icon>
-        <span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span><span v-if="profile.facebook && profile.facebook !== ''">&nbsp;</span>
-        <md-icon v-if="profile.twitter && profile.twitter !== ''"><i class="fab fa-twitter" style="color:#00acee; cursor: pointer" @click="twitter"></i></md-icon>
-        <span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span><span v-if="profile.twitter && profile.twitter !== ''">&nbsp;</span>
-        <md-icon v-if="profile.instagram && profile.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
-      </p>
-
-
-
-
-
       
+      <b class="large-font"><u>Contact Information</u></b> <br>
+      <p class="black left">
+        <b>Email Address:</b> {{ student.email || "**********" }} <br>
+        <b>Phone Number:</b> {{student.phone || "**********" }} 
+        <span v-if="paid && student.personalWebsite"><br> <b>Website: </b> <a :href="student.personalWebsite" target="_blank">{{ student.personalWebsite }}</a></span>
+      </p>
+      <!-- <p class="left"><i class="small-font">*Click on the buttons to download documents.</i></p> -->
+      <b class="large-font"><u>Certificates</u></b> <br>
+      <p class="black" v-if="paid">
+        <md-button class="md-round md-info md-sm"># 1</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-info md-sm"># 2</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-info md-sm"># 3</md-button>
+      </p>
+      <p v-else class="red">You have not made a payment.</p>
+      <b class="large-font"><u>Resume</u></b> <br>
+      <p class="black" v-if="paid">
+        <md-button @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
+      </p>
+      <p v-else class="red">You have not made a payment.</p>
+      <b class="large-font"><u>Social Media Handles</u></b> <br>
+      <p class="black" v-if="paid">
+        <md-icon v-if="student.linkedIn && student.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
+        <span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span>
+        <md-icon v-if="student.github && student.github !== ''"><i class="fab fa-github" style="color: #000; cursor: pointer" @click="github"></i></md-icon>
+        <span v-if="student.github && student.github !== ''">&nbsp;</span><span v-if="student.github && student.github !== ''">&nbsp;</span><span v-if="student.github && student.github !== ''">&nbsp;</span><span v-if="student.github && student.github !== ''">&nbsp;</span>
+        <md-icon v-if="student.facebook && student.facebook !== ''"><i class="fab fa-facebook" style="color:#3b5998; cursor: pointer" @click="facebook"></i></md-icon>
+        <span v-if="student.facebook && student.facebook !== ''">&nbsp;</span><span v-if="student.facebook && student.facebook !== ''">&nbsp;</span><span v-if="student.facebook && student.facebook !== ''">&nbsp;</span><span v-if="student.facebook && student.facebook !== ''">&nbsp;</span>
+        <md-icon v-if="student.twitter && student.twitter !== ''"><i class="fab fa-twitter" style="color:#00acee; cursor: pointer" @click="twitter"></i></md-icon>
+        <span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span>
+        <md-icon v-if="student.instagram && student.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
+      </p>
+      <p v-else class="red">You have not made a payment.</p>
     </template>
 
     <template slot="footer">
       <div class="centre">
-        <md-button class="md-button md-success" @click="profileModalHide">Got it</md-button>
+        <md-button class="md-button md-success" @click="profileModalHide">Done</md-button>
       </div>
     </template>
   </modal>
@@ -201,14 +205,10 @@ export default {
       paid: false,
       index: null,
       loading: true,
-      feedback: "Please be patient, students will start applying soon"
+      pop: null,
+      feedback: "Please be patient, students will start applying soon",
+      cardUserImage: "/img/dashboard/client/card-1.jpg"
     };
-  },
-  props: {
-    cardUserImage: {
-      type: String,
-      default: "/img/dashboard/client/card-1.jpg"
-    }
   },
   methods: {
     approvedModalHide() {
@@ -224,10 +224,29 @@ export default {
       this.noPaymentModal = false;
     },
     profileModalHide() {
+      this.pop = false;
       this.profileModal = false;
     },
     async reload() {
       location.reload();
+    },
+    linkedin() {
+      window.open(this.student.linkedIn, '_blank');
+    },
+    github() {
+      window.open(this.student.github, '_blank');
+    },
+    facebook() {
+      window.open(this.student.facebook, '_blank');
+    },
+    twitter() {
+      window.open(this.student.twitter, '_blank');
+    },
+    instagram() {
+      window.open(this.student.instagram, '_blank');
+    },
+    cv() {
+      window.open(this.student.cv, '_blank');
     },
     debouncedReload: debounce(function() {
       this.reload();
@@ -236,6 +255,8 @@ export default {
       this.loading = true;
       db.collection('students').doc(alias).get().then(doc => {
         this.student = doc.data();
+
+        this.cardUserImage = this.student.profile;
         db.collection('users').doc(alias).get().then(doc => {
           this.student.name = doc.data().name;
           this.student.surname = doc.data().surname;
@@ -244,6 +265,7 @@ export default {
             this.student.phone = doc.data().phone;
           }
           this.profileModal = true;
+          this.pop = true;
           this.loading = false;
         })
                 
@@ -334,12 +356,60 @@ export default {
   }   
 }
 </script>
-<style>
+<style scoped>
 .centre {
   text-align: center;
+  margin: auto;
 }
 /* Pop up modal */
 .modal-container {
-  width: 800px !important;
+  margin: -100px auto;
 }
+
+.small-font {
+  font-size: small;
+}
+
+.large-font {
+  font-size: large;
+}
+
+.left {
+  text-align: left;
+}
+
+.avatar {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.radius {
+  border-radius: 100px;
+}
+
+.modal-mask {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.profile {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity .15s ease;
+  transition: opacity .15s ease;
+}
+
+.red {
+  color: red;
+  font-weight: bold;
+}
+
+
 </style>

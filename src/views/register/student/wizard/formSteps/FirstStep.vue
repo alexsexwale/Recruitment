@@ -43,7 +43,10 @@
               { 'md-form-group': true },
               { 'md-error': errors.has('gender') }
             ]">
-          <md-icon>face</md-icon>
+          <md-icon v-if="gender == 'Female'"><i class="fas fa-female"></i></md-icon>
+          <md-icon v-else-if="gender == 'Male'"><i class="fas fa-male"></i></md-icon>
+          <md-icon v-else-if="gender == 'Other'"><i class="fas fa-transgender"></i></md-icon>
+          <md-icon v-else><i class="fas fa-genderless"></i></md-icon>
           <label for="gender">Gender</label>
           <md-select class="pad" @input="addGender" v-model="gender" data-vv-name="gender" name="gender" required v-validate="modelValidations.gender">
             <md-option v-for="(gender, index) in genders" :key="index" :value="gender">{{gender}}</md-option>
@@ -64,7 +67,7 @@
               { 'md-error': errors.has('race') }
             ]">
           <md-icon>face</md-icon>
-          <label for="race">Ethnicity</label>
+          <label for="race">Race</label>
           <md-select class="pad" @input="addRace" v-model="race" data-vv-name="race" name="race" required v-validate="modelValidations.race">
             <md-option v-for="(race, index) in races" :key="index" :value="race">{{race}}</md-option>
           </md-select>
@@ -75,6 +78,7 @@
               <md-icon class="success" v-show="!errors.has('race') && touched.race">done</md-icon>
             </slide-y-down-transition>
         </md-field>
+
         <md-field :class="[
               { 'md-valid': !errors.has('citizenship') && touched.citizenship },
               { 'md-form-group': true },
@@ -98,7 +102,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('identification') }
           ]">
-          <md-icon><i class="fab fa-linkedin"></i></md-icon>
+          <md-icon><i class="far fa-id-card"></i></md-icon>
           <label>ID Number</label>
           <md-input @change="addIdentification" v-model="identification" data-vv-name="identification" type="text" name="identification" v-validate="modelValidations.identification"></md-input>
           <slide-y-down-transition>
@@ -108,25 +112,76 @@
             <md-icon class="success" v-show="!errors.has('identification') && touched.identification">done</md-icon>
           </slide-y-down-transition>
         </md-field>
+        
+        <md-field v-if="citizenship === 'Not South African'" :class="[
+            { 'md-valid': !errors.has('passport') && touched.passport },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('passport') }
+          ]">
+          <md-icon><i class="fas fa-passport"></i></md-icon>
+          <label>Passport Number</label>
+          <md-input @change="addPassport" v-model="passport" data-vv-name="passport" type="text" name="passport" v-validate="modelValidations.passport"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('passport')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('passport') && touched.passport">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+
         <md-field :class="[
-              { 'md-valid': !errors.has('licence') && touched.licence },
+              { 'md-valid': !errors.has('disability') && touched.disability },
               { 'md-form-group': true },
-              { 'md-error': errors.has('licence') }
+              { 'md-error': errors.has('disability') }
             ]">
-          <md-icon><i class="far fa-id-badge"></i></md-icon>
-          <label for="licence">Do you have a Driver's licence?</label>
-          <md-select class="pad" @input="addLicence" v-model="licence" data-vv-name="licence" name="licence" required v-validate="modelValidations.licence">
+          <md-icon><i class="fas fa-american-sign-language-interpreting"></i></md-icon>
+          <label for="disability">Do you have a disability?</label>
+          <md-select class="pad" @input="addDisability" v-model="disability" data-vv-name="disability" name="disability" required v-validate="modelValidations.disability">
             <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
           </md-select>
           <slide-y-down-transition>
-              <md-icon class="error" v-show="errors.has('licence')">close</md-icon>
+              <md-icon class="error" v-show="errors.has('disability')">close</md-icon>
             </slide-y-down-transition>
             <slide-y-down-transition>
-              <md-icon class="success" v-show="!errors.has('licence') && touched.licence">done</md-icon>
+              <md-icon class="success" v-show="!errors.has('disability') && touched.disability">done</md-icon>
             </slide-y-down-transition>
         </md-field>
 
-        <md-field v-if="licence == 'Yes'" :class="[
+        <md-field v-if="disability === 'Yes'" :class="[
+            { 'md-valid': !errors.has('disabilityDescription') && touched.disabilityDescription },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('disabilityDescription') }
+          ]">
+          <md-icon><i class="fas fa-blind"></i></md-icon>
+          <label>Description of the disability.</label>
+          <md-input @change="addDisabilityDescription" v-model="disabilityDescription" data-vv-name="disabilityDescription" type="text" name="disabilityDescription" v-validate="modelValidations.disabilityDescription"></md-input>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('disabilityDescription')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('disabilityDescription') && touched.disabilityDescription">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+
+        <md-field :class="[
+              { 'md-valid': !errors.has('license') && touched.license },
+              { 'md-form-group': true },
+              { 'md-error': errors.has('license') }
+            ]">
+          <md-icon><i class="far fa-id-badge"></i></md-icon>
+          <label for="license">Do you have a driver's license?</label>
+          <md-select class="pad" @input="addLicense" v-model="license" data-vv-name="license" name="license" required v-validate="modelValidations.license">
+            <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+              <md-icon class="error" v-show="errors.has('license')">close</md-icon>
+            </slide-y-down-transition>
+            <slide-y-down-transition>
+              <md-icon class="success" v-show="!errors.has('license') && touched.license">done</md-icon>
+            </slide-y-down-transition>
+        </md-field>
+
+        <md-field v-if="license == 'Yes'" :class="[
               { 'md-valid': !errors.has('vehicle') && touched.vehicle },
               { 'md-form-group': true },
               { 'md-error': errors.has('vehicle') }
@@ -149,7 +204,7 @@
             { 'md-error': errors.has('bio') }
           ]">
           <label>Professional Summary</label>
-          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" aria-placeholder="2 to 3 Sentences about your overall experience" required v-validate="modelValidations.bio"></md-textarea>
+          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" placeholder="Type your overall experience" required v-validate="modelValidations.bio"></md-textarea>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('bio')">close</md-icon>
           </slide-y-down-transition>
@@ -210,9 +265,12 @@ export default {
       gender: null,
       race: null,
       citizenship: null,
-      identification: "",
+      identification: null,
       passport: null,
-      licence: null,
+      disability: null,
+      disabilityDescription: null,
+      languages: [],
+      license: null,
       vehicle: "No",
       bio: null,
       genders:[],
@@ -239,7 +297,21 @@ export default {
           required: true
         },
         identification: {
+          required: true,
+          min: 13,
+          max: 13
+        },
+        passport: {
+          required: true,
+          min: 6,
+        },
+        disability: {
           required: true
+        },
+        disabilityDescription: {
+          required: true,
+          min: 5,
+          max: 50
         },
         bio: {
           required: true,
@@ -273,7 +345,7 @@ export default {
           this.updateAccount();
           this.loading = false;
         });
-      })
+      });
     },
     calculateAge(birthday) {
       var today = new Date();
@@ -330,26 +402,46 @@ export default {
           if(this.citizenship) {
             this.student.update({
               citizenship: this.citizenship,
-              lastModified: moment(Date.now()).format('L'),
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.identification) {
+          if(this.identification && this.citizenship === "South African") {
             this.student.update({
               identification: this.identification,
-              lastModified: moment(Date.now()).format('L'),
+              passport: null,
+              lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.licence === "No") {
+          if(this.passport && this.citizenship === "Not South African") {
+            this.student.update({
+              passport: this.passport,
+              identification: null,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.disability) {
+            this.student.update({
+              disability: this.disability,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.disabilityDescription) {
+            this.student.update({
+              disabilityDescription: this.disabilityDescription,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.license === "No") {
             this.vehicle = "No";
             this.student.update({
               vehicle: this.vehicle,
-              licence: this.licence,
+              license: this.license,
               lastModified: moment(Date.now()).format('L')
             });
           }
           else {
             this.student.update({
-              licence: this.licence,
+              license: this.license,
               lastModified: moment(Date.now()).format('L')
             });
           }
@@ -362,7 +454,7 @@ export default {
           if(this.bio) {
             this.student.update({
               bio: this.bio,
-              lastModified: moment(Date.now()).format('L'),
+              lastModified: moment(Date.now()).format('L')
             });
           }
         }
@@ -376,9 +468,9 @@ export default {
             gender: this.gender,
             race: this.race,
             citizenship: this.citizenship,
-            identification: this.identification,
-            licence: this.licence,
+            license: this.license,
             vehicle: this.vehicle,
+            disabilityDescription: this.disabilityDescription,
             bio: this.bio,
             institution: null,
             institutionType: "University",
@@ -448,8 +540,20 @@ export default {
       this.$emit("identification", this.identification);
       this.debouncedUpdate();
     },
-    addLicence: function() {
-      this.$emit("licence", this.licence);
+    addPassport: function() {
+      this.$emit("passport", this.passport);
+      this.debouncedUpdate();
+    },
+    addDisability: function() {
+      this.$emit("disability", this.disability);
+      this.debouncedUpdate();
+    },
+    addDisabilityDescription: function() {
+      this.$emit("disabilityDescription", this.disabilityDescription);
+      this.debouncedUpdate();
+    },
+    addLicense: function() {
+      this.$emit("license", this.license);
       this.debouncedUpdate();
     },
     addVehicle: function() {
@@ -475,13 +579,22 @@ export default {
       this.touched.citizenship = true;
     },
     identification() {
-      this.identification = true;
+      this.touched.identification = true;
+    },
+    passport() {
+      this.touched.passport = true;
+    },
+    disability() {
+      this.touched.disability = true;
+    },
+    disabilityDescription() {
+      this.touched.disabilityDescription = true;
     },
     bio() {
       this.touched.bio = true;
     },
-    licence() {
-      this.touched.licence = true;
+    license() {
+      this.touched.license = true;
     },
     vehicle() {
       this.touched.vehicle = true;
@@ -510,8 +623,11 @@ export default {
             this.race = doc.data().race;
             this.citizenship = doc.data().citizenship;
             this.identification = doc.data().identification;
+            this.passport = doc.data().passport;
+            this.disability = doc.data().disability;
+            this.disabilityDescription = doc.data().disabilityDescription;
             this.bio = doc.data().bio;
-            this.licence = doc.data().licence;
+            this.license = doc.data().license;
             this.vehicle = doc.data().vehicle;
             this.image = doc.data().profile;
           }

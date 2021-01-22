@@ -13,6 +13,7 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import firebase from 'firebase/app';
 import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';
@@ -87,21 +88,20 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
-
-        db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            if(this.job.clientAlias === doc.data().alias) {
-              this.loading = false;
-              this.job.email = doc.data().email;
-              this.job.phone = doc.data().phone;
-            }
-            else {
-              // To do: put 404 page
-              this.$router.go(-1); 
-            }
+        if(this.job.status !== "select") {
+          db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
+          .then(snapshot => {
+            snapshot.forEach(doc => {
+              if(this.job.clientAlias !== doc.data().alias) {
+                // To do: create a 404 page or component
+                this.$router.go(-1); 
+              }
+              else {
+                this.loading = false;
+              }
+            });
           });
-        });
+        }
         this.status();
       });
     });

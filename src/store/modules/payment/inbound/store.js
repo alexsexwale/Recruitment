@@ -19,13 +19,12 @@ export default {
         makePayment: (state, job) => {
             simpleCart({
                 checkout: {
-                    type: "SendForm" ,
-                    url: meta_data.url ,
-                    // HTTP method for form, "POST"
-                    method: "POST" ,
-                    // URL to redirect browser to after successful checkout
+                    type: "SendForm",
+                    url: meta_data.url,
+                    method: "POST",
+                    // URL to redirect user after successful checkout
                     success: "jobs/micro/status/"+job.id,
-                    // URL to redirect browser to after checkout was cancelled by buyer
+                    // URL to redirect user after checkout was cancelled by the client
                     cancel: "/jobs/micro/status/"+job.id,
                     extra_data: {
                         currency_code: meta_data.currency_code,
@@ -41,7 +40,7 @@ export default {
                         m11: job.phone
                     }
                 },
-                beforeCheckout: function( data ) {
+                beforeCheckout: function(data) {
                     data.currency = meta_data.currency_code;
                     data.cancel_url = data.cancel_return;
                     data.return_url = data.return;

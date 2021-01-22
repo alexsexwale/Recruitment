@@ -112,6 +112,12 @@ export default {
     citizenship: {
       required: true
     },
+    identification: {
+      required: true
+    },
+    passport: {
+      required: true
+    },
     bio: {
       required: true
     },

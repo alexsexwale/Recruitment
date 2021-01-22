@@ -104,8 +104,10 @@ export default {
             job.type = jobType;
             db.collection('skills').doc(doc.id).get().then(doc => {
               job.category = doc.data().category;
-              job.profilePicture = profilePicture;
-              this.jobs.push(job);
+              db.collection('clients').doc(job.clientAlias).get().then(doc => {
+                job.profilePicture = doc.data().profile;
+                this.jobs.push(job);
+              });
             });
           });
         });

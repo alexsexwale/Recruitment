@@ -88,6 +88,8 @@ export default {
   },
   created() {
     let user = firebase.auth().currentUser;
+    let clients = db.collection('clients');
+    let students = db.collection('students');
     let ref = db.collection('users');
     ref.where('userId', '==', user.uid).get()
     .then(snapshot => {
@@ -97,9 +99,9 @@ export default {
         this.username = this.name + " " + this.surname;
         this.alias = doc.data().alias;
         let userPermission = doc.data().user;
+        let student = students.doc(this.alias);
         if(userPermission == "student") {
           this.student = true;
-          let student = db.collection('students').doc(this.alias);
           student.get().then(student => {
             this.user = student.data();
             if(this.user.profile === null) {
@@ -109,13 +111,29 @@ export default {
         }
         else {
           this.client = true;
-          let client = db.collection('clients').doc(this.alias);
+          let client = clients.doc(this.alias);
           client.get().then(client => {
             this.user = client.data(); 
             if(this.user.profile === null) {
               this.user.profile = this.avatar;
             }
-          })
+          });
+        }
+      });
+    });
+    
+    clients.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.user.profile = this.avatar;
+        }
+      });
+    });
+
+    students.onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if(change.type == 'modified') {
+          this.user.profile = this.avatar;
         }
       });
     });

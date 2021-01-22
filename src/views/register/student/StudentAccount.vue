@@ -6,6 +6,8 @@
         v-bind:gender="gender"
         v-bind:race="race"
         v-bind:citizenship="citizenship"
+        v-bind:identification="identification"
+        v-bind:passport="passport"
         v-bind:bio="bio"
         v-bind:institution="institution"
         v-bind:campus="campus"
@@ -55,6 +57,8 @@
             @gender="addGender"
             @race="addRace"
             @citizenship="addCitizenship"
+            @passport="addPassport"
+            @identification="addIdentification"
             @bio="addBio">
           </first-step>
         </wizard-tab>
@@ -170,6 +174,8 @@ export default {
       gender: null,
       race: null,
       citizenship: null,
+      identification: null,
+      passport: null,
       bio: null,
       institution: null,
       campus: null,
@@ -247,7 +253,15 @@ export default {
       this.refresh();
     },
     addCitizenship: function(citizenship) {
-      this.citizenship = citizenship
+      this.citizenship = citizenship;
+      this.refresh();
+    },
+    addIdentification: function(identification) {
+      this.identification = identification;
+      this.refresh();
+    },
+    addPassport: function(passport) {
+      this.passport = passport;
       this.refresh();
     },
     addBio: function(bio) {
