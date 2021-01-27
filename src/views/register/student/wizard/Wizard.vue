@@ -121,6 +121,9 @@ export default {
     bio: {
       required: true
     },
+    studying: {
+      required: true
+    },
     institution: {
       required: true
     },
@@ -267,6 +270,12 @@ export default {
             if(this.bio) {
               students.update({
                 bio: this.bio,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.institution) {
+              students.update({
+                institution: this.institution,
                 lastModified: moment(Date.now()).format('L')
               });
             }

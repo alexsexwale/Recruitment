@@ -8,8 +8,7 @@
         <md-radio v-model="role" slot="inputs" value="student">Student</md-radio>
         <md-radio v-model="role" slot="inputs" value="client">Client</md-radio>
         
-        <md-field slot="inputs"
-          :class="[
+        <md-field slot="inputs" :class="[
             { 'md-valid': !errors.has('firstName') && touched.firstName },
             { 'md-form-group': true },
             { 'md-error': errors.has('firstName') }

@@ -15,8 +15,9 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <br>
           <h6 class="category text-gray">{{ applicant.degree }}</h6>
-          <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.applicantAlias}}"><a>{{ applicant.applicant }}</a></router-link>
+          <md-button class="md-round md-info md-sm" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
           <p class="card-description">
             {{ applicant.bio }}
           </p>
@@ -57,13 +58,14 @@
           <img class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
+          <br>
           <h6 class="category text-gray"> {{ applicant.degree }}</h6>
-          <md-button class="md-round md-success md-sm" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
+          <md-button class="md-round md-info md-sm" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
           <!-- <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link> -->
           <p class="card-description">
             {{ applicant.bio }}
           </p>
-          <md-button @click="select(applicant.id)" class="md-success md-button">Select</md-button>
+          <md-button @click="select(applicant.id)" class="md-round md-success md-button">Select</md-button>
         </md-card-content>
       </md-card>
       
@@ -146,15 +148,15 @@
       <!-- <p class="left"><i class="small-font">*Click on the buttons to download documents.</i></p> -->
       <b class="large-font"><u>Certificates</u></b> <br>
       <p class="black" v-if="paid">
-        <md-button class="md-round md-info md-sm"># 1</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-info md-sm"># 2</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-info md-sm"># 3</md-button>
+        <md-button class="md-round md-info md-sm" @click="certificate1"># 1</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-info md-sm" @click="certificate2"># 2</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button class="md-round md-info md-sm" @click="certificate3"># 3</md-button>
       </p>
       <p v-else class="red">You have not made a payment.</p>
       <b class="large-font"><u>Resume</u></b> <br>
       <p class="black" v-if="paid">
-        <md-button @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.cv" @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.portfolio" @click="portfolio" class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
       </p>
       <p v-else class="red">You have not made a payment.</p>
       <b class="large-font"><u>Social Media Handles</u></b> <br>
@@ -245,8 +247,20 @@ export default {
     instagram() {
       window.open(this.student.instagram, '_blank');
     },
+    certificate1() {
+      window.open(this.student.certificate1, '_blank');
+    },
+    certificate2() {
+      window.open(this.student.certificate2, '_blank');
+    },
+    certificate3() {
+      window.open(this.student.certificate3, '_blank');
+    },
     cv() {
       window.open(this.student.cv, '_blank');
+    },
+    portfolio() {
+      window.open(this.student.portfolio, '_blank');
     },
     debouncedReload: debounce(function() {
       this.reload();
@@ -392,6 +406,7 @@ export default {
 .modal-mask {
   position: absolute;
   background-color: rgba(0, 0, 0, 0);
+  top: -100px;
 }
 
 .profile {

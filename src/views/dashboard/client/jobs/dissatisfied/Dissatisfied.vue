@@ -3,7 +3,7 @@
   <div v-if="loading" class="background"></div>
   <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
   <div class="md-layout" v-if="dissatisfiedJobs">
-    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
+    <div class="card-layout md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
         <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
         <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />

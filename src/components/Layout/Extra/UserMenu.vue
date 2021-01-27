@@ -17,30 +17,32 @@
           <ul class="nav">
             <!-- Client: User Menu -->
             <slot v-if="client">
-              <li> <!-- Client: My Profile -->
+              <!-- Client: My Profile -->
+              <!-- <li> 
                 <router-link :to="{ name: 'client-profile', params: { id: alias } }">
                   <span class="sidebar-mini">MP</span>
                   <span class="sidebar-normal">My Profile</span>
                 </router-link>
-              </li>
+              </li> -->
               <li> <!-- Client: Edit Profile -->
                 <router-link :to="{ name: 'edit-client-profile', params: { id: alias } }">
-                  <span class="sidebar-mini">EP</span>
+                  <span class="sidebar-mini"><i class="fas fa-user-edit"></i></span>
                   <span class="sidebar-normal">Edit Profile</span>
                 </router-link>
               </li>
             </slot>
             <!-- Student: User Menu -->
             <slot v-if="student">
-              <li> <!-- Student: My Profile -->
+              <!-- Student: My Profile -->
+              <!-- <li>
                 <router-link :to="{ name: 'student-profile', params: { id: alias } }">
                   <span class="sidebar-mini">MP</span>
                   <span class="sidebar-normal">My Profile</span>
                 </router-link>
-              </li>
+              </li> -->
               <li> <!-- Student: Edit Profile -->
                 <router-link :to="{ name: 'edit-student-profile', params: { id: alias } }">
-                  <span class="sidebar-mini">EP</span>
+                  <span class="sidebar-mini"><i class="fas fa-user-edit"></i></span>
                   <span class="sidebar-normal">Edit Profile</span>
                 </router-link>
               </li>

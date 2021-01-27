@@ -18,10 +18,10 @@
                       <md-icon>person</md-icon>
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                      <!-- Client: My Profile -->
-                      <li v-if="client"><router-link :to="{ name: 'client-profile', params: { id: alias } }">My Profile</router-link></li>
-                      <!-- Student: My Profile -->
-                      <li v-if="student"><router-link :to="{ name: 'student-profile', params: { id: alias } }">My Profile</router-link></li>
+                      <!-- Client: Settings -->
+                      <li v-if="client"><router-link :to="{ name: 'settings', params: { id: alias } }">Settings</router-link></li>
+                      <!-- Student: Settings -->
+                      <li v-if="student"><router-link :to="{ name: 'settings', params: { id: alias } }">Settings</router-link></li>
                       <!-- Logout -->
                       <li><a @click="logout">Logout</a></li>
                     </ul>

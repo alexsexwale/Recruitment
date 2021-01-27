@@ -48,7 +48,7 @@
                   <i class="fas fa-wallet"></i> Budget
                   </h3>
                   <h4 class="card-title">Total Budget</h4>
-                  <p class="card-description"><b>R{{ total() }}</b> = <b>R{{ rate() }}</b> + <b>R{{ fee() }}</b> + <b>R{{ price.facilitationFee }}</b></p>
+                  <p class="card-description"><b>R{{ total() }}</b> = <b>R{{ rate() }}</b> + <b>R{{ fee() }}</b> + <b>R{{ price.facilitationFee }}.00</b></p>
                   <hr/>
                   <h4 class="card-title">Cost Breakdown</h4>
                   <p class="card-description">Student Rate:  <b>R{{ rate() }}</b></p> 

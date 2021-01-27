@@ -62,7 +62,7 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <!-- <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('instagram') && touched.instagram },
             { 'md-form-group': true },
@@ -78,7 +78,7 @@
             <md-icon class="success" v-show="!errors.has('instagram') && touched.instagram">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div>
+      </div> -->
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
@@ -254,16 +254,16 @@ export default {
       modal: null,
       alias: null,
       loading: false,
-      linkedIn: "https://www.linkedin.com/in/",
-      facebook: "https://www.facebook.com/",
-      twitter: "https://www.twitter.com/",
-      instagram: "https://www.instagram.com/",
-      github: "https://www.github.com/",
+      linkedIn: null,
+      facebook: null,
+      twitter: null,
+      instagram: null,
+      github: null,
       portfolio: null,
       certificate1: null,
       certificate2: null,
       certificate3: null,
-      personalWebsite: "https://www.",
+      personalWebsite: null,
       id: null,
       cv: null,
       uploadCV: 0,
@@ -350,6 +350,7 @@ export default {
     previewCV(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "CV");
       }
@@ -360,6 +361,7 @@ export default {
     previewPortfolio(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "Portfolio");
       }

@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
       ref.where("userId", "==", user.uid).get()
       .then(snapshot => {
         snapshot.forEach(doc => {
-          // the user role is either student or client
+          // the user role is either a student or a client
           let userPermission = doc.data().user;
           // checking to see if the user role matches
           let userRoleExist = to.matched.some(rec => rec.meta.userRole == userPermission);

@@ -270,6 +270,10 @@ export default {
         this.client.get().then(doc => {
           if(doc.exists) {
             this.addressLine1 = doc.data().addressLine1;
+            this.addressLine2 = doc.data().addressLine2;
+            this.city = doc.data().city;
+            this.province_state = doc.data().province_state;
+            this.postalCode = doc.data().postalCode_zipCode;
           }
         })
         .catch(err => {

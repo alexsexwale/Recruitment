@@ -639,7 +639,7 @@ function applicantSelected(receiver, sender, jobName, jobType, jobId, applicantN
     from: sender,
     subject: "You have been selected for the job",
     text: "Hey " + applicantName + ",\n\nWould you look at that, you just got select for the " + jobType + " job: " + jobName
-         + " (" + jobId + ").\n\nTo accept/decline the job click here to login - https://app.jobox.co.za/login.\n\n✌️\nJobox"
+         + " (" + jobId + ").\n\nTo accept/decline the job click here to login - https://app.jobox.co.za/login\n\n✌️\nJobox"
   }
 }
 function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantName, clientName) {
@@ -648,7 +648,7 @@ function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantN
     from: sender,
     subject: "Applicant has declined the job",
     text: "hey " + clientName + ",\n\nUnfortunetly " + applicantName + " has declined the job offer for " + jobType + " job: " + jobName
-          + " (" + jobId + ").\n\nPlease select another applicant for the job. Click here to login - https://app.jobox.co.za/login.\n\n✌️\nJobox"
+          + " (" + jobId + ").\n\nPlease select another applicant for the job. Click here to login - https://app.jobox.co.za/login\n\n✌️\nJobox"
   }
 }
 
@@ -719,8 +719,8 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
     ").\n\nTo rate and review the order click here to login - https://app.jobox.co.za/login \n\nYour review will only become available once you have reviewed the client.\n\n✌️\nJobox";
   }
   if(messageType === "clientRatingStudent") {
-    subject = "";
-    message = "hey " + studentName + ",\n\n" + applicantName + " has given you a rating on the job you posted:" + jobName + " (" + jobId +
+    subject = "Client has rated you!";
+    message = "Hey " + studentName + ",\n\n" + applicantName + " has given you a rating on the job you completed:" + jobName + " (" + jobId +
     ").\n\nTo view your rating, rate the client. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
   }
   if(messageType === "summary") {

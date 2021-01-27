@@ -9,6 +9,7 @@
         v-bind:identification="identification"
         v-bind:passport="passport"
         v-bind:bio="bio"
+        v-bind:studying="studying"
         v-bind:institution="institution"
         v-bind:campus="campus"
         v-bind:studentNo="studentNo"
@@ -70,7 +71,8 @@
           </template>
           <second-step ref="step2" 
             @on-validated="onStepValidated"
-            @institution="addInstitution">
+            @institution="addInstitution"
+            @studying="addStudying">
           </second-step>
           <!-- University of Pretoria -->
           <tuks ref="step2" v-if="institution === 'University of Pretoria'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
@@ -178,6 +180,7 @@ export default {
       passport: null,
       bio: null,
       institution: null,
+      studying: null,
       campus: null,
       studentNo: null,
       faculty: null,
@@ -266,6 +269,10 @@ export default {
     },
     addBio: function(bio) {
       this.bio = bio;
+      this.refresh();
+    },
+    addStudying: function(studying) {
+      this.studying = studying;
       this.refresh();
     },
     addInstitution: function(institution) {

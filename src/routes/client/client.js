@@ -2,6 +2,7 @@
 import DashboardLayout from "@/components/Layout/DashboardLayout.vue";
 import Support from "@/views/dashboard/support/Support.vue";
 import Feedback from "@/views/dashboard/feedback/Feedback.vue";
+import Settings from "@/views/dashboard/settings/Settings.vue";
 
 // Client Dashboard Components
 import ClientDashboard from "@/views/dashboard/client/ClientDashboard.vue";
@@ -168,6 +169,16 @@ export default {
         path: "feedback",
         name: "give-feedback",
         component: Feedback,
+        meta: {
+          requiresAuth: true,
+          userRole: "client",
+          emailVerified: true
+        }
+      },
+      {
+        path: "settings",
+        name: "settings",
+        component: Settings,
         meta: {
           requiresAuth: true,
           userRole: "client",

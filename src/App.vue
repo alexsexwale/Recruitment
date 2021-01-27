@@ -83,4 +83,22 @@ label, legend {
 .md-card-profile .md-card-avatar + .md-card-content, .card-testimonial .md-card-avatar + .md-card-content {
   margin-top: -10px;
 }
+@media (max-width: 1280px) {
+  .card-layout {
+    min-width: 50% !important;
+    max-width: 50% !important;
+    margin-left: 0!important;
+    flex: 1 1 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-layout {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0!important;
+    flex: 1 1 100% !important;
+  }
+}
+
 </style>

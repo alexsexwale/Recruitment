@@ -204,7 +204,7 @@
             { 'md-error': errors.has('bio') }
           ]">
           <label>Professional Summary</label>
-          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" placeholder="Type your overall experience" required v-validate="modelValidations.bio"></md-textarea>
+          <md-textarea @change="addBio" v-model="bio" data-vv-name="bio" type="text" name="bio" required v-validate="modelValidations.bio"></md-textarea>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('bio')">close</md-icon>
           </slide-y-down-transition>

@@ -7,6 +7,25 @@
       <notifications></notifications>
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
+            { 'md-valid': !errors.has('studying') && touched.studying },
+            { 'md-form-group': true },
+            { 'md-error': errors.has('studying') }
+          ]">
+          <md-icon>school</md-icon>
+          <label>Currently Studying?</label>
+          <md-select class="pad" @input="addStudying" v-model="studying" data-vv-name="studying" type="text" name="studying" required v-validate="modelValidations.studying">
+            <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
+          </md-select>
+          <slide-y-down-transition>
+            <md-icon class="error" v-show="errors.has('studying')">close</md-icon>
+          </slide-y-down-transition>
+          <slide-y-down-transition>
+            <md-icon class="success" v-show="!errors.has('studying') && touched.studying">done</md-icon>
+          </slide-y-down-transition>
+        </md-field>
+      </div>
+      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+        <md-field :class="[
             { 'md-valid': !errors.has('institution') && touched.institution },
             { 'md-form-group': true },
             { 'md-error': errors.has('institution') }
@@ -49,11 +68,17 @@ export default {
       student: null,
       institution: null,
       institutions: [],
+      studying: null,
+      yes_no: null,
       touched: {
         institution: false,
+        studying: false
       },
       modelValidations: {
         institution: {
+          required: true
+        },
+        studying: {
           required: true
         }
       }
@@ -78,6 +103,12 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          if(this.studying) {
+            this.student.update({
+              studying: this.studying,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
         }
       });
       this.$notify(
@@ -92,17 +123,22 @@ export default {
     addInstitution: function() {
       this.$emit("institution", this.institution);
       this.debouncedUpdate();
+    },
+    addStudying: function() {
+      this.$emit("studying", this.studying);
+      this.debouncedUpdate();
     }
   },
   watch: {
-    institution() {
-      this.touched.institution = true;
+    studying() {
+      this.touched.studying = true;
     }
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
     settings.get().then(doc => {
       this.institutions = doc.data().Institutions;
+      this.yes_no = doc.data().yes_no;
     });
 
     this.user = firebase.auth().currentUser;
@@ -114,6 +150,7 @@ export default {
         this.student.get().then(doc => {
           if(doc.exists) {
             this.institution = doc.data().institution;
+            this.studying = doc.data().studying;
           }
         })
         .catch(err => {
