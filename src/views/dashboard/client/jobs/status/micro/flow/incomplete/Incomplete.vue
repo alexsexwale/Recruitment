@@ -29,6 +29,9 @@
 import { ProductCard } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 
 export default {
   components: {

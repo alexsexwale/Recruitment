@@ -163,7 +163,10 @@ export default {
     branchCode: {
       required: true
     },
-    email: {}
+    email: {},
+    industryCategory: {
+      required: true
+    }
   },
   components: {
     TabItemContent: {
@@ -348,6 +351,12 @@ export default {
             if(this.branchCode) {
               students.update({
                 branchCode: this.branchCode.toString(),
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+            if(this.industryCategory) {
+              students.update({
+                branchCode: this.industryCategory,
                 lastModified: moment(Date.now()).format('L')
               });
             }

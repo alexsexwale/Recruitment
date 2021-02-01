@@ -31,7 +31,7 @@
       </template>
 
       <template slot="body">
-        <p class="black">Your payment is outstanding.</p>
+        <p class="black">Your payment is outstanding</p>
         <p class="black">Your payment could take up to 5 minutes to reflect depending on your internet speed</p>
       </template>
 
@@ -46,6 +46,9 @@
 <script>
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import Select from './flow/select/Select.vue';
 import Active from './flow/active/Active.vue';
 import Complete from './flow/complete/Complete.vue';

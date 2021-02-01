@@ -12,7 +12,7 @@
             { 'md-error': errors.has('studying') }
           ]">
           <md-icon>school</md-icon>
-          <label>Currently Studying?</label>
+          <label>Are You Currently Studying</label>
           <md-select class="pad" @input="addStudying" v-model="studying" data-vv-name="studying" type="text" name="studying" required v-validate="modelValidations.studying">
             <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
           </md-select>
@@ -50,6 +50,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import debounce from "debounce";
 import moment from "moment";
 export default {

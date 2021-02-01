@@ -88,20 +88,6 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         this.job = doc.data();
-        if(this.job.status !== "select") {
-          db.collection('users').where('userId', '==', firebase.auth().currentUser.uid).get()
-          .then(snapshot => {
-            snapshot.forEach(doc => {
-              if(this.job.clientAlias !== doc.data().alias) {
-                // To do: create a 404 page or component
-                this.$router.go(-1); 
-              }
-              else {
-                this.loading = false;
-              }
-            });
-          });
-        }
         this.status();
       });
     });

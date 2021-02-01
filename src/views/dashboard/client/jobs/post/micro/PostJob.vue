@@ -1,18 +1,26 @@
 <template>
-  <div class="md-layout">
+  <div class="md-layout" id="top">
     <div class="md-layout-item md-size-66 md-xsmall-size-80 mx-auto">
       <simple-wizard
         v-bind:name="name"
         v-bind:description="description"
-        v-bind:category="category"
+        v-bind:jobType="jobType"
+        v-bind:education="education"
+        v-bind:experience="experience"
+        v-bind:industryCategory="industryCategory"
+        v-bind:jobCategory="jobCategory"
         v-bind:skills="skills"
         v-bind:location="location"
         v-bind:deadline="deadline"
-        v-bind:budget="budget">
+        v-bind:daysOfTheWeek="daysOfTheWeek"
+        v-bind:hours="hours"
+        v-bind:startDate="startDate"
+        v-bind:budget="budget"
+        v-bind:benefit="benefit">
         <template slot="header">
           <h3 class="title">Post a Job</h3>
           <h5 class="category">
-            This information you fill out will allow students to apply for the microjob
+            This information you fill out will allow students to apply for the job
           </h5>
         </template>
 
@@ -25,7 +33,12 @@
             @on-validated="onStepValidated"
             @name="addName"
             @description="addDescription"
-            @category="addCategory"
+            @education="addEducation"
+            @experience="addExperience"
+            @jobType="addJobType"
+            @industryCategory="addIndustryCategory"
+            @jobCategory="addJobCategory"
+            @startDate="addStartDate"
             @skills="addSkills">
           </first-step>
         </wizard-tab>
@@ -38,7 +51,10 @@
           <second-step ref="step2"
             @on-validated="onStepValidated"
             @location="addLocation"
-            @deadline="addDeadline">
+            @deadline="addDeadline"
+            @daysOfTheWeek="addDaysOfTheWeek"
+            @hours="addHours"
+            v-bind:jobType="jobType">
           </second-step>
         </wizard-tab>
 
@@ -49,7 +65,9 @@
           </template>
           <third-step ref="step3" 
             @on-validated="onStepValidated"
-            @budget="addBudget">
+            @budget="addBudget"
+            @benefit="addBenefit"
+            v-bind:jobType="jobType">
           </third-step>
         </wizard-tab>
 
@@ -61,11 +79,19 @@
           <fourth-step ref="step4" 
             v-bind:name="name"
             v-bind:description="description"
-            v-bind:category="category"
+            v-bind:jobType="jobType"
+            v-bind:education="education"
+            v-bind:experience="experience"
+            v-bind:industryCategory="industryCategory"
+            v-bind:jobCategory="jobCategory"
             v-bind:skills="skills"
             v-bind:location="location"
             v-bind:deadline="deadline"
-            v-bind:budget="budget">
+            v-bind:daysOfTheWeek="daysOfTheWeek"
+            v-bind:hours="hours"
+            v-bind:startDate="startDate"
+            v-bind:budget="budget"
+            v-bind:benefit="benefit">
           </fourth-step>
         </wizard-tab>
       </simple-wizard>
@@ -95,11 +121,19 @@ export default {
       wizardModel: {},
       name: null,
       description: null,
-      category: null,
+      industryCategory: null,
+      jobType: null,
+      education: null,
+      experience: null,
+      jobCategory: null,
       skills: [],
       location: null,
       deadline: null,
-      budget: null
+      daysOfTheWeek: null,
+      hours: null,
+      startDate:null,
+      budget: null,
+      benefit: null
     }
   },
   methods: {
@@ -115,8 +149,20 @@ export default {
     addDescription: function(description) {
       this.description = description;
     },
-    addCategory: function(category) {
-      this.category = category;
+    addJobType: function(jobType) {
+      this.jobType = jobType;
+    },
+    addEducation: function(education) {
+      this.education = education;
+    },
+    addExperience: function(experience) {
+      this.experience = experience;
+    },
+    addJobCategory: function(jobCategory) {
+      this.jobCategory = jobCategory;
+    },
+    addIndustryCategory: function(industryCategory) {
+      this.industryCategory = industryCategory;
     },
     addSkills: function(skills) {
       this.skills = skills;
@@ -127,8 +173,20 @@ export default {
     addDeadline: function(deadline) {
       this.deadline = deadline;
     },
+    addDaysOfTheWeek: function(daysOfTheWeek) {
+      this.daysOfTheWeek = daysOfTheWeek
+    },
+    addHours: function(hours) {
+      this.hours = hours;
+    },
+    addStartDate: function(startDate) {
+      this.startDate = startDate;
+    },
     addBudget: function(budget) {
       this.budget = budget;
+    },
+    addBenefit: function(benefit) {
+      this.benefit = benefit;
     }
   }
 };

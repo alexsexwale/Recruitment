@@ -217,6 +217,23 @@
           </slide-y-down-transition>
         </md-field>
       </div>
+      <br><br>
+      <h6 class="info-text" style="text-align: center; font-weight: bold;">Select the industries you would like to get job for alerts for</h6>
+      <md-field :class="[
+          { 'md-valid': !errors.has('industryCategory') && touched.industryCategory },
+          { 'md-error': errors.has('industryCategory') }
+        ]">
+        <label>Interested Industries</label>
+        <md-select @input="addIndustryCategory" v-model="industryCategory" data-vv-name="industryCategory" type="text" name="industryCategory" required v-validate="modelValidations.industryCategory" multiple style="margin-left: 10px;">
+          <md-option v-for="(industryCategory, index) in list.job_category" :key="index" :value="industryCategory">{{industryCategory}}</md-option>
+        </md-select>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('industryCategory')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('industryCategory') && touched.industryCategory">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
     </div>
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
@@ -242,6 +259,9 @@ import { SlideYDownTransition } from "vue2-transitions";
 import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase, { storage } from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import debounce from "debounce";
 import moment from "moment";
 export default {
@@ -251,6 +271,7 @@ export default {
   },
   data() {
     return {
+      user: null,
       modal: null,
       alias: null,
       loading: false,
@@ -268,6 +289,8 @@ export default {
       cv: null,
       uploadCV: 0,
       transcript: null,
+      industryCategory: null,
+      list: [],
       touched: {
         linkedIn: false,
         facebook: false,
@@ -332,7 +355,10 @@ export default {
           required: true
         },
         transcript: {
-        }
+        },
+        industryCategory: {
+          required: true
+        },
       }
     };
   },
@@ -547,6 +573,12 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          if(this.industryCategory) {
+            this.student.update({
+              interestedIndustries: this.industryCategory,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
         }
       });
       this.$notify(
@@ -600,6 +632,10 @@ export default {
     addCV: function() {
       this.$emit("cv", this.cv);
       this.debouncedUpdate();
+    },
+    addIndustryCategory: function() {
+      this.$emit("industryCategory", this.industryCategory);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -641,7 +677,10 @@ export default {
     },
     cv() {
       this.touched.cv = true;
-    }
+    },
+    industryCategory() {
+      this.touched.industryCategory = true;
+    },
   },
   created() {
     this.user = firebase.auth().currentUser;
@@ -665,6 +704,10 @@ export default {
             this.certificate1 = doc.data().certificate1;
             this.certificate2 = doc.data().certificate2;
             this.certificate3 = doc.data().certificate3;
+            this.industryCategory = doc.data().interestedIndustries;
+            let settings = db.collection('Settings').doc('Job Category Drop-down Lists').get().then(doc => {
+              this.list = doc.data();
+            });
           }
         })
         .catch(err => {

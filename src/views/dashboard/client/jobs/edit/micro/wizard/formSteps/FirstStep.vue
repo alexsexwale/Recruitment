@@ -68,6 +68,9 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 import { SlideYDownTransition } from "vue2-transitions";
 export default {
   components: {

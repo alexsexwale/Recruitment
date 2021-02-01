@@ -113,6 +113,8 @@
 <script>
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import StarRating from 'vue-star-rating';
 import { TestimonialCard } from "@/components";
 import { Carousel, CarouselItem } from 'element-ui';

@@ -98,6 +98,8 @@
 <script>
 import firebase from "firebase/app";
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
 import { Modal, Collapse } from "@/components";
 import moment from "moment";
 import slugify from "slugify";

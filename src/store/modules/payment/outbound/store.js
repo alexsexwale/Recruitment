@@ -1,5 +1,7 @@
 import db from "@/firebase/init";
 import api from "@/store/api/api";
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 
 export default {

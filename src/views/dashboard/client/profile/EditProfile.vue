@@ -86,6 +86,9 @@ import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 
 export default {
   data() {

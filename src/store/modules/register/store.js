@@ -166,7 +166,7 @@ export default {
                             firebase.auth().currentUser.sendEmailVerification().then(() => {
                                 state.loading = false;
                                 state.modal = true;
-                                state.header = "Verify Email!";
+                                state.header = "Verify Your Email!";
                                 state.body = "Awesome, you have been successfully registered! Please check your inbox and verify your email";
                                 state.footer = "Got it";
                                 state.success = true;

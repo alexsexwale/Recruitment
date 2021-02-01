@@ -75,35 +75,33 @@
             <md-icon class="success" v-show="!errors.has('endDate1') && touched.endDate1">done</md-icon>
           </slide-y-down-transition>
         </md-datepicker>
-        <md-checkbox v-model="work" @click="hideEndDate">I currently work here.</md-checkbox>
+        <md-checkbox v-model="work" @click="hideEndDate">I currently work here</md-checkbox>
       </div>
 
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('description1') && touched.description1 },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('description1') }
-          ]">
-          <label>Description of experience</label>
-          <md-textarea class="pad" @input="addDescription1" v-model="description1" data-vv-name="description1" type="description1" name="description1" required v-validate="modelValidations.description1">
-          </md-textarea>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('description1')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('description1') && touched.description1">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
-      </div>
+      <md-field :class="[
+          { 'md-valid': !errors.has('description1') && touched.description1 },
+          { 'md-form-group': true },
+          { 'md-error': errors.has('description1') }
+        ]">
+        <label>Description of experience</label>
+        <md-textarea class="pad" @input="addDescription1" v-model="description1" data-vv-name="description1" type="description1" name="description1" v-validate="modelValidations.description1">
+        </md-textarea>
+        <slide-y-down-transition>
+          <md-icon class="error" v-show="errors.has('description1')">close</md-icon>
+        </slide-y-down-transition>
+        <slide-y-down-transition>
+          <md-icon class="success" v-show="!errors.has('description1') && touched.description1">done</md-icon>
+        </slide-y-down-transition>
+      </md-field>
       <modal v-if="modal" @close="modalHide">
         <template slot="header">
-          <h4 class="modal-title black">Whoa there! ✋</h4>
+          <h4 class="modal-title black">{{ header }}</h4>
           <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
             <md-icon>clear</md-icon>
           </md-button>
         </template>
         <template slot="body">
-          <p class="black">You cannot select a future date.</p>
+          <p class="black">{{ body }}</p>
         </template>
         <template slot="footer">
           <div class="centre">
@@ -173,14 +171,6 @@ export default {
         this.addEndDate1();
       }
     },
-    futureDate(idate) {
-      //idate = moment(idate).format('L');
-      var today = new Date();//, idate = idate.split("/");
-      //idate = new Date(idate[2], idate[1] - 1, idate[0]).getTime();
-      idate = new Date(idate);
-      console.log(today > idate)
-      return today > idate;
-    },
     getError(fieldName) {
       return this.errors.first(fieldName);
     },
@@ -246,29 +236,38 @@ export default {
       this.debouncedUpdate();
     },
     addStartDate1: function() {
-      // if(this.futureDate(this.startDate1 && !this.startDate1)) {
-      //   this.startDate1 = null;
-      //   this.modal = true;
-      // }
-      // else {
-      //   this.$emit("startDate1", this.startDate1);
-      //   this.debouncedUpdate();
-      // }
-      this.$emit("startDate1", this.startDate1);
+      var today = new Date();
+      if(this.startDate1 > today) {
+        this.startDate1 = null;
+        this.modal = true;
+        this.header = "Oops! ✋";
+        this.body = "You cannot select a future date";
+      }
+      else {
+        this.$emit("startDate1", this.startDate1);
         this.debouncedUpdate();
+      }
       
     },
     addEndDate1: function() {
-      // if(this.futureDate(this.endDate1)) {
-      //   this.endDate1 = null;
-      //   this.modal = true;
-      // }
-      // else {
-      //   this.$emit("endDate1", this.endDate1);
-      //   this.debouncedUpdate();
-      // }
-      this.$emit("endDate1", this.endDate1);
+      var today = new Date();
+      if(this.endDate1 > today) {
+        this.endDate1 = null;
+        this.modal = true;
+        this.header = "Oops! ✋";
+        this.body = "You cannot select a future date";
+      }
+      else if(this.endDate1 <= this.startDate1) {
+        this.endDate1 = null;
+        this.modal = true;
+        this.header = "Oops! ✋";
+        this.body = "You cannot choose an ending date that is before or on your starting date";
+      }
+      else {
+        this.$emit("endDate1", this.endDate1);
         this.debouncedUpdate();
+      }
+      
     },
     addDescription1: function() {
       this.$emit("description1", this.description1);

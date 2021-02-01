@@ -1,4 +1,6 @@
 import db from "@/firebase/init";
+import 'firebase/auth';
+import 'firebase/firestore';
 import axios from "axios";
 
 var api = null;

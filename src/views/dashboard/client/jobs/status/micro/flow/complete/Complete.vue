@@ -69,6 +69,9 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import moment from "moment";
 import { Modal } from "@/components";
 import { mapGetters, mapActions } from "vuex";

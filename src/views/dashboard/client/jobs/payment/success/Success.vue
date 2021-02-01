@@ -11,6 +11,8 @@
 <script>
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
 export default {
     methods: {
         status() {

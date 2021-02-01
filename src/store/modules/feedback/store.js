@@ -1,6 +1,8 @@
 import db from "@/firebase/init";
 import moment from "moment";
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default {
     state: {

@@ -27,6 +27,9 @@
 <script>
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import StarRating from 'vue-star-rating';
 export default {
   components: { 

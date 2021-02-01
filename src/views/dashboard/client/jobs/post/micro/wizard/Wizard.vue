@@ -79,6 +79,8 @@
 import { throttle } from "./throttle";
 import db from "@/firebase/init";
 import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 import slugify from "slugify";
 import { Modal } from "@/components";
@@ -107,7 +109,19 @@ export default {
     description: {
       required: true
     },
-    category:{
+    jobType: {
+      required: true
+    },
+    education: {
+      required: true
+    },
+    experience: {
+      required: true
+    },
+    industryCategory: {
+      required: true
+    },
+    jobCategory: {
       required: true
     },
     skills: {
@@ -115,6 +129,9 @@ export default {
     },
     location: {},
     deadline: {},
+    daysOfTheWeek: {},
+    hours: {},
+    startDate: {},
     budget: {
       required: true
     }
@@ -211,11 +228,14 @@ export default {
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format("L"),
             name: this.name,
-            jobType: "micro",
+            jobType: this.jobType,
             clientName: this.person.name + " " + this.person.surname,
             companyName: this.client.companyName,
             email: this.person.email,
             phone: this.person.phone,
+            education: this.education,
+            experience: this.experience,
+            startDate: moment(this.startDate).format("L"),
             clientProfile: this.person.profile
           });
 
@@ -232,6 +252,9 @@ export default {
             description: this.description,
             location: this.location,
             duration: this.deadline,
+            workingHours: this.hours,
+            daysOfTheWeek: this.daysOfTheWeek,
+            //benefit: this.benefit, // to do: move to different document
             budget: (this.budget * 1).toFixed(2),
             commission: (this.budget * this.price.serviceFee).toFixed(2),
             facilitation: (this.price.facilitationFee * 1).toFixed(2),
@@ -248,7 +271,8 @@ export default {
 
           db.collection('skills').doc(this.slug).set({
             jobId: this.slug,
-            category: this.category,
+            industry: this.industryCategory,
+            category: this.jobCategory,
             skills: this.skills,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format("L"),
@@ -279,6 +303,7 @@ export default {
       })
       .catch(err => {
         this.feedback = err.message;
+        console.log(err.message)
         this.loading = false;
       })
     },
@@ -320,6 +345,7 @@ export default {
       }
     },
     async nextTab() {
+      document.getElementById('top').scrollTop = 0
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;

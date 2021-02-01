@@ -127,12 +127,15 @@
 
     <template slot="body">
       <h2 class="modal-title black"><b><u>{{ student.name + " " + student.surname }}</u></b></h2>
-      <p v-if="!paid" class="red left">To view the entire candidates profile, please make an upfront payment.</p>
+      <p v-if="!paid" class="red left">To view the entire candidates profile, please make an upfront payment</p>
       <p class="black left">
         {{ student.bio }}
       </p>
       <b class="large-font"><u>Qualifications</u></b> <br>
       <p class="black left">
+        <span v-if="student.studying === 'Yes'">Candidate is currently studying the following:</span>
+        <span v-if="student.studying === 'No'">Candidate most recently studied the following:</span>
+        <br>
         <b>Institution:</b> {{ student.institution }} <br>
         <b>Degree:</b> {{ student.degree }} <br>
         <b>Year of Study:</b> {{ student.year }} <br>
@@ -146,19 +149,19 @@
         <span v-if="paid && student.personalWebsite"><br> <b>Website: </b> <a :href="student.personalWebsite" target="_blank">{{ student.personalWebsite }}</a></span>
       </p>
       <!-- <p class="left"><i class="small-font">*Click on the buttons to download documents.</i></p> -->
-      <b class="large-font"><u>Certificates</u></b> <br>
+      <b class="large-font" v-if="student.certificate1 || student.certificate2 || student.certificate3"><u>Certificates</u></b> <br>
       <p class="black" v-if="paid">
-        <md-button class="md-round md-info md-sm" @click="certificate1"># 1</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-info md-sm" @click="certificate2"># 2</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button class="md-round md-info md-sm" @click="certificate3"># 3</md-button>
+        <md-button v-if="student.certificate1" class="md-round md-info md-sm" @click="certificate1"># 1</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.certificate2" class="md-round md-info md-sm" @click="certificate2"># 2</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.certificate3" class="md-round md-info md-sm" @click="certificate3"># 3</md-button>
       </p>
-      <p v-else class="red">You have not made a payment.</p>
+      <p v-else class="red">You have not made a payment</p>
       <b class="large-font"><u>Resume</u></b> <br>
       <p class="black" v-if="paid">
         <md-button v-if="student.cv" @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
         <md-button v-if="student.portfolio" @click="portfolio" class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
       </p>
-      <p v-else class="red">You have not made a payment.</p>
+      <p v-else class="red">You have not made a payment</p>
       <b class="large-font"><u>Social Media Handles</u></b> <br>
       <p class="black" v-if="paid">
         <md-icon v-if="student.linkedIn && student.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
@@ -171,7 +174,7 @@
         <span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span>
         <md-icon v-if="student.instagram && student.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
       </p>
-      <p v-else class="red">You have not made a payment.</p>
+      <p v-else class="red">You have not made a payment</p>
     </template>
 
     <template slot="footer">
@@ -184,6 +187,9 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import { Modal } from "@/components";
 import { debounce } from "debounce";
 export default {

@@ -31,12 +31,13 @@
         v-bind:github="github"
         v-bind:portfolio="portfolio"
         v-bind:personalWebsite="personalWebsite"
+        v-bind:industryCategory="industryCategory"
         @emailVerified="addEmailVerified"
         @feedback="addFeedback">
         <template slot="header">
           <h3 v-if="emailVerified" class="title" style="color:#000">Build your profile</h3>
           <h5 v-if="emailVerified" class="category">
-            This information will let us know more about you.
+            This information will let us know more about you
           </h5>
           <div v-else>
             <p slot="inputs" style="color:red;">Please check your inbox to verify that <b>{{email}}</b> is the email address that you are currently using</p>
@@ -111,7 +112,8 @@
             @instagram="addInstagram"
             @github="addGithub"
             @portfolio="addPortfolio"
-            @personalWebsite="addPersonalWebsite">
+            @personalWebsite="addPersonalWebsite"
+            @industryCategory="addIndustryCategory">
           </fourth-step>
         </wizard-tab>
 
@@ -200,6 +202,7 @@ export default {
       github: null,
       portfolio: null,
       personalWebsite: null,
+      industryCategory: null,
       email: null,
       emailVerified: null,
       modal: false
@@ -362,6 +365,9 @@ export default {
     addEmailVerified: function(emailVerified) {
       this.emailVerified = emailVerified;
       this.refresh();
+    },
+    addIndustryCategory: function(industryCategory) {
+      this.industryCategory = industryCategory;
     }
   },
   created() {

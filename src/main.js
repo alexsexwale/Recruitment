@@ -1,6 +1,5 @@
 import Vue from "vue";
 import { store } from './store/store';
-import { firestorePlugin } from 'vuefire';
 import DashboardPlugin from "./material-dashboard";
 import { Carousel, CarouselItem } from 'element-ui';
 import Notifications from './components/NotificationPlugin';
@@ -14,7 +13,6 @@ import ElementUI from 'element-ui';
 import router from "./routes/routes";
 
 import firebase from "firebase/app";
-require('firebase/auth');
 
 Vue.config.productionTip = false;
 Vue.use(Carousel);
@@ -23,7 +21,6 @@ Vue.use(Notifications);
 
 // plugin setup
 Vue.use(DashboardPlugin);
-Vue.use(firestorePlugin);
 
 // global library setup
 Object.defineProperty(Vue.prototype, "$Chartist", {

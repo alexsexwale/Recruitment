@@ -29,7 +29,7 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
+              <h4 v-if="job.location !== 'Remote'" style="text-align:center;">on-site</h4>
               <h4 v-else style="text-align:center;">{{ job.location }}</h4>
             </div>
           </div>
@@ -48,6 +48,8 @@
 import { ProductCard } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default {
   components: {

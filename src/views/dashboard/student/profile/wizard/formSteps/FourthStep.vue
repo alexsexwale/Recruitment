@@ -242,6 +242,8 @@ import { SlideYDownTransition } from "vue2-transitions";
 import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase, { storage } from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import debounce from "debounce";
 import moment from "moment";
 export default {

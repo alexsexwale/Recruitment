@@ -5,7 +5,8 @@
   <div class="md-layout" v-if="appliedJobs">
     <div class="card-layout md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
-        <img class="img" slot="imageHeader" :src="product1" />
+        <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
+        <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
           <md-icon>art_track</md-icon>
@@ -30,7 +31,7 @@
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" class="centre">on-site</h4>
+              <h4 v-if="job.location !== 'Remote'" class="centre">on-site</h4>
               <h4 v-else class="centre">{{ job.location }}</h4>
             </div>
           </div>
@@ -48,6 +49,8 @@
 import { ProductCard } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default {
   components: {
@@ -70,7 +73,7 @@ export default {
       snapshot.forEach(doc => {
         let jobId = doc.data().jobId;
         let jobType = doc.data().jobType;
-        
+        let studentAlias = doc.data().alias;
         // display micro jobs
         micro.where('jobId','==', jobId).where('status', '==', 'select').get()
         .then(snapshot => {
@@ -81,7 +84,10 @@ export default {
             job.type = jobType;
             db.collection('skills').doc(doc.id).get().then(doc => {
               job.category = doc.data().category;
-              this.jobs.push(job);
+              db.collection('clients').doc(job.clientAlias).get().then(doc => {
+                job.profilePicture = doc.data().profile; //To do: Remove undefined error
+                this.jobs.push(job);
+              });
             });
           });
         });

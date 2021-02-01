@@ -53,6 +53,9 @@
     </div>
 </template>
 <script>
+import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
 import { Modal } from "@/components";
 import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";

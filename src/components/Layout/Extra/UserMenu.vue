@@ -57,6 +57,9 @@
 import { CollapseTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 
 export default {
   components: {

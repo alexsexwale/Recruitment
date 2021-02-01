@@ -109,6 +109,8 @@
 <script>
 import firebase from 'firebase/app';
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 import { Modal } from "@/components";
 import { mapGetters, mapActions } from "vuex";

@@ -25,7 +25,7 @@
       <div class="md-layout-item md-size-60 mt-4 md-small-size-100">
         <md-datepicker @input="addDob" v-model="dob" data-vv-name="dob" required v-validate="modelValidations.dob" md-immediately
           :class="[
-              { 'md-valid': !errors.has('dob') && touched.gender },
+              { 'md-valid': !errors.has('dob') && touched.dob },
               { 'md-form-group': true },
               { 'md-error': errors.has('dob') }
             ]">
@@ -153,7 +153,7 @@
             { 'md-error': errors.has('disabilityDescription') }
           ]">
           <md-icon><i class="fas fa-blind"></i></md-icon>
-          <label>Description of the disability.</label>
+          <label>Description of your disability.</label>
           <md-input @change="addDisabilityDescription" v-model="disabilityDescription" data-vv-name="disabilityDescription" type="text" name="disabilityDescription" v-validate="modelValidations.disabilityDescription"></md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('disabilityDescription')">close</md-icon>
@@ -226,7 +226,6 @@
       </template>
       <template slot="footer">
         <div class="centre">
-          <!-- Modal: Verify Email and continue creating account -->
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
@@ -521,7 +520,7 @@ export default {
         this.dob = null;
         this.modal = true;
         this.header = "Under The Age Limit! ✋";
-        this.body = "Unfortunately, you are too young to sign up to the platform.";
+        this.body = "Unfortunately, you must be at least 18 years of age to sign up";
       }
     },
     addGender: function() {

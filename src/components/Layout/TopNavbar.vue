@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="0" class="md-transparent" :class="{ 'md-toolbar-absolute md-white md-fixed-top': $route.meta.navbarAbsolute }">
+  <md-toolbar md-elevation="0" id="top" class="md-transparent" :class="{ 'md-toolbar-absolute md-white md-fixed-top': $route.meta.navbarAbsolute }">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-end">
         <md-button class="md-just-icon md-round md-simple md-toolbar-toggle" :class="{ toggled: $sidebar.showSidebar }" @click="toggleSidebar">
@@ -19,9 +19,9 @@
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
                       <!-- Client: Settings -->
-                      <li v-if="client"><router-link :to="{ name: 'settings', params: { id: alias } }">Settings</router-link></li>
+                      <li v-if="client"><router-link :to="{ name: 'settings' }">Settings</router-link></li>
                       <!-- Student: Settings -->
-                      <li v-if="student"><router-link :to="{ name: 'settings', params: { id: alias } }">Settings</router-link></li>
+                      <li v-if="student"><router-link :to="{ name: 'settings' }">Settings</router-link></li>
                       <!-- Logout -->
                       <li><a @click="logout">Logout</a></li>
                     </ul>
@@ -38,7 +38,10 @@
 
 <script>
 import db from '@/firebase/init';
-import firebase from 'firebase'
+import firebase from 'firebase';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 export default {
   data() {
     return {

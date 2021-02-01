@@ -125,6 +125,9 @@ export default {
     password() {
       this.touched.password = true;
     }
+  },
+  created() {
+    this.loading = false;
   }
 };
 </script>

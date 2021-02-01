@@ -3,7 +3,7 @@
     <h5 class="info-text">
       What are your banking details, so that we can pay you for each job?
     </h5>
-    <p class="info-text">Jobs will be paid directly to your bank account through the platform.</p>
+    <p class="info-text">Jobs will be paid directly to your bank account through the platform</p>
       <div class="md-layout">
       <notifications></notifications>
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">

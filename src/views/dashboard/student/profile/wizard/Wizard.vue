@@ -68,6 +68,8 @@
 import { throttle } from "./throttle";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 
 export default {

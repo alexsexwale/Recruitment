@@ -31,6 +31,9 @@
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 
 export default {
   components: {

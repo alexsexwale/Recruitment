@@ -60,6 +60,8 @@
 <script>
 import db from "@/firebase/init";
 import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
 import { Modal } from "@/components";
 import { mapActions, mapGetters } from 'vuex';
 export default {

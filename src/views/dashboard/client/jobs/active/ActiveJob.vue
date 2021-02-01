@@ -24,14 +24,14 @@
             <h4 style="text-align:center;">{{ job.budget }}</h4>
           </div>
           <div class="price">
-            <router-link v-if="job.type == 'micro'" :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
+            <router-link :to="{ name: 'client-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>
           <div class="stats">
             <div class="price">
               <md-icon>place</md-icon> Location
-              <h4 v-if="job.location !== 'remote'" style="text-align:center;">on-site</h4>
+              <h4 v-if="job.location !== 'Remote'" style="text-align:center;">on-site</h4>
               <h4 v-else style="text-align:center;">{{ job.location }}</h4>
             </div>
           </div>
@@ -49,6 +49,9 @@
 import { ProductCard } from "@/components";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 
 export default {
   components: {

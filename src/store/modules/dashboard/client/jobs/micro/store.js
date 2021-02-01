@@ -2,6 +2,8 @@ import db from "@/firebase/init";
 import router from "@/routes/routes";
 import api from "@/store/api/api";
 import moment from "moment";
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default {
     state: {

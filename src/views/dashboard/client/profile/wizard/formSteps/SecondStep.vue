@@ -5,7 +5,6 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
-
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('addressLine1') && touched.addressLine1 },
@@ -47,19 +46,20 @@
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
-            { 'md-valid': !errors.has('city') && touched.city },
+            { 'md-valid': !errors.has('province') && touched.province },
             { 'md-form-group': true },
-            { 'md-error': errors.has('city') }
+            { 'md-error': errors.has('province') }
           ]">
           <md-icon><i class="fas fa-map-pin"></i></md-icon>
           <label>Province</label>
-          <md-input @change="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province">
-          </md-input>
+          <md-select @input="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province" style="margin-left: 10px;">
+            <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
+          </md-select>
           <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('city')">close</md-icon>
+            <md-icon class="error" v-show="errors.has('province')">close</md-icon>
           </slide-y-down-transition>
           <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('city') && touched.city">done</md-icon>
+            <md-icon class="success" v-show="!errors.has('province') && touched.province">done</md-icon>
           </slide-y-down-transition>
         </md-field>
       </div>
@@ -90,6 +90,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 import debounce from "debounce";
 export default {

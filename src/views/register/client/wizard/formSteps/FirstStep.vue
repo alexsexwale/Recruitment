@@ -58,18 +58,6 @@
         </md-field>
       </div>
 
-      <!-- <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('vat') && touched.vat },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('vat') }
-          ]">
-          <md-icon><i class="fas fa-file-prescription"></i></md-icon>
-          <label>VAT No.</label>
-          <md-input @change="addVat" v-model="vat" data-vv-name="vat" type="number" name="vat">
-          </md-input>
-        </md-field>
-      </div> -->
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('companyCategory') && touched.companyCategory },
@@ -132,7 +120,6 @@
           { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
           { 'md-error': errors.has('aboutMe') }
         ]">
-        <!-- <label v-if="companyName == null || companyName == ''">About Me</label> -->
         <label>About Us</label>
         <md-textarea @change="addAboutMe" v-model="aboutMe" data-vv-name="aboutMe" type="text" name="aboutMe" required v-validate="modelValidations.aboutMe"></md-textarea>
         <slide-y-down-transition>
@@ -192,7 +179,7 @@ export default {
       user: null,
       client: null,
       companyName: null,
-      companyWebsite: "http://www.",
+      companyWebsite: null,
       vat: null,
       companySize: null,
       companyCategory: null,

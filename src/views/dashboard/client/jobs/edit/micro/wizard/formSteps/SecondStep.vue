@@ -46,6 +46,9 @@
 </template>
 <script>
 import db from "@/firebase/init";
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 import firebase from "firebase/app";
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";

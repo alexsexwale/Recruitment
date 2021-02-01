@@ -109,6 +109,8 @@
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import debounce from "debounce";
 import moment from "moment";
 export default {

@@ -1,4 +1,6 @@
 import db from "@/firebase/init";
+import 'firebase/auth';
+import 'firebase/firestore';
 import Vue from "vue";
 import LoadScript from "vue-plugin-load-script";
 Vue.use(LoadScript);

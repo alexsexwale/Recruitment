@@ -127,6 +127,9 @@
 <script>
 import firebase from "firebase/app";
 import db from '@/firebase/init';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import moment from "moment";
 import StarRating from 'vue-star-rating';
 import { Collapse } from "@/components";

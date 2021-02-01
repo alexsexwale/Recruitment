@@ -74,6 +74,9 @@
 </template>
 <script>
 import db from '@/firebase/init';
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 import FirstStep from "./wizard/formSteps/FirstStep.vue";
 import SecondStep from "./wizard/formSteps/SecondStep.vue";
 import ThirdStep from "./wizard/formSteps/ThirdStep.vue";

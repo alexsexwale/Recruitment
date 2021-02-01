@@ -2,6 +2,9 @@ import db from "@/firebase/init";
 import firebase from "firebase/app";
 import router from "@/routes/routes";
 import api from "@/store/api/api";
+import 'firebase/auth'
+import 'firebase/firestore'
+import 'firebase/storage';
 import moment from "moment";
 
 export default {

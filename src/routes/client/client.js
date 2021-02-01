@@ -17,7 +17,7 @@ import PostPartTime from "@/views/dashboard/client/jobs/post/part-time/PostJob.v
 import EditMicro from "@/views/dashboard/client/jobs/edit/micro/EditJob.vue";
 
 // Cancelled Job
-import CancelJob from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
+import Cancel from "@/views/dashboard/client/jobs/cancel/Cancel.vue";
 
 // Dissatisfied Job
 import DissatisfiedJob from "@/views/dashboard/client/jobs/dissatisfied/Dissatisfied.vue";
@@ -230,7 +230,7 @@ export default {
       {
         path: "cancel/:id",
         name: "client-cancel",
-        component: CancelJob,
+        component: Cancel,
         meta: {
           requiresAuth: true,
           userRole: "client",

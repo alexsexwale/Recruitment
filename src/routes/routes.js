@@ -4,6 +4,9 @@ import Router from "vue-router";
 // Firebase
 import db from "@/firebase/init";
 import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 // Routes
 import Auth from "./auth/auth";
 import StudentDashboard from "./student/student";
@@ -23,8 +26,16 @@ const router = new Router({
     ClientDashboard,
     StudentDashboard
   ],
-  scrollBehavior: (to, from, savedPosition) => {
-    return { x: 0, y: 0 }
+  scrollBehavior(to, from, savedPosition) {
+    if(to.hash) {
+      return {
+        selector: to.hash
+      };
+    }
+    if(savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0 };
   }
 });
 

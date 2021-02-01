@@ -172,6 +172,9 @@
 import { Modal } from "@/components";
 import db from '@/firebase/init';
 import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
 import moment from "moment";
 import StarRating from 'vue-star-rating';
 import { Collapse } from "@/components";
