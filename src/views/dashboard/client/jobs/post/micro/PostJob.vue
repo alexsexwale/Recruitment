@@ -38,7 +38,6 @@
             @jobType="addJobType"
             @industryCategory="addIndustryCategory"
             @jobCategory="addJobCategory"
-            @startDate="addStartDate"
             @skills="addSkills">
           </first-step>
         </wizard-tab>
@@ -54,6 +53,7 @@
             @deadline="addDeadline"
             @daysOfTheWeek="addDaysOfTheWeek"
             @hours="addHours"
+            @startDate="addStartDate"
             v-bind:jobType="jobType">
           </second-step>
         </wizard-tab>
@@ -131,7 +131,7 @@ export default {
       deadline: null,
       daysOfTheWeek: null,
       hours: null,
-      startDate:null,
+      startDate: null,
       budget: null,
       benefit: null
     }

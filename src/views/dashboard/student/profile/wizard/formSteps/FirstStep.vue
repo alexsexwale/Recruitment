@@ -426,7 +426,6 @@ export default {
       this.genders = doc.data().Genders;
       this.races = doc.data().Races;
       this.yes_no = doc.data().yes_no;
-
     });
 
     this.user = firebase.auth().currentUser;

@@ -2,7 +2,7 @@
   <div class="wizard-container">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <form @submit.prevent="update">
+    <form @submit.prevent="createJob">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -60,42 +60,27 @@
                 <div class="pc-view">Next</div>
                 <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
-              <button v-else class="md-button md-success md-theme-default" slot="footer">
+              <button v-else class="md-button md-success md-theme-default">
                 <div class="md-ripple">
-                  <div class="pc-view">Update</div>
-                  <div class="mobi-view"><i class="fa fa-check"></i></div>
+                  <div class="md-button-content">
+                    <div class="pc-view">Finish</div>
+                    <div class="mobi-view"><i class="fa fa-check"></i></div>
+                  </div>
                 </div>
               </button>
             </div>
           </slot>
         </md-card-actions>
       </md-card>
-      <!-- Modal: Success -->
-      <modal v-if="modal" @close="modalHide">
-        <template slot="header">
-          <h4 class="modal-title black">Job Updated!</h4>
-        </template>
-
-        <template slot="body">
-          <p class="black">Your job post has been updated.</p>
-        </template>
-
-        <template slot="footer">
-          <div style="text-align:center;">
-            <md-button class="md-button md-success" @click="status">Got it</md-button>
-          </div>
-        </template>
-      </modal>
     </form>
   </div>
 </template>
 <script>
 import { throttle } from "./throttle";
-import db from '@/firebase/init';
-import firebase from 'firebase/app';
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/storage';
+import db from "@/firebase/init";
+import firebase from "firebase/app";
+import 'firebase/auth';
+import 'firebase/firestore';
 import moment from "moment";
 import slugify from "slugify";
 import { Modal } from "@/components";
@@ -124,15 +109,29 @@ export default {
     description: {
       required: true
     },
-    category: {
+    jobType: {
+      required: true
+    },
+    education: {
+      required: true
+    },
+    experience: {
+      required: true
+    },
+    industryCategory: {
+      required: true
+    },
+    jobCategory: {
       required: true
     },
     skills: {
-      required: true,
-      type: Array
+      required: true
     },
     location: {},
     deadline: {},
+    daysOfTheWeek: {},
+    hours: {},
+    startDate: {},
     budget: {
       required: true
     }
@@ -159,11 +158,13 @@ export default {
       tabLinkWidth: 0,
       tabLinkHeight: 50,
       slug: null,
+      alias: null,
       user: null,
       feedback: null,
       client: {},
-      modal: false,
-      loading: false
+      price:{},
+      loading: true,
+      person: {}
     };
   },
   computed: {
@@ -206,63 +207,105 @@ export default {
     }
   },
   methods: {
-    update() {
+    createJob() {
       this.loading = true;
-      //Update jobs table
-      let jobs = db.collection('micros').doc(this.$route.params.id);
-      if(this.description) {
-        jobs.update({
-          description: this.description,
-          lastModified: moment(Date.now()).format('L')
+      this.user = firebase.auth().currentUser;
+      let ref = db.collection('clients');
+      ref.where('userId', '==', this.user.uid).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          this.client = doc.data();
+          this.slug = slugify(this.name + " " + Date.now(), {
+            replacement: '-',
+            remove: /[$*_+~.()'"!\-:@]/g,
+            lower: true
+          });
+          db.collection('jobs').doc(this.slug).set({
+            jobId: this.slug,
+            clientId: this.user.uid,
+            clientAlias: this.alias,
+            verified: false,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+            name: this.name,
+            jobType: this.jobType,
+            clientName: this.person.name + " " + this.person.surname,
+            companyName: this.client.companyName,
+            email: this.person.email,
+            phone: this.person.phone,
+            education: this.education,
+            experience: this.experience,
+            startDate: moment(this.startDate).format("L"),
+            clientProfile: this.person.profile
+          });
+
+          db.collection('micros').doc(this.slug).set({
+            jobId: this.slug,
+            studentId: null,
+            studentEmail: null,
+            studentName: null,
+            companyName: this.client.companyName,
+            clientName: this.user.displayName,
+            clientEmail: this.person.email,
+            clientAlias: this.alias,
+            name: this.name,
+            description: this.description,
+            location: this.location,
+            duration: this.deadline,
+            workingHours: this.hours,
+            daysOfTheWeek: this.daysOfTheWeek,
+            //benefit: this.benefit, // to do: move to different document
+            budget: (this.budget * 1).toFixed(2),
+            commission: (this.budget * this.price.serviceFee).toFixed(2),
+            facilitation: (this.price.facilitationFee * 1).toFixed(2),
+            total: ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2),
+            status: "select",
+            satisfied: null,
+            complete: false,
+            clientRatingComplete: false,
+            studentRatingComplete: false,
+            cancelled: false,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+          });
+
+          db.collection('skills').doc(this.slug).set({
+            jobId: this.slug,
+            industry: this.industryCategory,
+            category: this.jobCategory,
+            skills: this.skills,
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format("L"),
+          });
+
+          db.collection('payments').doc(this.slug).set({
+            jobId: this.slug,
+            amount: (this.budget * 1).toFixed(2),
+            created: moment(Date.now()).format("L"),
+            paymentDate: null,
+            paymentMethod: null,
+            requestTrace: null,
+            reference: null,
+            inboundPayment: false,
+            outboundPayment: false,
+            studentFileToken: null,
+            clientFileToken: null,
+            lastModified: moment(Date.now()).format("L"),
+            studentAlias: null,
+            serviceFee: this.price.serviceFee,
+            facilitationCost: (this.price.facilitationFee * 1).toFixed(2),
+            totalCostPaid: null
+          });
         });
-        this.modal = true;
-      }
-      if(this.location) {
-        jobs.update({
-          location: this.location,
-          lastModified: moment(Date.now()).format('L')
-        });
-        this.modal = true;
-      }
-      if(this.deadline) {
-        jobs.update({
-          duration: this.deadline,
-          lastModified: moment(Date.now()).format('L')
-        });
-        this.modal = true;
-      }
-      //Update skills table
-      let jobSkills = db.collection('skills').doc(this.$route.params.id);
-      if(this.skills.length >= 1) {
-        jobSkills.update({
-          skills: this.skills,
-          lastModified: moment(Date.now()).format('L')
-        });
-        this.modal = true;
-      }
-      if(this.category) {
-        jobSkills.update({
-          category: this.category,
-          lastModified: moment(Date.now()).format('L')
-        });
-        this.modal = true;
-      }
-      if(this.budget) {
-        jobs.update({
-          budget: (this.budget * 1).toFixed(2),
-          commission: (this.budget * 0.1).toFixed(2),
-          total: (this.budget * 1.1).toFixed(2),
-          lastModified: moment(Date.now()).format('L')
-        });
-        this.modal = true;
-      }
-      this.loading = false;
-    },
-    modalHide() {
-      this.modal = false;
-    },
-    status() {
-      this.$router.push({ name: "client-micro-status", params: {id: this.$route.params.id} });
+      })
+      .then(() => {
+        this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
+      })
+      .catch(err => {
+        this.feedback = err.message;
+        console.log(err.message)
+        this.loading = false;
+      })
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
@@ -302,6 +345,7 @@ export default {
       }
     },
     async nextTab() {
+      document.getElementById('top').scrollTop = 0
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
@@ -310,6 +354,7 @@ export default {
     },
     prevTab() {
       this.activeTabIndex--;
+      window.scrollTo(0, 0);
     },
     async navigateToTab(index) {
       if (this.tabs[index].checked) {
@@ -363,6 +408,29 @@ export default {
         this.$emit("update:startIndex", newValue);
       }
     }
+  },
+  created() {
+    let auth = firebase.auth().currentUser;
+    let users = db.collection('users');
+    users.where('userId', '==', auth.uid).get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        this.person = doc.data();
+        this.alias = doc.id;
+        if(this.person.user === "client") {
+          db.collection('clients').doc(this.alias).get()
+          .then(doc => {
+            // To do: Move the profile to the users document. Not necessary to call two api's
+            this.person.profile = doc.data().profile;
+          }); 
+        }
+      });
+    });
+    let businessModel = db.collection('Settings').doc('Business Model');
+    businessModel.get().then(doc => {
+      this.price = doc.data();
+    }); 
+    this.loading = false;
   }
 };
 </script>
@@ -401,5 +469,9 @@ export default {
   .mobi-view {
     display: none;
   }
+}
+/* Loader */
+.lds-circle {
+  position: absolute;
 }
 </style>

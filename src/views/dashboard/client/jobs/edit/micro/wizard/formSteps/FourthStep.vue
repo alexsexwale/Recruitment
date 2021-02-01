@@ -4,7 +4,7 @@
     <div class="md-layout">
       <md-card>
         <md-card-content>
-          <collapse :collapse="['Job Description', 'Job Information', 'Budget']" icon="keyboard_arrow_down" color-collapse="success">
+          <collapse :collapse="['Job Description', 'Job Requirements', 'Job Information', 'Cost Breakdown']" icon="keyboard_arrow_down" color-collapse="success">
             <template slot="md-collapse-pane-1">
               <md-card class="bg-success">
                 <md-card-content>
@@ -17,8 +17,8 @@
                   <h4 class="card-title">Job Description</h4>
                   <p class="card-description">{{ description }}</p>
 
-                  <h4 class="card-title">Job Category</h4>
-                    <p class="card-description">{{ category }}</p>
+                  <h4 class="card-title">Job Title</h4>
+                    <p class="card-description">{{ jobCategory }}</p>
 
                   <h4 class="card-title">Skills Required</h4>
                   <ul v-if="skills">
@@ -31,13 +31,13 @@
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social" style="text-align:center;">
-                    <i class="fas fa-clipboard-list"></i> Job Information
+                    <i class="fas fa-dungeon"></i> Job Requirements
                   </h3>
-                  <h4 class="card-title">Location</h4>
-                  <p class="card-description">{{ location }}</p>
+                  <h4 class="card-title">Minimum Level of Education</h4>
+                  <p class="card-description">{{ education }}</p>
 
-                  <h4 class="card-title">Estimated Duration</h4>
-                  <p class="card-description">{{ deadline }}</p>
+                  <h4 class="card-title">Minimum Work Experience</h4>
+                  <p class="card-description">{{ experience }}</p>
                 </md-card-content>
               </md-card>
             </template>
@@ -45,13 +45,36 @@
               <md-card class="bg-success">
                 <md-card-content>
                   <h3 class="card-category card-category-social" style="text-align:center;">
-                  <i class="fas fa-wallet"></i> Budget
+                    <i class="fas fa-clipboard-list"></i> Job Information
                   </h3>
-                  <h4 class="card-title">Total Budget</h4>
+                  <h4 class="card-title">Location</h4>
+                  <p class="card-description">{{ location }}</p>
+
+                  <h4 v-if="jobType === 'Once-off Project/Task'" class="card-title">Estimated Duration</h4>
+                  <p v-if="jobType === 'Once-off Project/Task'" class="card-description">{{ deadline }}</p>
+                  
+                  <h4 v-if="jobType !== 'Once-off Project/Task'" class="card-title">Working Days</h4>
+                  <ul v-if="jobType !== 'Once-off Project/Task'">
+                    <li v-for="days in daysOfTheWeek" :key="days" class="card-description">{{ days }}</li>
+                  </ul>
+
+                  <h4 v-if="jobType === 'Internship' || jobType === 'Part-time'" class="card-title">Working Hours Per Week</h4>
+                  <p v-if="jobType === 'Internship' || jobType === 'Part-time'" class="card-description">{{ hours }}</p>
+                </md-card-content>
+              </md-card>
+            </template>
+            <template slot="md-collapse-pane-4">
+              <md-card class="bg-success">
+                <md-card-content>
+                  <h3 class="card-category card-category-social" style="text-align:center;">
+                  <i class="fas fa-wallet"></i> Breakdown
+                  </h3>
+                  <h4 class="card-title">Total Cost</h4>
                   <p class="card-description"><b>R{{ total() }}</b> = <b>R{{ rate() }}</b> + <b>R{{ fee() }}</b> + <b>R{{ price.facilitationFee }}.00</b></p>
                   <hr/>
                   <h4 class="card-title">Cost Breakdown</h4>
-                  <p class="card-description">Student Rate:  <b>R{{ rate() }}</b></p> 
+                  <p class="card-description" v-if="jobType === 'Once-off Project/Task'">Fixed-Term Rate:  <b>R{{ rate() }}</b></p>
+                  <p class="card-description" v-if="jobType !== 'Once-off Project/Task'">Salary:  <b>R{{ rate() }}</b></p>  
                   <p class="card-description">Jobox Service Fee ({{ percentage() }}%): <b>R{{ fee() }}</b></p> 
                   <p class="card-description">Jobox Facilitation Cost: <b>R{{ price.facilitationFee }}.00</b></p>
                 </md-card-content>
@@ -67,9 +90,8 @@
 import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 import db from '@/firebase/init';
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/storage';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default {
   components: {
@@ -80,10 +102,16 @@ export default {
   props: {
     name: {},
     description: {},
-    category:{},
+    jobType: {},
+    education: {},
+    experience: {},
+    industryCategory: {},
+    jobCategory: {},
     skills: {},
     location: {},
     deadline: {},
+    daysOfTheWeek: {},
+    hours: {},
     budget: {},
     payment: {}
   },

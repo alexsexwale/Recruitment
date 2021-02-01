@@ -50,6 +50,9 @@
                   <h4 class="card-title">Location</h4>
                   <p class="card-description">{{ location }}</p>
 
+                  <h4 class="card-title">Start Date</h4>
+                  <p class="card-description">{{ date }}</p>
+
                   <h4 v-if="jobType === 'Once-off Project/Task'" class="card-title">Estimated Duration</h4>
                   <p v-if="jobType === 'Once-off Project/Task'" class="card-description">{{ deadline }}</p>
                   
@@ -89,6 +92,7 @@
 <script>
 import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import moment from "moment";
 import db from '@/firebase/init';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -113,7 +117,8 @@ export default {
     daysOfTheWeek: {},
     hours: {},
     budget: {},
-    payment: {}
+    payment: {},
+    startDate: {}
   },
   data() {
     return {
@@ -136,6 +141,11 @@ export default {
     },
     percentage() {
       return this.price.serviceFee * 100;
+    }
+  },
+  computed: {
+    date() {
+      return moment(this.startDate).format('LL')
     }
   },
   created() {

@@ -226,7 +226,7 @@ export default {
             clientAlias: this.alias,
             verified: false,
             created: moment(Date.now()).format('L'),
-            lastModified: moment(Date.now()).format("L"),
+            lastModified: moment(Date.now()).format('L'),
             name: this.name,
             jobType: this.jobType,
             clientName: this.person.name + " " + this.person.surname,
@@ -235,7 +235,7 @@ export default {
             phone: this.person.phone,
             education: this.education,
             experience: this.experience,
-            startDate: moment(this.startDate).format("L"),
+            startDate: moment(this.startDate).format('L'),
             clientProfile: this.person.profile
           });
 

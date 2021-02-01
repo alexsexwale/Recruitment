@@ -79,7 +79,7 @@
       </div>
 
       <div class="md-layout-item mt-4 md-small-size-100">
-        <md-datepicker @input="addStartDate" v-model="startDate" data-vv-name="startDate" required v-validate="modelValidations.startDate" :md-disabled-dates="disabledDates" md-immediately
+        <md-datepicker @input="addStartDate" v-model="startDate" data-vv-name="startDate" required v-validate="modelValidations.startDate" md-immediately
           :class="[
               { 'md-valid': !errors.has('startDate') && touched.startDate },
               { 'md-form-group': true },
