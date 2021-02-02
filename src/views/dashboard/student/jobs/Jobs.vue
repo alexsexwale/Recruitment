@@ -79,6 +79,7 @@ export default {
     db.collection('micros').where('status', '==', 'select').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
+        console.log("hey there")
         let job = doc.data();
         job.id = doc.id;
         db.collection('jobs').doc(doc.id).get().then(doc => {

@@ -5,7 +5,7 @@
     <h5 class="info-text">
       Social Media Accounts and Additional Documents
     </h5>
-    <p class="info-text">Please do not include inappropriate handles 🤪</p>
+    <p class="info-text">Please do not include inappropriate handles 🤪 <br>Please enter the <b>URL</b> directory to your social media account.</p>
       <div class="md-layout">
       <notifications></notifications>
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
@@ -218,14 +218,14 @@
         </md-field>
       </div>
       <br><br>
-      <h6 class="info-text" style="text-align: center; font-weight: bold;">Select the industries you would like to get job for alerts for</h6>
+      <h6 class="info-text" style="text-align: center; font-weight: bold;">Please select the industries you would like to get job alerts for</h6>
       <md-field :class="[
           { 'md-valid': !errors.has('industryCategory') && touched.industryCategory },
           { 'md-error': errors.has('industryCategory') }
         ]">
         <label>Interested Industries</label>
         <md-select @input="addIndustryCategory" v-model="industryCategory" data-vv-name="industryCategory" type="text" name="industryCategory" required v-validate="modelValidations.industryCategory" multiple style="margin-left: 10px;">
-          <md-option v-for="(industryCategory, index) in list.job_category" :key="index" :value="industryCategory">{{industryCategory}}</md-option>
+          <md-option v-for="(industryCategory, index) in list.JobCategory" :key="index" :value="industryCategory">{{industryCategory}}</md-option>
         </md-select>
         <slide-y-down-transition>
           <md-icon class="error" v-show="errors.has('industryCategory')">close</md-icon>
@@ -366,6 +366,7 @@ export default {
     previewID(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "ID");
       }
@@ -398,6 +399,7 @@ export default {
     previewCertificate1(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-1");
       }
@@ -408,6 +410,7 @@ export default {
     previewCertificate2(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-2");
       }
@@ -418,6 +421,7 @@ export default {
     previewCertificate3(event) {
       this.uploadValue = 0;
       var file = event.target.files[0];
+      // Not higher than 2Mb
       if(file.size < 2 * 1024 * 1024) {
         this.fileUpload(file, "certificate-3");
       }
@@ -684,6 +688,10 @@ export default {
   },
   created() {
     this.user = firebase.auth().currentUser;
+    db.collection('Settings').doc('Job Category Drop-down Lists').get().then(doc => {
+      this.list = doc.data();
+    });
+    
     let ref = db.collection('users');
     ref.where('userId', '==', this.user.uid).get()
     .then(snapshot => {
@@ -705,9 +713,6 @@ export default {
             this.certificate2 = doc.data().certificate2;
             this.certificate3 = doc.data().certificate3;
             this.industryCategory = doc.data().interestedIndustries;
-            let settings = db.collection('Settings').doc('Job Category Drop-down Lists').get().then(doc => {
-              this.list = doc.data();
-            });
           }
         })
         .catch(err => {

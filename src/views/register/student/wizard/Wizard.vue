@@ -418,7 +418,13 @@ export default {
             angularDeveloper: false,
             vueDeveloper: false,
             reactDevloper: false,
-            sqlDeveloper: false
+            sqlDeveloper: false,
+            businessAdmin: false,
+            bookKeeper: false,
+            tutor: false,
+            frontendDeveloper: false,
+            backendDeveoper: false,
+            fullStackDeveloper: false,
           });
           this.$router.push({ name: "apply" });
           this.loading = false;

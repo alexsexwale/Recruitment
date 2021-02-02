@@ -53,8 +53,6 @@
           ]">
           <md-icon><i class="fas fa-map-pin"></i></md-icon>
           <label>Province</label>
-          <md-input @change="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.city">
-          </md-input>
           <md-select @input="addProvince" v-model="province_state" data-vv-name="province" type="text" name="province" required v-validate="modelValidations.province" style="margin-left: 10px;">
             <md-option v-for="(province, index) in provinces" :key="index" :value="province">{{province}}</md-option>
           </md-select>

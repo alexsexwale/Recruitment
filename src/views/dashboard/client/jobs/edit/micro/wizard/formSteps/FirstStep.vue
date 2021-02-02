@@ -410,6 +410,7 @@ export default {
         this.skills = doc.data().skills; // skills
         this.industryCategory = doc.data().industry; // skills
         this.jobCategory = doc.data().category; // skills
+        console.log(this.jobCategory)
         this.skills.id = doc.id;
         db.collection('jobs').doc(this.$route.params.id).get()
         .then(doc => {

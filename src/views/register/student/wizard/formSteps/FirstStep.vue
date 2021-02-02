@@ -280,7 +280,8 @@ export default {
         dob: false,
         gender: false,
         race: false,
-        bio: false
+        bio: false,
+        vehicle: false
       },
       modelValidations: {
         dob: {
@@ -316,6 +317,9 @@ export default {
           required: true,
           min: 10,
           max: 100
+        },
+        vehicle: {
+          
         }
       }
     };

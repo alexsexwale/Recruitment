@@ -302,12 +302,16 @@ export default {
           if(doc.exists) {
             this.jobTitle1 = doc.data().jobTitle1;
             this.employer1 = doc.data().employer1;
-            this.startDate1 = new Date(doc.data().startDate1);
+            if(doc.data().startDate1)
+              this.startDate1 = new Date(doc.data().startDate1);
+            else
+              this.startDate1 = null;
+              
             if(doc.data().endDate1)
               this.endDate1 = new Date(doc.data().endDate1);
             else
               this.endDate1 = null;
-            this.description1 = doc.data().description1;
+              this.description1 = doc.data().description1;
           }
         })
         .catch(err => {

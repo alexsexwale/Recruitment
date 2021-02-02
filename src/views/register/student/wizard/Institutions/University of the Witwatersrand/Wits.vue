@@ -1033,7 +1033,6 @@ export default {
         snapshot.forEach(doc => {
           this.student = db.collection('students').doc(doc.id);
           this.student.get().then(doc => {
-            console.log(doc.data())
             if(doc.exists) {
               this.faculty = doc.data().faculty;
               this.graduateStatus = doc.data().graduateStatus;

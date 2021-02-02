@@ -24,14 +24,15 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
+      <div v-if="studying" class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('institution') && touched.institution },
             { 'md-form-group': true },
             { 'md-error': errors.has('institution') }
           ]">
           <md-icon>school</md-icon>
-          <label>Institution</label>
+          <label v-if="studying == 'Yes'">Where are you studying?</label>
+          <label v-else>Where did you study?</label>
           <md-select class="pad" @input="addInstitution" v-model="institution" data-vv-name="institution" type="text" name="institution" required v-validate="modelValidations.institution">
             <md-option v-for="(institution, index) in institutions" :key="index" :value="institution">{{institution}}</md-option>
           </md-select>
@@ -132,6 +133,9 @@ export default {
     }
   },
   watch: {
+    institution() {
+      this.touched.institution = true;
+    },
     studying() {
       this.touched.studying = true;
     }
