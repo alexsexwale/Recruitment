@@ -79,7 +79,7 @@
                   <p class="card-description" v-if="jobType === 'Once-off Project/Task'">Fixed-Term Rate:  <b>R{{ rate() }}</b></p>
                   <p class="card-description" v-if="jobType !== 'Once-off Project/Task'">Salary:  <b>R{{ rate() }}</b></p>  
                   <p class="card-description">Jobox Service Fee ({{ percentage() }}%): <b>R{{ fee() }}</b></p> 
-                  <p class="card-description">Jobox Facilitation Cost: <b>R{{ price.facilitationFee }}.00</b></p>
+                  <p class="card-description">Jobox Admin Cost: <b>R{{ price.facilitationFee }}.00</b></p>
                 </md-card-content>
               </md-card>
             </template>

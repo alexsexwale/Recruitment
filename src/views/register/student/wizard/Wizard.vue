@@ -356,7 +356,7 @@ export default {
             }
             if(this.industryCategory) {
               students.update({
-                branchCode: this.industryCategory,
+                industryCategory: this.industryCategory,
                 lastModified: moment(Date.now()).format('L')
               });
             }

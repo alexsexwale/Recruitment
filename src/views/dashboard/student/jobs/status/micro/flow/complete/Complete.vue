@@ -8,7 +8,8 @@
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="picture" class="img" :src="picture" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
           <h6 class="category text-gray">{{ client.companyName }}</h6>
@@ -31,7 +32,8 @@ export default {
   data() {
     return {
       client: {},
-      loading: true  
+      loading: true,
+      picture: null  
     }  
   },
   props: {
@@ -45,6 +47,9 @@ export default {
     job.get().then(doc => {
       this.client = doc.data();
       this.client.id = doc.id;
+      db.collection('clients').doc(this.client.clientAlias).get().then(doc => {
+        this.picture = doc.data().profile;
+      });
     });    
     this.loading = false;
   }  

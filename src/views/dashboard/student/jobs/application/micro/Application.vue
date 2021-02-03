@@ -8,12 +8,12 @@
         <md-button class="md-success" @click="apply">Apply for job</md-button>
         <md-card>
           <md-card-content>
-            <collapse :collapse="['Job Description', 'Job Information', 'Budget']" icon="keyboard_arrow_down" color-collapse="success">
+            <collapse :collapse="['Job Description', 'Job Requirements', 'Job Information', 'Budget']" icon="keyboard_arrow_down" color-collapse="success">
               <template slot="md-collapse-pane-1">
                 <md-card class="bg-success">
                   <md-card-content>
                     <h3 class="card-category card-category-social" style="text-align:center;">
-                      <i class="far fa-newspaper" /> Job Description
+                      <i class="fas fa-list-ul" /> Job Description
                     </h3>
                     <h4 class="card-title">Job Name</h4>
                     <p class="card-description">{{ job.name }}</p>
@@ -38,26 +38,55 @@
                 </md-card>
               </template>
               <template slot="md-collapse-pane-2">
+              <md-card class="bg-success">
+                <md-card-content>
+                  <h3 class="card-category card-category-social" style="text-align:center;">
+                    <i class="fas fa-dungeon"></i> Job Requirements
+                  </h3>
+                  <h4 class="card-title">Minimum Level of Education</h4>
+                  <p class="card-description">{{ job.education }}</p>
+
+                  <h4 class="card-title">Minimum Work Experience</h4>
+                  <p class="card-description">{{ job.experience }}</p>
+                </md-card-content>
+              </md-card>
+            </template>
+              <template slot="md-collapse-pane-3">
                 <md-card class="bg-success">
                   <md-card-content>
                     <h3 class="card-category card-category-social centre">
-                      <i class="far fa-newspaper" /> Job Information
+                      <i class="fas fa-clipboard-list"></i> Job Information
                     </h3>
-                    <h4 class="card-title">Job Location</h4>
+                    <h4 class="card-title">Location</h4>
                     <p class="card-description">{{ job.location }}</p>
 
-                    <h4 class="card-title">Estimated Duration</h4>
-                    <p class="card-description">{{ job.duration }}</p>
+                    <h4 class="card-title">Start Date</h4>
+                    <p class="card-description">{{ job.date }}</p>
+
+                    <h4 v-if="job.type === 'Once-off Project/Task'" class="card-title">Estimated Duration</h4>
+                    <p v-if="job.type === 'Once-off Project/Task'" class="card-description">{{ job.duration }}</p>
+
+                    <h4 v-if="job.type !== 'Once-off Project/Task'" class="card-title">Working Days</h4>
+                    <ul v-if="job.type !== 'Once-off Project/Task'">
+                      <li v-for="days in job.daysOfTheWeek" :key="days" class="card-description">{{ days }}</li>
+                    </ul>
+
+                    <h4 v-if="job.type === 'Internship' || job.type === 'Part-time'" class="card-title">Working Hours Per Week</h4>
+                    <p v-if="job.type === 'Internship' || job.type === 'Part-time'" class="card-description">{{ job.workingHours }}</p>
                   </md-card-content>
                 </md-card>
               </template>
-              <template slot="md-collapse-pane-3">
+              <template slot="md-collapse-pane-4">
               <md-card class="bg-success">
                 <md-card-content>
-                  <h3 class="card-category card-category-social centre">
-                    <i class="far fa-newspaper" /> Budget
+                  <h3 v-if="job.type === 'Once-off Project/Task'" class="card-category card-category-social centre">
+                    <i class="fas fa-wallet"></i> Budget
                   </h3>
-                  <h4 class="card-title">Budget</h4>
+                  <h3 v-if="job.type ==! 'Once-off Project/Task'" class="card-category card-category-social centre">
+                    <i class="fas fa-wallet"></i> Salary
+                  </h3>
+                  <h4 v-if="job.type === 'Once-off Project/Task'" class="card-title">Budget</h4>
+                  <h4 v-if="job.type !== 'Once-off Project/Task'" class="card-title">Salary</h4>
                   <p class="card-description">R{{ job.budget }}</p>
                 </md-card-content>
               </md-card>
@@ -230,7 +259,7 @@ export default {
       else if(this.skills.category === "Software Developer")
         window.open(this.url.software_developer, '_blank');
       else if(this.skills.category === "Database Administrator")
-        window.open(this.url.database_admistrator, '_blank');
+        window.open(this.url.database_administrator, '_blank');
       else if(this.skills.category === "IT Technician")
         window.open(this.url.it_technician, '_blank');
       else if(this.skills.category === "Video Editor")
@@ -239,17 +268,24 @@ export default {
   },
   created() {
     this.auth = firebase.auth().currentUser;
-    let job = db.collection('micros').doc(this.$route.params.id);
+    let job = db.collection('jobs').doc(this.$route.params.id);
+    let project = db.collection('micros').doc(this.$route.params.id);
     let skills = db.collection('skills').doc(this.$route.params.id);
     let settings = db.collection('Settings').doc("Vetting Process URL");
     settings.get().then().then(doc => {
       this.url = doc.data();
     });
-    job.get().then(doc => {
+    project.get().then(doc => {
       this.job = doc.data();
       this.job.id = doc.id;
-      let user = db.collection('users').where('userId', '==', this.auth.uid);
-      user.get().then(snapshot => {
+      job.get().then(doc => {
+        this.job.date = moment(doc.data().startDate).format('LL');
+        this.job.type = doc.data().jobType;
+        this.job.experience = doc.data().experience;
+        this.job.education = doc.data().education;
+      });
+      db.collection('users').where('userId', '==', this.auth.uid)
+      .get().then(snapshot => {
         snapshot.forEach(doc => {
           this.user = doc.data();
           this.slug = slugify(this.user.alias + " " + this.$route.params.id, {

@@ -12,7 +12,8 @@
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100" v-for="(applicant, index) in approvedApplicant" :key="index">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
-          <img class="img" :src="cardUserImage" />
+          <img v-if="applicant.profile" class="img" :src="applicant.profile" />
+          <img v-else class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
           <br>
@@ -55,13 +56,13 @@
     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="(applicant, index) in applicants" :key="index">
       <md-card class="md-card-profile">
         <div class="md-card-avatar">
-          <img class="img" :src="cardUserImage" />
+          <img v-if="applicant.profile" class="img" :src="applicant.profile" />
+          <img v-else class="img" :src="cardUserImage" />
         </div>
         <md-card-content>
           <br>
           <h6 class="category text-gray"> {{ applicant.degree }}</h6>
           <md-button class="md-round md-info md-sm" @click="profile(applicant.alias)">{{ applicant.applicant }}</md-button>
-          <!-- <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link> -->
           <p class="card-description">
             {{ applicant.bio }}
           </p>
@@ -133,33 +134,34 @@
       </p>
       <b class="large-font"><u>Qualifications</u></b> <br>
       <p class="black left">
-        <span v-if="student.studying === 'Yes'">Candidate is currently studying the following:</span>
-        <span v-if="student.studying === 'No'">Candidate most recently studied the following:</span>
-        <br>
-        <b>Institution:</b> {{ student.institution }} <br>
-        <b>Degree:</b> {{ student.degree }} <br>
-        <b>Year of Study:</b> {{ student.year }} <br>
-        <b>Graduate Status:</b> {{ student.graduateStatus }}
+        <span v-if="student.studying === 'Yes'">The candidate is currently studying the following:</span>
+        <span v-if="student.studying === 'No'">The candidate most recently completed the following:</span>
+        <br><br>
+        <b><u>Institution:</u></b> {{ student.institution }} <br>
+        <b><u>Degree:</u></b> {{ student.degree }} <br>
+        <b><u>Graduate Status:</u></b> {{ student.graduateStatus }} <br>
+        <b><u>Year of Study:</u></b> {{ student.year }} <br>
       </p>
       
       <b class="large-font"><u>Contact Information</u></b> <br>
-      <p class="black left">
+      <p v-if="paid" class="black left">
         <b>Email Address:</b> {{ student.email || "**********" }} <br>
         <b>Phone Number:</b> {{student.phone || "**********" }} 
-        <span v-if="paid && student.personalWebsite"><br> <b>Website: </b> <a :href="student.personalWebsite" target="_blank">{{ student.personalWebsite }}</a></span>
+        <span v-if="student.personalWebsite"><br> <b>Website: </b> <a :href="student.personalWebsite" target="_blank">{{ student.personalWebsite }}</a></span>
       </p>
-      <!-- <p class="left"><i class="small-font">*Click on the buttons to download documents.</i></p> -->
-      <b class="large-font" v-if="student.certificate1 || student.certificate2 || student.certificate3"><u>Certificates</u></b> <br>
-      <p class="black" v-if="paid">
+      <p v-else class="red">You have not made a payment</p>
+      <b class="large-font"><u>Certificates</u></b> <br>
+      <p class="black" v-if="paid && (student.certificate1 || student.certificate2 || student.certificate3)">
         <md-button v-if="student.certificate1" class="md-round md-info md-sm" @click="certificate1"># 1</md-button> &nbsp;&nbsp;&nbsp;
         <md-button v-if="student.certificate2" class="md-round md-info md-sm" @click="certificate2"># 2</md-button> &nbsp;&nbsp;&nbsp;
         <md-button v-if="student.certificate3" class="md-round md-info md-sm" @click="certificate3"># 3</md-button>
       </p>
-      <p v-else class="red">You have not made a payment</p>
+      <p class="red left" v-if="paid && !student.certificate1 && !student.certificate2 && !student.certificate3">The candidate has not uploaded any certificates</p>
+      <p v-if="!paid" class="red">You have not made a payment</p>
       <b class="large-font"><u>Resume</u></b> <br>
       <p class="black" v-if="paid">
-        <md-button v-if="student.cv" @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
-        <md-button v-if="student.portfolio" @click="portfolio" class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.cv && student.cv !== ''" @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
+        <md-button v-if="student.portfolio && student.portfolio !== ''" @click="portfolio" class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
       </p>
       <p v-else class="red">You have not made a payment</p>
       <b class="large-font"><u>Social Media Handles</u></b> <br>
@@ -275,7 +277,6 @@ export default {
       this.loading = true;
       db.collection('students').doc(alias).get().then(doc => {
         this.student = doc.data();
-
         this.cardUserImage = this.student.profile;
         db.collection('users').doc(alias).get().then(doc => {
           this.student.name = doc.data().name;
@@ -327,7 +328,10 @@ export default {
         this.available = true;
         let applicant = doc.data();
         applicant.id = doc.id;
-        this.applicants.push(applicant);
+        db.collection('students').doc(applicant.alias).get().then(doc => {
+          applicant.profile = doc.data().profile;
+          this.applicants.push(applicant);
+        });
       });
     });
     applicants.where('jobId', '==', this.$route.params.id).where('status', '==', 'applied').where('approved', '==', true).get()
@@ -336,7 +340,10 @@ export default {
         this.approved = true;
         let applicant = doc.data();
         applicant.id = doc.id;
-        this.approvedApplicant.push(applicant);
+        db.collection('students').doc(applicant.alias).get().then(doc => {
+          applicant.profile = doc.data().profile;
+          this.approvedApplicant.push(applicant);
+        });
       });
     });
     applicants.onSnapshot(snapshot => {

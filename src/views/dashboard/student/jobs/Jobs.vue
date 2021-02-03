@@ -27,8 +27,8 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <i class="fas fa-money-bill-wave"></i> budget
-            <h4 style="text-align:center;">{{ job.budget }}</h4>
+            <i class="fas fa-briefcase"></i> Job Type
+            <h4 style="text-align:center;">{{ job.type }}</h4>
           </div>
           <div class="price">
             <br><br>
@@ -79,10 +79,10 @@ export default {
     db.collection('micros').where('status', '==', 'select').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
-        console.log("hey there")
         let job = doc.data();
         job.id = doc.id;
         db.collection('jobs').doc(doc.id).get().then(doc => {
+          job.type = doc.data().jobType;
           if(doc.data().verified === true) {
             db.collection('skills').doc(doc.id).get().then(doc => {
             job.category = doc.data().category;
@@ -91,7 +91,6 @@ export default {
                 this.jobs.push(job);
                 this.postedJobs = true;
               });
-              
             });
           }
         });

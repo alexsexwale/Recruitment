@@ -20,11 +20,11 @@
         </div>
         <template slot="footer">
           <div class="price">
-            <i class="fas fa-money-bill-wave"></i> budget
-            <h4 class="centre">{{ job.budget }}</h4>
+            <i class="fas fa-money-bill-wave"></i> Job Type
+            <h4 class="centre">{{ job.type }}</h4>
           </div>
           <div class="price">
-            <router-link v-if="job.type == 'micro'" :to="{ name: 'student-micro-status', params: {id: job.id} }"> 
+            <router-link :to="{ name: 'student-micro-status', params: {id: job.id} }"> 
               <md-button class="md-success">View</md-button>
             </router-link>
           </div>
@@ -72,8 +72,6 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         let jobId = doc.data().jobId;
-        let jobType = doc.data().jobType;
-        let studentAlias = doc.data().alias;
         // display micro jobs
         micro.where('jobId','==', jobId).where('status', '==', 'select').get()
         .then(snapshot => {
@@ -81,20 +79,22 @@ export default {
             this.appliedJobs = true;
             let job = doc.data();
             job.id = doc.id;
-            job.type = jobType;
-            db.collection('skills').doc(doc.id).get().then(doc => {
-              job.category = doc.data().category;
-              db.collection('clients').doc(job.clientAlias).get().then(doc => {
-                job.profilePicture = doc.data().profile; //To do: Remove undefined error
-                this.jobs.push(job);
+            db.collection('jobs').doc(doc.id).get().then(doc => {
+              job.type = doc.data().jobType;
+              db.collection('skills').doc(doc.id).get().then(doc => {
+                job.category = doc.data().category;
+                db.collection('clients').doc(job.clientAlias).get().then(doc => {
+                  job.profilePicture = doc.data().profile; //To do: Remove undefined error
+                  this.jobs.push(job);
+                });
               });
-            });
+            })
           });
         });
-        if(this.appliedJobs === null) 
-         this.appliedJobs = false;
       });
     });
+    if(this.appliedJobs === null) 
+      this.appliedJobs = false;
     this.loading = false;
   }
 };

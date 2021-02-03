@@ -62,7 +62,8 @@
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="picture" class="img" :src="picture" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
           <h6 class="category text-gray">{{ client.companyName }}</h6>
@@ -101,6 +102,7 @@ export default {
       modal: false,
       client: {},
       applicant: {},
+      picture: null,
       touched: {
         review: false
       },
@@ -164,6 +166,9 @@ export default {
     let jobs = db.collection('micros');
     jobs.doc(this.$route.params.id).get().then(doc => {
       this.client = doc.data();
+      db.collection('clients').doc(this.client.clientAlias).get().then(doc => {
+        this.picture = doc.data().profile;
+      });
     });
     jobs.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {

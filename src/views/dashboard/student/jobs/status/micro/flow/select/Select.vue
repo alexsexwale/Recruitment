@@ -10,7 +10,8 @@
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="picture" class="img" :src="picture" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
             <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
@@ -60,7 +61,8 @@
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="picture" class="img" :src="picture" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
             <h6 v-if="client.companyName" class="category text-gray">{{ client.companyName }}</h6>
@@ -111,7 +113,6 @@ import firebase from 'firebase/app';
 import db from '@/firebase/init';
 import 'firebase/auth';
 import 'firebase/firestore';
-import moment from "moment";
 import { Modal } from "@/components";
 import { mapGetters, mapActions } from "vuex";
 export default {
@@ -125,7 +126,8 @@ export default {
       cancelModal: false,
       declineModal: false,
       loading: true,
-      applicant: {}
+      applicant: {},
+      picture: null
     };
   },
   props: {
@@ -148,8 +150,10 @@ export default {
     job.get().then(doc => {
       this.client = doc.data();
       this.client.id = doc.id;
+      db.collection('clients').doc(this.client.clientAlias).get().then(doc => {
+        this.picture = doc.data().profile;
+      });
     });  
-    
     this.user = firebase.auth().currentUser;
     let applicants = db.collection('applications');
     applicants.where('jobId', '==', this.$route.params.id).where('studentId', '==', this.user.uid).where('approved', '==', true).get()
