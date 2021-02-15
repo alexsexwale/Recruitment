@@ -662,6 +662,7 @@ function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId,
     );
   })
 }
+//this is a test comment
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
