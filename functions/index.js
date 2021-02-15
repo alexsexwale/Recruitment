@@ -5,6 +5,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const soap = require("soap");
+const SlackBot = require('slackbots');
+const dotenv = require('dotenv');
+
+dotenv.config()
 
 var serviceAccount = require("./permissions.json");
 
@@ -34,62 +38,82 @@ const sgMail = require("@sendgrid/mail");
 
 // Firestore - get single document
 function getDocument(collection, id) {
-    return db.collection(collection).doc(id).get();
+  return db.collection(collection).doc(id).get();
 }
 
 // Routes
+
+
+const bot = new SlackBot({
+  token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+  name: 'jobox_app'
+})
+//xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
+
 app.get("/hello", (req, res) => {
+  // Start Handler
+  bot.on('start', () => {
+    const params = {
+        icon_emoji: ':robot_face:'
+    }
+
+    bot.postMessageToChannel(
+        'interns',
+        'Testing slack chatbot',
+        params
+    );
+  })
     return res.status(200).send("Hey");
 });
 
 // Notifications
 app.post("/notification", urlencodedParser, async (req, res) => {
-    const doc = await getDocument("Settings", "Email");
-    var settings = doc.data();
-    sgMail.setApiKey(settings.apiKey);
-    
-    var msg = null;
-    if(req.body.type === "feedback" || req.body.type === "support") {
-        msg = {
-            to: "contact@jobox.co.za",
-            from: req.body.email,
-            subject: req.body.subject,
-            text: req.body.message
-        };
+  const doc = await getDocument("Settings", "Email");
+  var settings = doc.data();
+  sgMail.setApiKey(settings.apiKey);
+  
+  var msg = null;
+  if(req.body.type === "feedback" || req.body.type === "support") {
+    msg = {
+        to: "contact@jobox.co.za",
+        from: req.body.email,
+        subject: req.body.subject,
+        text: req.body.message
+    };
 
-        db.collection(req.body.type).add({
-            userId: req.body.id,
-            created: moment(Date.now()).format('L'),
-            subject: req.body.subject,
-            message: req.body.message
-        });
-    }
-    if(req.body.type === "active") {
-        msg = {
-            to: "contact@jobox.co.za",
-            from: "admin@jobox.co.za",
-            subject: req.body.subject,
-            text: req.body.message
-        };
-    }
-    if(req.body.type === "errors" || req.body.type === "incomplete" || req.body.type === "cancel" || req.body.type === "dissatisfied") {
-        msg = {
-            to: "contact@jobox.co.za",
-            from: req.body.email,
-            subject: req.body.subject,
-            text: req.body.message
-        };
+    db.collection(req.body.type).add({
+        userId: req.body.id,
+        created: moment(Date.now()).format('L'),
+        subject: req.body.subject,
+        message: req.body.message
+    });
+  }
+  if(req.body.type === "active") {
+    msg = {
+        to: "contact@jobox.co.za",
+        from: "admin@jobox.co.za",
+        subject: req.body.subject,
+        text: req.body.message
+    };
+  }
+  if(req.body.type === "errors" || req.body.type === "incomplete" || req.body.type === "cancel" || req.body.type === "dissatisfied") {
+    msg = {
+        to: "contact@jobox.co.za",
+        from: req.body.email,
+        subject: req.body.subject,
+        text: req.body.message
+    };
 
-        db.collection(req.body.type).add({
-            jobId: req.body.jobId,
-            created: moment(Date.now()).format('L'),
-            subject: req.body.subject,
-            message: req.body.message
-        });
-    }
-    sgMail.send(msg);
-    
-    return res.status(200).send("Sent");
+    db.collection(req.body.type).add({
+        jobId: req.body.jobId,
+        created: moment(Date.now()).format('L'),
+        subject: req.body.subject,
+        message: req.body.message
+    });
+  }
+  sgMail.send(msg);
+  
+  return res.status(200).send("Sent");
 });
 
 // Inbound payment
@@ -622,6 +646,22 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
           clientName + " on their phone number, " + phone + ".\n\nKind regards,\nAlex Sexwale" 
   }
 }
+// Send slack alert
+function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
+  bot.on('start', () => {
+    const params = {
+        icon_emoji: ':robot_face:'
+    }
+
+    bot.postMessageToChannel(
+        channel,
+        "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
+          + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
+          clientName + " on their phone number, " + phone + "\nAlex Sexwale",
+        params
+    );
+  })
+}
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
@@ -630,6 +670,7 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
   return null;
 });
 // Send alert to candidate selected
@@ -704,7 +745,7 @@ function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, 
   }
 }
 
-// Send alert to client
+// Send alert to student
 function studentEmail(messageType, receiver, sender, jobName, jobId, clientName, studentName) {
   var subject = null;
   var message = null;
@@ -762,7 +803,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
     sgMail.send(clientEmail("complete", newValue.clientEmail, setting.complete, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client confirms completion
-  if(newValue.status === "rate") {
+  if(newValue.status === "rate" && newValue.clientRatingComplete === false && newValue.studentRatingComplete === false) {
     sgMail.send(studentEmail("rate", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Student rates client

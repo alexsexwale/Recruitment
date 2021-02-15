@@ -65,7 +65,7 @@
             { 'md-valid': !errors.has('hours') && touched.hours },
             { 'md-error': errors.has('hours') }
           ]">
-          <label>Working Hours Per week</label>
+          <label>Working Hours</label>
           <md-select @input="addHours" v-model="hours" data-vv-name="hours" type="text" name="hours" v-validate="modelValidations.hours" style="margin-left: 10px;">
             <md-option v-for="(hours, index) in workingHours" :key="index" :value="hours">{{hours}}</md-option>
           </md-select>

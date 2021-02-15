@@ -85,7 +85,7 @@ export default {
             db.collection('skills').doc(doc.id).get().then(doc => {
               job.category = doc.data().category;
               db.collection('clients').doc(job.clientAlias).get().then(doc => {
-                job.profilePicture = doc.data().profile;
+                //job.profilePicture = doc.data().profile;
                   this.jobs.push(job);
               });
             });

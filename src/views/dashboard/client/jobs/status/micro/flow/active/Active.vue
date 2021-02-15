@@ -11,7 +11,8 @@
         <br>  
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="profile" class="img" :src="profile" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
@@ -69,7 +70,8 @@ export default {
       cancelModal: false,
       applicant: {},
       job: {},
-      loading: true
+      loading: true,
+      profile: null
     }
   },
   props: {
@@ -94,6 +96,9 @@ export default {
         this.available = true;
         this.applicant = doc.data();
         this.applicant.id = doc.id;
+        db.collection('students').doc(this.applicant.alias).get().then(doc => {
+          this.profile = doc.data().profile;
+        });
       });
     });
     this.loading = false;

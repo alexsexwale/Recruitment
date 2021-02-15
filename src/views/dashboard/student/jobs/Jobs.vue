@@ -87,7 +87,7 @@ export default {
             db.collection('skills').doc(doc.id).get().then(doc => {
             job.category = doc.data().category;
               db.collection('clients').doc(job.clientAlias).get().then(doc => {
-                job.profilePicture = doc.data().profile; //To do: Remove undefined error
+                //job.profilePicture = doc.data().profile; //To do: Remove undefined error
                 this.jobs.push(job);
                 this.postedJobs = true;
               });

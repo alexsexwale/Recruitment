@@ -372,6 +372,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.id = null;
       }
     },
     previewCV(event) {
@@ -383,6 +384,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.cv = null;
       }
     },
     previewPortfolio(event) {
@@ -394,6 +396,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.portfolio = null;
       }
     },
     previewCertificate1(event) {
@@ -405,6 +408,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.certificate1 = null;
       }
     },
     previewCertificate2(event) {
@@ -416,6 +420,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.certificate2 = null;
       }
     },
     previewCertificate3(event) {
@@ -427,6 +432,7 @@ export default {
       }
       else {
         this.modal = true;
+        this.certificate3 = null;
       }
     },
     fileUpload(data, location) {

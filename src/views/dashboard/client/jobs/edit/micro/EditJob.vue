@@ -18,7 +18,7 @@
         v-bind:budget="budget"
         v-bind:benefit="benefit">
         <template slot="header">
-          <h3 class="title">Post a Job</h3>
+          <h3 class="title">Edit a Job</h3>
           <h5 class="category">
             This information you fill out will allow students to apply for the job
           </h5>

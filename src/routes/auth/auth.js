@@ -47,7 +47,7 @@ export default {
       },
       {
         path: "/terms-and-conditions",
-        name: "client-terms-and-conditions",
+        name: "terms-and-conditions",
         component: TermsAndConditions
       },
       {

@@ -64,7 +64,7 @@
             { 'md-form-group': true },
             { 'md-error': errors.has('companyCategory') }
           ]">
-          <md-icon><i class="fas fa-sitemap"></i></md-icon>
+          <md-icon><i class="far fa-building"></i></md-icon>
           <label>Company Category</label>
           <md-select class="pad" @input="addCompanyCategory" v-model="companyCategory" data-vv-name="companyCategory" name="select" required v-validate="modelValidations.companyCategory">
             <md-option v-for="(companyCategory, index) in companyCategorys" :key="index" :value="companyCategory">{{companyCategory}}</md-option>

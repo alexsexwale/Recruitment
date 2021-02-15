@@ -8,7 +8,8 @@
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
           <div class="md-card-avatar">
-            <img class="img" :src="cardUserImage" />
+            <img v-if="profile" class="img" :src="profile" />
+            <img v-else class="img" :src="cardUserImage" />
           </div>
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
@@ -85,6 +86,7 @@ export default {
       client: {},
       applicant: {},
       paid: false,
+      profile: null
     }
   },
   props: {
@@ -125,6 +127,9 @@ export default {
         this.available = true;
         this.applicant = doc.data();
         this.applicant.id = doc.id;
+        db.collection('students').doc(this.applicant.alias).get().then(doc => {
+          this.profile = doc.data().profile;
+        });
       });
     });
 

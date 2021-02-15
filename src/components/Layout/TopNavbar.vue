@@ -19,9 +19,9 @@
                     </md-button>
                     <ul class="dropdown-menu dropdown-menu-right">
                       <!-- Client: Settings -->
-                      <li v-if="client"><router-link :to="{ name: 'settings' }">Settings</router-link></li>
+                      <!-- <li v-if="client"><router-link :to="{ name: 'settings' }">Settings</router-link></li> -->
                       <!-- Student: Settings -->
-                      <li v-if="student"><router-link :to="{ name: 'settings' }">Settings</router-link></li>
+                      <!-- <li v-if="student"><router-link :to="{ name: 'settings' }">Settings</router-link></li> -->
                       <!-- Logout -->
                       <li><a @click="logout">Logout</a></li>
                     </ul>

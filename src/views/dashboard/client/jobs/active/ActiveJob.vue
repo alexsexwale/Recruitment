@@ -5,8 +5,8 @@
   <div class="md-layout" v-if="activeJobs">
     <div class="card-layout md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-33" v-for="job in jobs" :key="job.id">
       <product-card header-animation="false">
-        <img v-if="!job.profilePicture" class="img" slot="imageHeader" :src="product1" />
         <img v-if="job.profilePicture" class="img" slot="imageHeader" :src="job.profilePicture" />
+        <img v-else class="img" slot="imageHeader" :src="product1" />
         <md-icon slot="fixed-button">build</md-icon>
         <template slot="first-button">
           <md-icon>art_track</md-icon>
@@ -73,20 +73,35 @@ export default {
     .then(snapshot => {
       snapshot.forEach(doc => {
         let jobId = doc.data().jobId;
-        let jobType = doc.data().jobType;
         let profilePicture = doc.data().clientProfile;
         // display micro jobs
-        micro.where('jobId', '==', jobId).where('status', '==', 'active').where('status', '==', 'complete').get()
+        micro.where('jobId', '==', jobId).where('status', '==', 'active').get()
         .then(snapshot => {
           snapshot.forEach(doc => {
+            console.log(doc.data())
             this.activeJobs = true;
             let job = doc.data();
             job.id = doc.id;
-            job.type = jobType;
             db.collection('skills').doc(doc.id).get().then(doc => {
               job.category = doc.data().category;
               job.profilePicture = profilePicture;
               this.jobs.push(job);
+              console.log(this.jobs)
+            });
+          });
+        });
+        micro.where('jobId', '==', jobId).where('status', '==', 'rate').get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            console.log(doc.data())
+            this.activeJobs = true;
+            let job = doc.data();
+            job.id = doc.id;
+            db.collection('skills').doc(doc.id).get().then(doc => {
+              job.category = doc.data().category;
+              job.profilePicture = profilePicture;
+              this.jobs.push(job);
+              console.log(this.jobs)
             });
           });
         });

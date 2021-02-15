@@ -169,7 +169,7 @@
               { 'md-error': errors.has('license') }
             ]">
           <md-icon><i class="far fa-id-badge"></i></md-icon>
-          <label for="license">Do you have a driver's license?</label>
+          <label for="license">Driver's license?</label>
           <md-select class="pad" @input="addLicense" v-model="license" data-vv-name="license" name="license" required v-validate="modelValidations.license">
             <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
           </md-select>
@@ -187,7 +187,7 @@
               { 'md-error': errors.has('vehicle') }
             ]">
           <md-icon><i class="fas fa-car"></i></md-icon>
-          <label for="vehicle">Do you have your own vehicle?</label>
+          <label for="vehicle">Do you have a vehicle?</label>
           <md-select class="pad" @input="addVehicle" v-model="vehicle" data-vv-name="vehicle" name="vehicle" required v-validate="modelValidations.vehicle">
             <md-option v-for="(yes_no, index) in yes_no" :key="index" :value="yes_no">{{yes_no}}</md-option>
           </md-select>

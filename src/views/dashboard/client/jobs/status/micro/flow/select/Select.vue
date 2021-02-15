@@ -127,30 +127,30 @@
     </template>
 
     <template slot="body">
-      <h2 class="modal-title black"><b><u>{{ student.name + " " + student.surname }}</u></b></h2>
+      <h2 class="modal-title black"><b>{{ student.name + " " + student.surname }}</b></h2>
       <p v-if="!paid" class="red left">To view the entire candidates profile, please make an upfront payment</p>
       <p class="black left">
         {{ student.bio }}
       </p>
-      <b class="large-font"><u>Qualifications</u></b> <br>
+      <b class="large-font">Qualifications</b> <br>
       <p class="black left">
         <span v-if="student.studying === 'Yes'">The candidate is currently studying the following:</span>
         <span v-if="student.studying === 'No'">The candidate most recently completed the following:</span>
         <br><br>
-        <b><u>Institution:</u></b> {{ student.institution }} <br>
-        <b><u>Degree:</u></b> {{ student.degree }} <br>
-        <b><u>Graduate Status:</u></b> {{ student.graduateStatus }} <br>
-        <b><u>Year of Study:</u></b> {{ student.year }} <br>
+        <b>Institution:</b> {{ student.institution }} <br>
+        <b>Degree:</b> {{ student.degree }} <br>
+        <b>Graduate Status:</b> {{ student.graduateStatus }} <br>
+        <b>Year of Study:</b> {{ student.year }} <br>
       </p>
       
-      <b class="large-font"><u>Contact Information</u></b> <br>
+      <b class="large-font">Contact Information</b> <br>
       <p v-if="paid" class="black left">
         <b>Email Address:</b> {{ student.email || "**********" }} <br>
         <b>Phone Number:</b> {{student.phone || "**********" }} 
         <span v-if="student.personalWebsite"><br> <b>Website: </b> <a :href="student.personalWebsite" target="_blank">{{ student.personalWebsite }}</a></span>
       </p>
       <p v-else class="red">You have not made a payment</p>
-      <b class="large-font"><u>Certificates</u></b> <br>
+      <b class="large-font">Certificates</b> <br>
       <p class="black" v-if="paid && (student.certificate1 || student.certificate2 || student.certificate3)">
         <md-button v-if="student.certificate1" class="md-round md-info md-sm" @click="certificate1"># 1</md-button> &nbsp;&nbsp;&nbsp;
         <md-button v-if="student.certificate2" class="md-round md-info md-sm" @click="certificate2"># 2</md-button> &nbsp;&nbsp;&nbsp;
@@ -158,13 +158,13 @@
       </p>
       <p class="red left" v-if="paid && !student.certificate1 && !student.certificate2 && !student.certificate3">The candidate has not uploaded any certificates</p>
       <p v-if="!paid" class="red">You have not made a payment</p>
-      <b class="large-font"><u>Resume</u></b> <br>
+      <b class="large-font">Resume</b> <br>
       <p class="black" v-if="paid">
         <md-button v-if="student.cv && student.cv !== ''" @click="cv" class="md-round md-info md-sm">CV</md-button> &nbsp;&nbsp;&nbsp;
         <md-button v-if="student.portfolio && student.portfolio !== ''" @click="portfolio" class="md-round md-info md-sm">Portfolio</md-button> &nbsp;&nbsp;&nbsp;
       </p>
       <p v-else class="red">You have not made a payment</p>
-      <b class="large-font"><u>Social Media Handles</u></b> <br>
+      <b class="large-font">Social Media Handles</b> <br>
       <p class="black" v-if="paid">
         <md-icon v-if="student.linkedIn && student.linkedIn !== ''"><i class="fab fa-linkedin" style="color:#0e76a8; cursor: pointer" @click="linkedin"></i></md-icon>	
         <span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span><span v-if="student.linkedIn && student.linkedIn !== ''">&nbsp;</span>
