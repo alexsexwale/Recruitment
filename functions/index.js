@@ -44,21 +44,22 @@ function getDocument(collection, id) {
 // Routes
 
 
-const bot = new SlackBot({
-  token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-  name: 'jobox_app'
-})
-//xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
+
 
 app.get("/hello", (req, res) => {
   // Start Handler
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
     }
 
     bot.postMessageToChannel(
-        'interns',
+        'random',
         'Testing slack chatbot',
         params
     );
@@ -648,6 +649,11 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
 }
 // Send slack alert
 function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
