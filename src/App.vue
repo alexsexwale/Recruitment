@@ -100,5 +100,7 @@ label, legend {
     flex: 1 1 100% !important;
   }
 }
-
+.test {
+  margin: 2px;
+}
 </style>
