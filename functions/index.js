@@ -36,6 +36,7 @@ app.use(cors({ origin: true }));
 // });
 
 const sgMail = require("@sendgrid/mail");
+const { NULL } = require("node-sass");
 
 // Firestore - get single document
 function getDocument(collection, id) {
@@ -624,8 +625,8 @@ function standardEmail(receiver, sender, subject, message) {
 //Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
 var mysqlConnection = mysql.createConnection({
   //Must comment out the host IP and use socketPath when running from Firebase:
-  //host: '35.239.215.232',
-  socketPath: '/cloudsql/joboxza:us-central1:jobox',
+  host: '35.239.215.232',
+  //socketPath: '/cloudsql/joboxza:us-central1:jobox',
   user: 'root',
   password: ',Yk94YDU}DT#g6d.',
   database: 'Joboxza',
@@ -650,11 +651,9 @@ catch(error) {
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
 .onCreate(async (snap, context) => {
-
-  var datetime = new Date();
   const value = snap.data();
-  var sql = "INSERT INTO users (created, email, first_name, surname, phone, user_type, last_modified) VALUES (?,?,?,?,?,?,?)";
-  var values = [datetime, value.email, value.name, value.surname, value.phone, value.user,datetime];
+  var sql = "INSERT INTO users (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
+  var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -665,6 +664,48 @@ exports.newUser = functions.firestore.document('users/{userId}')
   });
   return null;
 });
+
+ //get the newest ID
+ function getNewestID(idName,tableName) {
+  var newestID = 0; 
+  var sql = "SELECT MAX(??) as ID FROM ??";
+  var values = [idName, tableName];
+  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      newestID = results[0].ID;
+      console.log("The newestID is " + newestID + " with typeof: " + typeof(newestID))
+      return newestID;
+    }
+  });
+ }
+
+ app.get('/select', (req, res) => {
+  var newestUserID = 0;
+  newestUserID = getNewestID('user_ID', 'users');
+      console.log("The solution is " + newestUserID);
+      res.send(newestUserID);
+});   
+
+// // New client document created
+// exports.newStudent = functions.firestore.document('clients/{clientId}')
+// .onCreate(async (snap, context) => {
+//   const value = snap.data();
+//   var newestUserID = getNewestID('user_ID', 'users');
+//   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
+//   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
+//   var query = mysqlConnection.query(sql, values, (error) => {
+//     if (error) {
+//       console.log(error);
+//     }
+//     else {
+//       console.log(query.sql);
+//     }
+//   });
+//   return null;
+// });
 
 
 
