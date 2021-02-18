@@ -36,7 +36,6 @@ app.use(cors({ origin: true }));
 // });
 
 const sgMail = require("@sendgrid/mail");
-const { FALSE } = require("node-sass");
 
 // Firestore - get single document
 function getDocument(collection, id) {
@@ -49,19 +48,19 @@ function getDocument(collection, id) {
 
 
 app.get("/hello", (req, res) => {
-  // Start Handler
   const bot = new SlackBot({
     token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
     name: 'jobox_app'
   })
   //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
+  // Start Handler
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
     }
 
     bot.postMessageToChannel(
-        'random',
+        'interns',
         'Testing slack chatbot',
         params
     );
@@ -609,132 +608,6 @@ app.get("/netcash", async (req, res) => {
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
 
-
-//MySQL details
-var mysqlConnection = mysql.createConnection({
-  host: '35.239.215.232',
-  user: 'root',
-  password: ',Yk94YDU}DT#g6d.',
-  database: 'Joboxza',
-  multipleStatements: true
-});
-
-mysqlConnection.connect((err)=> {
-  if(!err)
-      console.log('SQL Connection Established Successfully');
-  else
-      console.log('SQL Connection Failed!'+ JSON.stringify(err,undefined,2));
-});
-
- //INSERT a user's details
- app.get('/insertUser', (req, res) => {
-  var datetime = new Date();
-  var sql = "INSERT INTO users (created,email,first_name,surname,phone,user_type,last_modified) VALUES (?,?,?,?,?,?,?)";
-  var values = [datetime,'sqlTest@test.com','sqlTest','sqlTester','9999999999','student',datetime];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});   
-//UPDATE a customer's details
-app.get('/updateUser', (req, res) => {
-  var datetime = new Date();
-  var sql = "UPDATE users SET created = ?,email = ?,first_name = ?,surname = ?,phone = ?,user_type = ?,last_modified = ? WHERE user_ID = ?";
-  var userID = 19;
-  var values = [datetime,'sqlTest@testUPDATED.com','sqlTestUPDATED','sqlTesterUPDATED','8888888888','studentUPDATED',datetime,userID];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});
-
-
-
- //INSERT a student's details
- app.get('/insertStudent', (req, res) => {
-  var datetime = new Date();
-  var sql = "INSERT INTO students (user_ID,race,gender,bio,date_of_birth,citizenship,identification_number,disabled,owns_vehicle,nps) VALUES (?,?,?,?,?,?,?,?,?,?)";
-  var values = [19,'alien','prefer not to say','there once was a little planet...',datetime,'passport','94411035091055',false,true,0];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});   
-//UPDATE a student's details
-app.get('/updateStudent', (req, res) => {
-  var datetime = new Date();
-  var sql = "UPDATE students SET user_ID = ?,race = ?,gender = ?,bio = ?,date_of_birth = ?,citizenship = ?,identification_number = ?,disabled = ?,owns_vehicle = ?,nps = ? WHERE student_ID = ?";
-  var studentID = 11;
-  var values = [19,'black','female','burp',datetime,'SA ID','9602055091082',true,false,10,studentID];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});
-
-
-
- //INSERT a client's details
- app.get('/insertClient', (req, res) => {
-  var datetime = new Date();
-  var sql = "INSERT INTO clients (user_ID,signup_date,industry,bio,last_modified,vat,website,client_type,company_size) VALUES (?,?,?,?,?,?,?,?,?)";
-  var values = [20,datetime,'human processing','degradable',datetime,20,'www.classified.gov','corporate',200];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});   
-//UPDATE a client's details
-app.get('/updateClient', (req, res) => {
-  var datetime = new Date();
-  var sql = "UPDATE clients SET user_ID = ?,signup_date = ?,industry = ?,bio = ?,last_modified = ?,vat = ?,website = ?,client_type = ?,company_size = ? WHERE client_ID = ?";
-  var clientID = 6;
-  var values = [20,datetime,'alien processing','contaminants',datetime,5,'www.foo.bar','startup',1,clientID];
-  var query = mysqlConnection.query(sql, values , function (error, results, fields) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-      res.send('query successful');
-    }
-  });
-});
-
-
-// New user document created
-exports.newUser = functions.firestore.document('users/{userId}')
-.onCreate(async (snap, context) => {
-  const value = snap.data();
-  
-  return null;
-});
-
 // Send typed out emails
 function standardEmail(receiver, sender, subject, message) {
   return {
@@ -744,6 +617,57 @@ function standardEmail(receiver, sender, subject, message) {
     text: message
   }
 }
+
+
+//MySQL details 
+//Example for the below connecting to Google SQL from Firebase: https://stackoverflow.com/questions/46994701/etimeout-error-google-cloud-sql-database-with-nodejs
+//Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
+var mysqlConnection = mysql.createConnection({
+  //Must comment out the host IP and use socketPath when running from Firebase:
+  //host: '35.239.215.232',
+  socketPath: '/cloudsql/joboxza:us-central1:jobox',
+  user: 'root',
+  password: ',Yk94YDU}DT#g6d.',
+  database: 'Joboxza',
+  multipleStatements: true
+});
+
+try{
+  mysqlConnection.connect((err)=> {
+    if(!err)
+        console.log('SQL Connection Established Successfully');
+    else {
+      console.log('SQL Connection Failed!'+ JSON.stringify(err,undefined,2));
+      console.log(err);
+    }
+       
+  });
+}
+catch(error) {
+  console.log(error)
+}
+
+// New user document created
+exports.newUser = functions.firestore.document('users/{userId}')
+.onCreate(async (snap, context) => {
+
+  var datetime = new Date();
+  const value = snap.data();
+  var sql = "INSERT INTO users (created, email, first_name, surname, phone, user_type, last_modified) VALUES (?,?,?,?,?,?,?)";
+  var values = [datetime, value.email, value.name, value.surname, value.phone, value.user,datetime];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  return null;
+});
+
+
+
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
@@ -796,7 +720,6 @@ function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId,
     );
   })
 }
-
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
