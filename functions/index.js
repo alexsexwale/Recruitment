@@ -619,23 +619,23 @@ function standardEmail(receiver, sender, subject, message) {
 }
 
 
-//MySQL details 
-var mysqlConnection = mysql.createConnection({
-  host: '35.239.215.232',
-  user: 'root',
-  password: ',Yk94YDU}DT#g6d.',
-  database: 'Joboxza',
-  multipleStatements: true 
-});
+// //MySQL details 
+// var mysqlConnection = mysql.createConnection({
+//   host: '35.239.215.232',
+//   user: 'root',
+//   password: ',Yk94YDU}DT#g6d.',
+//   database: 'Joboxza',
+//   multipleStatements: true 
+// });
 
-mysqlConnection.connect((err) => {
-  if (!err)
-    console.log('SQL Connection Established Successfully');
-  else {
-    console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
-    console.log(err);
-  }
-});
+// mysqlConnection.connect((err) => {
+//   if (!err)
+//     console.log('SQL Connection Established Successfully');
+//   else {
+//     console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+//     console.log(err);
+//   }
+// });
 
 
 // New user document created
@@ -666,9 +666,10 @@ exports.newUser = functions.firestore.document('users/{userId}')
         });
       }
     });
+    var datetime = new Date();
     const value = snap.data();
     var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.userID, value.created, value.email, value.name, value.surname, value.phone, value.user, value.lastModified];
+    var values = [value.userId, datetime, value.email, value.name, value.surname, value.phone, value.user, datetime];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -704,7 +705,7 @@ exports.newUser = functions.firestore.document('users/{userId}')
           }
         });
         var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-        var values = ['757tiviBMWRNHiWYOMaqzOgbDP52', '02/19/2021', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '02/19/2021'];
+        var values = ['757tiviBMWRNHiWYOMaqzOgbDP52', '2021/02/19', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '2021/02/19'];
         var query = mysqlConnection.query(sql, values, (error) => {
           if (error) {
             console.log(error);
