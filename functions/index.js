@@ -637,35 +637,38 @@ function standardEmail(receiver, sender, subject, message) {
 //   }
 // });
 
+async function createMySQLconnection() {
+      //MySQL details 
+      const settingsollection = await getDocument("Settings", "MySQL");
+      var MySQLsettings = settingsollection.data();
+      var mysqlConnection = mysql.createConnection({
+        socketPath: MySQLsettings.socketPath,
+        user: MySQLsettings.user,
+        password: MySQLsettings.password,
+        database: MySQLsettings.database,
+        multipleStatements: MySQLsettings.multipleStatements
+      });
+      //init connection
+      mysqlConnection.connect((err) => {
+        if (!err)
+          console.log('SQL Connection Established Successfully');
+        else {
+          console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+          console.log(err);
+          db.collection("errors").add({
+            created: moment(Date.now()).format("L"),
+            issue: "mySQL connection failed",
+            message: err
+          });
+        }
+      });
+      return mysqlConnection
+}
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
-    //MySQL details 
-    const settingsollection = await getDocument("Settings", "MySQL");
-    var MySQLsettings = settingsollection.data();
-    var mysqlConnection = mysql.createConnection({
-      //host: '35.239.215.232',
-      socketPath: MySQLsettings.socketPath,
-      user: MySQLsettings.user,
-      password: MySQLsettings.password,
-      database: MySQLsettings.database,
-      multipleStatements: MySQLsettings.multipleStatements
-    });
-
-    mysqlConnection.connect((err) => {
-      if (!err)
-        console.log('SQL Connection Established Successfully');
-      else {
-        console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
-        console.log(err);
-        db.collection("errors").add({
-          created: moment(Date.now()).format("L"),
-          issue: "mySQL connection failed",
-          message: err
-        });
-      }
-    });
+    var mysqlConnection = await createMySQLconnection();
     var datetime = new Date();
     const value = snap.data();
     var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
@@ -688,24 +691,9 @@ exports.newUser = functions.firestore.document('users/{userId}')
 
   app.get('/query', (req, res) => {
         //MySQL details 
-        var mysqlConnection = mysql.createConnection({
-          host: '35.239.215.232',
-          user: 'root',
-          password: ',Yk94YDU}DT#g6d.',
-          database: 'Joboxza',
-          multipleStatements: true 
-        });
-    
-        mysqlConnection.connect((err) => {
-          if (!err)
-            console.log('SQL Connection Established Successfully');
-          else {
-            console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
-            console.log(err);
-          }
-        });
+        var mysqlConnection = createMySQLconnection();
         var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-        var values = ['757tiviBMWRNHiWYOMaqzOgbDP52', '2021/02/19', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '2021/02/19'];
+        var values = ['757tiviBlWRNHiWYOMaqzOgbDP52', '2021/02/19', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '2021/02/19'];
         var query = mysqlConnection.query(sql, values, (error) => {
           if (error) {
             console.log(error);
