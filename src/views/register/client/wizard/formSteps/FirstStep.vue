@@ -322,6 +322,7 @@ export default {
         if(doc.exists === false) {
           this.client.set({
             userId: this.user.uid,
+            clientId: this.alias,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format('L'),
             companyName: this.companyName,

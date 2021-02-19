@@ -618,25 +618,6 @@ function standardEmail(receiver, sender, subject, message) {
   }
 }
 
-
-// //MySQL details 
-// var mysqlConnection = mysql.createConnection({
-//   host: '35.239.215.232',
-//   user: 'root',
-//   password: ',Yk94YDU}DT#g6d.',
-//   database: 'Joboxza',
-//   multipleStatements: true 
-// });
-
-// mysqlConnection.connect((err) => {
-//   if (!err)
-//     console.log('SQL Connection Established Successfully');
-//   else {
-//     console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
-//     console.log(err);
-//   }
-// });
-
 async function createMySQLconnection() {
       //MySQL details 
       const settingsollection = await getDocument("Settings", "MySQL");
@@ -665,14 +646,49 @@ async function createMySQLconnection() {
       return mysqlConnection
 }
 
+
+//for testing offline on mysql workbench 
+app.get('/query', (req, res) => {
+  // //MySQL details 
+  var mysqlConnection = mysql.createConnection({
+    host: '35.239.215.232',
+    user: 'root',
+    password: ',Yk94YDU}DT#g6d.',
+    database: 'Joboxza',
+    multipleStatements: true 
+  });
+
+  mysqlConnection.connect((err) => {
+    if (!err)
+      console.log('SQL Connection Established Successfully');
+    else {
+      console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+      console.log(err);
+    }
+  });
+
+  var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
+  var values = ['757tiviBlWRNHiWYOMaqzOgbDP52', '2021/02/19', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '2021/02/19'];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  return null;
+});
+
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
     var mysqlConnection = await createMySQLconnection();
-    var datetime = new Date();
     const value = snap.data();
+    var lastModified = new Date(value.lastModified);
+    var created = new Date(value.created);
     var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.userId, datetime, value.email, value.name, value.surname, value.phone, value.user, datetime];
+    var values = [value.userId, created, value.email, value.name, value.surname, value.phone, value.user, lastModified];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -686,45 +702,138 @@ exports.newUser = functions.firestore.document('users/{userId}')
         console.log(query.sql);
       }
     });
-    return null;
-  });
-
-  app.get('/query', (req, res) => {
-        //MySQL details 
-        var mysqlConnection = createMySQLconnection();
-        var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-        var values = ['757tiviBlWRNHiWYOMaqzOgbDP52', '2021/02/19', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '2021/02/19'];
-        var query = mysqlConnection.query(sql, values, (error) => {
-          if (error) {
-            console.log(error);
-          }
-          else {
-            console.log(query.sql);
-          }
+    mysqlConnection.end((error) => {
+      if (error) {
+        console.log(error);
+        db.collection("errors").add({
+          created: moment(Date.now()).format("L"),
+          issue: "exports.newUser mysqlConnection.end failed to work",
+          message: error
         });
-        return null;
+      }
+      else {
+        console.log('The connection is terminated now');
+      }
+    });
   });
-
-
-// // New client document created
-// exports.newStudent = functions.firestore.document('clients/{clientId}')
-// .onCreate(async (snap, context) => {
-//   const value = snap.data();
-//   var newestUserID = getNewestID('user_ID', 'users');
-//   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
-//   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
-//   var query = mysqlConnection.query(sql, values, (error) => {
+  
+// // update user
+// exports.updateUser = functions.firestore.document('users/{userId}')
+// .onUpdate(async (change, context) => {
+//   var mysqlConnection = await createMySQLconnection();
+//   const newValue = change.after.data();
+//   const previousValue = change.before.data();
+//   if (newValue.email != previousValue.email) {
+//     var sql = "UPDATE users SET email = ? WHERE userID = ?";
+//     var values = [newValue.email,newValue.userId];
+//     var query = mysqlConnection.query(sql, values, (error) => {
+//       if (error) {
+//         console.log(error);
+//         db.collection("errors").add({
+//           created: moment(Date.now()).format("L"),
+//           issue: "exports.updateUser mysqlConnection.query failed to work",
+//           message: error
+//         });
+//       }
+//       else {
+//         console.log(query.sql);
+//       }
+//     });
+//   }
+//   mysqlConnection.end((error) => {
 //     if (error) {
 //       console.log(error);
+//       db.collection("errors").add({
+//         created: moment(Date.now()).format("L"),
+//         issue: "exports.updateUser mysqlConnection.end failed to work",
+//         message: error
+//       });
 //     }
 //     else {
-//       console.log(query.sql);
+//       console.log('The connection is terminated now');
 //     }
 //   });
-//   return null;
 // });
 
 
+//New client document created
+exports.newClient = functions.firestore.document('clients/{clientId}')
+  .onCreate(async (snap, context) => {
+    var mysqlConnection = await createMySQLconnection();
+    const value = snap.data();
+    var lastModified = new Date(value.lastModified);
+    var created = new Date(value.created);
+    var sql = "INSERT INTO clients (client_ID, user_ID, created, industry, bio, last_modified, vat, website, company_category, company_size) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    var values = [value.clientId, value.userId, created, value.industry, value.bio, lastModified, value.vat, value.website, value.companyCategory, value.companySize];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+        db.collection("errors").add({
+          created: moment(Date.now()).format("L"),
+          issue: "exports.newClient mysqlConnection.query failed to work",
+          message: error
+        });
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+    mysqlConnection.end((error) => {
+      if (error) {
+        console.log(error);
+        db.collection("errors").add({
+          created: moment(Date.now()).format("L"),
+          issue: "exports.newClient mysqlConnection.end failed to work",
+          message: error
+        });
+      }
+      else {
+        console.log('The connection is terminated now');
+      }
+    });
+  });
+
+function handleSQLerror(error) {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log(query.sql);
+  }
+}
+  
+//client document updated
+exports.updateClient = functions.firestore.document('clients/{clientId}')
+.onUpdate(async (change, context) => {
+  var mysqlConnection = await createMySQLconnection();
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  if (newValue.industry !== previousValue.industry) {
+    var sql = "UPDATE clients SET industry = ? WHERE client_ID = ?";
+    var values = [newValue.industry,newValue.clientId];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+  }
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+      db.collection("errors").add({
+        created: moment(Date.now()).format("L"),
+        issue: "exports.updateClient mysqlConnection.end failed to work",
+        message: error
+      });
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
+});
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
