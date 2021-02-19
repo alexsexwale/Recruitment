@@ -52,7 +52,7 @@ export default {
                                     }
                                 });
                             }
-                            else {
+                            else if(state.user.user == "student") {
                                 let student = db.collection("students").doc(doc.id);
                                 student.get().then(doc => {
                                     if(doc.exists && doc.data().accountCreated) {
@@ -62,6 +62,9 @@ export default {
                                         router.push({ name: "create-student-account" });
                                     }
                                 });
+                            }
+                            else {
+                                router.push({ name: "institution-reports" });
                             }
                         });
                     }).catch(err => {

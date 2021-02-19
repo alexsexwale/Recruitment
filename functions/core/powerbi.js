@@ -23,17 +23,17 @@ async function getAuthToken() {
   let powerbi = doc.data();
 
   let AuthenticationContext = adal.AuthenticationContext;
-  let context = new AuthenticationContext(powerbi.authorityUri);
+  let authorityUri = powerbi.authorityUri.replace("common", powerbi.tenantId);
+  let context = new AuthenticationContext(authorityUri);
 
   return new Promise(
     (resolve, reject) => {
       context.acquireTokenWithUsernamePassword(
-        powerbi.scope, 
-        powerbi.pbiUsername, 
-        powerbi.pbiPassword, 
-        powerbi.clientId, 
+        powerbi.scope,
+        powerbi.pbiUsername,
+        powerbi.pbiPassword,
+        powerbi.clientId,
         (err, tokenResponse) => {
-
           // Function returns error object in tokenResponse
           // Invalid Username will return empty tokenResponse, thus err is used
           if (err) {
@@ -88,17 +88,18 @@ async function generateEmbedToken() {
       embedData = await getReportEmbedDetails(token, powerbi.apiUrl, powerbi.workspaceId, powerbi.reportId);
 
       // Call the function to get the Embed Token
-      let embedToken = await getReportEmbedToken(token, powerbi.apiUrl, embedData);
+      let embedToken = await getReportEmbedToken(token, powerbi.apiUrl, powerbi.reportId);
       return {
           "accessToken": embedToken.token,
-          "embedUrl": embedData.embedUrl,
+          "embedUrl": embedData.data.embedUrl,
+          "reportId": embedToken.tokenId,
           "expiry": embedToken.expiration,
           "status": 200
       };
   } catch (err) {
       return {
           "status": err.response.status,
-          "error": 'Error while retrieving report embed details\r\n' + err.response.statusText
+          "error": 'Error while retrieving report embed details:' + err.response.statusText
       }
   }
 }
@@ -118,11 +119,11 @@ async function getReportEmbedDetails(token, apiUrl, workspaceId, reportId) {
   
   if (result.aborted)
     throw result;
-
+  
   return result;
 }
 
-async function getReportEmbedToken(token, apiUrl, embedData) {
+async function getReportEmbedToken(token, apiUrl, reportId) {
 
   const headers = {
       "Content-Type": "application/json",
@@ -132,21 +133,20 @@ async function getReportEmbedToken(token, apiUrl, embedData) {
   const api = axios.create({ baseURL: apiUrl});
 
   const formData = {
-      "datasets": [{
-          "id": embedData.datasetId
-      }],
       "reports": [{
-          "id": embedData.id
+          "id": reportId
       }]
   };
 
-  let result = api.post("GenerateToken", {
+  //Docs on API: https://docs.microsoft.com/en-us/rest/api/power-bi/embedtoken/generatetoken
+  const result =  await api.post("GenerateToken", {
       headers: headers,
       body: JSON.stringify(formData)
-  });
-
-  if (result.aborted)
-      throw result;
+  })
+  console.log(result)
+  console.log("bye")
+  if (!result)
+    throw result;
 
   return result;
 }

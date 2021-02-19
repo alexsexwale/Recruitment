@@ -10,8 +10,9 @@ const dotenv = require('dotenv');
 
 const firebase = require("./config/firebase");
 const powerbi = require("./core/powerbi");
+const payment = require("./core/payment");
 
-dotenv.config()
+dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
 
@@ -28,6 +29,7 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
+app.use(payment);
 
 const db = firebase.db;
 const getDocument = firebase.getDocument;
@@ -52,7 +54,7 @@ function getDocument(collection, id) {
 
 // Routes
 
-//Causing a memory leak
+/* //Causing a memory leak
 const bot = new SlackBot({
   token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
   name: 'jobox_app'
@@ -74,7 +76,7 @@ app.get("/hello", (req, res) => {
   })
     return res.status(200).send("Hey");
 });
-
+*/ 
 // Notifications
 app.post("/notification", urlencodedParser, async (req, res) => {
   const doc = await getDocument("Settings", "Email");
@@ -123,67 +125,6 @@ app.post("/notification", urlencodedParser, async (req, res) => {
   sgMail.send(msg);
   
   return res.status(200).send("Sent");
-});
-
-// Inbound payment
-app.post("/activate", urlencodedParser, (req, res) => {
-  if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
-    db.collection("payments").doc(req.body.Extra1).update({
-      inboundPayment: true,
-      lastModified: moment(Date.now()).format("L"),
-    });
-
-    res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
-  } 
-  else {
-    db.collection("errors").add({
-      created: moment(Date.now()).format("L"),
-      message: "Payment Gateway failed" 
-    });
-    res.status(200).redirect("https://joboxstaging.web.app/");
-  }
-});
-
-// Cancel payment
-app.post("/cancelPayment", urlencodedParser, (req, res) => {
-    if(req.body.Extra1) {
-        res.status(200).redirect("https://joboxstaging.web.app/client/jobs/micro/status/" + req.body.Extra1);
-    } 
-    else {
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        message: "Payment Gateway failed" 
-      });
-      res.status(200).redirect("https://joboxstaging.web.app/");
-    }
-});
-
-// Decline payment
-app.post("/decline", urlencodedParser, async (req, res) => {
-    if(req.body.Extra1) {
-        db.collection("netcash").add({
-          created: moment(Date.now()).format("L"),
-          message: "Payment Declined" 
-        });
-        const doc = await getDocument("Settings", "Email");
-        var settings = doc.data();
-        sgMail.setApiKey(settings.apiKey);
-        var msg = {
-            to: "contact@jobox.co.za",
-            from: "admin@jobox.co.za",
-            subject: "Netcash Notification - " + req.body.Extra1,
-            text: " The user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined."
-        };
-        sgMail.send(msg);
-        res.status(200).redirect("https://joboxstaging.web.app/client/payment/fail/" + req.body.Extra1);
-    } 
-    else {
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        message: "Payment Gateway failed" 
-      });
-      res.status(200).redirect("https://joboxstaging.web.app/");
-    }
 });
 
 function padBranch(branchcode) {
