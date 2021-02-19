@@ -7,6 +7,7 @@ const cors = require("cors");
 const soap = require("soap");
 const SlackBot = require('slackbots');
 const dotenv = require('dotenv');
+var mysql = require('mysql');
 
 dotenv.config()
 
@@ -44,13 +45,14 @@ function getDocument(collection, id) {
 // Routes
 
 
-const bot = new SlackBot({
-  token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-  name: 'jobox_app'
-})
-//xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
+
 
 app.get("/hello", (req, res) => {
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
   // Start Handler
   bot.on('start', () => {
     const params = {
@@ -615,6 +617,110 @@ function standardEmail(receiver, sender, subject, message) {
     text: message
   }
 }
+
+//MySQL details 
+//Example for the below connecting to Google SQL from Firebase: https://stackoverflow.com/questions/46994701/etimeout-error-google-cloud-sql-database-with-nodejs
+//Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
+var mysqlConnection = mysql.createConnection({
+  //Must comment out the host IP and use socketPath when running from Firebase:
+  //host: '35.239.215.232',
+  socketPath: '/cloudsql/joboxza:us-central1:jobox',
+  user: 'root',
+  password: ',Yk94YDU}DT#g6d.',
+  database: 'Joboxza',
+  multipleStatements: true
+});
+
+
+mysqlConnection.connect((err) => {
+  if (!err)
+    console.log('SQL Connection Established Successfully');
+  else {
+    console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+    console.log(err);
+    // db.collection("errors").add({
+    //   jobId: req.body.jobId,
+    //   created: moment(Date.now()).format("L"),
+    //   issue: "mySQL connection failed",
+    //   message: err
+    // });
+  }
+});
+
+
+
+// New user document created
+exports.newUser = functions.firestore.document('users/{userId}')
+  .onCreate(async (snap, context) => {
+    const value = snap.data();
+    var sql = "INSERTs INTO users (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
+    var values = [value.created, value.email, value.name, value.surname, value.phone, value.user, value.lastModified];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+        // db.collection("errors").add({
+        //   jobId: req.body.jobId,
+        //   created: moment(Date.now()).format("L"),
+        //   issue: "exports.newUser failed to work",
+        //   message: error
+        // });
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+    return null;
+  });
+
+// //get the newest ID
+// function getNewestID(idName, tableName) {
+//   var newestID = 0;
+//   var sql = "SELECT MAX(??) as ID FROM ??";
+//   var values = [idName, tableName];
+//   var query = mysqlConnection.query(sql, values, function (error, results, fields) {
+//     if (error) {
+//       console.log(error);
+//       db.collection("errors").add({
+//         jobId: req.body.jobId,
+//         created: moment(Date.now()).format("L"),
+//         issue: "getting the newest ID failed to work",
+//         message: error
+//       });
+//     }
+//     else {
+//       newestID = results[0].ID;
+//       console.log("The newestID is " + newestID + " with typeof: " + typeof (newestID))
+//       return newestID;
+//     }
+//   });
+// }
+
+// app.get('/select', (req, res) => {
+//   var newestUserID = 0;
+//   newestUserID = getNewestID('user_ID', 'users');
+//   console.log("The solution is " + newestUserID);
+//   res.send(newestUserID);
+// });
+
+// // // New client document created
+// // exports.newStudent = functions.firestore.document('clients/{clientId}')
+// // .onCreate(async (snap, context) => {
+// //   const value = snap.data();
+// //   var newestUserID = getNewestID('user_ID', 'users');
+// //   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
+// //   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
+// //   var query = mysqlConnection.query(sql, values, (error) => {
+// //     if (error) {
+// //       console.log(error);
+// //     }
+// //     else {
+// //       console.log(query.sql);
+// //     }
+// //   });
+// //   return null;
+// // });
+
+
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
@@ -648,6 +754,12 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
 }
 // Send slack alert
 function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
+
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
