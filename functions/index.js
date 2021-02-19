@@ -618,19 +618,15 @@ function standardEmail(receiver, sender, subject, message) {
   }
 }
 
+
 //MySQL details 
-//Example for the below connecting to Google SQL from Firebase: https://stackoverflow.com/questions/46994701/etimeout-error-google-cloud-sql-database-with-nodejs
-//Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
 var mysqlConnection = mysql.createConnection({
-  //Must comment out the host IP and use socketPath when running from Firebase:
-  //host: '35.239.215.232',
-  socketPath: '/cloudsql/joboxza:us-central1:jobox',
+  host: '35.239.215.232',
   user: 'root',
   password: ',Yk94YDU}DT#g6d.',
   database: 'Joboxza',
-  multipleStatements: true
+  multipleStatements: true 
 });
-
 
 mysqlConnection.connect((err) => {
   if (!err)
@@ -638,32 +634,49 @@ mysqlConnection.connect((err) => {
   else {
     console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
     console.log(err);
-    // db.collection("errors").add({
-    //   jobId: req.body.jobId,
-    //   created: moment(Date.now()).format("L"),
-    //   issue: "mySQL connection failed",
-    //   message: err
-    // });
   }
 });
-
 
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
+    //MySQL details 
+    const settingsollection = await getDocument("Settings", "MySQL");
+    var MySQLsettings = settingsollection.data();
+    var mysqlConnection = mysql.createConnection({
+      //host: '35.239.215.232',
+      socketPath: MySQLsettings.socketPath,
+      user: MySQLsettings.user,
+      password: MySQLsettings.password,
+      database: MySQLsettings.database,
+      multipleStatements: MySQLsettings.multipleStatements
+    });
+
+    mysqlConnection.connect((err) => {
+      if (!err)
+        console.log('SQL Connection Established Successfully');
+      else {
+        console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+        console.log(err);
+        db.collection("errors").add({
+          created: moment(Date.now()).format("L"),
+          issue: "mySQL connection failed",
+          message: err
+        });
+      }
+    });
     const value = snap.data();
-    var sql = "INSERTs INTO users (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
-    var values = [value.created, value.email, value.name, value.surname, value.phone, value.user, value.lastModified];
+    var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
+    var values = [value.userID, value.created, value.email, value.name, value.surname, value.phone, value.user, value.lastModified];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
-        // db.collection("errors").add({
-        //   jobId: req.body.jobId,
-        //   created: moment(Date.now()).format("L"),
-        //   issue: "exports.newUser failed to work",
-        //   message: error
-        // });
+        db.collection("errors").add({
+          created: moment(Date.now()).format("L"),
+          issue: "exports.newUser mysqlConnection.query failed to work",
+          message: error
+        });
       }
       else {
         console.log(query.sql);
@@ -672,53 +685,55 @@ exports.newUser = functions.firestore.document('users/{userId}')
     return null;
   });
 
-// //get the newest ID
-// function getNewestID(idName, tableName) {
-//   var newestID = 0;
-//   var sql = "SELECT MAX(??) as ID FROM ??";
-//   var values = [idName, tableName];
-//   var query = mysqlConnection.query(sql, values, function (error, results, fields) {
+  app.get('/query', (req, res) => {
+        //MySQL details 
+        var mysqlConnection = mysql.createConnection({
+          host: '35.239.215.232',
+          user: 'root',
+          password: ',Yk94YDU}DT#g6d.',
+          database: 'Joboxza',
+          multipleStatements: true 
+        });
+    
+        mysqlConnection.connect((err) => {
+          if (!err)
+            console.log('SQL Connection Established Successfully');
+          else {
+            console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+            console.log(err);
+          }
+        });
+        var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
+        var values = ['757tiviBMWRNHiWYOMaqzOgbDP52', '02/19/2021', 'jpemail777@gmail.com', 'Jp', 'Joub', '012661475', 'client', '02/19/2021'];
+        var query = mysqlConnection.query(sql, values, (error) => {
+          if (error) {
+            console.log(error);
+          }
+          else {
+            console.log(query.sql);
+          }
+        });
+        return null;
+  });
+
+
+// // New client document created
+// exports.newStudent = functions.firestore.document('clients/{clientId}')
+// .onCreate(async (snap, context) => {
+//   const value = snap.data();
+//   var newestUserID = getNewestID('user_ID', 'users');
+//   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
+//   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
+//   var query = mysqlConnection.query(sql, values, (error) => {
 //     if (error) {
 //       console.log(error);
-//       db.collection("errors").add({
-//         jobId: req.body.jobId,
-//         created: moment(Date.now()).format("L"),
-//         issue: "getting the newest ID failed to work",
-//         message: error
-//       });
 //     }
 //     else {
-//       newestID = results[0].ID;
-//       console.log("The newestID is " + newestID + " with typeof: " + typeof (newestID))
-//       return newestID;
+//       console.log(query.sql);
 //     }
 //   });
-// }
-
-// app.get('/select', (req, res) => {
-//   var newestUserID = 0;
-//   newestUserID = getNewestID('user_ID', 'users');
-//   console.log("The solution is " + newestUserID);
-//   res.send(newestUserID);
+//   return null;
 // });
-
-// // // New client document created
-// // exports.newStudent = functions.firestore.document('clients/{clientId}')
-// // .onCreate(async (snap, context) => {
-// //   const value = snap.data();
-// //   var newestUserID = getNewestID('user_ID', 'users');
-// //   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
-// //   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
-// //   var query = mysqlConnection.query(sql, values, (error) => {
-// //     if (error) {
-// //       console.log(error);
-// //     }
-// //     else {
-// //       console.log(query.sql);
-// //     }
-// //   });
-// //   return null;
-// // });
 
 
 // New feedback document created
