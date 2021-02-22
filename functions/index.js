@@ -9,6 +9,7 @@ const SlackBot = require('slackbots');
 const dotenv = require('dotenv');
 var mysql = require('mysql');
 
+
 dotenv.config()
 
 var serviceAccount = require("./permissions.json");
@@ -25,6 +26,16 @@ const db = admin.firestore();
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
+
+//emulator
+//documentation for emulator: https://firebase.google.com/docs/functions/local-emulator
+const useEmulator = true;
+
+if (useEmulator){
+    process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:5001';
+}
+
+
 // authenticates all routes
 //app.use(authMiddleware);
 
@@ -717,44 +728,6 @@ exports.newUser = functions.firestore.document('users/{userId}')
     });
   });
   
-// // update user
-// exports.updateUser = functions.firestore.document('users/{userId}')
-// .onUpdate(async (change, context) => {
-//   var mysqlConnection = await createMySQLconnection();
-//   const newValue = change.after.data();
-//   const previousValue = change.before.data();
-//   if (newValue.email != previousValue.email) {
-//     var sql = "UPDATE users SET email = ? WHERE userID = ?";
-//     var values = [newValue.email,newValue.userId];
-//     var query = mysqlConnection.query(sql, values, (error) => {
-//       if (error) {
-//         console.log(error);
-//         db.collection("errors").add({
-//           created: moment(Date.now()).format("L"),
-//           issue: "exports.updateUser mysqlConnection.query failed to work",
-//           message: error
-//         });
-//       }
-//       else {
-//         console.log(query.sql);
-//       }
-//     });
-//   }
-//   mysqlConnection.end((error) => {
-//     if (error) {
-//       console.log(error);
-//       db.collection("errors").add({
-//         created: moment(Date.now()).format("L"),
-//         issue: "exports.updateUser mysqlConnection.end failed to work",
-//         message: error
-//       });
-//     }
-//     else {
-//       console.log('The connection is terminated now');
-//     }
-//   });
-// });
-
 
 //New client document created
 exports.newClient = functions.firestore.document('clients/{clientId}')
@@ -809,6 +782,18 @@ exports.updateClient = functions.firestore.document('clients/{clientId}')
   const newValue = change.after.data();
   const previousValue = change.before.data();
   if (newValue.industry !== previousValue.industry) {
+    var sql = "UPDATE clients SET client_ID = ? WHERE client_ID = ?";
+    var values = [newValue.clientId,newValue.clientId];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+  }
+  if (newValue.industry !== previousValue.industry) {
     var sql = "UPDATE clients SET industry = ? WHERE client_ID = ?";
     var values = [newValue.industry,newValue.clientId];
     var query = mysqlConnection.query(sql, values, (error) => {
@@ -823,11 +808,6 @@ exports.updateClient = functions.firestore.document('clients/{clientId}')
   mysqlConnection.end((error) => {
     if (error) {
       console.log(error);
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        issue: "exports.updateClient mysqlConnection.end failed to work",
-        message: error
-      });
     }
     else {
       console.log('The connection is terminated now');
