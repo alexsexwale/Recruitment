@@ -114,7 +114,7 @@ export default {
             }
           });
         }
-        else {
+        else if(userPermission == "client"){
           this.client = true;
           let client = clients.doc(this.alias);
           client.get().then(client => {

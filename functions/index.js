@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const moment = require("moment");
-const admin = require("firebase-admin");
+//const admin = require("firebase-admin"); code moved to config/firebase.js due to not being able to initialize firebase twice
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -9,8 +9,12 @@ const SlackBot = require('slackbots');
 const dotenv = require('dotenv');
 var mysql = require('mysql');
 
-dotenv.config()
+const firebase = require("./config/firebase");
+const powerbi = require("./core/powerbi");
+const payment = require("./core/payment");
 
+dotenv.config();
+/* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
 
 admin.initializeApp({
@@ -21,10 +25,15 @@ admin.initializeApp({
 const authMiddleware = require("./authMiddleware");
 
 const db = admin.firestore();
-
+*/
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
+app.use("/powerbi", powerbi);
+app.use(payment);
+
+const db = firebase.db;
+const getDocument = firebase.getDocument;
 // authenticates all routes
 //app.use(authMiddleware);
 
@@ -37,36 +46,11 @@ app.use(cors({ origin: true }));
 
 const sgMail = require("@sendgrid/mail");
 
+/* code moved to config/firebase.js due to not being able to initialize firebase twice */
 // Firestore - get single document
-function getDocument(collection, id) {
-  return db.collection(collection).doc(id).get();
-}
-
-// Routes
-
-
-
-
-app.get("/hello", (req, res) => {
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
-  // Start Handler
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-
-    bot.postMessageToChannel(
-        'interns',
-        'Testing slack chatbot',
-        params
-    );
-  })
-    return res.status(200).send("Hey");
-});
+// function getDocument(collection, id) {
+//   return db.collection(collection).doc(id).get();
+// }
 
 // Notifications
 app.post("/notification", urlencodedParser, async (req, res) => {
@@ -116,67 +100,6 @@ app.post("/notification", urlencodedParser, async (req, res) => {
   sgMail.send(msg);
   
   return res.status(200).send("Sent");
-});
-
-// Inbound payment
-app.post("/activate", urlencodedParser, (req, res) => {
-  if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
-    db.collection("payments").doc(req.body.Extra1).update({
-      inboundPayment: true,
-      lastModified: moment(Date.now()).format("L"),
-    });
-
-    res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
-  } 
-  else {
-    db.collection("errors").add({
-      created: moment(Date.now()).format("L"),
-      message: "Payment Gateway failed" 
-    });
-    res.status(200).redirect("https://joboxstaging.web.app/");
-  }
-});
-
-// Cancel payment
-app.post("/cancelPayment", urlencodedParser, (req, res) => {
-    if(req.body.Extra1) {
-        res.status(200).redirect("https://joboxstaging.web.app/client/jobs/micro/status/" + req.body.Extra1);
-    } 
-    else {
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        message: "Payment Gateway failed" 
-      });
-      res.status(200).redirect("https://joboxstaging.web.app/");
-    }
-});
-
-// Decline payment
-app.post("/decline", urlencodedParser, async (req, res) => {
-    if(req.body.Extra1) {
-        db.collection("netcash").add({
-          created: moment(Date.now()).format("L"),
-          message: "Payment Declined" 
-        });
-        const doc = await getDocument("Settings", "Email");
-        var settings = doc.data();
-        sgMail.setApiKey(settings.apiKey);
-        var msg = {
-            to: "contact@jobox.co.za",
-            from: "admin@jobox.co.za",
-            subject: "Netcash Notification - " + req.body.Extra1,
-            text: " The user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined."
-        };
-        sgMail.send(msg);
-        res.status(200).redirect("https://joboxstaging.web.app/client/payment/fail/" + req.body.Extra1);
-    } 
-    else {
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        message: "Payment Gateway failed" 
-      });
-      res.status(200).redirect("https://joboxstaging.web.app/");
-    }
 });
 
 function padBranch(branchcode) {
@@ -623,8 +546,8 @@ function standardEmail(receiver, sender, subject, message) {
 //Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
 var mysqlConnection = mysql.createConnection({
   //Must comment out the host IP and use socketPath when running from Firebase:
-  //host: '35.239.215.232',
-  socketPath: '/cloudsql/joboxza:us-central1:jobox',
+  host: '35.239.215.232',
+  //socketPath: '/cloudsql/joboxza:us-central1:jobox',
   user: 'root',
   password: ',Yk94YDU}DT#g6d.',
   database: 'Joboxza',

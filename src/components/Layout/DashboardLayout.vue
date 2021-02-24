@@ -5,7 +5,7 @@
     ]" >
     <notifications></notifications>
     <side-bar :active-color="sidebarBackground" :background-image="sidebarBackgroundImage" :data-background-color="sidebarBackgroundColor">
-      <user-menu></user-menu>
+      <user-menu v-if="!institution"></user-menu>
       <!-- <mobile-menu></mobile-menu> -->
       <template slot="links">
         <!-- Begin: client side navbar -->
@@ -37,6 +37,12 @@
         <sidebar-item v-if="student" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/student/feedback' }"></sidebar-item>
         <sidebar-item v-if="student" :link="{ name: 'Logout', icon: 'reply_all', path: '/login' }"></sidebar-item>
         <!-- End: student side navbar -->
+
+        <!-- Begin: institution side navbar -->
+        <sidebar-item v-if="institution" :link="{ name: 'Get Support', icon: 'contact_support', path: '/institution/support' }"></sidebar-item>
+        <sidebar-item v-if="institution" :link="{ name: 'Give Feedback', icon: 'feedback', path: '/institution/feedback' }"></sidebar-item>
+        <sidebar-item v-if="institution" :link="{ name: 'Logout', icon: 'reply_all', path: '/login' }"></sidebar-item>
+        <!-- End: institution side navbar -->
       </template>
     </side-bar>
     <div class="main-panel">
@@ -111,6 +117,7 @@ export default {
       sidebarImg: true,
       student: null,
       client: null,
+      institution: null,
       alias: null
     };
   },
@@ -142,8 +149,11 @@ export default {
         if(userPermission == "student") {
           this.student = true;
         }
-        else {
+        else if(userPermission == "client"){
           this.client = true;
+        }
+        else {
+          this.institution =true;
         }
       })
     });

@@ -13,6 +13,7 @@ import StudentDashboard from "./student/student";
 import ClientDashboard from "./client/client";
 import ClientAccount from "./client/account/account";
 import StudentAccount from "./student/account/account";
+import InstitutionDashboard from "./institution/institution";
 
 Vue.use(Router);
 
@@ -24,7 +25,8 @@ const router = new Router({
     ClientAccount,
     StudentAccount,
     ClientDashboard,
-    StudentDashboard
+    StudentDashboard,
+    InstitutionDashboard
   ],
   scrollBehavior(to, from, savedPosition) {
     if(to.hash) {
