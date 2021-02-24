@@ -26,25 +26,23 @@ async function getAuthToken() {
   let authorityUri = powerbi.authorityUri.replace("common", powerbi.tenantId);
   let context = new AuthenticationContext(authorityUri);
 
-  return new Promise(
-    (resolve, reject) => {
-      context.acquireTokenWithUsernamePassword(
-        powerbi.scope,
-        powerbi.pbiUsername,
-        powerbi.pbiPassword,
-        powerbi.clientId,
-        (err, tokenResponse) => {
-          // Function returns error object in tokenResponse
-          // Invalid Username will return empty tokenResponse, thus err is used
-          if (err) {
-            reject(tokenResponse == null ? err : tokenResponse);
-          }
+  return new Promise((resolve, reject) => {
+    context.acquireTokenWithUsernamePassword(
+      powerbi.scope,
+      powerbi.pbiUsername,
+      powerbi.pbiPassword,
+      powerbi.clientId,
+      (err, tokenResponse) => {
+        // Function returns error object in tokenResponse
+        // Invalid Username will return empty tokenResponse, thus err is used
+        if (err) {
+          reject(tokenResponse == null ? err : tokenResponse);
+        }
 
-          resolve(tokenResponse);
-      })
-    }
-  );
-
+        resolve(tokenResponse);
+      }
+    );
+  });
 }
 
 function getAuthHeader(accessToken) {
@@ -62,19 +60,21 @@ async function generateEmbedToken() {
 
   // Call the function to get the response from the authentication request
   try {
-      tokenResponse = await getAuthToken();
+    tokenResponse = await getAuthToken();
   } catch (err) {
-      if (err.hasOwnProperty('error_description') && err.hasOwnProperty('error')) {
-          errorResponse = err.error_description;
-      } else {
-
-          // Invalid PowerBI Username provided
-          errorResponse = err.toString();
-      }
-      return {
-          "status": 401,
-          "error": errorResponse
-      };
+    if (
+      err.hasOwnProperty("error_description") &&
+      err.hasOwnProperty("error")
+    ) {
+      errorResponse = err.error_description;
+    } else {
+      // Invalid PowerBI Username provided
+      errorResponse = err.toString();
+    }
+    return {
+      status: 401,
+      error: errorResponse
+    };
   }
 
   // Extract AccessToken from the response
@@ -85,68 +85,105 @@ async function generateEmbedToken() {
 
   // Call the function to get the Report Embed details
   try {
-      embedData = await getReportEmbedDetails(token, powerbi.apiUrl, powerbi.workspaceId, powerbi.reportId);
+    embedData = await getReportEmbedDetails(
+      token,
+      powerbi.apiUrl,
+      powerbi.workspaceId,
+      powerbi.reportId
+    );
 
-      // Call the function to get the Embed Token
-      let embedToken = await getReportEmbedToken(token, powerbi.apiUrl, powerbi.reportId);
+    // Call the function to get the Embed Token
+    /* let embedToken = await getReportEmbedToken(token, powerbi.apiUrl, powerbi.reportId, embedData.data.datasetId);
       return {
           "accessToken": embedToken.token,
           "embedUrl": embedData.data.embedUrl,
           "reportId": embedToken.tokenId,
           "expiry": embedToken.expiration,
           "status": 200
-      };
+      }; TO-DO: FIX ERROR 403*/
+    let pages = await getPages(token, powerbi.apiUrl, powerbi.reportId);
+
+    return {
+      accessToken: token,
+      embedUrl: embedData.data.embedUrl,
+      reportPages: pages.data.value,
+      status: 200
+    };
   } catch (err) {
-      return {
-          "status": err.response.status,
-          "error": 'Error while retrieving report embed details:' + err.response.statusText
-      }
+    return {
+      status: err.response.status,
+      error:
+        "Error while retrieving report embed details: " +
+        err.response.statusText
+    };
   }
 }
 
 async function getReportEmbedDetails(token, apiUrl, workspaceId, reportId) {
-
   const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": getAuthHeader(token)
+    "Content-Type": "application/x-www-form-urlencoded",
+    Authorization: getAuthHeader(token)
   };
 
-  const api = axios.create({ baseURL: apiUrl});
+  const api = axios.create({ baseURL: apiUrl });
 
   const result = await api.get(`groups/${workspaceId}/reports/${reportId}`, {
-      headers: headers
-  })
-  
-  if (result.aborted)
-    throw result;
-  
+    headers: headers
+  });
+
+  if (result.aborted) throw result;
+
   return result;
 }
 
-async function getReportEmbedToken(token, apiUrl, reportId) {
-
+async function getReportEmbedToken(token, apiUrl, reportId, datasetId) {
   const headers = {
-      "Content-Type": "application/json",
-      "Authorization": getAuthHeader(token)
+    "Content-Type": "application/json",
+    Authorization: getAuthHeader(token)
   };
 
-  const api = axios.create({ baseURL: apiUrl});
+  const api = axios.create({ baseURL: apiUrl });
 
   const formData = {
-      "reports": [{
-          "id": reportId
-      }]
+    reports: [
+      {
+        id: reportId
+      }
+    ],
+    datasets: [
+      {
+        id: datasetId
+      }
+    ]
   };
 
   //Docs on API: https://docs.microsoft.com/en-us/rest/api/power-bi/embedtoken/generatetoken
-  const result =  await api.post("GenerateToken", {
-      headers: headers,
-      body: JSON.stringify(formData)
-  })
-  console.log(result)
-  console.log("bye")
-  if (!result)
-    throw result;
+  const result = await api.post("GenerateToken", {
+    headers: headers,
+    body: JSON.stringify(formData)
+  });
+  console.log(result);
+  console.log("bye");
+  if (!result) throw result;
+
+  return result;
+}
+
+// Get report pages
+async function getPages(token, apiUrl, reportId) {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: getAuthHeader(token)
+  };
+
+  const api = axios.create({ baseURL: apiUrl });
+
+  //Docs on API: https://docs.microsoft.com/en-us/rest/api/power-bi/reports/getpages
+  const result = await api.get(`reports/${reportId}/pages`, {
+    headers: headers
+  });
+
+  if (!result) throw result;
 
   return result;
 }

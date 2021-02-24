@@ -1,22 +1,34 @@
+<!-- TO-DO: The Layout of the page can be improved -->
 <template>
-  <div id="report-container" />
+  <div>
+    <nav-tabs-card>
+      <!-- TO-DO: Maybe a drop down or something similar to the setting button? -->
+      <md-button
+        slot="content"
+        v-for="page in reportPages"
+        :key="page.Name"
+        @click="pageNav(page.Name)"
+        >{{ page.displayName }}</md-button
+      >
+    </nav-tabs-card>
+    <div id="report-container" />
+  </div>
 </template>
 <script>
-import { RotatingCard } from "@/components";
+import { NavTabsCard } from "@/components";
 import { mapGetters, mapActions } from "vuex";
 import * as pbi from "powerbi-client";
 
 export default {
   components: {
-    RotatingCard
+    NavTabsCard
   },
   name: "institution-reports",
   data() {
     return {
-      cardRotating: {
-        cardRotatingBg1: require("@/assets/img/examples/card-blog5.jpg"),
-        cardRotatingBg2: require("@/assets/img/examples/card-blog6.jpg")
-      }
+      reportPages: [],
+      report: null,
+      selectedPage: null
     };
   },
   computed: {
@@ -30,17 +42,20 @@ export default {
   },
   methods: {
     ...mapActions(["getReportConfig"]),
-    embedReport: function() {
-      this.getReportConfig().then(reportLoadConfig => {
-        let powerbi = new pbi.service.Service(
+    embedReport: async function() {
+      return this.getReportConfig().then(async reportConfig => {
+        //TO-DO: Maybe all this code can be executed as an action?
+        const pages = reportConfig.reportPages;
+        const reportLoadConfig = reportConfig.reportConfig;
+        const powerbi = new pbi.service.Service(
           pbi.factories.hpmFactory,
           pbi.factories.wpmpFactory,
           pbi.factories.routerFactory
         );
 
-        var reportContainer = document.getElementById("report-container");
+        const reportContainer = document.getElementById("report-container");
 
-        var report = powerbi.embed(reportContainer, reportLoadConfig);
+        const report = powerbi.embed(reportContainer, reportLoadConfig);
 
         // Clear any other loaded handler events
         report.off("loaded");
@@ -51,17 +66,30 @@ export default {
         report.on("error", function() {
           report.off("error");
         });
+
+        return { report, pages };
       });
+    },
+    pageNav: async function(reportSection) {
+      console.log(reportSection);
+      let page = this.report.page(reportSection);
+      await page.setActive();
+      await this.report.setPage(reportSection);
     }
   },
-  mounted: function() {
-    this.embedReport();
+  mounted: async function() {
+    let reportConfig = await this.embedReport();
+    this.report = reportConfig.report;
+    reportConfig.pages.forEach(element => {
+      this.reportPages.push(element);
+    });
   }
 };
 </script>
 <style scoped>
+/* Find the perfect size for report */
 div#report-container {
-  height: calc(0.5625 * 61vw); /* 16:9 aspect ratio */
+  height: calc(0.5625 * 65vw); /* 16:9 aspect ratio */
 }
 
 @media only screen and (max-width: 575px) {

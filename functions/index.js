@@ -12,6 +12,7 @@ var mysql = require('mysql');
 const firebase = require("./config/firebase");
 const powerbi = require("./core/powerbi");
 const payment = require("./core/payment");
+const tokenAuth = require("./core/auth");
 
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
@@ -31,6 +32,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
 app.use(payment);
+app.use(tokenAuth);
 
 const db = firebase.db;
 const getDocument = firebase.getDocument;
@@ -74,7 +76,7 @@ app.get("/hello", (req, res) => {
   })
     return res.status(200).send("Hey");
 });
-*/ 
+
 // Notifications
 app.post("/notification", urlencodedParser, async (req, res) => {
   const doc = await getDocument("Settings", "Email");
