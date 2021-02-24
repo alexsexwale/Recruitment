@@ -9,6 +9,7 @@ const SlackBot = require('slackbots');
 const dotenv = require('dotenv');
 var mysql = require('mysql');
 
+
 dotenv.config()
 
 var serviceAccount = require("./permissions.json");
@@ -25,6 +26,14 @@ const db = admin.firestore();
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
+
+//emulator
+//documentation for emulator: https://firebase.google.com/docs/functions/local-emulator
+
+//process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:5001';
+
+
+
 // authenticates all routes
 //app.use(authMiddleware);
 
@@ -44,21 +53,15 @@ function getDocument(collection, id) {
 
 // Routes
 
-
-
-
 app.get("/hello", (req, res) => {
   const bot = new SlackBot({
     token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
     name: 'jobox_app'
   })
-  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
-  // Start Handler
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
     }
-
     bot.postMessageToChannel(
         'interns',
         'Testing slack chatbot',
@@ -125,6 +128,22 @@ app.post("/activate", urlencodedParser, (req, res) => {
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
+    
+    //send chat bot message
+    const bot = new SlackBot({
+      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+      name: 'jobox_app'
+    })
+    bot.on('start', () => {
+      const params = {
+          icon_emoji: ':robot_face:'
+      }
+      bot.postMessageToChannel(
+          'random',
+          "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash",
+          params
+      );
+    })
 
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
@@ -158,6 +177,23 @@ app.post("/decline", urlencodedParser, async (req, res) => {
           created: moment(Date.now()).format("L"),
           message: "Payment Declined" 
         });
+
+        //send chat bot message
+        const bot = new SlackBot({
+          token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+          name: 'jobox_app'
+        })
+        bot.on('start', () => {
+          const params = {
+              icon_emoji: ':robot_face:'
+          }
+          bot.postMessageToChannel(
+              'random',
+              "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.",
+              params
+          );
+        })
+
         const doc = await getDocument("Settings", "Email");
         var settings = doc.data();
         sgMail.setApiKey(settings.apiKey);
@@ -618,129 +654,200 @@ function standardEmail(receiver, sender, subject, message) {
   }
 }
 
-//MySQL details 
-//Example for the below connecting to Google SQL from Firebase: https://stackoverflow.com/questions/46994701/etimeout-error-google-cloud-sql-database-with-nodejs
-//Link to google documentation: https://cloud.google.com/sql/docs/mysql/connect-functions#public-ip-default
-var mysqlConnection = mysql.createConnection({
-  //Must comment out the host IP and use socketPath when running from Firebase:
-  //host: '35.239.215.232',
-  socketPath: '/cloudsql/joboxza:us-central1:jobox',
-  user: 'root',
-  password: ',Yk94YDU}DT#g6d.',
-  database: 'Joboxza',
-  multipleStatements: true
-});
+async function createMySQLconnection() {
+  //MySQL details 
+  const settingsollection = await getDocument("Settings", "MySQL");
+  var MySQLsettings = settingsollection.data();
+  var mysqlConnection = mysql.createConnection({
+    socketPath: MySQLsettings.socketPath,
+    user: MySQLsettings.user,
+    password: MySQLsettings.password,
+    database: MySQLsettings.database,
+    multipleStatements: MySQLsettings.multipleStatements
+  });
+  //init connection
+  mysqlConnection.connect((err) => {
+    if (!err)
+      console.log('SQL Connection Established Successfully');
+    else {
+      console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
+      console.log(err);
+      db.collection("errors").add({
+        created: moment(Date.now()).format("L"),
+        issue: "mySQL connection failed",
+        message: err
+      });
+    }
+  });
+  return mysqlConnection
+}
 
-
-mysqlConnection.connect((err) => {
-  if (!err)
-    console.log('SQL Connection Established Successfully');
-  else {
-    console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
-    console.log(err);
-    // db.collection("errors").add({
-    //   jobId: req.body.jobId,
-    //   created: moment(Date.now()).format("L"),
-    //   issue: "mySQL connection failed",
-    //   message: err
-    // });
-  }
-});
 
 
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
+    var mysqlConnection = await createMySQLconnection();
     const value = snap.data();
-    var sql = "INSERTs INTO users (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
-    var values = [value.created, value.email, value.name, value.surname, value.phone, value.user, value.lastModified];
+    var lastModified = new Date(value.lastModified);
+    var created = new Date(value.created);
+    var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
+    var values = [value.userId, created, value.email, value.name, value.surname, value.phone, value.user, lastModified];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
-        // db.collection("errors").add({
-        //   jobId: req.body.jobId,
-        //   created: moment(Date.now()).format("L"),
-        //   issue: "exports.newUser failed to work",
-        //   message: error
-        // });
       }
       else {
         console.log(query.sql);
       }
     });
-    return null;
+    mysqlConnection.end((error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log('The connection is terminated now');
+      }
+    });
   });
+  
 
-// //get the newest ID
-// function getNewestID(idName, tableName) {
-//   var newestID = 0;
-//   var sql = "SELECT MAX(??) as ID FROM ??";
-//   var values = [idName, tableName];
-//   var query = mysqlConnection.query(sql, values, function (error, results, fields) {
-//     if (error) {
-//       console.log(error);
-//       db.collection("errors").add({
-//         jobId: req.body.jobId,
-//         created: moment(Date.now()).format("L"),
-//         issue: "getting the newest ID failed to work",
-//         message: error
-//       });
-//     }
-//     else {
-//       newestID = results[0].ID;
-//       console.log("The newestID is " + newestID + " with typeof: " + typeof (newestID))
-//       return newestID;
-//     }
-//   });
-// }
-
-// app.get('/select', (req, res) => {
-//   var newestUserID = 0;
-//   newestUserID = getNewestID('user_ID', 'users');
-//   console.log("The solution is " + newestUserID);
-//   res.send(newestUserID);
-// });
-
-// // // New client document created
-// // exports.newStudent = functions.firestore.document('clients/{clientId}')
-// // .onCreate(async (snap, context) => {
-// //   const value = snap.data();
-// //   var newestUserID = getNewestID('user_ID', 'users');
-// //   var sql = "INSERT INTO clients (created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?)";
-// //   var values = [value.created, value.email, value.name, value.surname, value.phone, value.user,value.lastModified];
-// //   var query = mysqlConnection.query(sql, values, (error) => {
-// //     if (error) {
-// //       console.log(error);
-// //     }
-// //     else {
-// //       console.log(query.sql);
-// //     }
-// //   });
-// //   return null;
-// // });
+//New client document created
+exports.newClient = functions.firestore.document('clients/{clientId}')
+  .onUpdate(async (change, context) => {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+    //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
+    if (newValue.accountCreated === true && previousValue.accountCreated === false) {
+      var mysqlConnection = await createMySQLconnection();
+      var lastModified = new Date(newValue.lastModified);
+      var created = new Date(newValue.created);
+      //client table
+      var sql = "INSERT INTO clients (client_ID, user_ID, created, industry, bio, last_modified, vat, website, company_category, company_size) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      var values = [newValue.clientId, newValue.userId, created, newValue.industry, newValue.bio, lastModified, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize];
+      var query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+      //client_addresses table
+      sql = "INSERT INTO client_addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state) VALUES (?,?,?,?,?,?)";
+      values = [newValue.clientId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+      mysqlConnection.end((error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log('The connection is terminated now');
+        }
+      });
+    }
+  });
 
 
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  var sql = "INSERT INTO enquiries (user_ID, message, type) VALUES (?,?,?)";
+  var values = [value.userId,value.message,"feedback"];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
+  //send chat bot message
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  bot.on('start', () => {
+    const params = {
+        icon_emoji: ':robot_face:'
+    }
+    bot.postMessageToChannel(
+        'random',
+        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ,
+        params
+    );
+  })
   return null;
 });
+
+
 // New support document created
 exports.support = functions.firestore.document('support/{support}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  var sql = "INSERT INTO enquiries (user_ID, message, type) VALUES (?,?,?)";
+  var values = [value.userId,value.message,"support"];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.getSupport, value.email, value.subject, value.message));
+  //send chat bot message
+  const bot = new SlackBot({
+    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+    name: 'jobox_app'
+  })
+  bot.on('start', () => {
+    const params = {
+        icon_emoji: ':robot_face:'
+    }
+    bot.postMessageToChannel(
+        'random',
+        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ,
+        params
+    );
+  })
   return null;
 });
+
 // Send alert for new job posts
 function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jobId, phone) {
   return {
@@ -758,13 +865,10 @@ function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId,
     token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
     name: 'jobox_app'
   })
-  //xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5
-
   bot.on('start', () => {
     const params = {
         icon_emoji: ':robot_face:'
     }
-
     bot.postMessageToChannel(
         channel,
         "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
@@ -778,6 +882,29 @@ function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId,
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  const clientDoc =  await getDocument("clients", value.clientAlias);
+  const clientDocData = clientDoc.data();
+  var startDate = new Date(value.startDate);
+  var created = new Date(value.created);
+  var sql = "INSERT INTO jobs (job_ID, client_ID, industry, created, name, verified, job_description, job_type, education, experience, job_title, work_hours, start_date, location, payment, job_status, satisfied) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  var values = [value.jobId, value.clientAlias, clientDocData.industry, created, value.name, value.verified, null, value.jobType, value.education, value.experience, null, null, startDate, null, null, null, null];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -785,6 +912,225 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
   return null;
 });
+
+
+// New payments document created
+exports.paymentsPost = functions.firestore.document('payments/{jobId}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  var lastModified = new Date(value.lastModified);
+  var created = new Date(value.created);
+  var paymentDate = new Date(value.paymentDate);
+  var sql = "INSERT INTO payments (job_ID, payment_date, service_fee, facilitation_cost, total_cost_paid, created, inbound_payment, last_modified, outbound_payment, payment_method, reference, request_trace) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+  var values = [value.jobId, paymentDate, value.serviceFee, value.facilitationCost, value.totalCostPaid, created, value.inboundPayment, lastModified, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
+
+  return null;
+});
+
+//Payments document updated
+exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  if (previousValue.outboundPayment === false && newValue.outboundPayment === true) {
+    //send chat bot message
+    const bot = new SlackBot({
+      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+      name: 'jobox_app'
+    })
+    bot.on('start', () => {
+      const params = {
+          icon_emoji: ':robot_face:'
+      }
+      bot.postMessageToChannel(
+          'random',
+          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed",
+          params
+      );
+    })
+  }
+  return null;
+});
+
+//for testing 
+app.get('/query', (req, res) => {
+  const settings_ref = admin.firestore().collection('students').doc('jeanpierre-joubert-1876');
+    settings_ref.get()
+    .then(snap => { 
+      const data = snap.data();
+      for (const key in data.industryCategory) {
+          const value = data.industryCategory[key];
+          console.log(key + ":" + value)
+          // now key and value are the property name and value
+      }
+      console.log("finished");
+      console.log("inludes Banana: " + data.industryCategory.includes("Banana"));
+      console.log("inludes Administration: " + data.industryCategory.includes("Administration"));
+      return null;
+    })
+    .catch(err => {
+      console.log(err);
+    })
+});
+
+// New students document created
+exports.newStudent = functions.firestore.document('students/{studentId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const prevValue = change.before.data();
+  //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
+  if (newValue.accountCreated === true && prevValue.accountCreated === false) {
+    var mysqlConnection = await createMySQLconnection();
+    var dateOfBirth = new Date(newValue.dateOfBirth);
+    var sql = "INSERT INTO students (student_ID, user_ID, race, gender, date_of_birth, bio, citizenship, identification_number, disability, vehicle, drivers_license) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+    var values = [newValue.studentId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, newValue.disability, newValue.vehicle, newValue.license];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+    sql = "INSERT INTO student_bank_details (student_ID, account_name, account_number, account_type, bank_name, branch_code) VALUES (?,?,?,?,?,?)";
+    values = [newValue.studentId, newValue.accountName, newValue.accountNumber, newValue.accountType, newValue.bankName, newValue.branchCode];
+    query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+    if (newValue.disability === "Yes") {
+      sql = "INSERT INTO disabled_students (student_ID, disability) VALUES (?,?)";
+      values = [newValue.studentId, newValue.disabilityDescription];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    for (const key in newValue.industryCategory) {
+      const data = newValue.industryCategory[key];
+      //console.log(key + ":" + data)
+      // now key and data are the property name and data
+      sql = "INSERT INTO industry_alerts (student_ID, industry) VALUES (?,?)";
+      values = [newValue.studentId, data];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    sql = "INSERT INTO work_experience (student_ID, descryption, job_title, start_date, end_date, employer) VALUES (?,?,?,?,?,?)";
+    var startDate1 = new Date(newValue.startDate1);
+    var endDate1 = new Date(newValue.endDate1);
+    values = [newValue.studentId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1];
+    query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+    //social medias
+    if (newValue.facebook !== null) {
+      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
+      values = [newValue.studentId, "Facebook", newValue.facebook];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    if (newValue.gitHub !== null) {
+      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
+      values = [newValue.studentId, "Github", newValue.gitHub];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    if (newValue.instagram !== null) {
+      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
+      values = [newValue.studentId, "Instagram", newValue.instagram];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    if (newValue.linkedIn !== null) {
+      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
+      values = [newValue.studentId, "LinkedIn", newValue.linkedIn];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    if (newValue.twitter !== null) {
+      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
+      values = [newValue.studentId, "Twitter", newValue.twitter];
+      query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+    mysqlConnection.end((error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log('The connection is terminated now');
+      }
+    });
+  }
+  return null;
+});
+
 // Send alert to candidate selected
 function applicantSelected(receiver, sender, jobName, jobType, jobId, applicantName) {
   return {
@@ -817,8 +1163,25 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
     sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
   }
   if(newValue.approved === false && newValue.status === "decline") {
+    //send chat bot message
+    const bot = new SlackBot({
+      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+      name: 'jobox_app'
+    })
+    bot.on('start', () => {
+      const params = {
+          icon_emoji: ':robot_face:'
+      }
+      bot.postMessageToChannel(
+          'random',
+          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined",
+          params
+      );
+    })
+
     sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
   }
+
   return null;
 });
 
@@ -891,6 +1254,27 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
 exports.newApplication = functions.firestore.document('applications/{applicationsId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  var lastModified = new Date(value.lastModified);
+  var created = new Date(value.created);
+  var sql = "INSERT INTO applications (job_ID, student_ID, approved, created, last_modified, status) VALUES (?,)";
+  var values = [value.jobId, value.studentId, value.approved, created, lastModified, value.status];
+  var query = mysqlConnection.query(sql, values, (error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log(query.sql);
+    }
+  });
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -931,5 +1315,119 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
     //sgMail.send(clientEmail("summary", newValue.clientEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
     //sgMail.send(studentEmail("summary", newValue.studentEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
+
+  //cancelled 
+  if(previousValue.status !== "cancelled" && newValue.status === "cancelled") {
+    //send chat bot message
+    const bot = new SlackBot({
+      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+      name: 'jobox_app'
+    })
+    bot.on('start', () => {
+      const params = {
+          icon_emoji: ':robot_face:'
+      }
+      bot.postMessageToChannel(
+          'random',
+          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled",
+          params
+      );
+    })
+  }
+
+  //dissatisfied 
+  if(previousValue.status !== "dissatisfied" && newValue.status === "dissatisfied") {
+    //send chat bot message
+    const bot = new SlackBot({
+      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
+      name: 'jobox_app'
+    })
+    bot.on('start', () => {
+      const params = {
+          icon_emoji: ':robot_face:'
+      }
+      bot.postMessageToChannel(
+          'random',
+          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied",
+          params
+      );
+    })
+  }
   return null;
 });
+
+// New vetted
+exports.createVetted = functions.firestore.document('vetted/{studentId}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  var mysqlConnection = await createMySQLconnection();
+  //iterate over the different skills in the vetting document
+  for (const skill in value) {
+    const isVetted = value[skill];
+    //console.log(skill + ":" + isVetted)
+    //if a field is not a skill, skip to the next iteration
+    if (skill === "created" || skill === "lastModified" || skill === userId) {
+      continue;
+    }
+    // now skill and isVetted are the property name and value that can be inserted to MySQL
+    var sql = "INSERT INTO vetted (student_ID, expertise, is_vetted) VALUES (?,?,?)";
+    var values = [snap.id, skill, isVetted];
+    var query = mysqlConnection.query(sql, values, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log(query.sql);
+      }
+    });
+  }
+  console.log("finished");
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
+  return null;
+});
+
+//Updated vetted
+exports.updateVetted = functions.firestore.document('vetted/{studentId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var mysqlConnection = await createMySQLconnection();
+  //iterate over the different skills in the vetting document
+  for (const skill in newValue) {
+    const isVetted = newValue[skill];
+    //only update if there was a change
+    if (newValue[skill] !== previousValue[skill])
+    {
+      console.log(skill + ":" + isVetted)
+      // now skill and isVetted are the property name and value that can be inserted to MySQL
+      var sql = "UPDATE vetted SET is_vetted = ? WHERE student_ID = ? AND expertise = ? AND is_vetted = ? ";
+      var values = [isVetted, change.after.id, skill, previousValue[skill]];
+      var query = mysqlConnection.query(sql, values, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log(query.sql);
+        }
+      });
+    }
+  }
+  console.log("finished");
+  mysqlConnection.end((error) => {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('The connection is terminated now');
+    }
+  });
+  return null;
+});
+
