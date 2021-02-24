@@ -339,7 +339,7 @@ export default {
     fileUpload(data) {
       this.loading = true;
       const storageRef = firebase.storage().ref().child('users/students/' + this.alias + '/profile/' + data.name).put(data);
-      storageRef.on(`state_changed`, snapshot => {
+      storageRef.on(`state_changed`, () => {
       }, error => {
         console.log(error.message);
       }, () => {
@@ -465,6 +465,7 @@ export default {
         if(doc.exists === false) {
           this.student.set({
             userId: this.user.uid,
+            studentId: this.alias,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format('L'),
             dateOfBirth: moment(this.dob).format('L'),
@@ -500,7 +501,6 @@ export default {
             twitter: null,
             instagram: null,
             gitHub: null,
-            portfolio: null,
             personalWebsite: null,
             profile: null
           });
