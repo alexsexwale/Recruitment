@@ -1,13 +1,17 @@
 image: node:alpine
 
+cache:
+  paths:
+    - node_modules/
+
 deploy_production:
   stage: deploy
   environment: Production
   only:
     - master
   script:
+    - echo "Deploy to Firebase server"
     - npm install
-    # - npm i -g firebase-tools
-    # - npm run build
-    # - firebase deploy --project joboxza --token "1//03QZb8WbPE2iSCgYIARAAGAMSNwF-L9IrVxdQXGiC-vIe_jNtaMSog1xWaTheTZlj6d-WsncXHQE_z6gXK-1jlZvwdEfqcZWRPTU"
-
+    - npm i -g firebase-tools
+    - npm run build
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --project joboxza --token "1//03QZb8WbPE2iSCgYIARAAGAMSNwF-L9IrVxdQXGiC-vIe_jNtaMSog1xWaTheTZlj6d-WsncXHQE_z6gXK-1jlZvwdEfqcZWRPTU"

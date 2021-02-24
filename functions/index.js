@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const moment = require("moment");
-const admin = require("firebase-admin");
+//const admin = require("firebase-admin"); code moved to config/firebase.js due to not being able to initialize firebase twice
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -12,6 +12,8 @@ var mysql = require('mysql');
 
 dotenv.config()
 
+dotenv.config();
+/* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
 
 admin.initializeApp({
@@ -22,7 +24,7 @@ admin.initializeApp({
 const authMiddleware = require("./authMiddleware");
 
 const db = admin.firestore();
-
+*/
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
@@ -46,6 +48,7 @@ app.use(cors({ origin: true }));
 
 const sgMail = require("@sendgrid/mail");
 
+/* code moved to config/firebase.js due to not being able to initialize firebase twice */
 // Firestore - get single document
 function getDocument(collection, id) {
   return db.collection(collection).doc(id).get();

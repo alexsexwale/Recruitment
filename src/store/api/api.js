@@ -6,7 +6,7 @@ import axios from "axios";
 var api = null;
 db.collection("Settings").doc("Backend").get().then(doc => {
     api = axios.create({
-        baseURL: doc.data().api
+        baseURL: doc.data().devApi
     })
 });
 
@@ -18,5 +18,9 @@ export default {
     // Outbound Payment
     pay(args) {
         return api.post("pay", args);
+    },
+    // Get Embed Token
+    async getEmbedToken() {
+        return await api.get("powerbi/getReportEmbedToken")
     }
 };

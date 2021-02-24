@@ -8,6 +8,7 @@ import Register from "./modules/register/store";
 import Feedback from "./modules/feedback/store";
 import Support from "./modules/support/store";
 import Micro from "./modules/dashboard/client/jobs/micro/store";
+import Institution from "./modules/dashboard/institution/store";
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -19,6 +20,7 @@ export const store = new Vuex.Store({
         Register,
         Feedback,
         Support,
-        Micro
+        Micro,
+        Institution
     }
 });
