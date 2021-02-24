@@ -1,3 +1,4 @@
+let path = require('path');
 const functions = require("firebase-functions");
 const moment = require("moment");
 //const admin = require("firebase-admin"); code moved to config/firebase.js due to not being able to initialize firebase twice
@@ -8,6 +9,8 @@ const soap = require("soap");
 const SlackBot = require('slackbots');
 const dotenv = require('dotenv');
 var mysql = require('mysql');
+const firebaseJS = require(__dirname + '/config/firebase.js');
+
 
 
 dotenv.config()
@@ -25,6 +28,8 @@ const authMiddleware = require("./authMiddleware");
 
 const db = admin.firestore();
 */
+const db = firebaseJS.db;
+
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
@@ -48,7 +53,6 @@ app.use(cors({ origin: true }));
 
 const sgMail = require("@sendgrid/mail");
 
-/* code moved to config/firebase.js due to not being able to initialize firebase twice */
 // Firestore - get single document
 function getDocument(collection, id) {
   return db.collection(collection).doc(id).get();
@@ -659,14 +663,21 @@ function standardEmail(receiver, sender, subject, message) {
 
 async function createMySQLconnection() {
   //MySQL details 
-  const settingsollection = await getDocument("Settings", "MySQL");
-  var MySQLsettings = settingsollection.data();
+  const settingsCollection = await getDocument("Settings", "MySQL");
+  var MySQLsettings = settingsCollection.data();
   var mysqlConnection = mysql.createConnection({
     socketPath: MySQLsettings.socketPath,
     user: MySQLsettings.user,
     password: MySQLsettings.password,
     database: MySQLsettings.database,
     multipleStatements: MySQLsettings.multipleStatements
+
+    // socketPath: "/cloudsql/joboxza:us-central1:joboxza",
+    // user: "root",
+    // password: "PB7ie3sqAsghrwF3",
+    // database: "Joboxza",
+    // multipleStatements: true
+    
   });
   //init connection
   mysqlConnection.connect((err) => {
@@ -675,18 +686,10 @@ async function createMySQLconnection() {
     else {
       console.log('SQL Connection Failed!' + JSON.stringify(err, undefined, 2));
       console.log(err);
-      db.collection("errors").add({
-        created: moment(Date.now()).format("L"),
-        issue: "mySQL connection failed",
-        message: err
-      });
     }
   });
   return mysqlConnection
 }
-
-
-
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
@@ -695,8 +698,8 @@ exports.newUser = functions.firestore.document('users/{userId}')
     const value = snap.data();
     var lastModified = new Date(value.lastModified);
     var created = new Date(value.created);
-    var sql = "INSERT INTO users (user_ID, created, email, name, surname, phone, user, last_modified) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.userId, created, value.email, value.name, value.surname, value.phone, value.user, lastModified];
+    var sql = "INSERT INTO Users (user_ID, email, name, surname, phone, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+    var values = [value.userId, value.email, value.name, value.surname, value.phone, value.user, lastModified, created];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -727,8 +730,8 @@ exports.newClient = functions.firestore.document('clients/{clientId}')
       var lastModified = new Date(newValue.lastModified);
       var created = new Date(newValue.created);
       //client table
-      var sql = "INSERT INTO clients (client_ID, user_ID, created, industry, bio, last_modified, vat, website, company_category, company_size) VALUES (?,?,?,?,?,?,?,?,?,?)";
-      var values = [newValue.clientId, newValue.userId, created, newValue.industry, newValue.bio, lastModified, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize];
+      var sql = "INSERT INTO Clients (client_ID, user_ID, industry, bio, vat, website, company_category, company_size, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      var values = [newValue.clientId, newValue.userId, newValue.industry, newValue.bio, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize, lastModified, created];
       var query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -738,8 +741,8 @@ exports.newClient = functions.firestore.document('clients/{clientId}')
         }
       });
       //client_addresses table
-      sql = "INSERT INTO client_addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state) VALUES (?,?,?,?,?,?)";
-      values = [newValue.clientId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state];
+      sql = "INSERT INTO Client_Addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+      values = [newValue.clientId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -765,8 +768,10 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
   var mysqlConnection = await createMySQLconnection();
-  var sql = "INSERT INTO enquiries (user_ID, message, type) VALUES (?,?,?)";
-  var values = [value.userId,value.message,"feedback"];
+  var lastModified = new Date(value.created);
+  var created = new Date(value.created);
+  var sql = "INSERT INTO Enquiries (user_ID, message, type, last_modified, created) VALUES (?,?,?,?,?)";
+  var values = [value.userId, value.message, "feedback", lastModified, created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -811,8 +816,10 @@ exports.support = functions.firestore.document('support/{support}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
   var mysqlConnection = await createMySQLconnection();
-  var sql = "INSERT INTO enquiries (user_ID, message, type) VALUES (?,?,?)";
-  var values = [value.userId,value.message,"support"];
+  var lastModified = new Date(value.created);
+  var created = new Date(value.created);
+  var sql = "INSERT INTO Enquiries (user_ID, message, type, last_modified, created) VALUES (?,?,?,?,?)";
+  var values = [value.userId, value.message, "support", lastModified, created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -886,12 +893,15 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
   var mysqlConnection = await createMySQLconnection();
+  //get the industry for the job from the client's profile
   const clientDoc =  await getDocument("clients", value.clientAlias);
   const clientDocData = clientDoc.data();
+  const industry = clientDocData.industry;
   var startDate = new Date(value.startDate);
+  var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
-  var sql = "INSERT INTO jobs (job_ID, client_ID, industry, created, name, verified, job_description, job_type, education, experience, job_title, work_hours, start_date, location, payment, job_status, satisfied) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  var values = [value.jobId, value.clientAlias, clientDocData.industry, created, value.name, value.verified, null, value.jobType, value.education, value.experience, null, null, startDate, null, null, null, null];
+  var sql = "INSERT INTO Jobs (job_ID, client_ID, industry, name, verified, job_description, job_type, education, experience, job_title, start_date, location, payment, job_status, satisfied, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  var values = [value.jobId, value.clientAlias, industry, value.name, value.verified, null, value.jobType, value.education, value.experience, null, startDate, null, null, null, null, lastModified, created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -925,8 +935,8 @@ exports.paymentsPost = functions.firestore.document('payments/{jobId}')
   var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
   var paymentDate = new Date(value.paymentDate);
-  var sql = "INSERT INTO payments (job_ID, payment_date, service_fee, facilitation_cost, total_cost_paid, created, inbound_payment, last_modified, outbound_payment, payment_method, reference, request_trace) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-  var values = [value.jobId, paymentDate, value.serviceFee, value.facilitationCost, value.totalCostPaid, created, value.inboundPayment, lastModified, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace];
+  var sql = "INSERT INTO Payments (job_ID, payment_date, budget, service_fee, facilitation_cost, total_cost_paid, inbound_payment, outbound_payment, payment_method, reference, request_trace, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+  var values = [value.jobId, paymentDate, value.amount, value.serviceFee, value.facilitationCost, value.totalCostPaid, value.inboundPayment, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace, lastModified, created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -1001,9 +1011,11 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
   //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
   if (newValue.accountCreated === true && prevValue.accountCreated === false) {
     var mysqlConnection = await createMySQLconnection();
+    var lastModified = new Date(newValue.lastModified);
+    var created = new Date(newValue.created);
     var dateOfBirth = new Date(newValue.dateOfBirth);
-    var sql = "INSERT INTO students (student_ID, user_ID, race, gender, date_of_birth, bio, citizenship, identification_number, disability, vehicle, drivers_license) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-    var values = [newValue.studentId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, newValue.disability, newValue.vehicle, newValue.license];
+    var sql = "INSERT INTO Students (student_ID, user_ID, race, gender, date_of_birth, bio, citizenship, identification_number, disability, vehicle, drivers_license, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    var values = [newValue.studentId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, newValue.disability, newValue.vehicle, newValue.license, lastModified, created];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -1012,8 +1024,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         console.log(query.sql);
       }
     });
-    sql = "INSERT INTO student_bank_details (student_ID, account_name, account_number, account_type, bank_name, branch_code) VALUES (?,?,?,?,?,?)";
-    values = [newValue.studentId, newValue.accountName, newValue.accountNumber, newValue.accountType, newValue.bankName, newValue.branchCode];
+    sql = "INSERT INTO Student_Bank_Details (student_ID, account_name, account_number, account_type, bank_name, branch_code, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+    values = [newValue.studentId, newValue.accountName, newValue.accountNumber, newValue.accountType, newValue.bankName, newValue.branchCode, lastModified, created];
     query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -1023,8 +1035,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       }
     });
     if (newValue.disability === "Yes") {
-      sql = "INSERT INTO disabled_students (student_ID, disability) VALUES (?,?)";
-      values = [newValue.studentId, newValue.disabilityDescription];
+      sql = "INSERT INTO Disabled_Students (student_ID, disability, last_modified, created) VALUES (?,?,?,?)";
+      values = [newValue.studentId, newValue.disabilityDescription, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1038,8 +1050,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       const data = newValue.industryCategory[key];
       //console.log(key + ":" + data)
       // now key and data are the property name and data
-      sql = "INSERT INTO industry_alerts (student_ID, industry) VALUES (?,?)";
-      values = [newValue.studentId, data];
+      sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
+      values = [newValue.studentId, data, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1049,10 +1061,10 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         }
       });
     }
-    sql = "INSERT INTO work_experience (student_ID, descryption, job_title, start_date, end_date, employer) VALUES (?,?,?,?,?,?)";
+    sql = "INSERT INTO Work_Experiences (student_ID, descryption, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
     var startDate1 = new Date(newValue.startDate1);
     var endDate1 = new Date(newValue.endDate1);
-    values = [newValue.studentId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1];
+    values = [newValue.studentId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1, lastModified, created];
     query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -1063,8 +1075,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
     });
     //social medias
     if (newValue.facebook !== null) {
-      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
-      values = [newValue.studentId, "Facebook", newValue.facebook];
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.studentId, "Facebook", newValue.facebook, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1075,8 +1087,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       });
     }
     if (newValue.gitHub !== null) {
-      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
-      values = [newValue.studentId, "Github", newValue.gitHub];
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.studentId, "Github", newValue.gitHub, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1087,8 +1099,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       });
     }
     if (newValue.instagram !== null) {
-      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
-      values = [newValue.studentId, "Instagram", newValue.instagram];
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.studentId, "Instagram", newValue.instagram, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1099,8 +1111,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       });
     }
     if (newValue.linkedIn !== null) {
-      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
-      values = [newValue.studentId, "LinkedIn", newValue.linkedIn];
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.studentId, "LinkedIn", newValue.linkedIn, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1111,8 +1123,8 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       });
     }
     if (newValue.twitter !== null) {
-      sql = "INSERT INTO social_media_handles (student_ID, socmed_type, socmed_url) VALUES (?,?,?)";
-      values = [newValue.studentId, "Twitter", newValue.twitter];
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.studentId, "Twitter", newValue.twitter, lastModified, created];
       query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
@@ -1260,8 +1272,8 @@ exports.newApplication = functions.firestore.document('applications/{application
   var mysqlConnection = await createMySQLconnection();
   var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
-  var sql = "INSERT INTO applications (job_ID, student_ID, approved, created, last_modified, status) VALUES (?,)";
-  var values = [value.jobId, value.studentId, value.approved, created, lastModified, value.status];
+  var sql = "INSERT INTO Applications (job_ID, student_ID, status, approved, last_modified, created) VALUES (?,?,?,?,?,?)";
+  var values = [value.jobId, value.studentId, value.status, value.approved, lastModified,  created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -1364,6 +1376,8 @@ exports.createVetted = functions.firestore.document('vetted/{studentId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
   var mysqlConnection = await createMySQLconnection();
+  var lastModified = new Date(value.created);
+  var created = new Date(value.lastModified);
   //iterate over the different skills in the vetting document
   for (const skill in value) {
     const isVetted = value[skill];
@@ -1373,8 +1387,8 @@ exports.createVetted = functions.firestore.document('vetted/{studentId}')
       continue;
     }
     // now skill and isVetted are the property name and value that can be inserted to MySQL
-    var sql = "INSERT INTO vetted (student_ID, expertise, is_vetted) VALUES (?,?,?)";
-    var values = [snap.id, skill, isVetted];
+    var sql = "INSERT INTO vetted (student_ID, expertise, is_vetted, last_modified, created) VALUES (?,?,?,?,?)";
+    var values = [snap.id, skill, isVetted, lastModified, created];
     var query = mysqlConnection.query(sql, values, (error) => {
       if (error) {
         console.log(error);
@@ -1410,7 +1424,7 @@ exports.updateVetted = functions.firestore.document('vetted/{studentId}')
     {
       console.log(skill + ":" + isVetted)
       // now skill and isVetted are the property name and value that can be inserted to MySQL
-      var sql = "UPDATE vetted SET is_vetted = ? WHERE student_ID = ? AND expertise = ? AND is_vetted = ? ";
+      var sql = "UPDATE Vettings SET is_vetted = ? WHERE student_ID = ? AND expertise = ? AND is_vetted = ? ";
       var values = [isVetted, change.after.id, skill, previousValue[skill]];
       var query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
