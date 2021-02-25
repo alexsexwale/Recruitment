@@ -1098,6 +1098,7 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         console.log(query.sql);
       }
     });
+    //Student_Bank_Details
     sql = "INSERT INTO Student_Bank_Details (student_ID, account_name, account_number, account_type, bank_name, branch_code, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
     values = [newValue.userId, newValue.accountName, newValue.accountNumber, newValue.accountType, newValue.bankName, newValue.branchCode, lastModified, created];
     query = mysqlConnection.query(sql, values, (error) => {
@@ -1108,6 +1109,7 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         console.log(query.sql);
       }
     });
+    //Disabled_Students
     if (newValue.disability === "Yes") {
       sql = "INSERT INTO Disabled_Students (student_ID, disability, last_modified, created) VALUES (?,?,?,?)";
       values = [newValue.userId, newValue.disabilityDescription, lastModified, created];
@@ -1120,6 +1122,7 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         }
       });
     }
+    //Industry_Alerts
     for (const key in newValue.industryCategory) {
       const data = newValue.industryCategory[key];
       //console.log(key + ":" + data)
@@ -1135,6 +1138,7 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         }
       });
     }
+    //Work_Experiences
     sql = "INSERT INTO Work_Experiences (student_ID, descryption, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
     var startDate1 = new Date(newValue.startDate1);
     var endDate1 = new Date(newValue.endDate1);
