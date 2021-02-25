@@ -465,7 +465,6 @@ export default {
         if(doc.exists === false) {
           this.student.set({
             userId: this.user.uid,
-            studentId: this.alias,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format('L'),
             dateOfBirth: moment(this.dob).format('L'),
