@@ -4,7 +4,7 @@
     <nav-tabs-card>
       <!-- TO-DO: Maybe a drop down or something similar to the setting button? -->
       <md-button
-        slot="content"
+        slot="reports"
         v-for="page in reportPages"
         :key="page.Name"
         @click="pageNav(page.Name)"
@@ -15,13 +15,13 @@
   </div>
 </template>
 <script>
-import { NavTabsCard } from "@/components";
+import { ReportMenu } from "@/components";
 import { mapGetters, mapActions } from "vuex";
 import * as pbi from "powerbi-client";
 
 export default {
   components: {
-    NavTabsCard
+    ReportMenu
   },
   name: "institution-reports",
   data() {

@@ -36,7 +36,7 @@ async function getAuthToken() {
         // Function returns error object in tokenResponse
         // Invalid Username will return empty tokenResponse, thus err is used
         if (err) {
-          reject(tokenResponse == null ? err : tokenResponse);
+          reject(tokenResponse === null ? err : tokenResponse);
         }
 
         resolve(tokenResponse);
