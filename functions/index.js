@@ -771,6 +771,64 @@ exports.newClient = functions.firestore.document('clients/{clientId}')
       values = [newValue.userId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state, lastModified, created];
       query = queryOut = await sqlQuery(sql,values);
     }
+    else { //client document updated
+      lastModified = new Date();
+      if (newValue.industry !== previousValue.industry) {
+        sql = "UPDATE Clients SET industry = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.industry, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.bio !== previousValue.bio) {
+        sql = "UPDATE Clients SET bio = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.bio, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.vat !== previousValue.vat) {
+        sql = "UPDATE Clients SET vat = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.vat, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.website !== previousValue.website) {
+        sql = "UPDATE Clients SET website = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.website, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.companyCategory !== previousValue.companyCategory) {
+        sql = "UPDATE Clients SET company_category = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.companyCategory, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.companySize !== previousValue.companySize) {
+        sql = "UPDATE Clients SET company_size = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.companySize, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.addressLine1 !== previousValue.addressLine1) {
+        sql = "UPDATE Client_Addresses SET address_line_1 = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.addressLine1, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.city !== previousValue.city) {
+        sql = "UPDATE Client_Addresses SET city = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.city, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.country !== previousValue.country) {
+        sql = "UPDATE Client_Addresses SET country = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.country, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.postalCode_zipCode !== previousValue.postalCode_zipCode) {
+        sql = "UPDATE Client_Addresses SET postal_code_zip_code = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.postalCode_zipCode, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+      if (newValue.province_state !== previousValue.province_state) {
+        sql = "UPDATE Client_Addresses SET province_state = ?, last_modified = ? WHERE client_ID = ?";
+        values = [newValue.province_state, lastModified, newValue.userId];
+        queryOut = await sqlQuery(sql,values);
+      }
+    }
   });
 
 
@@ -806,6 +864,20 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   return null;
 });
 
+//feedback document updated
+exports.updateFeedback = functions.firestore.document('feedback/{feedback}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.message !== previousValue.message) {
+    var sql = "UPDATE Enquiries SET message = ?, last_modified = ? WHERE user_ID = ? AND message = ? AND type = ?";
+    var values = [newValue.message, lastModified, newValue.userId, previousValue.message, "feedback"];
+    var queryOut = await sqlQuery(sql,values);
+  }
+});
+
 
 // New support document created
 exports.support = functions.firestore.document('support/{support}')
@@ -839,6 +911,19 @@ exports.support = functions.firestore.document('support/{support}')
   return null;
 });
 
+//support document updated
+exports.updateSupport = functions.firestore.document('support/{support}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.message !== previousValue.message) {
+    var sql = "UPDATE Enquiries SET message = ?, last_modified = ? WHERE user_ID = ? AND message = ? AND type = ?";
+    var values = [newValue.message, lastModified, newValue.userId, previousValue.message, "support"];
+    var queryOut = await sqlQuery(sql,values);
+  }
+});
 // Send alert for new job posts
 function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jobId, phone) {
   return {
@@ -921,15 +1006,10 @@ exports.updateJob= functions.firestore.document('jobs/{jobId}')
   const previousValue = change.before.data();
   var lastModified = new Date();
 
-  if (newValue.industry !== previousValue.industry) {
-    var sql = "UPDATE Jobs SET industry = ?, last_modified = ? WHERE job_ID = ?";
-    var values = [newValue.industry, lastModified, newValue.jobId];
-    var queryOut = await sqlQuery(sql,values);
-  }
   if (newValue.name !== previousValue.name) {
-    sql = "UPDATE Jobs SET name = ?, last_modified = ? WHERE job_ID = ?";
-    values = [newValue.name, lastModified, newValue.jobId];
-    queryOut = await sqlQuery(sql,values);
+    var sql = "UPDATE Jobs SET name = ?, last_modified = ? WHERE job_ID = ?";
+    var values = [newValue.name, lastModified, newValue.jobId];
+    var queryOut = await sqlQuery(sql,values);
   }
   if (newValue.verified !== previousValue.verified) {
     sql = "UPDATE Jobs SET verified = ?, last_modified = ? WHERE job_ID = ?";
@@ -951,11 +1031,6 @@ exports.updateJob= functions.firestore.document('jobs/{jobId}')
     values = [newValue.experience, lastModified, newValue.jobId];
     queryOut = await sqlQuery(sql,values);
   }
-  if (newValue.jobTitle !== previousValue.jobTitle) {
-    sql = "UPDATE Jobs SET job_title = ?, last_modified = ? WHERE job_ID = ?";
-    values = [newValue.jobTitle, lastModified, newValue.jobId];
-    queryOut = await sqlQuery(sql,values);
-  }
   if (newValue.startDate !== previousValue.startDate) {
     sql = "UPDATE Jobs SET start_date = ?, last_modified = ? WHERE job_ID = ?";
     values = [newValue.startDate, lastModified, newValue.jobId];
@@ -963,43 +1038,19 @@ exports.updateJob= functions.firestore.document('jobs/{jobId}')
   }
 });
 
-//code below moved to jobPost due to micros sometimes being triggered before jobs is done
-// // New skills document created (only used to set the job title in jobs)
-// exports.createSkills= functions.firestore.document('skills/{jobId}')
-// .onCreate(async (snap, context) => {
-//   const value = snap.data();
-//   //get the job title ('category' in skills collection) 
-//   const skillsDoc =  await getDocument("skills", value.jobId);
-//   const skillsDocData = skillsDoc.data();
-//   const jobTitle = skillsDocData.category;
-//   //set the job title
-//   sql = "UPDATE Jobs SET job_title = ? WHERE job_ID = ?";
-//   values = [jobTitle, value.jobId];
-//   queryOut = await sqlQuery(sql,values);
-//   return null;
-// });
-// //New micros document created
-// exports.createMicro = functions.firestore.document('micros/{jobId}')
-// .onCreate(async (snap, context) => {
-//   const value = snap.data();
-//   var lastModified = new Date(value.lastModified);
-//   var created = new Date(value.created);
-//   //get the job type from jobs to check if it was a project task
-//   const jobsDoc =  await getDocument("jobs", value.jobId);
-//   const jobsDocData = jobsDoc.data();
-//   const jobType = jobsDocData.jobType;
-//   //if the job type is a project task, then the Project_Tasks table needs to get a new entry
-//   if (jobType === "Once-off Project/Task") {
-//     var sql = "INSERT INTO Project_Tasks (job_ID, client_rating_complete, duration, student_rating_complete,last_modified, created) VALUES (?,?,?,?,?,?)";
-//     var values = [value.jobId, value.clientRatingComplete, value.duration, value.studentRatingComplete, lastModified, created];
-//     var queryOut = await sqlQuery(sql,values);
-//   }
-//   //the information from micros currently pertains to any job, so this information must be added to the jobs table
-//   sql = "UPDATE Jobs SET job_description = ?, location = ?, job_status = ?, satisfied = ? WHERE job_ID = ?";
-//   values = [value.description, value.location, value.status, value.satisfied, value.jobId];
-//   queryOut = await sqlQuery(sql,values);
-//   return null;
-// });
+//skills document updated
+exports.updateSkills = functions.firestore.document('skills/{jobId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.category !== previousValue.category) {
+    var sql = "UPDATE Jobs SET job_title = ?, last_modified = ? WHERE job_ID = ?";
+    var values = [newValue.category, lastModified, newValue.jobId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+});
 
 // New payments document created
 exports.paymentsPost = functions.firestore.document('payments/{jobId}')
@@ -1019,6 +1070,61 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
 .onUpdate(async (change, context) => {
   const newValue = change.after.data();
   const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.paymentDate !== previousValue.paymentDate) {
+    var sql = "UPDATE Payments SET payment_date = ?, last_modified = ? WHERE job_ID = ?";
+    paymenyDate =  new Date(newValue.paymentDate);
+    var values = [paymentDate, lastModified, newValue.jobId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.amount !== previousValue.amount) {
+    sql = "UPDATE Payments SET budget = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.amount, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.serviceFee !== previousValue.serviceFee) {
+    sql = "UPDATE Payments SET service_fee = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.serviceFee, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.facilitationCost !== previousValue.facilitationCost) {
+    sql = "UPDATE Payments SET facilitation_cost = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.facilitationCost, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.totalCostPaid !== previousValue.totalCostPaid) {
+    sql = "UPDATE Payments SET total_cost_paid = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.totalCostPaid, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.inboundPayment !== previousValue.inboundPayment) {
+    sql = "UPDATE Payments SET inbound_payment = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.inboundPayment, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.outboundPayment !== previousValue.outboundPayment) {
+    sql = "UPDATE Payments SET outbound_payment = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.outboundPayment, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.paymentMethod !== previousValue.paymentMethod) {
+    sql = "UPDATE Payments SET payment_method = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.paymentMethod, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.reference !== previousValue.reference) {
+    sql = "UPDATE Payments SET reference = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.reference, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.requestTrace !== previousValue.requestTrace) {
+    sql = "UPDATE Payments SET request_trace = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.requestTrace, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+
+
   if (previousValue.outboundPayment === false && newValue.outboundPayment === true) {
     //send chat bot message
     const bot = new SlackBot({
@@ -1039,13 +1145,15 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
   return null;
 });
 
-// New students document created
+
 exports.newStudent = functions.firestore.document('students/{studentId}')
 .onUpdate(async (change, context) => {
+  try {
   const newValue = change.after.data();
-  const prevValue = change.before.data();
+  const previousValue = change.before.data();
+  // New students document created
   //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
-  if (newValue.accountCreated === true && prevValue.accountCreated === false) {
+  if (newValue.accountCreated === true && previousValue.accountCreated === false) {
     var lastModified = new Date(newValue.lastModified);
     var created = new Date(newValue.created);
     var dateOfBirth = new Date(newValue.dateOfBirth);
@@ -1066,7 +1174,6 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
     var mysqlConnection = await createMySQLconnection();
     for (const key in newValue.industryCategory) {
       const data = newValue.industryCategory[key];
-      //console.log(key + ":" + data)
       // now key and data are the property name and data
       sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
       values = [newValue.userId, data, lastModified, created];
@@ -1099,9 +1206,9 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       values = [newValue.userId, "Facebook", newValue.facebook, lastModified, created];
       queryOut = await sqlQuery(sql,values);
     }
-    if (newValue.gitHub !== null) {
+    if (newValue.github !== null) {
       sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "Github", newValue.gitHub, lastModified, created];
+      values = [newValue.userId, "Github", newValue.github, lastModified, created];
       queryOut = await sqlQuery(sql,values);
     }
     if (newValue.instagram !== null) {
@@ -1124,6 +1231,194 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
       values = [newValue.userId, "personalWebsite", newValue.personalWebsite, lastModified, created];
       queryOut = await sqlQuery(sql,values);
     }
+  }
+  //students document updated
+  else {
+    lastModified = new Date();
+    //Students
+    if (newValue.race !== previousValue.race) {
+      sql = "UPDATE Students SET race = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.race, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.gender !== previousValue.gender) {
+      sql = "UPDATE Students SET gender = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.gender, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.dateOfBirth !== previousValue.dateOfBirth) {
+      sql = "UPDATE Students SET date_of_birth = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.dateOfBirth, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.bio !== previousValue.bio) {
+      sql = "UPDATE Students SET bio = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.bio, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.citizenship !== previousValue.citizenship) {
+      sql = "UPDATE Students SET citizenship = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.citizenship, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.identification !== previousValue.identification) {
+      sql = "UPDATE Students SET identification_number = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.identification, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.disability !== previousValue.disability) {
+      sql = "UPDATE Students SET disability = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.disability, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.vehicle !== previousValue.vehicle) {
+      sql = "UPDATE Students SET vehicle = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.vehicle, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.license !== previousValue.license) {
+      sql = "UPDATE Students SET drivers_license = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.license, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    //Student_Bank_Details
+    if (newValue.accountName !== previousValue.accountName) {
+      sql = "UPDATE Student_Bank_Details SET account_name = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.accountName, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.accountNumber !== previousValue.accountNumber) {
+      sql = "UPDATE Student_Bank_Details SET account_number = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.accountNumber, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.accountType !== previousValue.accountType) {
+      sql = "UPDATE Student_Bank_Details SET account_type = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.accountType, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.bankName !== previousValue.bankName) {
+      sql = "UPDATE Student_Bank_Details SET bank_name = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.bankName, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.branchCode !== previousValue.branchCode) {
+      sql = "UPDATE Student_Bank_Details SET branch_code = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.branchCode, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    //Disabled_Students
+    if (newValue.disabilityDescription !== previousValue.disabilityDescription) {
+      sql = "UPDATE Disabled_Students SET disability = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.disabilityDescription, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    //Industry_Alerts
+    if (newValue.industryCategory.toString() !== previousValue.industryCategory.toString()) {
+      mysqlConnection = await createMySQLconnection();
+      //delete all the old values from the database
+      for (const oldKey in previousValue.industryCategory) {
+        const oldData = previousValue.industryCategory[oldKey];
+        // now key and data are the property name and data
+          sql = "DELETE FROM Industry_Alerts WHERE student_ID = ? AND industry = ?";
+          values = [previousValue.userId, oldData];
+          query = mysqlConnection.query(sql, values, (error) => {
+            if (error) {
+              console.log(error);
+            }
+            else {
+              console.log(query.sql);
+            }
+          });
+      }
+      //insert all the new values into the database
+      created = new Date(previousValue.created);
+      for (const newKey in newValue.industryCategory) {
+        const newData = newValue.industryCategory[newKey];
+        // now key and data are the property name and data
+        sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
+        values = [newValue.userId, newData, lastModified, created];
+        query = mysqlConnection.query(sql, values, (error) => {
+          if (error) {
+            console.log(error);
+          }
+          else {
+            console.log(query.sql);
+          }
+        });
+      }
+      mysqlConnection.end((error) => {
+        if (error) {
+          console.log(error);
+        }
+        else {
+          console.log('The connection is terminated now');
+        }
+      });
+    }
+    //Work_Experiences
+    if (newValue.description1 !== previousValue.description1) {
+      sql = "UPDATE Work_Experiences SET descryption = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.description1, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.jobTitle1 !== previousValue.jobTitle1) {
+      sql = "UPDATE Work_Experiences SET job_title = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.jobTitle1, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.startDate1 !== previousValue.startDate1) {
+      startDate1 = new Date(newValue.startDate1);
+      sql = "UPDATE Work_Experiences SET start_date = ?, last_modified = ? WHERE student_ID = ?";
+      values = [startDate1, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.endDate1 !== previousValue.endDate1) {
+      endDate1 = new Date(newValue.endDate1);
+      sql = "UPDATE Work_Experiences SET end_date = ?, last_modified = ? WHERE student_ID = ?";
+      values = [endDate1, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.employer1 !== previousValue.employer1) {
+      sql = "UPDATE Work_Experiences SET employer = ?, last_modified = ? WHERE student_ID = ?";
+      values = [newValue.employer1, lastModified, newValue.userId];
+      queryOut = await sqlQuery(sql,values);
+    }
+    //social medias
+    if (newValue.facebook !== previousValue.facebook) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.facebook, lastModified, newValue.userId, "Facebook"];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.github !== previousValue.github) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.github, lastModified, newValue.userId, "Github"];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.instagram !== previousValue.instagram) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.instagram, lastModified, newValue.userId, "Instagram"];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.linkedIn !== previousValue.linkedIn) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.linkedIn, lastModified, newValue.userId, "linkedIn"];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.twitter !== previousValue.twitter) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.twitter, lastModified, newValue.userId, "Twitter"];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.personalWebsite !== previousValue.personalWebsite) {
+      sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+      values = [newValue.personalWebsite, lastModified, newValue.userId, "personalWebsite"];
+      queryOut = await sqlQuery(sql,values);
+    }
+  }
+  }
+  catch (errorMsg) {
+    console.log(errorMsg);
   }
   return null;
 });
@@ -1153,6 +1448,19 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
 .onUpdate(async (change, context) => {
   const newValue = change.after.data();
   const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.status !== previousValue.status) {
+    var sql = "UPDATE Applications SET status = ?, last_modified = ? WHERE job_ID = ? AND student_ID = ?";
+    var values = [newValue.status, lastModified, newValue.jobId, newValue.studentId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.approved !== previousValue.approved) {
+    sql = "UPDATE Applications SET approved = ?, last_modified = ? WHERE job_ID = ? AND student_ID = ?";
+    values = [newValue.approved, lastModified, newValue.jobId, newValue.studentId];
+    queryOut = await sqlQuery(sql,values);
+  }
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -1181,6 +1489,7 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
 
   return null;
 });
+
 
 // Send alert to client
 function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, applicantName) {
@@ -1267,6 +1576,46 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 .onUpdate(async (change, context) => {
   const newValue = change.after.data();
   const previousValue = change.before.data();
+  var lastModified = new Date();
+  //Project_Tasks
+  if (newValue.clientRatingComplete !== previousValue.clientRatingComplete) {
+    var sql = "UPDATE Project_Tasks SET client_rating_complete = ?, last_modified = ? WHERE job_ID = ?";
+    var values = [newValue.clientRatingComplete, lastModified, newValue.jobId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.duration !== previousValue.duration) {
+    sql = "UPDATE Project_Tasks SET duration = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.duration, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.studentRatingComplete !== previousValue.studentRatingComplete) {
+    sql = "UPDATE Project_Tasks SET student_rating_complete = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.studentRatingComplete, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  //Jobs
+  if (newValue.description !== previousValue.description) {
+    sql = "UPDATE Jobs SET job_description = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.description, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.location !== previousValue.location) {
+    sql = "UPDATE Jobs SET location = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.location, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.status !== previousValue.status) {
+    sql = "UPDATE Jobs SET job_status = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.status, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.satisfied !== previousValue.satisfied) {
+    sql = "UPDATE Jobs SET satisfied = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.satisfied, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -1420,7 +1769,6 @@ exports.updateVetted = functions.firestore.document('vetted/{studentId}')
   });
   return null;
 });
-
 
 //for testing 
 app.get('/query', (req, res) => {
