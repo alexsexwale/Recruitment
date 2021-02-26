@@ -661,6 +661,7 @@ function standardEmail(receiver, sender, subject, message) {
   }
 }
 
+//establish MySQL connection
 async function createMySQLconnection() {
   //MySQL details 
   const settingsCollection = await getDocument("Settings", "MySQL");
@@ -671,12 +672,6 @@ async function createMySQLconnection() {
     password: MySQLsettings.password,
     database: MySQLsettings.database,
     multipleStatements: MySQLsettings.multipleStatements
-
-    // socketPath: "/cloudsql/joboxza:us-central1:joboxza",
-    // user: "root",
-    // password: "PB7ie3sqAsghrwF3",
-    // database: "Joboxza",
-    // multipleStatements: true
     
   });
   //init connection
@@ -691,87 +686,9 @@ async function createMySQLconnection() {
   return mysqlConnection
 }
 
-// New user document created
-exports.newUser = functions.firestore.document('users/{userId}')
-  .onCreate(async (snap, context) => {
-    var mysqlConnection = await createMySQLconnection();
-    const value = snap.data();
-    var lastModified = new Date(value.lastModified);
-    var created = new Date(value.created);
-    var sql = "INSERT INTO Users (user_ID, email, name, surname, phone, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.userId, value.email, value.name, value.surname, value.phone, value.user, lastModified, created];
-    var query = mysqlConnection.query(sql, values, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log(query.sql);
-      }
-    });
-    mysqlConnection.end((error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log('The connection is terminated now');
-      }
-    });
-  });
-  
-
-//New client document created
-exports.newClient = functions.firestore.document('clients/{clientId}')
-  .onUpdate(async (change, context) => {
-    const newValue = change.after.data();
-    const previousValue = change.before.data();
-    //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
-    if (newValue.accountCreated === true && previousValue.accountCreated === false) {
-      var mysqlConnection = await createMySQLconnection();
-      var lastModified = new Date(newValue.lastModified);
-      var created = new Date(newValue.created);
-      //client table
-      var sql = "INSERT INTO Clients (client_ID, user_ID, industry, bio, vat, website, company_category, company_size, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?)";
-      var values = [newValue.userId, newValue.userId, newValue.industry, newValue.bio, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize, lastModified, created];
-      var query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-      //client_addresses table
-      sql = "INSERT INTO Client_Addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
-      values = [newValue.userId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-      mysqlConnection.end((error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log('The connection is terminated now');
-        }
-      });
-    }
-  });
-
-
-// New feedback document created
-exports.feedback = functions.firestore.document('feedback/{feedback}')
-.onCreate(async (snap, context) => {
-  const value = snap.data();
+//perform a query. Can't be used in loops due to await.
+async function sqlQuery(sql, values) {
   var mysqlConnection = await createMySQLconnection();
-  var lastModified = new Date(value.created);
-  var created = new Date(value.created);
-  var sql = "INSERT INTO Enquiries (user_ID, message, type, last_modified, created) VALUES (?,?,?,?,?)";
-  var values = [value.userId, value.message, "feedback", lastModified, created];
   var query = mysqlConnection.query(sql, values, (error) => {
     if (error) {
       console.log(error);
@@ -788,6 +705,85 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
       console.log('The connection is terminated now');
     }
   });
+  return null;
+}
+
+// New user document created
+exports.newUser = functions.firestore.document('users/{userId}')
+  .onCreate(async (snap, context) => {
+    const value = snap.data();
+    var lastModified = new Date(value.lastModified);
+    var created = new Date(value.created);
+    var sql = "INSERT INTO Users (user_ID, email, name, surname, phone, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+    var values = [value.userId, value.email, value.name, value.surname, value.phone, value.user, lastModified, created];
+    var queryOut = await sqlQuery(sql,values);
+  });
+
+//User document updated
+exports.updateUser = functions.firestore.document('users/{userId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.email !== previousValue.email) {
+    var sql = "UPDATE Users SET email = ?, last_modified = ? WHERE user_ID = ?";
+    var values = [newValue.email, lastModified, newValue.userId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.name !== previousValue.name) {
+    sql = "UPDATE Users SET name = ?, last_modified = ? WHERE user_ID = ?";
+    values = [newValue.name, lastModified, newValue.userId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.surname !== previousValue.surname) {
+    sql = "UPDATE Users SET surname = ?, last_modified = ? WHERE user_ID = ?";
+    values = [newValue.surname, lastModified, newValue.userId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.phone !== previousValue.phone) {
+    sql = "UPDATE Users SET phone = ?, last_modified = ? WHERE user_ID = ?";
+    values = [newValue.phone, lastModified, newValue.userId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.user !== previousValue.user) {
+    sql = "UPDATE Users SET user_role = ?, last_modified = ? WHERE user_ID = ?";
+    values = [newValue.user, lastModified, newValue.userId];
+    queryOut = await sqlQuery(sql,values);
+  }
+});
+
+//New client document created
+exports.newClient = functions.firestore.document('clients/{clientId}')
+  .onUpdate(async (change, context) => {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+    //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
+    if (newValue.accountCreated === true && previousValue.accountCreated === false) {
+      var lastModified = new Date(newValue.lastModified);
+      var created = new Date(newValue.created);
+      //client table
+      var sql = "INSERT INTO Clients (client_ID, user_ID, industry, bio, vat, website, company_category, company_size, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      var values = [newValue.userId, newValue.userId, newValue.industry, newValue.bio, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize, lastModified, created];
+      var queryOut = await sqlQuery(sql,values);
+      //client_addresses table
+      sql = "INSERT INTO Client_Addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+      values = [newValue.userId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state, lastModified, created];
+      query = queryOut = await sqlQuery(sql,values);
+    }
+  });
+
+
+// New feedback document created
+exports.feedback = functions.firestore.document('feedback/{feedback}')
+.onCreate(async (snap, context) => {
+  const value = snap.data();
+  var lastModified = new Date(value.created);
+  var created = new Date(value.created);
+  var sql = "INSERT INTO Enquiries (user_ID, message, type, last_modified, created) VALUES (?,?,?,?,?)";
+  var values = [value.userId, value.message, "feedback", lastModified, created];
+  var queryOut = await sqlQuery(sql,values);
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -815,27 +811,12 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
 exports.support = functions.firestore.document('support/{support}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
   var lastModified = new Date(value.created);
   var created = new Date(value.created);
   var sql = "INSERT INTO Enquiries (user_ID, message, type, last_modified, created) VALUES (?,?,?,?,?)";
   var values = [value.userId, value.message, "support", lastModified, created];
-  var query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
+  var queryOut = await sqlQuery(sql,values);
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -892,7 +873,6 @@ function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId,
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
   //get the industry for the job from the client's profile
   const clientDoc =  await getDocument("clients", value.clientAlias);
   const clientDocData = clientDoc.data();
@@ -900,134 +880,137 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   var startDate = new Date(value.startDate);
   var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
+
+  //get the job title ('category' in skills collection) 
+  const skillsDoc =  await getDocument("skills", value.jobId);
+  const skillsDocData = skillsDoc.data();
+  const jobTitle = skillsDocData.category;
+
   var sql = "INSERT INTO Jobs (job_ID, client_ID, industry, name, verified, job_description, job_type, education, experience, job_title, start_date, location, payment, job_status, satisfied, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  var values = [value.jobId, value.clientId, industry, value.name, value.verified, null, value.jobType, value.education, value.experience, null, startDate, null, null, null, null, lastModified, created];
-  var query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
+  var values = [value.jobId, value.clientId, industry, value.name, value.verified, null, value.jobType, value.education, value.experience, jobTitle, startDate, null, null, null, null, lastModified, created];
+  var queryOut = await sqlQuery(sql,values);
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
   slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
-  return null;
-});
-// New skills document created (only used to set the job title in jobs)
-exports.createSkills= functions.firestore.document('skills/{jobId}')
-.onCreate(async (snap, context) => {
-  const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
-  //get the job title ('category' in skills collection) 
-  const skillsDoc =  await getDocument("skills", value.jobId);
-  const skillsDocData = skillsDoc.data();
-  const jobTitle = skillsDocData.category;
-  //set the job title
-  sql = "UPDATE Jobs SET job_title = ? WHERE job_ID = ?";
-  values = [jobTitle, value.jobId];
-  query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
-  return null;
-});
-// New micros document created
-exports.createMicro = functions.firestore.document('micros/{jobId}')
-.onCreate(async (snap, context) => {
-  const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
-  var lastModified = new Date(value.lastModified);
-  var created = new Date(value.created);
-  //get the job type from jobs to check if it was a project task
-  const jobsDoc =  await getDocument("jobs", value.jobId);
-  const jobsDocData = jobsDoc.data();
-  const jobType = jobsDocData.jobType;
+
+  //get the information from the 'micros' collection
+  const microsDoc =  await getDocument("micros", value.jobId);
+  const microsDocData = microsDoc.data();
+  lastModified = new Date(microsDocData.lastModified);
+  created = new Date(microsDocData.created);
   //if the job type is a project task, then the Project_Tasks table needs to get a new entry
-  if (jobType === "Once-off Project/Task") {
-    var sql = "INSERT INTO Project_Tasks (job_ID, client_rating_complete, duration, student_rating_complete,last_modified, created) VALUES (?,?,?,?,?,?)";
-    var values = [value.jobId, value.clientRatingComplete, value.duration, value.studentRatingComplete, lastModified, created];
-    var query = mysqlConnection.query(sql, values, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log(query.sql);
-      }
-    });
+  if (value.jobType === "Once-off Project/Task") {
+    sql = "INSERT INTO Project_Tasks (job_ID, client_rating_complete, duration, student_rating_complete,last_modified, created) VALUES (?,?,?,?,?,?)";
+    values = [microsDocData.jobId, microsDocData.clientRatingComplete, microsDocData.duration, microsDocData.studentRatingComplete, lastModified, created];
+    queryOut = await sqlQuery(sql,values);
   }
+
   //the information from micros currently pertains to any job, so this information must be added to the jobs table
   sql = "UPDATE Jobs SET job_description = ?, location = ?, job_status = ?, satisfied = ? WHERE job_ID = ?";
-  values = [value.description, value.location, value.status, value.satisfied, value.jobId];
-  query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
+  values = [microsDocData.description, microsDocData.location, microsDocData.status, microsDocData.satisfied, microsDocData.jobId];
+  queryOut = await sqlQuery(sql,values);
   return null;
 });
+//job document updated
+exports.updateJob= functions.firestore.document('jobs/{jobId}')
+.onUpdate(async (change, context) => {
+  const newValue = change.after.data();
+  const previousValue = change.before.data();
+  var lastModified = new Date();
+
+  if (newValue.industry !== previousValue.industry) {
+    var sql = "UPDATE Jobs SET industry = ?, last_modified = ? WHERE job_ID = ?";
+    var values = [newValue.industry, lastModified, newValue.jobId];
+    var queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.name !== previousValue.name) {
+    sql = "UPDATE Jobs SET name = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.name, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.verified !== previousValue.verified) {
+    sql = "UPDATE Jobs SET verified = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.verified, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.jobType !== previousValue.jobType) {
+    sql = "UPDATE Jobs SET job_type = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.jobType, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.education !== previousValue.education) {
+    sql = "UPDATE Jobs SET education = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.education, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.experience !== previousValue.experience) {
+    sql = "UPDATE Jobs SET experience = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.experience, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.jobTitle !== previousValue.jobTitle) {
+    sql = "UPDATE Jobs SET job_title = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.jobTitle, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+  if (newValue.startDate !== previousValue.startDate) {
+    sql = "UPDATE Jobs SET start_date = ?, last_modified = ? WHERE job_ID = ?";
+    values = [newValue.startDate, lastModified, newValue.jobId];
+    queryOut = await sqlQuery(sql,values);
+  }
+});
+
+//code below moved to jobPost due to micros sometimes being triggered before jobs is done
+// // New skills document created (only used to set the job title in jobs)
+// exports.createSkills= functions.firestore.document('skills/{jobId}')
+// .onCreate(async (snap, context) => {
+//   const value = snap.data();
+//   //get the job title ('category' in skills collection) 
+//   const skillsDoc =  await getDocument("skills", value.jobId);
+//   const skillsDocData = skillsDoc.data();
+//   const jobTitle = skillsDocData.category;
+//   //set the job title
+//   sql = "UPDATE Jobs SET job_title = ? WHERE job_ID = ?";
+//   values = [jobTitle, value.jobId];
+//   queryOut = await sqlQuery(sql,values);
+//   return null;
+// });
+// //New micros document created
+// exports.createMicro = functions.firestore.document('micros/{jobId}')
+// .onCreate(async (snap, context) => {
+//   const value = snap.data();
+//   var lastModified = new Date(value.lastModified);
+//   var created = new Date(value.created);
+//   //get the job type from jobs to check if it was a project task
+//   const jobsDoc =  await getDocument("jobs", value.jobId);
+//   const jobsDocData = jobsDoc.data();
+//   const jobType = jobsDocData.jobType;
+//   //if the job type is a project task, then the Project_Tasks table needs to get a new entry
+//   if (jobType === "Once-off Project/Task") {
+//     var sql = "INSERT INTO Project_Tasks (job_ID, client_rating_complete, duration, student_rating_complete,last_modified, created) VALUES (?,?,?,?,?,?)";
+//     var values = [value.jobId, value.clientRatingComplete, value.duration, value.studentRatingComplete, lastModified, created];
+//     var queryOut = await sqlQuery(sql,values);
+//   }
+//   //the information from micros currently pertains to any job, so this information must be added to the jobs table
+//   sql = "UPDATE Jobs SET job_description = ?, location = ?, job_status = ?, satisfied = ? WHERE job_ID = ?";
+//   values = [value.description, value.location, value.status, value.satisfied, value.jobId];
+//   queryOut = await sqlQuery(sql,values);
+//   return null;
+// });
 
 // New payments document created
 exports.paymentsPost = functions.firestore.document('payments/{jobId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
   var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
   var paymentDate = new Date(value.paymentDate);
   var sql = "INSERT INTO Payments (job_ID, payment_date, budget, service_fee, facilitation_cost, total_cost_paid, inbound_payment, outbound_payment, payment_method, reference, request_trace, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
   var values = [value.jobId, paymentDate, value.amount, value.serviceFee, value.facilitationCost, value.totalCostPaid, value.inboundPayment, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace, lastModified, created];
-  var query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
-
+  var queryOut = await sqlQuery(sql,values);
   return null;
 });
 
@@ -1056,27 +1039,6 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
   return null;
 });
 
-//for testing 
-app.get('/query', (req, res) => {
-  const settings_ref = admin.firestore().collection('students').doc('jeanpierre-joubert-1876');
-    settings_ref.get()
-    .then(snap => { 
-      const data = snap.data();
-      for (const key in data.industryCategory) {
-          const value = data.industryCategory[key];
-          console.log(key + ":" + value)
-          // now key and value are the property name and value
-      }
-      console.log("finished");
-      console.log("inludes Banana: " + data.industryCategory.includes("Banana"));
-      console.log("inludes Administration: " + data.industryCategory.includes("Administration"));
-      return null;
-    })
-    .catch(err => {
-      console.log(err);
-    })
-});
-
 // New students document created
 exports.newStudent = functions.firestore.document('students/{studentId}')
 .onUpdate(async (change, context) => {
@@ -1084,138 +1046,31 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
   const prevValue = change.before.data();
   //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
   if (newValue.accountCreated === true && prevValue.accountCreated === false) {
-    var mysqlConnection = await createMySQLconnection();
     var lastModified = new Date(newValue.lastModified);
     var created = new Date(newValue.created);
     var dateOfBirth = new Date(newValue.dateOfBirth);
     var sql = "INSERT INTO Students (student_ID, user_ID, race, gender, date_of_birth, bio, citizenship, identification_number, disability, vehicle, drivers_license, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     var values = [newValue.userId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, newValue.disability, newValue.vehicle, newValue.license, lastModified, created];
-    var query = mysqlConnection.query(sql, values, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log(query.sql);
-      }
-    });
+    var queryOut = await sqlQuery(sql,values);
     //Student_Bank_Details
     sql = "INSERT INTO Student_Bank_Details (student_ID, account_name, account_number, account_type, bank_name, branch_code, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
     values = [newValue.userId, newValue.accountName, newValue.accountNumber, newValue.accountType, newValue.bankName, newValue.branchCode, lastModified, created];
-    query = mysqlConnection.query(sql, values, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log(query.sql);
-      }
-    });
+    queryOut = await sqlQuery(sql,values);
     //Disabled_Students
     if (newValue.disability === "Yes") {
       sql = "INSERT INTO Disabled_Students (student_ID, disability, last_modified, created) VALUES (?,?,?,?)";
       values = [newValue.userId, newValue.disabilityDescription, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
+      queryOut = await sqlQuery(sql,values);
     }
     //Industry_Alerts
+    var mysqlConnection = await createMySQLconnection();
     for (const key in newValue.industryCategory) {
       const data = newValue.industryCategory[key];
       //console.log(key + ":" + data)
       // now key and data are the property name and data
       sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
       values = [newValue.userId, data, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    //Work_Experiences
-    sql = "INSERT INTO Work_Experiences (student_ID, descryption, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
-    var startDate1 = new Date(newValue.startDate1);
-    var endDate1 = new Date(newValue.endDate1);
-    values = [newValue.userId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1, lastModified, created];
-    query = mysqlConnection.query(sql, values, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      else {
-        console.log(query.sql);
-      }
-    });
-    //social medias
-    if (newValue.facebook !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "Facebook", newValue.facebook, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    if (newValue.gitHub !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "Github", newValue.gitHub, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    if (newValue.instagram !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "Instagram", newValue.instagram, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    if (newValue.linkedIn !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "LinkedIn", newValue.linkedIn, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    if (newValue.twitter !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "Twitter", newValue.twitter, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        else {
-          console.log(query.sql);
-        }
-      });
-    }
-    if (newValue.personalWebsite !== null) {
-      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-      values = [newValue.userId, "personalWebsite", newValue.personalWebsite, lastModified, created];
-      query = mysqlConnection.query(sql, values, (error) => {
+      var query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);
         }
@@ -1232,6 +1087,43 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
         console.log('The connection is terminated now');
       }
     });
+    //Work_Experiences
+    sql = "INSERT INTO Work_Experiences (student_ID, descryption, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+    var startDate1 = new Date(newValue.startDate1);
+    var endDate1 = new Date(newValue.endDate1);
+    values = [newValue.userId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1, lastModified, created];
+    queryOut = await sqlQuery(sql,values);
+    //social medias
+    if (newValue.facebook !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "Facebook", newValue.facebook, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.gitHub !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "Github", newValue.gitHub, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.instagram !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "Instagram", newValue.instagram, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.linkedIn !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "LinkedIn", newValue.linkedIn, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.twitter !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "Twitter", newValue.twitter, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
+    if (newValue.personalWebsite !== null) {
+      sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+      values = [newValue.userId, "personalWebsite", newValue.personalWebsite, lastModified, created];
+      queryOut = await sqlQuery(sql,values);
+    }
   }
   return null;
 });
@@ -1359,27 +1251,11 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
 exports.newApplication = functions.firestore.document('applications/{applicationsId}')
 .onCreate(async (snap, context) => {
   const value = snap.data();
-  var mysqlConnection = await createMySQLconnection();
   var lastModified = new Date(value.lastModified);
   var created = new Date(value.created);
   var sql = "INSERT INTO Applications (job_ID, student_ID, status, approved, last_modified, created) VALUES (?,?,?,?,?,?)";
   var values = [value.jobId, value.studentId, value.status, value.approved, lastModified,  created];
-  var query = mysqlConnection.query(sql, values, (error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log(query.sql);
-    }
-  });
-  mysqlConnection.end((error) => {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      console.log('The connection is terminated now');
-    }
-  });
+  var queryOut = await sqlQuery(sql,values);
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
@@ -1492,7 +1368,6 @@ exports.createVetted = functions.firestore.document('vetted/{studentId}')
       }
     });
   }
-  console.log("finished");
   mysqlConnection.end((error) => {
     if (error) {
       console.log(error);
@@ -1510,7 +1385,6 @@ exports.updateVetted = functions.firestore.document('vetted/{studentId}')
   const newValue = change.after.data();
   const previousValue = change.before.data();
   var mysqlConnection = await createMySQLconnection();
-
    //get the student ID from students 
    const studentsDoc =  await getDocument("students", change.after.id);
    const studentsDocData = studentsDoc.data();
@@ -1536,7 +1410,6 @@ exports.updateVetted = functions.firestore.document('vetted/{studentId}')
       });
     }
   }
-  console.log("finished");
   mysqlConnection.end((error) => {
     if (error) {
       console.log(error);
@@ -1548,3 +1421,24 @@ exports.updateVetted = functions.firestore.document('vetted/{studentId}')
   return null;
 });
 
+
+//for testing 
+app.get('/query', (req, res) => {
+  const settings_ref = admin.firestore().collection('students').doc('jeanpierre-joubert-1876');
+    settings_ref.get()
+    .then(snap => { 
+      const data = snap.data();
+      for (const key in data.industryCategory) {
+          const value = data.industryCategory[key];
+          console.log(key + ":" + value)
+          // now key and value are the property name and value
+      }
+      console.log("finished");
+      console.log("inludes Banana: " + data.industryCategory.includes("Banana"));
+      console.log("inludes Administration: " + data.industryCategory.includes("Administration"));
+      return null;
+    })
+    .catch(err => {
+      console.log(err);
+    })
+});
