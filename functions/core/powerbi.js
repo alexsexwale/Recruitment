@@ -26,23 +26,25 @@ async function getAuthToken() {
   let authorityUri = powerbi.authorityUri.replace("common", powerbi.tenantId);
   let context = new AuthenticationContext(authorityUri);
 
-  return new Promise((resolve, reject) => {
-    context.acquireTokenWithUsernamePassword(
-      powerbi.scope,
-      powerbi.pbiUsername,
-      powerbi.pbiPassword,
-      powerbi.clientId,
-      (err, tokenResponse) => {
-        // Function returns error object in tokenResponse
-        // Invalid Username will return empty tokenResponse, thus err is used
-        if (err) {
-          reject(tokenResponse === null ? err : tokenResponse);
-        }
+  return new Promise(
+    (resolve, reject) => {
+      context.acquireTokenWithUsernamePassword(
+        powerbi.scope,
+        powerbi.pbiUsername,
+        powerbi.pbiPassword,
+        powerbi.clientId,
+        (err, tokenResponse) => {
+          // Function returns error object in tokenResponse
+          // Invalid Username will return empty tokenResponse, thus err is used
+          if (err) {
+            reject(tokenResponse === null ? err : tokenResponse);
+          }
 
-        resolve(tokenResponse);
-      }
-    );
-  });
+          resolve(tokenResponse);
+      })
+    }
+  );
+
 }
 
 function getAuthHeader(accessToken) {
