@@ -13,20 +13,23 @@ export default {
   mutations: {},
   actions: {
     getReportConfig: context => {
-      let loadConfig = api
+      return api
         .getEmbedToken()
         .then(embedData => {
-          let permissions = pbi.models.Permissions.All;
+          let permissions = pbi.models.Permissions.Read;
 
           return {
-            type: "report",
-            tokenType: pbi.models.TokenType.Embed,
-            accessToken: embedData.data.accessToken,
-            embedUrl: embedData.data.embedUrl,
-            permissions: permissions,
-            settings: {
-              filterPaneEnabled: false,
-              navContentPaneEnabled: false
+            reportPages: embedData.data.reportPages,
+            reportConfig: {
+              type: "report",
+              tokenType: pbi.models.TokenType.Aad,
+              accessToken: embedData.data.accessToken,
+              embedUrl: embedData.data.embedUrl,
+              permissions: permissions,
+              settings: {
+                filterPaneEnabled: false,
+                navContentPaneEnabled: false
+              }
             }
           };
         })
@@ -38,8 +41,6 @@ export default {
               "API get call to 'getReportEmbedToken' failed. Contact tech support immediately."
           });
         });
-      console.log(loadConfig);
-      return loadConfig;
     }
   }
 };

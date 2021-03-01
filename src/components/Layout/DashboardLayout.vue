@@ -48,7 +48,7 @@
     <div class="main-panel">
       <top-navbar></top-navbar>
 
-      <fixed-plugin
+      <fixed-plugin v-if="!institution"
         :color.sync="sidebarBackground"
         :colorBg.sync="sidebarBackgroundColor"
         :sidebarMini.sync="sidebarMini"
@@ -56,6 +56,10 @@
         :image.sync="sidebarBackgroundImage"
       >
       </fixed-plugin>
+
+      <report-menu v-if="institution">
+      </report-menu>
+      
 
       <div :class="{ content: !$route.meta.hideContent }" @click="toggleSidebar">
         <zoom-center-transition :duration="200" mode="out-in">
@@ -92,6 +96,7 @@ import ContentFooter from "./ContentFooter.vue";
 import MobileMenu from "./Extra/MobileMenu.vue";
 import FixedPlugin from "./FixedPlugin.vue";
 import UserMenu from "./Extra/UserMenu.vue";
+import ReportMenu from "./Extra/ReportMenu.vue";
 import { ZoomCenterTransition } from "vue2-transitions";
 import db from '@/firebase/init';
 import firebase from 'firebase/app';
@@ -106,6 +111,7 @@ export default {
     MobileMenu,
     FixedPlugin,
     UserMenu,
+    ReportMenu,
     ZoomCenterTransition
   },
   data() {

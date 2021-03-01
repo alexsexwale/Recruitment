@@ -12,8 +12,10 @@ var mysql = require('mysql');
 const firebaseJS = require(__dirname + '/config/firebase.js');
 
 
-
-dotenv.config()
+const firebase = require("./config/firebase");
+const powerbi = require("./core/powerbi");
+const payment = require("./core/payment");
+const tokenAuth = require("./core/auth");
 
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
@@ -33,6 +35,9 @@ const db = firebaseJS.db;
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
+app.use("/powerbi", powerbi);
+app.use(payment);
+app.use(tokenAuth);
 
 //emulator
 //documentation for emulator: https://firebase.google.com/docs/functions/local-emulator
@@ -59,7 +64,6 @@ function getDocument(collection, id) {
 }
 
 // Routes
-
 app.get("/hello", (req, res) => {
   const bot = new SlackBot({
     token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
