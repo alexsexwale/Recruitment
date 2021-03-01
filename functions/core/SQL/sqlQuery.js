@@ -1,5 +1,4 @@
 var mysql = require('mysql');
-let path = require('path');
 const firebaseJS = require('../../config/firebase.js');
 const getDocument = firebaseJS.getDocument;
 

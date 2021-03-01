@@ -250,6 +250,7 @@ export default {
           var ratings = db.collection("ratings");
           ratings.add({
             created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format('L'),
             listening: this.listening,
             communication: this.communication,
             criticalThinking: this.criticalThinking,
