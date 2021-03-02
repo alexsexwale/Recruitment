@@ -1,6 +1,7 @@
 
 const sql = require('../sqlQuery.js');
 const sqlQuery = sql.sqlQuery;
+const createMySQLconnection = sql.createMySQLconnection;
 
 async function studentSQL(change) {
     const newValue = change.after.data();
@@ -85,9 +86,13 @@ async function studentSQL(change) {
         values = [newValue.userId, "personalWebsite", newValue.personalWebsite, lastModified, created];
         await sqlQuery(sql,values);
       }
+      //qualifications
+      sql = "INSERT INTO University_Qualifications (student_ID, qualification_type, graduate_status, studying, year, qualification_title, faculty, institution, institution_type, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      values = [newValue.userId, "degree", newValue.graduateStatus, newValue.studying, newValue.year, newValue.degree, newValue.faculty, newValue.institution, newValue.institutionType, lastModified, created];
+      await sqlQuery(sql,values);
     }
     //students document updated
-    else {
+    if (newValue.accountCreated === true && previousValue.accountCreated === true) {
       lastModified = new Date();
       //Students
       if (newValue.race !== previousValue.race) {
@@ -168,7 +173,7 @@ async function studentSQL(change) {
         await sqlQuery(sql,values);
       }
       //Industry_Alerts
-      if (newValue.industryCategory.toString() !== previousValue.industryCategory.toString()) {
+      if (newValue.interestedIndustries.toString() !== previousValue.interestedIndustries.toString()) {
         mysqlConnection = await createMySQLconnection();
         //delete all the old values from the database
         for (const oldKey in previousValue.industryCategory) {
@@ -269,7 +274,42 @@ async function studentSQL(change) {
         values = [newValue.personalWebsite, lastModified, newValue.userId, "personalWebsite"];
         await sqlQuery(sql,values);
       }
+      //qualifications
+      if (newValue.graduateStatus !== previousValue.graduateStatus) {
+        sql = "UPDATE University_Qualifications SET graduate_status = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.graduateStatus, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.studying !== previousValue.studying) {
+        sql = "UPDATE University_Qualifications SET studying = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.studying, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.year !== previousValue.year) {
+        sql = "UPDATE University_Qualifications SET year = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.year, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.degree !== previousValue.degree) {
+        sql = "UPDATE University_Qualifications SET qualification_title = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.degree, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.faculty !== previousValue.faculty) {
+        sql = "UPDATE University_Qualifications SET faculty = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.faculty, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.institution !== previousValue.institution) {
+        sql = "UPDATE University_Qualifications SET institution = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.institution, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.institutionType !== previousValue.institutionType) {
+        sql = "UPDATE University_Qualifications SET institution_type = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.institutionType, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
     }
   }
-
   module.exports = {studentSQL}

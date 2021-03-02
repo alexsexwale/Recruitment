@@ -35,26 +35,7 @@ const updateSupportSQLJS = require("./core/SQL/update/updateSupportSQL.js");
 const updateUserSQLJS = require("./core/SQL/update/updateUserSQL.js");
 const updateVettingSQLJS = require("./core/SQL/update/updateVettingSQL.js");
 const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
-const clientSQL = clientSQLJS.clientSQL;
-const insertApplicationSQL = insertApplicationSQLJS.insertApplicationSQL;
-const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
-const insertJobSQL = insertJobSQLJS.insertJobSQL;
-const insertPaymentSQL = insertPaymentSQLJS.insertPaymentSQL;
-const insertSupportSQL = insertSupportSQLJS.insertSupportSQL;
-const insertUserSQL = insertUserSQLJS.insertUserSQL;
-const insertVettingSQL = insertVettingSQLJS.insertVettingSQL;
-const insertRatingSQL = insertRatingSQLJS.insertRatingSQL;
-const studentSQL = studentSQLJS.studentSQL;
-const updateApplicationSQL = updateApplicationSQLJS.updateApplicationSQL;
-const updateFeedbackSQL = updateFeedbackSQLJS.updateFeedbackSQL;
-const updateJobsSql = updateJobsSqlJS.updateJobsSql;
-const updatePayments = updatePaymentsJS.updatePayments;
-const updateProjectTaskSQL = updateProjectTaskSQLJS.updateProjectTaskSQL;
-const updateSkillSQL = updateSkillSQLJS.updateSkillSQL;
-const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
-const updateUserSQL = updateUserSQLJS.updateUserSQL;
-const updateVettingSQL = updateVettingSQLJS.updateVettingSQL;
-const updateRatingSQL = updateRatingSQLJS.updateRatingSQL;
+
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
@@ -94,6 +75,8 @@ const sgMail = require("@sendgrid/mail");
 function getDocument(collection, id) {
   return db.collection(collection).doc(id).get();
 }
+
+
 
 // Routes
 app.get("/hello", (req, res) => {
@@ -172,7 +155,7 @@ app.post("/activate", urlencodedParser, (req, res) => {
       lastModified: moment(Date.now()).format("L"),
     });
     
-    //send chat bot message
+    // send chat bot message
     const bot = new SlackBot({
       token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
       name: 'jobox_app'
@@ -273,7 +256,7 @@ function padBranch(branchcode) {
 app.post("/pay", urlencodedParser, async (req, res) => {
     if(req.body.jobId && req.body.studentAlias) {
       // Fetch the student
-      console.log("1");
+   
 
       const doc = await getDocument("students", req.body.studentAlias);
       const user = await getDocument("users", req.body.studentAlias);
@@ -282,7 +265,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
       student.phoneNumber = user.data().phone;
       student.fullName = user.data().name + " " + user.data().surname;
 
-      console.log("2");
+
 
       if(student) {
         // Get payment gateway data
@@ -302,7 +285,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           var dd  = this.getDate().toString();
           return (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
         };
-        console.log("3");
+      
         // Today
         var date = new Date();
         // Tomorrow
@@ -328,7 +311,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
             || publicHoliday === "1226" // Day of Goodwill
           )
         {
-          console.log("4");
+ 
         if(publicHoliday === "0101" && day === "sunday" // New Year's Day on Sunday
           || publicHoliday === "0321" && day === "sunday" // Human Rights Day on Sunday
           || publicHoliday === "0410" && day === "sunday" // Good Friday on Sunday
@@ -343,12 +326,12 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           || publicHoliday === "1226" && day === "sunday" // Day of Goodwill on Sunday
         ) 
         {
-          console.log("5");
+     
           date.setDate(date.getDate() + 2);
           day = (moment(date).format("dddd")).toLowerCase();
         }
         else {
-          console.log("5");
+   
           date.setDate(date.getDate()  + 1);
           day = (moment(date).format("dddd")).toLowerCase();
         }         
@@ -363,7 +346,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
           ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
         );
-        console.log("6");
+    
         // Batch File Upload Parameters
         var args = { ServiceKey: paymentGateway.creditorPaymentServiceKey, File: file };
         return client.BatchFileUploadAsync(args);
@@ -378,7 +361,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
         console.log(err.message);
       })
       .then(result => {
-        console.log("7");
+    
         // Upload single student payment information
         var batch = result[0].BatchFileUploadResult;
         // Batch Uploaded
@@ -711,18 +694,21 @@ function standardEmail(receiver, sender, subject, message) {
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
+    const insertUserSQL = insertUserSQLJS.insertUserSQL;
     await insertUserSQL(snap);
   });
 
 //User document updated
 exports.updateUser = functions.firestore.document('users/{userId}')
 .onUpdate(async (change, context) => {
+  const updateUserSQL = updateUserSQLJS.updateUserSQL;
   await updateUserSQL(change);
 });
 
 //New client document created
 exports.newClient = functions.firestore.document('clients/{clientId}')
   .onUpdate(async (change, context) => {
+    const clientSQL = clientSQLJS.clientSQL;
     await clientSQL(change);
   });
 
@@ -730,6 +716,7 @@ exports.newClient = functions.firestore.document('clients/{clientId}')
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
+  const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
   await insertFeedbackSQL(snap);
 
   const value = snap.data();
@@ -758,6 +745,7 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
 //feedback document updated
 exports.updateFeedback = functions.firestore.document('feedback/{feedback}')
 .onUpdate(async (change, context) => {
+  const updateFeedbackSQL = updateFeedbackSQLJS.updateFeedbackSQL;
   await updateFeedbackSQL(change);
 });
 
@@ -765,6 +753,7 @@ exports.updateFeedback = functions.firestore.document('feedback/{feedback}')
 // New support document created
 exports.support = functions.firestore.document('support/{support}')
 .onCreate(async (snap, context) => {
+  const insertSupportSQL = insertSupportSQLJS.insertSupportSQL;
   await insertSupportSQL(snap);
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
@@ -793,6 +782,7 @@ exports.support = functions.firestore.document('support/{support}')
 //support document updated
 exports.updateSupport = functions.firestore.document('support/{support}')
 .onUpdate(async (change, context) => {
+  const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
   await updateSupportSQL(change);
 });
 
@@ -837,30 +827,35 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
   slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
 
+  const insertJobSQL = insertJobSQLJS.insertJobSQL;
   await insertJobSQL(snap);
 });
 
 //job document updated
 exports.updateJob= functions.firestore.document('jobs/{jobId}')
 .onUpdate(async (change, context) => {
+  const updateJobsSql = updateJobsSqlJS.updateJobsSql;
   await updateJobsSql(change);
 });
 
 //skills document updated
 exports.updateSkills = functions.firestore.document('skills/{jobId}')
 .onUpdate(async (change, context) => {
+  const updateSkillSQL = updateSkillSQLJS.updateSkillSQL;
   await updateSkillSQL(change);
 });
 
 // New payments document created
 exports.paymentsPost = functions.firestore.document('payments/{jobId}')
 .onCreate(async (snap, context) => {
+  const insertPaymentSQL = insertPaymentSQLJS.insertPaymentSQL;
   await insertPaymentSQL(snap);
 });
 
 //Payments document updated
 exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
 .onUpdate(async (change, context) => {
+  const updatePayments = updatePaymentsJS.updatePayments;
   await updatePayments(change);
   const newValue = change.after.data();
   const previousValue = change.before.data();
@@ -887,6 +882,7 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
 //new student or updated student
 exports.newStudent = functions.firestore.document('students/{studentId}')
 .onUpdate(async (change, context) => {
+  const studentSQL = studentSQLJS.studentSQL;
   await studentSQL(change);
 });
 
@@ -913,6 +909,7 @@ function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantN
 // Application document updated
 exports.applicantDecision = functions.firestore.document('applications/{applicationsId}')
 .onUpdate(async (change, context) => {
+  const updateApplicationSQL = updateApplicationSQLJS.updateApplicationSQL;
   await updateApplicationSQL(change);
 
   const newValue = change.after.data();
@@ -1016,6 +1013,7 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
 // New application
 exports.newApplication = functions.firestore.document('applications/{applicationsId}')
 .onCreate(async (snap, context) => {
+  const insertApplicationSQL = insertApplicationSQLJS.insertApplicationSQL;
   await insertApplicationSQL(snap);
 
   const value = snap.data();
@@ -1029,6 +1027,7 @@ exports.newApplication = functions.firestore.document('applications/{application
 // Updates in Micro table
 exports.jobStatus = functions.firestore.document('micros/{microsId}')
 .onUpdate(async (change, context) => {
+  const updateProjectTaskSQL = updateProjectTaskSQLJS.updateProjectTaskSQL;
   await updateProjectTaskSQL(change);
   const newValue = change.after.data();
   const previousValue = change.before.data();
@@ -1106,26 +1105,58 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 // New vetted
 exports.createVetted = functions.firestore.document('vetted/{studentId}')
 .onCreate(async (snap, context) => {
+  const insertVettingSQL = insertVettingSQLJS.insertVettingSQL;
   await insertVettingSQL(snap);
 });
 
 //Updated vetted
 exports.updateVetted = functions.firestore.document('vetted/{studentId}')
 .onUpdate(async (change, context) => {
+  const updateVettingSQL = updateVettingSQLJS.updateVettingSQL;
   await updateVettingSQL(change);
 });
 
 
-// New rating
-exports.createRating = functions.firestore.document('ratings/{studentId}')
+// New student soft skill rating
+exports.createSoftSkillRating = functions.firestore.document('ratings/{studentId}')
 .onCreate(async (snap, context) => {
-  await insertRatingSQL(snap);
+  const insertStudentSoftSkillRatingSQL = insertRatingSQLJS.insertStudentSoftSkillRatingSQL;
+  await insertStudentSoftSkillRatingSQL(snap);
 });
 
-//Updated rating
-exports.updateRating = functions.firestore.document('ratings/{studentId}')
+//Updated student soft skill rating
+exports.updateSoftSkillRating = functions.firestore.document('ratings/{studentId}')
 .onUpdate(async (change, context) => {
-  await updateRatingSQL(change);
+  const updateStudentSoftSkillRatingSQL = updateRatingSQLJS.updateStudentSoftSkillRatingSQL;
+  await updateStudentSoftSkillRatingSQL(change);
+});
+
+// New student hard skill rating
+exports.createHardSkillRating = functions.firestore.document('clientRatings/{studentId}')
+.onCreate(async (snap, context) => {
+  const insertStudentHardSkillRatingSQL = insertRatingSQLJS.insertStudentHardSkillRatingSQL;
+  await insertStudentHardSkillRatingSQL(snap);
+});
+
+//Updated student hard skill rating
+exports.updateHardSkillRating = functions.firestore.document('clientRatings/{studentId}')
+.onUpdate(async (change, context) => {
+  const updateStudentHardSkillRatingSQL = updateRatingSQLJS.updateStudentHardSkillRatingSQL;
+  await updateStudentHardSkillRatingSQL(change);
+});
+
+// New client rating
+exports.createClientRating = functions.firestore.document('studentRatings/{studentId}')
+.onCreate(async (snap, context) => {
+  const insertClientRatingSQL = insertRatingSQLJS.insertClientRatingSQL;
+  await insertClientRatingSQL(snap);
+});
+
+//Updated client rating
+exports.updateClientRating = functions.firestore.document('studentRatings/{studentId}')
+.onUpdate(async (change, context) => {
+  const updateClientRatingSQL = updateRatingSQLJS.updateClientRatingSQL;
+  await updateClientRatingSQL(change);
 });
 
 //for testing 

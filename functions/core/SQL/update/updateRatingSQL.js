@@ -2,7 +2,7 @@
 const sql = require('../sqlQuery.js');
 const sqlQuery = sql.sqlQuery;
 
-async function updateRating(change) {
+async function updateStudentSoftSkillRatingSQL(change) {
     const newValue = change.after.data();
     const previousValue = change.before.data();
     var lastModified = new Date();
@@ -56,4 +56,38 @@ async function updateRating(change) {
     }
     
   }
-  module.exports = {updateRating}
+
+  async function updateStudentHardSkillRatingSQL(change) {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+    var lastModified = new Date();
+
+    if (newValue.hardSkill !== previousValue.hardSkill) {
+        var sql = "UPDATE Ratings SET rate = ?, last_modified = ? WHERE job_ID = ? AND subcategory = ?";
+        var values = [newValue.hardSkill, lastModified, newValue.jobId, "hard skill"];
+        await sqlQuery(sql,values);
+    }
+    if (newValue.review !== previousValue.review) {
+        sql = "UPDATE Ratings SET review = ?, last_modified = ? WHERE job_ID = ? AND subcategory = ?";
+        values = [newValue.review, lastModified, newValue.jobId, "hard skill"];
+        await sqlQuery(sql,values);
+    }
+  }
+
+  async function updateClientRatingSQL(change) {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+    var lastModified = new Date();
+
+    if (newValue.hardSkill !== previousValue.hardSkill) {
+        var sql = "UPDATE Ratings SET rate = ?, last_modified = ? WHERE job_ID = ? AND subcategory = ?";
+        var values = [newValue.rate, lastModified, newValue.jobId, "client rating"];
+        await sqlQuery(sql,values);
+    }
+    if (newValue.review !== previousValue.review) {
+        sql = "UPDATE Ratings SET review = ?, last_modified = ? WHERE job_ID = ? AND subcategory = ?";
+        values = [newValue.review, lastModified, newValue.jobId, "client rating"];
+        await sqlQuery(sql,values);
+    }
+  }
+  module.exports = {updateStudentSoftSkillRatingSQL, updateStudentHardSkillRatingSQL, updateClientRatingSQL}
