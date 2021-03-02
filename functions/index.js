@@ -12,7 +12,7 @@ const firebaseJS = require(__dirname + '/config/firebase.js');
 
 const firebase = require("./config/firebase");
 const powerbi = require("./core/powerbi");
-const payment = require("./core/payment");
+//const payment = require("./core/payment");
 const tokenAuth = require("./core/auth");
 
 const clientSQLJS = require("./core/SQL/insert/clientSQL.js");
@@ -74,7 +74,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
 //app.use(payment);
-app.use(tokenAuth);
+//app.use(tokenAuth);
 
 
 
