@@ -247,7 +247,24 @@ export default {
           var leadership = db.collection("leadership");
           var organisation = db.collection("organisation");
           var clientRating = db.collection("clientRatings");
-
+          var ratings = db.collection("ratings");
+          ratings.add({
+            created: moment(Date.now()).format('L'),
+            lastModified: moment(Date.now()).format('L'),
+            listening: this.listening,
+            communication: this.communication,
+            criticalThinking: this.criticalThinking,
+            creative: this.creative,
+            initiative: this.initiative,
+            accountability: this.accountability,
+            planning: this.planning,
+            tracking: this.tracking,
+            hardSkill: this.hard,
+            review: this.review,
+            studentId: job.studentId,
+            clientId : user.uid,
+            jobId: this.$route.params.id
+          })
           // Create communication document
           communication.add({
             created: moment(Date.now()).format('L'),
