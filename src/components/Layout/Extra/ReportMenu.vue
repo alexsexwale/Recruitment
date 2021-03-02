@@ -9,16 +9,13 @@
         <li class="adjustments-line text-center">
           <slot name="reports"></slot>
         </li>
-        <li class="header-title">Filters</li>
-        <li class="adjustments-line text-center">
-          <slot name="filters"></slot>
-        </li>
       </ul>
     </div>
   </div>
 </template>
 <script>
 export default {
+  name: "report-menu",
   props: {
     sidebarMini: Boolean,
     sidebarImg: Boolean

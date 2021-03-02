@@ -1,34 +1,68 @@
-<!-- TO-DO: The Layout of the page can be improved -->
 <template>
   <div>
-    <nav-tabs-card>
-      <!-- TO-DO: Maybe a drop down or something similar to the setting button? -->
-      <md-button
-        slot="reports"
-        v-for="page in reportPages"
-        :key="page.Name"
-        @click="pageNav(page.Name)"
-        >{{ page.displayName }}</md-button
-      >
-    </nav-tabs-card>
-    <div id="report-container" />
+    <div
+      id="report-container"
+      class="md-layout md-gutter md-alignment-top-center"
+    />
+    <!--report-menu>
+    <ul>
+      <li
+          slot="reports"
+          class="page-item"
+          v-for="page in reportPages"
+          :key="page.Name"
+        >
+          <a class="page-link" @click="selectPage(page)">{{ page.displayName }}</a>
+        </li>
+
+      </ul>
+    </report-menu-->
+    <div class="md-layout md-gutter md-alignment-top-center">
+      <ul class="pagination">
+        <li
+          class="page-item prev-page"
+          :class="{ disabled: disableButton == 0 }"
+        >
+          <a class="page-link" aria-label="Previous" @click="prevPage">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li
+          class="page-item"
+          v-for="page in reportPages"
+          :key="page.Name"
+          :class="{ active: selectedPage === page }"
+        >
+          <a class="page-link" @click="selectPage(page)">{{
+            page.order + 1
+          }}</a>
+          <md-tooltip md-direction="bottom">{{ page.displayName }}</md-tooltip>
+        </li>
+        <li
+          class="page-item page-pre next-page"
+          :class="{ disabled: disableButton === 1 }"
+        >
+          <a class="page-link" aria-label="Next" @click="nextPage">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
-import { ReportMenu } from "@/components";
 import { mapGetters, mapActions } from "vuex";
 import * as pbi from "powerbi-client";
 
 export default {
-  components: {
-    ReportMenu
-  },
   name: "institution-reports",
   data() {
     return {
       reportPages: [],
       report: null,
-      selectedPage: null
+      selectedPage: null,
+      pageFilters: null,
+      disableButton: 2
     };
   },
   computed: {
@@ -70,31 +104,66 @@ export default {
         return { report, pages };
       });
     },
-    pageNav: async function(reportSection) {
-      console.log(reportSection);
-      let page = this.report.page(reportSection);
-      await page.setActive();
-      await this.report.setPage(reportSection);
+    selectPage: async function(page) {
+      this.selectedPage = page;
+
+      await this.report.page(page.Name).setActive();
+      await this.report.setPage(page.Name);
+    },
+    nextPage: async function() {
+      let index = this.reportPages.indexOf(this.selectedPage);
+      let pageName = this.reportPages[index + 1].Name;
+      let page = this.reportPages[index + 1];
+
+      this.selectedPage = page;
+
+      await this.report.page(pageName).setActive();
+      await this.report.setPage(pageName);
+    },
+    prevPage: async function() {
+      let index = this.reportPages.indexOf(this.selectedPage);
+      let pageName = this.reportPages[index - 1].Name;
+      let page = this.reportPages[index - 1];
+
+      this.selectedPage = page;
+
+      await this.report.page(pageName).setActive();
+      await this.report.setPage(pageName);
     }
   },
   mounted: async function() {
     let reportConfig = await this.embedReport();
+
     this.report = reportConfig.report;
+
     reportConfig.pages.forEach(element => {
       this.reportPages.push(element);
+      if (element.order === 1) this.selectedPage = element;
     });
+  },
+  watch: {
+    selectedPage: async function() {
+      if (this.reportPages.indexOf(this.selectedPage) == 0)
+        this.disableButton = 0;
+      else if (
+        this.reportPages.indexOf(this.selectedPage) ==
+        this.reportPages.length - 1
+      )
+        this.disableButton = 1;
+      else this.disableButton = 2;
+    }
   }
 };
 </script>
 <style scoped>
 /* Find the perfect size for report */
 div#report-container {
-  height: calc(0.5625 * 65vw); /* 16:9 aspect ratio */
+  height: calc(0.5625 * 95vw);
 }
 
 @media only screen and (max-width: 575px) {
   div#report-container {
-    height: calc(0.5625 * 100vw); /* 16:9 aspect ratio */
+    height: calc(0.5625 * 100vw); 
   }
 }
 </style>

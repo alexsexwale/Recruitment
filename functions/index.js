@@ -73,7 +73,7 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
-app.use(payment);
+//app.use(payment);
 app.use(tokenAuth);
 
 

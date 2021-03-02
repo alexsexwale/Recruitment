@@ -28,7 +28,11 @@ export default {
               permissions: permissions,
               settings: {
                 filterPaneEnabled: false,
-                navContentPaneEnabled: false
+                navContentPaneEnabled: false,
+                layoutType: pbi.models.LayoutType.Custom,
+                customLayout: {
+                  displayOption: pbi.models.DisplayOption.FitToWidth
+                }
               }
             }
           };
