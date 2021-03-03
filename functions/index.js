@@ -6,9 +6,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const soap = require("soap");
-const SlackBot = require('slackbots');
+
 const chatBot = require("./core/notifications/chatBot")
 
+const firestoreJS = require("./core/firestore/firestore")
 
 const dotenv = require('dotenv');
 const firebaseJS = require(__dirname + '/config/firebase.js');
@@ -82,10 +83,10 @@ function getDocument(collection, id) {
 
 
 // Routes
-app.get("/hello", (req, res) => {
-  chatBot.sendBotMessage(channelName, message)
-  channelName = 'random';
-  message = 'test';
+app.get("/hello", async (req, res) => {
+  var channelName = 'job-notifications';
+  var message = 'test';
+  await chatBot.sendBotMessage(channelName, message)
     return res.status(200).send("Hey");
 });
 
@@ -140,7 +141,7 @@ app.post("/notification", urlencodedParser, async (req, res) => {
 });
 
 // Inbound payment
-app.post("/activate", urlencodedParser, (req, res) => {
+app.post("/activate", urlencodedParser, async (req, res) => {
   if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
@@ -148,21 +149,9 @@ app.post("/activate", urlencodedParser, (req, res) => {
     });
     
     // send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash",
-          params
-      );
-    })
-
+    var channelName = "netcash";
+    var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash";
+    await chatBot.sendBotMessage(channelName, message);
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
   else {
@@ -196,21 +185,10 @@ app.post("/decline", urlencodedParser, async (req, res) => {
           message: "Payment Declined" 
         });
 
-        //send chat bot message
-        const bot = new SlackBot({
-          token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-          name: 'jobox_app'
-        })
-        bot.on('start', () => {
-          const params = {
-              icon_emoji: ':robot_face:'
-          }
-          bot.postMessageToChannel(
-              'random',
-              "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.",
-              params
-          );
-        })
+        // send chat bot message
+        var channelName = "netcash";
+        var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.";
+        await chatBot.sendBotMessage(channelName, message);
 
         const doc = await getDocument("Settings", "Email");
         var settings = doc.data();
@@ -494,21 +472,11 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
-  //send chat bot message
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        'random',
-        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ,
-        params
-    );
-  })
+  // send chat bot message
+  var channelName = "customer-support";
+  var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ;
+  await chatBot.sendBotMessage(channelName, message);
+
   return null;
 });
 
@@ -530,21 +498,10 @@ exports.support = functions.firestore.document('support/{support}')
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.getSupport, value.email, value.subject, value.message));
-  //send chat bot message
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        'random',
-        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ,
-        params
-    );
-  })
+  // send chat bot message
+  var channelName = "customer-support";
+  var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ;
+  await chatBot.sendBotMessage(channelName, message);
   return null;
 });
 
@@ -568,23 +525,13 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
   }
 }
 // Send slack alert
-function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        channel,
-        "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
-          + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
-          clientName + " on their phone number, " + phone + "\nAlex Sexwale",
-        params
-    );
-  })
+async function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
+  // send chat bot message
+  var channelName = channel;
+  var message = "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
+  + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
+  clientName + " on their phone number, " + phone + "\nAlex Sexwale";
+  await chatBot.sendBotMessage(channelName, message);
 }
 
 // New job document created
@@ -595,7 +542,7 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
-  slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
+  slackJobPost("job-notifications", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
 
   const insertJobSQL = insertJobSQLJS.insertJobSQL;
   await insertJobSQL(snap);
@@ -630,21 +577,10 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
   const newValue = change.after.data();
   const previousValue = change.before.data();
   if (previousValue.outboundPayment === false && newValue.outboundPayment === true) {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "netcash";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed";
+    await chatBot.sendBotMessage(channelName, message);
   }
   return null;
 });
@@ -692,21 +628,10 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
     sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
   }
   if(newValue.approved === false && newValue.status === "decline") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "job-notifications";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined";
+    await chatBot.sendBotMessage(channelName, message);
 
     sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
   }
@@ -834,40 +759,18 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 
   //cancelled 
   if(previousValue.status !== "cancelled" && newValue.status === "cancelled") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "job-notifications";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled";
+    await chatBot.sendBotMessage(channelName, message);
   }
 
   //dissatisfied 
   if(previousValue.status !== "dissatisfied" && newValue.status === "dissatisfied") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied",
-          params
-      );
-    })
+    // send chat bot message
+    channelName = "job-notifications";
+    message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied";
+    await chatBot.sendBotMessage(channelName, message);
   }
   return null;
 });
