@@ -537,15 +537,15 @@ async function slackJobPost(channel, clientName, companyName, jobName, jobType, 
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
+  const insertJobSQL = insertJobSQLJS.insertJobSQL;
+  await insertJobSQL(snap);
+
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
   slackJobPost("job-notifications", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
-
-  const insertJobSQL = insertJobSQLJS.insertJobSQL;
-  await insertJobSQL(snap);
 });
 
 //job document updated

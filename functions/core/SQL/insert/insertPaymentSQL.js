@@ -7,8 +7,8 @@ async function insertPaymentSQL(snap) {
     var lastModified = new Date(value.lastModified);
     var created = new Date(value.created);
     var paymentDate = new Date(value.paymentDate);
-    var sql = "INSERT INTO Payments (message_ID, job_ID, payment_date, budget, service_fee, facilitation_cost, total_cost_paid, inbound_payment, outbound_payment, payment_method, reference, request_trace, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    var values = [snap.id, value.jobId, paymentDate, value.amount, value.serviceFee, value.facilitationCost, value.totalCostPaid, value.inboundPayment, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace, lastModified, created];
+    var sql = "INSERT INTO Payments (job_ID, payment_date, budget, service_fee, facilitation_cost, total_cost_paid, inbound_payment, outbound_payment, payment_method, reference, request_trace, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    var values = [value.jobId, paymentDate, value.amount, value.serviceFee, value.facilitationCost, value.totalCostPaid, value.inboundPayment, value.outboundPayment, value.paymentMethod ,value.reference, value.requestTrace, lastModified, created];
     await sqlQuery(sql,values);
   }
 
