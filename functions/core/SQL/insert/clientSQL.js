@@ -18,7 +18,7 @@ async function clientSQL(change) {
       values = [newValue.userId, newValue.addressLine1, newValue.city, newValue.country, newValue.postalCode_zipCode, newValue.province_state, lastModified, created];
       query = await sqlQuery(sql,values);
     }
-    else { //client document updated
+    if (newValue.accountCreated === true && previousValue.accountCreated === true)  { //client document updated
       lastModified = new Date();
       if (newValue.industry !== previousValue.industry) {
         sql = "UPDATE Clients SET industry = ?, last_modified = ? WHERE client_ID = ?";

@@ -1,18 +1,48 @@
 
 const sql = require('../sqlQuery.js');
 const sqlQuery = sql.sqlQuery;
+const createMySQLconnection = sql.createMySQLconnection;
 
 async function studentSQL(change) {
     const newValue = change.after.data();
     const previousValue = change.before.data();
+    var disability;
+    var vehicle;
+    var license;
+    var studying;
+    if (newValue.disability === "Yes") {
+      disability = true;
+    }
+    else {
+      disability = false;
+    }
+    if (newValue.vehicle === "Yes") {
+      vehicle = true;
+    }
+    else {
+      vehicle = false;
+    }
+    if (newValue.license === "Yes") {
+      license = true;
+    }
+    else {
+      license = false;
+    }
+    if (newValue.studying === "Yes") {
+      studying = true;
+    }
+    else {
+      studying = false;
+    }
     // New students document created
     //makes onUpdate behave like an onCreate (only after account is done being created will this code run)
     if (newValue.accountCreated === true && previousValue.accountCreated === false) {
       var lastModified = new Date(newValue.lastModified);
       var created = new Date(newValue.created);
       var dateOfBirth = new Date(newValue.dateOfBirth);
+      
       var sql = "INSERT INTO Students (student_ID, user_ID, race, gender, date_of_birth, bio, citizenship, identification_number, disability, vehicle, drivers_license, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-      var values = [newValue.userId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, newValue.disability, newValue.vehicle, newValue.license, lastModified, created];
+      var values = [newValue.userId, newValue.userId, newValue.race, newValue.gender, dateOfBirth, newValue.bio, newValue.citizenship, newValue.identification, disability, vehicle, license, lastModified, created];
       await sqlQuery(sql,values);
       //Student_Bank_Details
       sql = "INSERT INTO Student_Bank_Details (student_ID, account_name, account_number, account_type, bank_name, branch_code, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
@@ -20,7 +50,7 @@ async function studentSQL(change) {
       await sqlQuery(sql,values);
       //Disabled_Students
       if (newValue.disability === "Yes") {
-        sql = "INSERT INTO Disabled_Students (student_ID, disability, last_modified, created) VALUES (?,?,?,?)";
+        sql = "INSERT INTO Disabled_Students (student_ID, disability_description, last_modified, created) VALUES (?,?,?,?)";
         values = [newValue.userId, newValue.disabilityDescription, lastModified, created];
         await sqlQuery(sql,values);
       }
@@ -56,38 +86,42 @@ async function studentSQL(change) {
       await sqlQuery(sql,values);
       //social medias
       if (newValue.facebook !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
         values = [newValue.userId, "Facebook", newValue.facebook, lastModified, created];
         await sqlQuery(sql,values);
       }
       if (newValue.github !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
         values = [newValue.userId, "Github", newValue.github, lastModified, created];
         await sqlQuery(sql,values);
       }
       if (newValue.instagram !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
         values = [newValue.userId, "Instagram", newValue.instagram, lastModified, created];
         await sqlQuery(sql,values);
       }
       if (newValue.linkedIn !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
         values = [newValue.userId, "LinkedIn", newValue.linkedIn, lastModified, created];
         await sqlQuery(sql,values);
       }
       if (newValue.twitter !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
         values = [newValue.userId, "Twitter", newValue.twitter, lastModified, created];
         await sqlQuery(sql,values);
       }
       if (newValue.personalWebsite !== null) {
-        sql = "INSERT INTO Social_Media_Handles (student_ID, socmed_type, socmed_url, last_modified, created) VALUES (?,?,?,?,?)";
-        values = [newValue.userId, "personalWebsite", newValue.personalWebsite, lastModified, created];
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Personal Website", newValue.personalWebsite, lastModified, created];
         await sqlQuery(sql,values);
       }
+      //qualifications
+      sql = "INSERT INTO Qualifications (student_ID, qualification_type, graduate_status, currently_studying , year, qualification_title, faculty, institution, institution_type, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      values = [newValue.userId, "Degree", newValue.graduateStatus, studying, newValue.year, newValue.degree, newValue.faculty, newValue.institution, newValue.institutionType, lastModified, created];
+      await sqlQuery(sql,values);
     }
     //students document updated
-    else {
+    if (newValue.accountCreated === true && previousValue.accountCreated === true) {
       lastModified = new Date();
       //Students
       if (newValue.race !== previousValue.race) {
@@ -122,17 +156,17 @@ async function studentSQL(change) {
       }
       if (newValue.disability !== previousValue.disability) {
         sql = "UPDATE Students SET disability = ?, last_modified = ? WHERE student_ID = ?";
-        values = [newValue.disability, lastModified, newValue.userId];
+        values = [disability, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
       if (newValue.vehicle !== previousValue.vehicle) {
         sql = "UPDATE Students SET vehicle = ?, last_modified = ? WHERE student_ID = ?";
-        values = [newValue.vehicle, lastModified, newValue.userId];
+        values = [vehicle, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
       if (newValue.license !== previousValue.license) {
         sql = "UPDATE Students SET drivers_license = ?, last_modified = ? WHERE student_ID = ?";
-        values = [newValue.license, lastModified, newValue.userId];
+        values = [license, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
       //Student_Bank_Details
@@ -163,12 +197,12 @@ async function studentSQL(change) {
       }
       //Disabled_Students
       if (newValue.disabilityDescription !== previousValue.disabilityDescription) {
-        sql = "UPDATE Disabled_Students SET disability = ?, last_modified = ? WHERE student_ID = ?";
+        sql = "UPDATE Disabled_Students SET disability_description = ?, last_modified = ? WHERE student_ID = ?";
         values = [newValue.disabilityDescription, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
       //Industry_Alerts
-      if (newValue.industryCategory.toString() !== previousValue.industryCategory.toString()) {
+      if (newValue.interestedIndustries.toString() !== previousValue.interestedIndustries.toString()) {
         mysqlConnection = await createMySQLconnection();
         //delete all the old values from the database
         for (const oldKey in previousValue.industryCategory) {
@@ -212,7 +246,7 @@ async function studentSQL(change) {
       }
       //Work_Experiences
       if (newValue.description1 !== previousValue.description1) {
-        sql = "UPDATE Work_Experiences SET descryption = ?, last_modified = ? WHERE student_ID = ?";
+        sql = "UPDATE Work_Experiences SET description = ?, last_modified = ? WHERE student_ID = ?";
         values = [newValue.description1, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
@@ -240,36 +274,71 @@ async function studentSQL(change) {
       }
       //social medias
       if (newValue.facebook !== previousValue.facebook) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
         values = [newValue.facebook, lastModified, newValue.userId, "Facebook"];
         await sqlQuery(sql,values);
       }
       if (newValue.github !== previousValue.github) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
         values = [newValue.github, lastModified, newValue.userId, "Github"];
         await sqlQuery(sql,values);
       }
       if (newValue.instagram !== previousValue.instagram) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
         values = [newValue.instagram, lastModified, newValue.userId, "Instagram"];
         await sqlQuery(sql,values);
       }
       if (newValue.linkedIn !== previousValue.linkedIn) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
-        values = [newValue.linkedIn, lastModified, newValue.userId, "linkedIn"];
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
+        values = [newValue.linkedIn, lastModified, newValue.userId, "LinkedIn"];
         await sqlQuery(sql,values);
       }
       if (newValue.twitter !== previousValue.twitter) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
         values = [newValue.twitter, lastModified, newValue.userId, "Twitter"];
         await sqlQuery(sql,values);
       }
       if (newValue.personalWebsite !== previousValue.personalWebsite) {
-        sql = "UPDATE Social_Media_Handles SET socmed_url = ?, last_modified = ? WHERE student_ID = ? AND socmed_type = ?";
-        values = [newValue.personalWebsite, lastModified, newValue.userId, "personalWebsite"];
+        sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
+        values = [newValue.personalWebsite, lastModified, newValue.userId, "Personal Website"];
+        await sqlQuery(sql,values);
+      }
+      //qualifications
+      if (newValue.graduateStatus !== previousValue.graduateStatus) {
+        sql = "UPDATE Qualifications SET graduate_status = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.graduateStatus, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.studying !== previousValue.studying) {
+        sql = "UPDATE Qualifications SET currently_studying  = ?, last_modified = ? WHERE student_ID = ?";
+        values = [studying, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.year !== previousValue.year) {
+        sql = "UPDATE Qualifications SET year = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.year, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.degree !== previousValue.degree) {
+        sql = "UPDATE Qualifications SET qualification_title = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.degree, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.faculty !== previousValue.faculty) {
+        sql = "UPDATE Qualifications SET faculty = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.faculty, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.institution !== previousValue.institution) {
+        sql = "UPDATE Qualifications SET institution = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.institution, lastModified, newValue.userId];
+        await sqlQuery(sql,values);
+      }
+      if (newValue.institutionType !== previousValue.institutionType) {
+        sql = "UPDATE Qualifications SET institution_type = ?, last_modified = ? WHERE student_ID = ?";
+        values = [newValue.institutionType, lastModified, newValue.userId];
         await sqlQuery(sql,values);
       }
     }
   }
-
   module.exports = {studentSQL}

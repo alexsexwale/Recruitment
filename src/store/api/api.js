@@ -6,7 +6,8 @@ import axios from "axios";
 var api = null;
 db.collection("Settings").doc("Backend").get().then(doc => {
     api = axios.create({
-        baseURL: doc.data().devApi
+        //baseURL: doc.data().devApi
+        baseURL: doc.data().api
     })
 });
 

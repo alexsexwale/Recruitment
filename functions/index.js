@@ -6,7 +6,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const soap = require("soap");
-const SlackBot = require('slackbots');
+
+const chatBot = require("./core/notifications/chatBot")
+
+const firestoreJS = require("./core/firestore/firestore")
+
 const dotenv = require('dotenv');
 const firebaseJS = require(__dirname + '/config/firebase.js');
 
@@ -35,26 +39,7 @@ const updateSupportSQLJS = require("./core/SQL/update/updateSupportSQL.js");
 const updateUserSQLJS = require("./core/SQL/update/updateUserSQL.js");
 const updateVettingSQLJS = require("./core/SQL/update/updateVettingSQL.js");
 const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
-const clientSQL = clientSQLJS.clientSQL;
-const insertApplicationSQL = insertApplicationSQLJS.insertApplicationSQL;
-const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
-const insertJobSQL = insertJobSQLJS.insertJobSQL;
-const insertPaymentSQL = insertPaymentSQLJS.insertPaymentSQL;
-const insertSupportSQL = insertSupportSQLJS.insertSupportSQL;
-const insertUserSQL = insertUserSQLJS.insertUserSQL;
-const insertVettingSQL = insertVettingSQLJS.insertVettingSQL;
-const insertRatingSQL = insertRatingSQLJS.insertRatingSQL;
-const studentSQL = studentSQLJS.studentSQL;
-const updateApplicationSQL = updateApplicationSQLJS.updateApplicationSQL;
-const updateFeedbackSQL = updateFeedbackSQLJS.updateFeedbackSQL;
-const updateJobsSql = updateJobsSqlJS.updateJobsSql;
-const updatePayments = updatePaymentsJS.updatePayments;
-const updateProjectTaskSQL = updateProjectTaskSQLJS.updateProjectTaskSQL;
-const updateSkillSQL = updateSkillSQLJS.updateSkillSQL;
-const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
-const updateUserSQL = updateUserSQLJS.updateUserSQL;
-const updateVettingSQL = updateVettingSQLJS.updateVettingSQL;
-const updateRatingSQL = updateRatingSQLJS.updateRatingSQL;
+
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
@@ -95,22 +80,13 @@ function getDocument(collection, id) {
   return db.collection(collection).doc(id).get();
 }
 
+
+
 // Routes
-app.get("/hello", (req, res) => {
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        'interns',
-        'Testing slack chatbot',
-        params
-    );
-  })
+app.get("/hello", async (req, res) => {
+  var channelName = 'job-notifications';
+  var message = 'test';
+  await chatBot.sendBotMessage(channelName, message)
     return res.status(200).send("Hey");
 });
 
@@ -165,29 +141,17 @@ app.post("/notification", urlencodedParser, async (req, res) => {
 });
 
 // Inbound payment
-app.post("/activate", urlencodedParser, (req, res) => {
+app.post("/activate", urlencodedParser, async (req, res) => {
   if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
     
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash",
-          params
-      );
-    })
-
+    // send chat bot message
+    var channelName = "netcash";
+    var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash";
+    await chatBot.sendBotMessage(channelName, message);
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
   else {
@@ -221,21 +185,10 @@ app.post("/decline", urlencodedParser, async (req, res) => {
           message: "Payment Declined" 
         });
 
-        //send chat bot message
-        const bot = new SlackBot({
-          token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-          name: 'jobox_app'
-        })
-        bot.on('start', () => {
-          const params = {
-              icon_emoji: ':robot_face:'
-          }
-          bot.postMessageToChannel(
-              'random',
-              "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.",
-              params
-          );
-        })
+        // send chat bot message
+        var channelName = "netcash";
+        var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.";
+        await chatBot.sendBotMessage(channelName, message);
 
         const doc = await getDocument("Settings", "Email");
         var settings = doc.data();
@@ -273,16 +226,12 @@ function padBranch(branchcode) {
 app.post("/pay", urlencodedParser, async (req, res) => {
     if(req.body.jobId && req.body.studentAlias) {
       // Fetch the student
-      console.log("1");
-
       const doc = await getDocument("students", req.body.studentAlias);
       const user = await getDocument("users", req.body.studentAlias);
       var student = doc.data();
       student.email = user.data().email;
       student.phoneNumber = user.data().phone;
       student.fullName = user.data().name + " " + user.data().surname;
-
-      console.log("2");
 
       if(student) {
         // Get payment gateway data
@@ -302,7 +251,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           var dd  = this.getDate().toString();
           return (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
         };
-        console.log("3");
+      
         // Today
         var date = new Date();
         // Tomorrow
@@ -328,7 +277,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
             || publicHoliday === "1226" // Day of Goodwill
           )
         {
-          console.log("4");
+ 
         if(publicHoliday === "0101" && day === "sunday" // New Year's Day on Sunday
           || publicHoliday === "0321" && day === "sunday" // Human Rights Day on Sunday
           || publicHoliday === "0410" && day === "sunday" // Good Friday on Sunday
@@ -343,12 +292,12 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           || publicHoliday === "1226" && day === "sunday" // Day of Goodwill on Sunday
         ) 
         {
-          console.log("5");
+     
           date.setDate(date.getDate() + 2);
           day = (moment(date).format("dddd")).toLowerCase();
         }
         else {
-          console.log("5");
+   
           date.setDate(date.getDate()  + 1);
           day = (moment(date).format("dddd")).toLowerCase();
         }         
@@ -363,7 +312,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
           ["T", student.userId, student.fullName, 1, student.accountName, 1, padBranch(student.branchCode), 0, student.accountNumber, studentSalaryInCents, student.email, student.phoneNumber, req.body.jobId ].join('\t') + "\n" +
           ["F", 1, studentSalaryInCents, 9999].join('\t') + "\n"
         );
-        console.log("6");
+    
         // Batch File Upload Parameters
         var args = { ServiceKey: paymentGateway.creditorPaymentServiceKey, File: file };
         return client.BatchFileUploadAsync(args);
@@ -378,7 +327,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
         console.log(err.message);
       })
       .then(result => {
-        console.log("7");
+    
         // Upload single student payment information
         var batch = result[0].BatchFileUploadResult;
         // Batch Uploaded
@@ -392,7 +341,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
                     studentFileToken: batch,
                     outboundPayment: true,
                     lastModified: moment(Date.now()).format('L'),
-                    paymentDate: moment(date, "YYYYMMDD").format('LLLL')
+                    paymentDate: moment(date, "YYYYMMDD").format('L')
                   });
                   db.collection("micros").doc(req.body.jobId).update({
                     status: "rate",
@@ -475,225 +424,7 @@ app.post("/pay", urlencodedParser, async (req, res) => {
   }
 });
 
-//Get All Users - PowerBI
-app.get("/users", async (req, res) => {
-  var users = [];
-  const snapshot = await db.collection("users").get();
-  snapshot.forEach(doc => {
-    users.push(doc.data());
-  });
-  return res.status(200).send(users);
-});
 
-//Get All Clients - PowerBI
-app.get("/clients", async (req, res) => {
-  var clients = [];
-  const snapshot = await db.collection("clients").get();
-  snapshot.forEach(doc => {
-    clients.push(doc.data());
-  });
-  return res.status(200).send(clients);
-});
-
-//Get All Students - PowerBI
-app.get("/students", async (req, res) => {
-  var students = [];
-  const snapshot = await db.collection("students").get();
-  snapshot.forEach(doc => {
-    students.push(doc.data());
-  });
-  return res.status(200).send(students);
-});
-
-//Get All Vetted - PowerBI
-app.get("/vetted", async (req, res) => {
-  var vetted = [];
-  const snapshot = await db.collection("vetted").get();
-  snapshot.forEach(doc => {
-    vetted.push(doc.data());
-  });
-  return res.status(200).send(vetted);
-});
-
-//Get All Jobs - PowerBI
-app.get("/jobs", async (req, res) => {
-  var jobs = [];
-  const snapshot = await db.collection("jobs").get();
-  snapshot.forEach(doc => {
-    jobs.push(doc.data());
-  });
-  return res.status(200).send(jobs);
-});
-
-//Get All Micros - PowerBI
-app.get("/micros", async (req, res) => {
-  var micros = [];
-  const snapshot = await db.collection("micros").get();
-  snapshot.forEach(doc => {
-    micros.push(doc.data());
-  });
-  return res.status(200).send(micros);
-});
-
-//Get All Skills - PowerBI
-app.get("/skills", async (req, res) => {
-  var skills = [];
-  const snapshot = await db.collection("skills").get();
-  snapshot.forEach(doc => {
-    skills.push(doc.data());
-  });
-  return res.status(200).send(skills);
-});
-
-//Get All Payments - PowerBI
-app.get("/payments", async (req, res) => {
-  var payments = [];
-  const snapshot = await db.collection("payments").get();
-  snapshot.forEach(doc => {
-    payments.push(doc.data());
-  });
-  return res.status(200).send(payments);
-});
-
-//Get All Applications - PowerBI
-app.get("/applications", async (req, res) => {
-  var applications = [];
-  const snapshot = await db.collection("applications").get();
-  snapshot.forEach(doc => {
-    applications.push(doc.data());
-  });
-  return res.status(200).send(applications);
-});
-
-//Get All Support - PowerBI
-app.get("/support", async (req, res) => {
-  var support = [];
-  const snapshot = await db.collection("support").get();
-  snapshot.forEach(doc => {
-    support.push(doc.data());
-  });
-  return res.status(200).send(support);
-});
-
-//Get All Feedback - PowerBI
-app.get("/feedback", async (req, res) => {
-  var feedback = [];
-  const snapshot = await db.collection("feedback").get();
-  snapshot.forEach(doc => {
-    feedback.push(doc.data());
-  });
-  return res.status(200).send(feedback);
-});
-
-//Get All StudentRatings - PowerBI
-app.get("/studentRatings", async (req, res) => {
-  var studentRatings = [];
-  const snapshot = await db.collection("studentRatings").get();
-  snapshot.forEach(doc => {
-    studentRatings.push(doc.data());
-  });
-  return res.status(200).send(studentRatings);
-});
-
-//Get All ClientRatings - PowerBI
-app.get("/clientRatings", async (req, res) => {
-  var clientRatings = [];
-  const snapshot = await db.collection("clientRatings").get();
-  snapshot.forEach(doc => {
-    clientRatings.push(doc.data());
-  });
-  return res.status(200).send(clientRatings);
-});
-
-//Get All Communication - PowerBI
-app.get("/communication", async (req, res) => {
-  var communication = [];
-  const snapshot = await db.collection("communication").get();
-  snapshot.forEach(doc => {
-    communication.push(doc.data());
-  });
-  return res.status(200).send(communication);
-});
-
-//Get All ProblemSolving - PowerBI
-app.get("/problemSolving", async (req, res) => {
-  var problemSolving = [];
-  const snapshot = await db.collection("problemSolving").get();
-  snapshot.forEach(doc => {
-    problemSolving.push(doc.data());
-  });
-  return res.status(200).send(problemSolving);
-});
-
-//Get All Leadership - PowerBI
-app.get("/leadership", async (req, res) => {
-  var leadership = [];
-  const snapshot = await db.collection("leadership").get();
-  snapshot.forEach(doc => {
-    leadership.push(doc.data());
-  });
-  return res.status(200).send(leadership);
-});
-
-//Get All Organisation - PowerBI
-app.get("/organisation", async (req, res) => {
-  var organisation = [];
-  const snapshot = await db.collection("organisation").get();
-  snapshot.forEach(doc => {
-    organisation.push(doc.data());
-  });
-  return res.status(200).send(organisation);
-});
-
-//Get All Cancel - PowerBI
-app.get("/cancel", async (req, res) => {
-  var cancel = [];
-  const snapshot = await db.collection("cancel").get();
-  snapshot.forEach(doc => {
-    cancel.push(doc.data());
-  });
-  return res.status(200).send(cancel);
-});
-
-//Get All Incomplete - PowerBI
-app.get("/incomplete", async (req, res) => {
-  var incomplete = [];
-  const snapshot = await db.collection("incomplete").get();
-  snapshot.forEach(doc => {
-    incomplete.push(doc.data());
-  });
-  return res.status(200).send(incomplete);
-});
-
-//Get All Dissatisfied - PowerBI
-app.get("/dissatisfied", async (req, res) => {
-  var dissatisfied = [];
-  const snapshot = await db.collection("dissatisfied").get();
-  snapshot.forEach(doc => {
-    dissatisfied.push(doc.data());
-  });
-  return res.status(200).send(dissatisfied);
-});
-
-//Get All Errors - PowerBI
-app.get("/errors", async (req, res) => {
-  var errors = [];
-  const snapshot = await db.collection("errors").get();
-  snapshot.forEach(doc => {
-    errors.push(doc.data());
-  });
-  return res.status(200).send(errors);
-});
-
-//Get All Netcash - PowerBI
-app.get("/netcash", async (req, res) => {
-  var netcash = [];
-  const snapshot = await db.collection("netcash").get();
-  snapshot.forEach(doc => {
-    netcash.push(doc.data());
-  });
-  return res.status(200).send(netcash);
-});
 
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
@@ -711,18 +442,21 @@ function standardEmail(receiver, sender, subject, message) {
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
   .onCreate(async (snap, context) => {
+    const insertUserSQL = insertUserSQLJS.insertUserSQL;
     await insertUserSQL(snap);
   });
 
 //User document updated
 exports.updateUser = functions.firestore.document('users/{userId}')
 .onUpdate(async (change, context) => {
+  const updateUserSQL = updateUserSQLJS.updateUserSQL;
   await updateUserSQL(change);
 });
 
 //New client document created
 exports.newClient = functions.firestore.document('clients/{clientId}')
   .onUpdate(async (change, context) => {
+    const clientSQL = clientSQLJS.clientSQL;
     await clientSQL(change);
   });
 
@@ -730,6 +464,7 @@ exports.newClient = functions.firestore.document('clients/{clientId}')
 // New feedback document created
 exports.feedback = functions.firestore.document('feedback/{feedback}')
 .onCreate(async (snap, context) => {
+  const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
   await insertFeedbackSQL(snap);
 
   const value = snap.data();
@@ -737,27 +472,18 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
-  //send chat bot message
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        'random',
-        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ,
-        params
-    );
-  })
+  // send chat bot message
+  var channelName = "customer-support";
+  var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ;
+  await chatBot.sendBotMessage(channelName, message);
+
   return null;
 });
 
 //feedback document updated
 exports.updateFeedback = functions.firestore.document('feedback/{feedback}')
 .onUpdate(async (change, context) => {
+  const updateFeedbackSQL = updateFeedbackSQLJS.updateFeedbackSQL;
   await updateFeedbackSQL(change);
 });
 
@@ -765,27 +491,17 @@ exports.updateFeedback = functions.firestore.document('feedback/{feedback}')
 // New support document created
 exports.support = functions.firestore.document('support/{support}')
 .onCreate(async (snap, context) => {
+  const insertSupportSQL = insertSupportSQLJS.insertSupportSQL;
   await insertSupportSQL(snap);
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(standardEmail(setting.getSupport, value.email, value.subject, value.message));
-  //send chat bot message
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        'random',
-        "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ,
-        params
-    );
-  })
+  // send chat bot message
+  var channelName = "customer-support";
+  var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ;
+  await chatBot.sendBotMessage(channelName, message);
   return null;
 });
 
@@ -793,6 +509,7 @@ exports.support = functions.firestore.document('support/{support}')
 //support document updated
 exports.updateSupport = functions.firestore.document('support/{support}')
 .onUpdate(async (change, context) => {
+  const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
   await updateSupportSQL(change);
 });
 
@@ -808,78 +525,62 @@ function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jo
   }
 }
 // Send slack alert
-function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
-  const bot = new SlackBot({
-    token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-    name: 'jobox_app'
-  })
-  bot.on('start', () => {
-    const params = {
-        icon_emoji: ':robot_face:'
-    }
-    bot.postMessageToChannel(
-        channel,
-        "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
-          + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
-          clientName + " on their phone number, " + phone + "\nAlex Sexwale",
-        params
-    );
-  })
+async function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
+  // send chat bot message
+  var channelName = channel;
+  var message = "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
+  + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
+  clientName + " on their phone number, " + phone + "\nAlex Sexwale";
+  await chatBot.sendBotMessage(channelName, message);
 }
 
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
+  const insertJobSQL = insertJobSQLJS.insertJobSQL;
+  await insertJobSQL(snap);
+
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
-  slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
-
-  await insertJobSQL(snap);
+  slackJobPost("job-notifications", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
 });
 
 //job document updated
 exports.updateJob= functions.firestore.document('jobs/{jobId}')
 .onUpdate(async (change, context) => {
+  const updateJobsSql = updateJobsSqlJS.updateJobsSql;
   await updateJobsSql(change);
 });
 
 //skills document updated
 exports.updateSkills = functions.firestore.document('skills/{jobId}')
 .onUpdate(async (change, context) => {
+  const updateSkillSQL = updateSkillSQLJS.updateSkillSQL;
   await updateSkillSQL(change);
 });
 
 // New payments document created
 exports.paymentsPost = functions.firestore.document('payments/{jobId}')
 .onCreate(async (snap, context) => {
+  const insertPaymentSQL = insertPaymentSQLJS.insertPaymentSQL;
   await insertPaymentSQL(snap);
 });
 
 //Payments document updated
 exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
 .onUpdate(async (change, context) => {
+  const updatePayments = updatePaymentsJS.updatePayments;
   await updatePayments(change);
   const newValue = change.after.data();
   const previousValue = change.before.data();
   if (previousValue.outboundPayment === false && newValue.outboundPayment === true) {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "netcash";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed";
+    await chatBot.sendBotMessage(channelName, message);
   }
   return null;
 });
@@ -887,6 +588,7 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
 //new student or updated student
 exports.newStudent = functions.firestore.document('students/{studentId}')
 .onUpdate(async (change, context) => {
+  const studentSQL = studentSQLJS.studentSQL;
   await studentSQL(change);
 });
 
@@ -896,7 +598,7 @@ function applicantSelected(receiver, sender, jobName, jobType, jobId, applicantN
     to: receiver,
     from: sender,
     subject: "You have been selected for the job",
-    text: "Hey " + applicantName + ",\n\nWould you look at that, you just got select for the " + jobType + " job: " + jobName
+    text: "Hey " + applicantName + ",\n\nWould you look at that, you just got selected for the " + jobType + " job: " + jobName
          + " (" + jobId + ").\n\nTo accept/decline the job click here to login - https://app.jobox.co.za/login\n\n✌️\nJobox"
   }
 }
@@ -913,6 +615,7 @@ function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantN
 // Application document updated
 exports.applicantDecision = functions.firestore.document('applications/{applicationsId}')
 .onUpdate(async (change, context) => {
+  const updateApplicationSQL = updateApplicationSQLJS.updateApplicationSQL;
   await updateApplicationSQL(change);
 
   const newValue = change.after.data();
@@ -925,21 +628,10 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
     sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
   }
   if(newValue.approved === false && newValue.status === "decline") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "job-notifications";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined";
+    await chatBot.sendBotMessage(channelName, message);
 
     sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
   }
@@ -998,8 +690,8 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
     ").\n\nTo rate and review the order click here to login - https://app.jobox.co.za/login \n\nYour review will only become available once you have reviewed the client.\n\n✌️\nJobox";
   }
   if(messageType === "clientRatingStudent") {
-    subject = "Client has rated you!";
-    message = "Hey " + studentName + ",\n\n" + applicantName + " has given you a rating on the job you completed:" + jobName + " (" + jobId +
+    subject = "The client has rated you!";
+    message = "Hey " + studentName + ",\n\n" + clientName + " has given you a rating on the job you completed:" + jobName + " (" + jobId +
     ").\n\nTo view your rating, rate the client. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
   }
   if(messageType === "summary") {
@@ -1016,6 +708,7 @@ function studentEmail(messageType, receiver, sender, jobName, jobId, clientName,
 // New application
 exports.newApplication = functions.firestore.document('applications/{applicationsId}')
 .onCreate(async (snap, context) => {
+  const insertApplicationSQL = insertApplicationSQLJS.insertApplicationSQL;
   await insertApplicationSQL(snap);
 
   const value = snap.data();
@@ -1029,6 +722,7 @@ exports.newApplication = functions.firestore.document('applications/{application
 // Updates in Micro table
 exports.jobStatus = functions.firestore.document('micros/{microsId}')
 .onUpdate(async (change, context) => {
+  const updateProjectTaskSQL = updateProjectTaskSQLJS.updateProjectTaskSQL;
   await updateProjectTaskSQL(change);
   const newValue = change.after.data();
   const previousValue = change.before.data();
@@ -1065,40 +759,18 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 
   //cancelled 
   if(previousValue.status !== "cancelled" && newValue.status === "cancelled") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled",
-          params
-      );
-    })
+    // send chat bot message
+    var channelName = "job-notifications";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled";
+    await chatBot.sendBotMessage(channelName, message);
   }
 
   //dissatisfied 
   if(previousValue.status !== "dissatisfied" && newValue.status === "dissatisfied") {
-    //send chat bot message
-    const bot = new SlackBot({
-      token: `xoxb-13549599124-1709663809237-tdLLwfcIdU48xlXiurbs7HG5`,
-      name: 'jobox_app'
-    })
-    bot.on('start', () => {
-      const params = {
-          icon_emoji: ':robot_face:'
-      }
-      bot.postMessageToChannel(
-          'random',
-          "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied",
-          params
-      );
-    })
+    // send chat bot message
+    channelName = "job-notifications";
+    message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied";
+    await chatBot.sendBotMessage(channelName, message);
   }
   return null;
 });
@@ -1106,26 +778,58 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 // New vetted
 exports.createVetted = functions.firestore.document('vetted/{studentId}')
 .onCreate(async (snap, context) => {
+  const insertVettingSQL = insertVettingSQLJS.insertVettingSQL;
   await insertVettingSQL(snap);
 });
 
 //Updated vetted
 exports.updateVetted = functions.firestore.document('vetted/{studentId}')
 .onUpdate(async (change, context) => {
+  const updateVettingSQL = updateVettingSQLJS.updateVettingSQL;
   await updateVettingSQL(change);
 });
 
 
-// New rating
-exports.createRating = functions.firestore.document('ratings/{studentId}')
+// New student soft skill rating
+exports.createSoftSkillRating = functions.firestore.document('ratings/{studentId}')
 .onCreate(async (snap, context) => {
-  await insertRatingSQL(snap);
+  const insertStudentSoftSkillRatingSQL = insertRatingSQLJS.insertStudentSoftSkillRatingSQL;
+  await insertStudentSoftSkillRatingSQL(snap);
 });
 
-//Updated rating
-exports.updateRating = functions.firestore.document('ratings/{studentId}')
+//Updated student soft skill rating
+exports.updateSoftSkillRating = functions.firestore.document('ratings/{studentId}')
 .onUpdate(async (change, context) => {
-  await updateRatingSQL(change);
+  const updateStudentSoftSkillRatingSQL = updateRatingSQLJS.updateStudentSoftSkillRatingSQL;
+  await updateStudentSoftSkillRatingSQL(change);
+});
+
+// New student hard skill rating
+exports.createHardSkillRating = functions.firestore.document('clientRatings/{studentId}')
+.onCreate(async (snap, context) => {
+  const insertStudentHardSkillRatingSQL = insertRatingSQLJS.insertStudentHardSkillRatingSQL;
+  await insertStudentHardSkillRatingSQL(snap);
+});
+
+//Updated student hard skill rating
+exports.updateHardSkillRating = functions.firestore.document('clientRatings/{studentId}')
+.onUpdate(async (change, context) => {
+  const updateStudentHardSkillRatingSQL = updateRatingSQLJS.updateStudentHardSkillRatingSQL;
+  await updateStudentHardSkillRatingSQL(change);
+});
+
+// New client rating
+exports.createClientRating = functions.firestore.document('studentRatings/{studentId}')
+.onCreate(async (snap, context) => {
+  const insertClientRatingSQL = insertRatingSQLJS.insertClientRatingSQL;
+  await insertClientRatingSQL(snap);
+});
+
+//Updated client rating
+exports.updateClientRating = functions.firestore.document('studentRatings/{studentId}')
+.onUpdate(async (change, context) => {
+  const updateClientRatingSQL = updateRatingSQLJS.updateClientRatingSQL;
+  await updateClientRatingSQL(change);
 });
 
 //for testing 

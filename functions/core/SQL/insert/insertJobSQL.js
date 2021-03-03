@@ -6,19 +6,16 @@ const getDocument = firebaseJS.getDocument;
 
 async function insertJobSQL(snap) {
     const value = snap.data();
-    //get the industry for the job from the client's profile
-    const clientDoc =  await getDocument("clients", value.clientAlias);
-    const clientDocData = clientDoc.data();
-    const industry = clientDocData.industry;
     var startDate = new Date(value.startDate);
     var lastModified = new Date(value.lastModified);
     var created = new Date(value.created);
   
-    //get the job title ('category' in skills collection) 
+    //get the job title ('category' in skills collection) and industry
     const skillsDoc =  await getDocument("skills", value.jobId);
     const skillsDocData = skillsDoc.data();
     const jobTitle = skillsDocData.category;
-  
+    const industry = skillsDocData.industry;
+
     var sql = "INSERT INTO Jobs (job_ID, client_ID, industry, name, verified, job_description, job_type, education, experience, job_title, start_date, location, payment, job_status, satisfied, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     var values = [value.jobId, value.clientId, industry, value.name, value.verified, null, value.jobType, value.education, value.experience, jobTitle, startDate, null, null, null, null, lastModified, created];
     await sqlQuery(sql,values);

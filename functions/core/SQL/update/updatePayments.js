@@ -8,7 +8,7 @@ async function updatePayments(change) {
     var lastModified = new Date();
     if (newValue.paymentDate !== previousValue.paymentDate) {
       var sql = "UPDATE Payments SET payment_date = ?, last_modified = ? WHERE job_ID = ?";
-      paymenyDate =  new Date(newValue.paymentDate);
+      var paymenyDate =  new Date(newValue.paymentDate);
       var values = [paymentDate, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }
@@ -52,11 +52,7 @@ async function updatePayments(change) {
       values = [newValue.reference, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }
-    if (newValue.requestTrace !== previousValue.requestTrace) {
-      sql = "UPDATE Payments SET request_trace = ?, last_modified = ? WHERE job_ID = ?";
-      values = [newValue.requestTrace, lastModified, newValue.jobId];
-      await sqlQuery(sql,values);
-    }
+
   }
 
   module.exports = {updatePayments}
