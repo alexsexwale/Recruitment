@@ -88,7 +88,7 @@ async function studentSQL(change) {
       }
       //qualifications
       sql = "INSERT INTO University_Qualifications (student_ID, qualification_type, graduate_status, studying, year, qualification_title, faculty, institution, institution_type, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-      values = [newValue.userId, "degree", newValue.graduateStatus, newValue.studying, newValue.year, newValue.degree, newValue.faculty, newValue.institution, newValue.institutionType, lastModified, created];
+      values = [newValue.userId, "Degree", newValue.graduateStatus, newValue.studying, newValue.year, newValue.degree, newValue.faculty, newValue.institution, newValue.institutionType, lastModified, created];
       await sqlQuery(sql,values);
     }
     //students document updated

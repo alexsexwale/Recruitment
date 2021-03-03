@@ -313,10 +313,14 @@ export default {
       },
       modelValidations: {
         name: {
-          required: true
+          required: true,
+          max: 50,
+          min: 2
         },
         description: {
-          required: true
+          required: true,
+          max: 200,
+          min: 5
         },
         jobType: {
           required: true

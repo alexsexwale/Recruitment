@@ -74,12 +74,12 @@ async function updateStudentSoftSkillRatingSQL(change) {
     }
   }
 
-  async function updateClientRatingSQL(change) {
+  async function updateClientRatingSQL(change) { 
     const newValue = change.after.data();
     const previousValue = change.before.data();
     var lastModified = new Date();
 
-    if (newValue.hardSkill !== previousValue.hardSkill) {
+    if (newValue.rate !== previousValue.rate) {
         var sql = "UPDATE Ratings SET rate = ?, last_modified = ? WHERE job_ID = ? AND subcategory = ?";
         var values = [newValue.rate, lastModified, newValue.jobId, "client rating"];
         await sqlQuery(sql,values);
