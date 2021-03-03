@@ -8,7 +8,7 @@ async function updateFeedbackSQL(change) {
     var lastModified = new Date();
   
     if (newValue.message !== previousValue.message) {
-      var sql = "UPDATE Enquiries SET message = ?, last_modified = ? WHERE message_ID = ?";
+      var sql = "UPDATE Enquiries SET message = ?, last_modified = ? WHERE id = ?";
       var values = [newValue.message, lastModified, change.after.id];
       await sqlQuery(sql,values);
     }

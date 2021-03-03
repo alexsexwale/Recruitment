@@ -12,18 +12,31 @@ async function updateVettingSQL(change) {
      const studentsDocData = studentsDoc.data();
      const studentId = studentsDocData.userId;
      var lastModified = new Date();
-     
+     var created = new Date(value.lastModified);
     //iterate over the different skills in the vetting document
     for (const skill in newValue) {
       const isVetted = newValue[skill];
       // now skill and isVetted are the property name and value 
   
-      //only update if there was a change
-      if (newValue[skill] !== previousValue[skill])
+      //only update if there was a change and either insert or delete depending on if isVetted === true or false
+      if ((newValue[skill] !== previousValue[skill]) && (isVetted === true))
       {
-        var sql = "UPDATE Vettings SET is_vetted = ?, last_modified = ? WHERE student_ID = ? AND expertise = ?";
-        var values = [isVetted, lastModified, studentId, skill];
+        var sql = "INSERT INTO Vettings (student_ID, expertise, last_modified, created) VALUES (?,?,?,?)";
+        var values = [studentId, skill, lastModified, created];
         var query = mysqlConnection.query(sql, values, (error) => {
+          if (error) {
+            console.log(error);
+          }
+          else {
+            console.log(query.sql);
+          }
+        });
+      }
+      if ((newValue[skill] !== previousValue[skill]) && (isVetted === false))
+      {
+        sql = "DELETE FROM Vettings WHERE student_ID = ? AND expertise = ?";
+        values = [studentId, skill];
+        query = mysqlConnection.query(sql, values, (error) => {
           if (error) {
             console.log(error);
           }

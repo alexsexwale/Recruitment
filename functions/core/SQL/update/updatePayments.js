@@ -52,11 +52,7 @@ async function updatePayments(change) {
       values = [newValue.reference, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }
-    if (newValue.requestTrace !== previousValue.requestTrace) {
-      sql = "UPDATE Payments SET request_trace = ?, last_modified = ? WHERE job_ID = ?";
-      values = [newValue.requestTrace, lastModified, newValue.jobId];
-      await sqlQuery(sql,values);
-    }
+
   }
 
   module.exports = {updatePayments}

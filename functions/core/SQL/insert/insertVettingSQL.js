@@ -19,11 +19,11 @@ async function insertVettingSQL(snap) {
       // now skill and isVetted are the property name and value that can be inserted to MySQL
   
       //if a field is not a skill, skip to the next iteration
-      if (skill === "created" || skill === "lastModified" || skill === "userId") {
+      if (isVetted !== true) {
         continue;
       }
-      var sql = "INSERT INTO Vettings (student_ID, expertise, is_vetted, last_modified, created) VALUES (?,?,?,?,?)";
-      var values = [studentId, skill, isVetted, lastModified, created];
+      var sql = "INSERT INTO Vettings (student_ID, expertise, last_modified, created) VALUES (?,?,?,?)";
+      var values = [studentId, skill, lastModified, created];
       var query = mysqlConnection.query(sql, values, (error) => {
         if (error) {
           console.log(error);

@@ -8,35 +8,35 @@ async function insertStudentSoftSkillRatingSQL(snap) {
     var created = new Date(value.created);
 
     var sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    var values = [value.jobId, "communication", "listening", value.listening, "student", lastModified, created];
+    var values = [value.jobId, "Communication", "Listening", value.listening, "Student", lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "communication", "communication", value.communication, "student",  lastModified, created];
+    values = [value.jobId, "Communication", "Communication", value.communication, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "problem solving", "critical thinking", value.criticalThinking, "student",  lastModified, created];
+    values = [value.jobId, "Problem Solving", "Critical Thinking", value.criticalThinking, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "problem solving", "creative", value.creative, "student",  lastModified, created];
+    values = [value.jobId, "Problem Solving", "Creative", value.creative, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "leadership", "initiative", value.initiative, "student",  lastModified, created];
+    values = [value.jobId, "Leadership", "Initiative", value.initiative, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "leadership", "accountability", value.accountability, "student",  lastModified, created];
+    values = [value.jobId, "Leadership", "Accountability", value.accountability, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "organisation", "planning", value.planning, "student",  lastModified, created];
+    values = [value.jobId, "Organisation", "Planning", value.planning, "Student",  lastModified, created];
     await sqlQuery(sql,values);
 
     sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?)";
-    values = [value.jobId, "organisation", "tracking", value.tracking, "student",  lastModified, created];
+    values = [value.jobId, "Organisation", "Tracking", value.tracking, "Student",  lastModified, created];
     await sqlQuery(sql,values);
   }
 
@@ -46,7 +46,7 @@ async function insertStudentSoftSkillRatingSQL(snap) {
     var created = new Date(value.created);
 
     var sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, review, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.jobId, "hard skill", "hard skill", value.hardSkill, value.review, "student",  lastModified, created];
+    var values = [value.jobId, "Hard Skill", "Hard Skill", value.hardSkill, value.review, "Student",  lastModified, created];
     await sqlQuery(sql,values);
   }
 
@@ -56,7 +56,7 @@ async function insertStudentSoftSkillRatingSQL(snap) {
     var created = new Date();
 
     var sql = "INSERT INTO Ratings (job_ID, category, subcategory, rate, review, user_role, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
-    var values = [value.jobId, "client rating", "client rating", value.rate, value.review, "client",  lastModified, created];
+    var values = [value.jobId, "Client Rating", "Client Rating", value.rate, value.review, "Client",  lastModified, created];
     await sqlQuery(sql,values);
   }
   module.exports = {insertStudentSoftSkillRatingSQL, insertStudentHardSkillRatingSQL, insertClientRatingSQL}
