@@ -31,7 +31,7 @@ export default {
                 db.collection('micros').doc(payload.jobId).update({
                     status: "incomplete",
                     satisfied: false,
-                    cancelled: true,
+                    clientCancelled: true,
                     lastModified: moment(Date.now()).format('L') 
                 });
             });

@@ -262,9 +262,8 @@ export default {
             status: "select",
             satisfied: null,
             complete: false,
-            clientRatingComplete: false,
-            studentRatingComplete: false,
-            cancelled: false,
+            // clientRatingComplete: false,
+            // studentRatingComplete: false,
             created: moment(Date.now()).format('L'),
             lastModified: moment(Date.now()).format("L"),
           });

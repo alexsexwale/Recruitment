@@ -97,22 +97,7 @@ app.post("/notification", urlencodedParser, async (req, res) => {
   sgMail.setApiKey(settings.apiKey);
   
   var msg = null;
-  if(req.body.type === "feedback" || req.body.type === "support") {
-    msg = {
-        to: "contact@jobox.co.za",
-        from: req.body.email,
-        subject: req.body.subject,
-        text: req.body.message
-    };
-
-    db.collection(req.body.type).add({
-        userId: req.body.id,
-        created: moment(Date.now()).format('L'),
-        subject: req.body.subject,
-        message: req.body.message
-    });
-  }
-  if(req.body.type === "active") {
+  if(req.body.type === "active") { //trigger in the micros table for cancelled, active and incomplete <<also add slack messages going to jobnotifications
     msg = {
         to: "contact@jobox.co.za",
         from: "admin@jobox.co.za",
@@ -142,7 +127,7 @@ app.post("/notification", urlencodedParser, async (req, res) => {
 
 // Inbound payment
 app.post("/activate", urlencodedParser, async (req, res) => {
-  if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
+  if(req.body.TransactionAccepted && req.body.Extra1) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
@@ -714,8 +699,13 @@ exports.newApplication = functions.firestore.document('applications/{application
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
+  //below code gives following error in firestore console:
+  //Error: Bad Request
+  //at node_modules/@sendgrid/client/src/classes/client.js:133:29
+  //at processTicksAndRejections (internal/process/task_queues.js:97:5) 
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(clientEmail("application", value.clientEmail, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  //you can get the full error in the console by applying for a job as a student
   return null;
 });
 
