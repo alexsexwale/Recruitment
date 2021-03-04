@@ -23,5 +23,13 @@ export default {
     // Get Embed Token
     async getEmbedToken() {
         return await api.get("powerbi/getReportEmbedToken")
-    }
+    },
+    // Download File
+    downloadFile(args) {
+        return api.get("downloadPdf", args)
+    },
+    sendPdf(args) {
+        return api.post("sendPdf", args)
+    },
+
 };

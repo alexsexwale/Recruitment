@@ -1,7 +1,6 @@
 let path = require('path');
 const functions = require("firebase-functions");
 const moment = require("moment");
-//const admin = require("firebase-admin"); code moved to config/firebase.js due to not being able to initialize firebase twice
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -18,6 +17,7 @@ const firebase = require("./config/firebase");
 const powerbi = require("./core/powerbi");
 //const payment = require("./core/payment");
 const tokenAuth = require("./core/auth");
+const pdf = require("./core/pdf/pdf")
 
 const clientSQLJS = require("./core/SQL/insert/clientSQL.js");
 const insertApplicationSQLJS = require("./core/SQL/insert/insertApplicationSQL.js");
@@ -40,6 +40,10 @@ const updateUserSQLJS = require("./core/SQL/update/updateUserSQL.js");
 const updateVettingSQLJS = require("./core/SQL/update/updateVettingSQL.js");
 const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
 
+//Generate Pdf
+const generatePdf = require("./core/pdf/invoice");
+const generateInvoice = generatePdf.generateInvoice;
+
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
@@ -58,10 +62,12 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
+app.use("/pdf", pdf);
 //app.use(payment);
 //app.use(tokenAuth);
 
-
+//Static directory for CSS and logo
+app.use("/public", express.static("./public"))
 
 // authenticates all routes
 //app.use(authMiddleware);
