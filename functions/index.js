@@ -1,7 +1,6 @@
 let path = require('path');
 const functions = require("firebase-functions");
 const moment = require("moment");
-//const admin = require("firebase-admin"); code moved to config/firebase.js due to not being able to initialize firebase twice
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,6 +13,7 @@ const firebase = require("./config/firebase");
 const powerbi = require("./core/powerbi");
 //const payment = require("./core/payment");
 const tokenAuth = require("./core/auth");
+const pdf = require("./core/pdf/pdf")
 
 const clientSQLJS = require("./core/SQL/insert/clientSQL.js");
 const insertApplicationSQLJS = require("./core/SQL/insert/insertApplicationSQL.js");
@@ -55,6 +55,11 @@ const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
 const updateUserSQL = updateUserSQLJS.updateUserSQL;
 const updateVettingSQL = updateVettingSQLJS.updateVettingSQL;
 const updateRatingSQL = updateRatingSQLJS.updateRatingSQL;
+
+//Generate Pdf
+const generatePdf = require("./core/pdf/invoice");
+const generateInvoice = generatePdf.generateInvoice;
+
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
 var serviceAccount = require("./permissions.json");
@@ -73,10 +78,12 @@ const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
 app.use("/powerbi", powerbi);
+app.use("/pdf", pdf);
 //app.use(payment);
 //app.use(tokenAuth);
 
-
+//Static directory for CSS and logo
+app.use("/public", express.static("./public"))
 
 // authenticates all routes
 //app.use(authMiddleware);
@@ -838,6 +845,7 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   slackJobPost("random", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
 
   await insertJobSQL(snap);
+  await generateInvoice(snap);
 });
 
 //job document updated

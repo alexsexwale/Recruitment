@@ -8,10 +8,11 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+const storage = admin.storage();
 
 // Firestore - get single document
 function getDocument(collection, id) {
   return db.collection(collection).doc(id).get();
 }
 
-module.exports = {db, getDocument}
+module.exports = {db, storage, getDocument}
