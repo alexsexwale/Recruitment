@@ -56,8 +56,8 @@ async function studentSQL(change) {
       }
       //Industry_Alerts
       var mysqlConnection = await createMySQLconnection();
-      for (const key in newValue.industryCategory) {
-        const data = newValue.industryCategory[key];
+      for (const key in newValue.interestedIndustries) {
+        const data = newValue.interestedIndustries[key];
         // now key and data are the property name and data
         sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
         values = [newValue.userId, data, lastModified, created];
@@ -205,8 +205,8 @@ async function studentSQL(change) {
       if (newValue.interestedIndustries.toString() !== previousValue.interestedIndustries.toString()) {
         mysqlConnection = await createMySQLconnection();
         //delete all the old values from the database
-        for (const oldKey in previousValue.industryCategory) {
-          const oldData = previousValue.industryCategory[oldKey];
+        for (const oldKey in previousValue.interestedIndustries) {
+          const oldData = previousValue.interestedIndustries[oldKey];
           // now key and data are the property name and data
             sql = "DELETE FROM Industry_Alerts WHERE student_ID = ? AND industry = ?";
             values = [previousValue.userId, oldData];
@@ -218,11 +218,12 @@ async function studentSQL(change) {
                 console.log(query.sql);
               }
             });
+   
         }
         //insert all the new values into the database
         created = new Date(previousValue.created);
-        for (const newKey in newValue.industryCategory) {
-          const newData = newValue.industryCategory[newKey];
+        for (const newKey in newValue.interestedIndustries) {
+          const newData = newValue.interestedIndustries[newKey];
           // now key and data are the property name and data
           sql = "INSERT INTO Industry_Alerts (student_ID, industry, last_modified, created) VALUES (?,?,?,?)";
           values = [newValue.userId, newData, lastModified, created];
@@ -301,6 +302,37 @@ async function studentSQL(change) {
       if (newValue.personalWebsite !== previousValue.personalWebsite) {
         sql = "UPDATE Social_Media_Handles SET url = ?, last_modified = ? WHERE student_ID = ? AND type = ?";
         values = [newValue.personalWebsite, lastModified, newValue.userId, "Personal Website"];
+        await sqlQuery(sql,values);
+      }
+      //if new social medias were added:
+      if ((newValue.facebook !== null) && (previousValue.facebook === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Facebook", newValue.facebook, lastModified, created];
+        await sqlQuery(sql,values);
+      }
+      if ((newValue.github !== null) && (previousValue.github === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Github", newValue.github, lastModified, created];
+        await sqlQuery(sql,values);
+      }
+      if ((newValue.instagram !== null) && (previousValue.instagram === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Instagram", newValue.instagram, lastModified, created];
+        await sqlQuery(sql,values);
+      }
+      if ((newValue.linkedIn !== null) && (previousValue.linkedIn === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "LinkedIn", newValue.linkedIn, lastModified, created];
+        await sqlQuery(sql,values);
+      }
+      if ((newValue.twitter !== null) && (previousValue.twitter === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Twitter", newValue.twitter, lastModified, created];
+        await sqlQuery(sql,values);
+      }
+      if ((newValue.personalWebsite !== null) && (previousValue.personalWebsite === null)) {
+        sql = "INSERT INTO Social_Media_Handles (student_ID, type, url, last_modified, created) VALUES (?,?,?,?,?)";
+        values = [newValue.userId, "Personal Website", newValue.personalWebsite, lastModified, created];
         await sqlQuery(sql,values);
       }
       //qualifications

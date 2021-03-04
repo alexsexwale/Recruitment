@@ -700,13 +700,9 @@ exports.newApplication = functions.firestore.document('applications/{application
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
-  //below code gives following error in firestore console:
-  //Error: Bad Request
-  //at node_modules/@sendgrid/client/src/classes/client.js:133:29
-  //at processTicksAndRejections (internal/process/task_queues.js:97:5) 
+ 
   sgMail.setApiKey(setting.apiKey);
   sgMail.send(clientEmail("application", value.clientEmail, setting.active, null, null, null, value.clientName, value.applicant));
-  //you can get the full error in the console by applying for a job as a student
   return null;
 });
 

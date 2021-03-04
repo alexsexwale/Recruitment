@@ -23,7 +23,7 @@ async function updatePayments(change) {
       await sqlQuery(sql,values);
     }
     if (newValue.facilitationCost !== previousValue.facilitationCost) {
-      sql = "UPDATE Payments SET facilitation_cost = ?, last_modified = ? WHERE job_ID = ?";
+      sql = "UPDATE Payments SET admin_fee = ?, last_modified = ? WHERE job_ID = ?";
       values = [newValue.facilitationCost, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }
