@@ -41,8 +41,8 @@ const updateVettingSQLJS = require("./core/SQL/update/updateVettingSQL.js");
 const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
 
 //Generate Pdf
-const generatePdf = require("./core/pdf/invoice");
-const generateInvoice = generatePdf.generateInvoice;
+//const generatePdf = require("./core/pdf/invoice");
+//const generateInvoice = generatePdf.generateInvoice;
 
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
