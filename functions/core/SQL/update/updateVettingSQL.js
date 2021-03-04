@@ -11,8 +11,8 @@ async function updateVettingSQL(change) {
      const studentsDoc =  await getDocument("students", change.after.id);
      const studentsDocData = studentsDoc.data();
      const studentId = studentsDocData.userId;
-     var lastModified = new Date();
-     var created = new Date(value.lastModified);
+     var lastModified = new Date(newValue.lastModified);
+     var created = new Date(newValue.created);
     //iterate over the different skills in the vetting document
     for (const skill in newValue) {
       const isVetted = newValue[skill];

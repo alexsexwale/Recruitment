@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* This code should be a module used in multiple instances */
 const express = require("express");
 const bodyParser = require("body-parser");

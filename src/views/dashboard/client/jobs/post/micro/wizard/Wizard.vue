@@ -248,6 +248,8 @@ export default {
             clientName: this.user.displayName,
             clientEmail: this.person.email,
             clientAlias: this.alias,
+            studentCancelled: false,
+            clientCancelled: false,
             name: this.name,
             description: this.description,
             location: this.location,

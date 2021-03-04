@@ -16,8 +16,8 @@ async function insertJobSQL(snap) {
     const jobTitle = skillsDocData.category;
     const industry = skillsDocData.industry;
 
-    var sql = "INSERT INTO Jobs (job_ID, client_ID, industry, name, verified, job_description, job_type, education, experience, job_title, start_date, location, job_status, satisfied, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    var values = [value.jobId, value.clientId, industry, value.name, value.verified, null, value.jobType, value.education, value.experience, jobTitle, startDate, null, null, null, null, lastModified, created];
+    var sql = "INSERT INTO Jobs (job_ID, client_ID, industry, name, verified, job_type, education, experience, job_title, start_date, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+    var values = [value.jobId, value.clientId, industry, value.name, value.verified, value.jobType, value.education, value.experience, jobTitle, startDate, lastModified, created];
     await sqlQuery(sql,values);
   
     //get the information from the 'micros' collection

@@ -79,7 +79,7 @@ async function studentSQL(change) {
         }
       });
       //Work_Experiences
-      sql = "INSERT INTO Work_Experiences (student_ID, descryption, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
+      sql = "INSERT INTO Work_Experiences (student_ID, description, job_title, start_date, end_date, employer, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
       var startDate1 = new Date(newValue.startDate1);
       var endDate1 = new Date(newValue.endDate1);
       values = [newValue.userId, newValue.description1, newValue.jobTitle1, startDate1, endDate1, newValue.employer1, lastModified, created];
