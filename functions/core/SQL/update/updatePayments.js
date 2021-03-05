@@ -8,7 +8,7 @@ async function updatePayments(change) {
     var lastModified = new Date();
     if (newValue.paymentDate !== previousValue.paymentDate) {
       var sql = "UPDATE Payments SET payment_date = ?, last_modified = ? WHERE job_ID = ?";
-      var paymenyDate =  new Date(newValue.paymentDate);
+      var paymentDate =  new Date(newValue.paymentDate);
       var values = [paymentDate, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }

@@ -37,6 +37,28 @@ async function insertJobSQL(snap) {
     sql = "UPDATE Jobs SET job_description = ?, location = ?, job_status = ?, satisfied = ? WHERE job_ID = ?";
     values = [microsDocData.description, microsDocData.location, microsDocData.status, microsDocData.satisfied, microsDocData.jobId];
     await sqlQuery(sql,values);
+
+    //get the payments document and its data
+    const paymentsDoc =  await getDocument("payments", value.jobId);
+    const paymentsDocData = paymentsDoc.data();
+    
+    var jobId = paymentsDocData.jobId;
+    var paymentDate = new Date(paymentsDocData.paymentDate);
+    var amount = paymentsDocData.amount;
+    var serviceFee = paymentsDocData.serviceFee;
+    var facilitationCost = paymentsDocData.facilitationCost;
+    var totalCostPaid = paymentsDocData.totalCostPaid;
+    var inboundPayment = paymentsDocData.inboundPayment;
+    var outboundPayment = paymentsDocData.outboundPayment;
+    var paymentMethod = paymentsDocData.paymentMethod;
+    var reference = paymentsDocData.reference;
+    lastModified = new Date(paymentsDocData.lastModified);
+    created = new Date(paymentsDocData.created);
+    //insert into payments
+    //replace is done because sometimes the payments record is created before the jobs record can finish
+    sql = "REPLACE INTO Payments (job_ID, payment_date, budget, service_fee, admin_fee, total_cost_paid, inbound_payment, outbound_payment, payment_method, reference, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+    values = [jobId, paymentDate, amount, serviceFee, facilitationCost, totalCostPaid, inboundPayment, outboundPayment, paymentMethod , reference, lastModified, created];
+    await sqlQuery(sql,values);
   
   }
 

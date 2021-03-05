@@ -262,7 +262,7 @@ export default {
             facilitation: (this.price.facilitationFee * 1).toFixed(2),
             total: ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2),
             status: "select",
-            satisfied: null,
+            satisfied: false,
             complete: false,
             // clientRatingComplete: false,
             // studentRatingComplete: false,
