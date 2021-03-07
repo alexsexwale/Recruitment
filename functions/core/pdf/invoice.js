@@ -17,6 +17,7 @@ const firebase = require("../../config/firebase");
 
 const moment = require("moment");
 
+const db = firebase.db;
 const getDocument = firebase.getDocument;
 const storage = firebase.storage;
 
@@ -109,7 +110,7 @@ async function generateInvoice(snap) {
   filePath = `Invoices/#${invoiceNo}.pdf`;
 
   // using ejs as a template render the pdf
-  return ejs.renderFile(
+  ejs.renderFile(
     path.join(__dirname, "./templates/", "invoice.ejs"),
     {
       invoice
@@ -122,8 +123,7 @@ async function generateInvoice(snap) {
       } else {
 
         doc = await getDocument("Settings", "Backend");
-        const baseURL = doc.data().api;
-
+        const baseURL = doc.data().devApi;
         const options = {
           format: "A4",
           orientation: "portrait",
@@ -133,7 +133,7 @@ async function generateInvoice(snap) {
           base: baseURL
         };
 
-        return pdf.create(data, options).toStream(async (err, stream) => {
+        pdf.create(data, options).toStream(async (err, stream) => {
           if (err) {
             return {
               status: err.status, 

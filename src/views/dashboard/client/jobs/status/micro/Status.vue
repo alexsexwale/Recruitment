@@ -4,7 +4,7 @@
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <md-card class="padding">
       <div class="margin">
-        <md-button v-if="!paid" class="btn-next md-primary button" @click="viewInvoice" style="max-width:110px;">Get Invoice</md-button>
+        <md-button v-if="select" class="btn-next md-primary button" @click="viewInvoice" style="max-width:110px;">Get Invoice</md-button>
         &nbsp;&nbsp;&nbsp;
         <md-button v-if="!paid" class="btn-next md-info button" @click="payment" style="max-width:110px;">Make payment</md-button>
         &nbsp;&nbsp;&nbsp;
@@ -159,10 +159,10 @@ export default {
     },
     async viewInvoice() {
       this.invoice = true;
-      this.modal = true;
       let doc = await db.collection('invoices').doc(this.$route.params.id).get();
       let invoice = doc.data();
-      const storage = firebase.storage(invoice.bucket);
+
+      const storage = firebase.app().storage(invoice.bucket);
       const storageRef = storage.ref(invoice.filePath);
 
       storageRef.getDownloadURL()
@@ -171,23 +171,39 @@ export default {
           pdf.setAttribute('src', fileUrl);
         })
         .catch(err => {
-          notify("File failed to load")
+          this.$notify(
+            {
+              message: 'File failed to load',
+              icon: 'add_alert',
+              horizontalAlign: 'center',
+              verticalAlign: 'top',
+              type: 'danger'
+            });
         });
+      this.modal = true;
     },
     sendEmail() {
       this.$store.dispatch('sendPdf', this.job);
-      notify("Invoice sent")
-    },
-    downloadFile() {
-      this.$store.dispatch('downloadPdf', this.job);
-      notify("Download complete");
-    },
-    notify(msg) {
       this.$notify(
         {
-          message: msg,
-          icon: 'add_alert'
+          message: 'Invoice sent',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
         });
+    },
+    async downloadFile() {
+      this.$notify(
+        {
+          message: 'Download started...',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+
+      await this.$store.dispatch('downloadPdf', this.job);
     }
   },
   created() {
