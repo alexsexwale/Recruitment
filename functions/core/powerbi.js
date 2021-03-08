@@ -64,18 +64,17 @@ async function generateEmbedToken() {
   try {
     tokenResponse = await getAuthToken();
   } catch (err) {
-    if (
-      err.hasOwnProperty("error_description") &&
-      err.hasOwnProperty("error")
+    /* if (
+      //TO-DO: Save in errors in errors collection
     ) {
-      errorResponse = err.error_description;
+      
     } else {
       // Invalid PowerBI Username provided
       errorResponse = err.toString();
-    }
+    } */
     return {
       status: 401,
-      error: errorResponse
+      error: err
     };
   }
 
