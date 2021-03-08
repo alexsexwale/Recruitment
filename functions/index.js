@@ -1,4 +1,4 @@
-/* eslint-disable */
+
 let path = require('path');
 const functions = require("firebase-functions");
 const moment = require("moment");
@@ -11,6 +11,8 @@ const soap = require("soap");
 const chatBot = require("./core/notifications/chatBot")
 
 const firestoreJS = require("./core/firestore/firestore")
+
+const emailJS = require("./core/notifications/email.js");
 
 const dotenv = require('dotenv');
 const firebaseJS = require(__dirname + '/config/firebase.js');
@@ -55,6 +57,7 @@ const authMiddleware = require("./authMiddleware");
 const db = admin.firestore();
 */
 const db = firebaseJS.db;
+const getDocument = firebaseJS.getDocument;
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors({ origin: true }));
@@ -74,57 +77,53 @@ app.use("/powerbi", powerbi);
 //   next();
 // });
 
-const sgMail = require("@sendgrid/mail");
-
-// Firestore - get single document
-function getDocument(collection, id) {
-  return db.collection(collection).doc(id).get();
-}
-
-
 
 // Routes
 app.get("/hello", async (req, res) => {
-  var channelName = 'job-notifications';
-  var message = 'test';
-  await chatBot.sendBotMessage(channelName, message)
+  var msg = {
+    to: "jpemail777@gmail.com",
+    from: "u14024749@tuks.co.za",
+    subject: "TEST",
+    text: "test"
+  };
+  emailJS.sendEmail(msg);
     return res.status(200).send("Hey");
 });
 
 // Notifications
-app.post("/notification", urlencodedParser, async (req, res) => {
-  const doc = await getDocument("Settings", "Email");
-  var settings = doc.data();
-  sgMail.setApiKey(settings.apiKey);
+// app.post("/notification", urlencodedParser, async (req, res) => {
+//   const doc = await getDocument("Settings", "Email");
+//   var settings = doc.data();
+//   sgMail.setApiKey(settings.apiKey);
   
-  var msg = null;
-  if(req.body.type === "active") { //trigger in the micros table for cancelled, active and incomplete <<also add slack messages going to jobnotifications
-    msg = {
-        to: "contact@jobox.co.za",
-        from: "admin@jobox.co.za",
-        subject: req.body.subject,
-        text: req.body.message
-    };
-  }
-  if(req.body.type === "errors" || req.body.type === "incomplete" || req.body.type === "cancel" || req.body.type === "dissatisfied") {
-    msg = {
-        to: "contact@jobox.co.za",
-        from: req.body.email,
-        subject: req.body.subject,
-        text: req.body.message
-    };
+//   var msg = null;
+//   if(req.body.type === "active") { //trigger in the micros table for cancelled, active and incomplete <<also add slack messages going to jobnotifications
+//     msg = {
+//         to: "contact@jobox.co.za",
+//         from: "admin@jobox.co.za",
+//         subject: req.body.subject,
+//         text: req.body.message
+//     };
+//   }
+//   if(req.body.type === "errors" || req.body.type === "incomplete" || req.body.type === "cancel" || req.body.type === "dissatisfied") {
+//     msg = {
+//         to: "contact@jobox.co.za",
+//         from: req.body.email,
+//         subject: req.body.subject,
+//         text: req.body.message
+//     };
 
-    db.collection(req.body.type).add({
-        jobId: req.body.jobId,
-        created: moment(Date.now()).format('L'),
-        subject: req.body.subject,
-        message: req.body.message
-    });
-  }
-  sgMail.send(msg);
+//     db.collection(req.body.type).add({
+//         jobId: req.body.jobId,
+//         created: moment(Date.now()).format('L'),
+//         subject: req.body.subject,
+//         message: req.body.message
+//     });
+//   }
+//   sgMail.send(msg);
   
-  return res.status(200).send("Sent");
-});
+//   return res.status(200).send("Sent");
+// });
 
 // Inbound payment
 app.post("/activate", urlencodedParser, async (req, res) => {
@@ -176,16 +175,13 @@ app.post("/decline", urlencodedParser, async (req, res) => {
         var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined.";
         await chatBot.sendBotMessage(channelName, message);
 
-        const doc = await getDocument("Settings", "Email");
-        var settings = doc.data();
-        sgMail.setApiKey(settings.apiKey);
         var msg = {
             to: "contact@jobox.co.za",
             from: "admin@jobox.co.za",
             subject: "Netcash Notification - " + req.body.Extra1,
             text: " The user with the job id: " + req.body.Extra1 + ", was unable to process the payment. The payment has been declined."
         };
-        sgMail.send(msg);
+        await emailJS.sendEmail(msg);
         res.status(200).redirect("https://joboxstaging.web.app/client/payment/fail/" + req.body.Extra1);
     } 
     else {
@@ -415,15 +411,6 @@ app.post("/pay", urlencodedParser, async (req, res) => {
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
 
-// Send typed out emails
-function standardEmail(receiver, sender, subject, message) {
-  return {
-    to: receiver,
-    from: sender,
-    subject: subject,
-    text: message
-  }
-}
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
@@ -453,11 +440,12 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
   await insertFeedbackSQL(snap);
 
-  const value = snap.data();
-  const doc = await getDocument("Settings", "Email");
-  const setting = doc.data();
-  sgMail.setApiKey(setting.apiKey);
-  sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
+  // const value = snap.data();
+  // const doc = await getDocument("Settings", "Email");
+  // const setting = doc.data();
+  // sgMail.setApiKey(setting.apiKey);
+  // sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
+  await emailJS.sendEmail(emailJS.standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
   // send chat bot message
   var channelName = "customer-support";
   var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in feedback with the subject: " + value.subject + " and message: " + value.message ;
@@ -480,10 +468,10 @@ exports.support = functions.firestore.document('support/{support}')
   const insertSupportSQL = insertSupportSQLJS.insertSupportSQL;
   await insertSupportSQL(snap);
   const value = snap.data();
+
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
-  sgMail.setApiKey(setting.apiKey);
-  sgMail.send(standardEmail(setting.getSupport, value.email, value.subject, value.message));
+  await emailJS.sendEmail(emailJS.standardEmail(setting.getSupport, value.email, value.subject, value.message));
   // send chat bot message
   var channelName = "customer-support";
   var message = "Dear Jobox Team,\n\n" + value.name + " " + value.surname + " has posted in support with the subject: " + value.subject + " and message: " + value.message ;
@@ -499,26 +487,7 @@ exports.updateSupport = functions.firestore.document('support/{support}')
   await updateSupportSQL(change);
 });
 
-// Send alert for new job posts
-function jobPost(receiver, sender, clientName, companyName, jobName, jobType, jobId, phone) {
-  return {
-    to: receiver,
-    from: sender,
-    subject: "New " + jobType + " job post",
-    text: "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
-          + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
-          clientName + " on their phone number, " + phone + ".\n\nKind regards,\nAlex Sexwale" 
-  }
-}
-// Send slack alert
-async function slackJobPost(channel, clientName, companyName, jobName, jobType, jobId, phone) {
-  // send chat bot message
-  var channelName = channel;
-  var message = "Dear Jobox Team,\n\n" + clientName + " from " + companyName + " has posted a new " + jobType + " job on the platform, "
-  + jobName + " (" + jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
-  clientName + " on their phone number, " + phone + "\nAlex Sexwale";
-  await chatBot.sendBotMessage(channelName, message);
-}
+
 
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
@@ -529,9 +498,13 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
-  sgMail.setApiKey(setting.apiKey);
-  sgMail.send(jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
-  slackJobPost("job-notifications", value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone);
+  await emailJS.sendEmail(emailJS.jobPost(setting.jobPost, value.email, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  //send slack job post
+  var channelName = "job-notifications";
+  var message = "Dear Jobox Team,\n\n" + value.clientName + " from " + value.companyName + " has posted a new " + value.jobType + " job on the platform, "
+  + value.name + " (" + value.jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
+  value.clientName + " on their phone number, " + value.phone + "\nAlex Sexwale";
+  await chatBot.sendBotMessage(channelName, message);
 });
 
 //job document updated
@@ -578,25 +551,7 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
   await studentSQL(change);
 });
 
-// Send alert to candidate selected
-function applicantSelected(receiver, sender, jobName, jobType, jobId, applicantName) {
-  return {
-    to: receiver,
-    from: sender,
-    subject: "You have been selected for the job",
-    text: "Hey " + applicantName + ",\n\nWould you look at that, you just got selected for the " + jobType + " job: " + jobName
-         + " (" + jobId + ").\n\nTo accept/decline the job click here to login - https://app.jobox.co.za/login\n\n✌️\nJobox"
-  }
-}
-function applicantDeclines(receiver, sender, jobName, jobType, jobId, applicantName, clientName) {
-  return {
-    to: receiver,
-    from: sender,
-    subject: "Applicant has declined the job",
-    text: "hey " + clientName + ",\n\nUnfortunetly " + applicantName + " has declined the job offer for " + jobType + " job: " + jobName
-          + " (" + jobId + ").\n\nPlease select another applicant for the job. Click here to login - https://app.jobox.co.za/login\n\n✌️\nJobox"
-  }
-}
+
 
 // Application document updated
 exports.applicantDecision = functions.firestore.document('applications/{applicationsId}')
@@ -609,88 +564,21 @@ exports.applicantDecision = functions.firestore.document('applications/{applicat
   
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
-  sgMail.setApiKey(setting.apiKey);
+ 
   if(newValue.approved === true) {
-    sgMail.send(applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
+    await emailJS.sendEmail(emailJS.applicantSelected(newValue.applicantEmail, setting.applicantSelected, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant));
   }
   if(newValue.approved === false && newValue.status === "decline") {
     // send chat bot message
     var channelName = "job-notifications";
     var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been declined";
     await chatBot.sendBotMessage(channelName, message);
-
-    sgMail.send(applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
+    await emailJS.sendEmail(emailJS.applicantDeclines(newValue.clientEmail, setting.applicantDecline, newValue.jobName, newValue.jobType, newValue.jobId, newValue.applicant, newValue.clientName));
   }
 
   return null;
 });
 
-
-// Send alert to client
-function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, applicantName) {
-  var subject = null;
-  var message = null;
-  if(messageType === "application") {
-    subject = applicantName + " has applied for your job";
-    message = "Hey " + clientName + ",\n\nGreat news!"+ applicantName + " just applied for the job you posted:" 
-  }
-  if(messageType === "accept") {
-    subject = "Student has accepted the job you have posted";
-    message = "Hey " + clientName + ",\n\n" + applicantName + " has accepted the job: " + jobName + " (" + jobId +
-              ").\n\nThis job is now active. You will receive a notification once the student has completed the job.\n\n✌️\nJobox";
-  }
-  if(messageType === "complete") {
-    subject = applicantName + " has completed the job";
-    message = "Hey " + clientName + ",\n\n" + applicantName + " has completed the job you posted: " + jobName + " (" + jobId +
-              ").\n\nTo confirm completion click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
-  }
-  if(messageType === "studentRatingClient") {
-    subject = applicantName + " has rated the job you have posted";
-    message = "Hey " + clientName + ",\n\n" + applicantName + " has given you a rating on the job you posted:" + jobName + " (" + jobId +
-    ").\n\nTo view your rating, rate the student. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
-  }
-  if(messageType === "summary") {
-    subject = "";
-    message = "";
-  }
-  return {
-    to: receiver,
-    from: sender,
-    subject: subject,
-    text: message
-  }
-}
-
-// Send alert to student
-function studentEmail(messageType, receiver, sender, jobName, jobId, clientName, studentName) {
-  var subject = null;
-  var message = null;
-  if(messageType === "accept") {
-    subject = "You have accepted the job";
-    message = "Hey " + studentName + ",\n\nYou have accepted the job: " + jobName + " (" + jobId +
-    ").\n\nTo view the details of this job, remember to login and head over to the active jobs tab.\n\nOnce you have completed the job, remember to indicate completion on the job page in order to get paid.\n\n✌️\nJobox";
-  }
-  if(messageType === "rate") {
-    subject = "Looks like the client has confirmed completion of the job!";
-    message = "Hey " + studentName + ",\n\n" + clientName + " has confirmed completion of " + jobName + " (" + jobId +
-    ").\n\nTo rate and review the order click here to login - https://app.jobox.co.za/login \n\nYour review will only become available once you have reviewed the client.\n\n✌️\nJobox";
-  }
-  if(messageType === "clientRatingStudent") {
-    subject = "The client has rated you!";
-    message = "Hey " + studentName + ",\n\n" + clientName + " has given you a rating on the job you completed:" + jobName + " (" + jobId +
-    ").\n\nTo view your rating, rate the client. Click here to login - https://app.jobox.co.za/login \n\n✌️\nJobox";
-  }
-  if(messageType === "summary") {
-    subject = "";
-    message = "";
-  }
-  return {
-    to: receiver,
-    from: sender,
-    subject: subject,
-    text: message
-  }
-}
 // New application
 exports.newApplication = functions.firestore.document('applications/{applicationsId}')
 .onCreate(async (snap, context) => {
@@ -701,8 +589,7 @@ exports.newApplication = functions.firestore.document('applications/{application
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
  
-  sgMail.setApiKey(setting.apiKey);
-  sgMail.send(clientEmail("application", value.clientEmail, setting.active, null, null, null, value.clientName, value.applicant));
+  await emailJS.sendEmail(emailJS.clientEmail("application", value.clientEmail, setting.active, null, null, null, value.clientName, value.applicant));
   return null;
 });
 
@@ -716,31 +603,31 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
 
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
-  sgMail.setApiKey(setting.apiKey);
+
   var toEmail = setting.joboxToNotifications;
   var fromEmail = setting.joboxFromNotifications;
   var msg = null;
   
   // Student accepts job
   if(previousValue.status === "select" && newValue.status === "active") {
-    sgMail.send(clientEmail("accept", newValue.clientEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
-    sgMail.send(studentEmail("accept", newValue.studentEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.clientEmail("accept", newValue.clientEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.studentEmail("accept", newValue.studentEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Student completes job
   if(newValue.status === "complete") {
-    sgMail.send(clientEmail("complete", newValue.clientEmail, setting.complete, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.clientEmail("complete", newValue.clientEmail, setting.complete, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client confirms completion
   if(newValue.status === "rate" && newValue.clientRatingComplete === false && newValue.studentRatingComplete === false) {
-    sgMail.send(studentEmail("rate", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.studentEmail("rate", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Student rates client
   if(previousValue.studentRatingComplete === false && newValue.studentRatingComplete === true) {
-    sgMail.send(clientEmail("studentRatingClient", newValue.clientEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.clientEmail("studentRatingClient", newValue.clientEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client rates student
   if(previousValue.clientRatingComplete === false && newValue.clientRatingComplete === true) {
-    sgMail.send(studentEmail("clientRatingStudent", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
+    await emailJS.sendEmail(emailJS.studentEmail("clientRatingStudent", newValue.studentEmail, setting.rate, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
   // Client confirms completion
   if(newValue.status === "summary") {
@@ -756,7 +643,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
       subject: "Job: " + newValue.jobId + " is active",
       text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been set to 'active'."
     };
-    sgMail.send(msg);
+    await emailJS.sendEmail(msg);
   }
   
   
@@ -773,7 +660,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
       subject: "Client has cancelled a job",
       text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled by client name = " + newValue.clientName + ", who you may reach at " + newValue.clientEmail
     };
-    sgMail.send(msg);
+    await emailJS.sendEmail(msg);
   }
 
   //student cancelled 
@@ -789,7 +676,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
       subject: "Student has cancelled a job",
       text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled by student name = " + newValue.studentName + ", who you may reach at " + newValue.studentEmail
     };
-    sgMail.send(msg);
+    await emailJS.sendEmail(msg);
   }
 
   //incomplete
@@ -800,7 +687,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
       subject: "Student has not completed a job",
       text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been set to 'incomplete'."
     };
-    sgMail.send(msg);
+    await emailJS.sendEmail(msg);
   }
 
   //dissatisfied 
