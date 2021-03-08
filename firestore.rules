@@ -726,6 +726,10 @@ service cloud.firestore {
     match /decline/{decline} {
       allow create;
     }
+
+    match /invoices/{invoice} {
+      allow read;
+    }
     
     //////////////////////////
     //////////////////////////

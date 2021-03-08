@@ -22,14 +22,15 @@ export default {
     },
     // Get Embed Token
     async getEmbedToken() {
-        return await api.get("powerbi/getReportEmbedToken")
+        return await api.get("powerbi/getReportEmbedToken");
     },
-    // Download File
-    downloadFile(args) {
-        return api.get("downloadPdf", args)
+    // Download Pdf
+    downloadPdf(args) {
+        return api.get("downloadPdf", { params: args });
     },
+    // Send Pdf
     sendPdf(args) {
-        return api.post("sendPdf", args)
+        return api.post("sendPdf", args);
     },
 
 };

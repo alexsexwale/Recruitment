@@ -7,13 +7,13 @@ const router = express.Router();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.use(cors({ origin: true }));
+router.options('*', cors())
 router.use(urlencodedParser);
 router.use(bodyParser.json());
 /* ------------------------------------------------------ */
 
 const firebase = require("../../config/firebase");
 const storage = firebase.storage;
-const bucket = storage.bucket("staging.joboxza.appspot.com");
 const getDocument = firebase.getDocument;
 const sgMail = require("@sendgrid/mail");
 
@@ -21,8 +21,7 @@ router.post("/sendPdf", async (req, res) => {
   // download pdf from firestore
   let attachment = null;
   let doc = null;
-
-  const bucket = storage.bucket(req.body.bucket)
+  const bucket = storage.bucket(req.body.bucket);
   const remoteFile = bucket.file(req.body.filePath);
 
   doc = await getDocument("Settings", "Email");
@@ -64,21 +63,23 @@ router.post("/sendPdf", async (req, res) => {
 
 router.get("/downloadPdf", async (req, res) => {
   // download pdf from firestore
-  const bucket = storage.bucket(req.query.bucket);
+
+  const bucket =  storage.bucket(req.query.bucket);
   const remoteFile = bucket.file(req.query.filePath);
 
   await remoteFile
     .download()
     .then(contents => {
+
       res.set({
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=${remoteFile.name}`
       });
 
-      return res.status(200).send(contents[0]);
+      res.status(200).send(contents[0]);
     })
     .catch(err => {
-      return res.status(500).send(err.message);
+      res.status(500).send(err.message);
     });
 });
 

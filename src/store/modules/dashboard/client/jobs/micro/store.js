@@ -112,18 +112,15 @@ export default {
             });
         },
         downloadPdf: (state, payload) => {
-            state.loading = true;
-            db.collection("invoices").doc(payload.id).get().then(doc => {
+            return db.collection("invoices").doc(payload.id).get().then(async doc => {
               let invoice = doc.data();
               let args = {
                   bucket: invoice.bucket,
                   filePath: invoice.filePath
               }
-
-              api.downloadPdf(args);
+              
+              return await api.downloadPdf(args);
             });
-
-            state.loading = false;
         },
         sendPdf: (state, payload) => {
           state.loading = true;
