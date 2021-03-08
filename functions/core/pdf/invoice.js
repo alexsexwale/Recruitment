@@ -123,7 +123,8 @@ async function generateInvoice(snap) {
         };
       } else {
         doc = await getDocument("Settings", "Backend");
-        const baseURL = doc.data().devApi;
+        const baseURL = doc.data().api;
+        //const baseURL = doc.data().devApi;
         const options = {
           format: "A4",
           orientation: "portrait",

@@ -47,7 +47,7 @@
         <div v-if="invoice" class="centre">
           <md-button class="md-button md-success" @click="sendEmail">Send</md-button>
           &nbsp;&nbsp;
-          <md-button class="md-button md-danger" @click="downloadFile">Download</md-button>
+          <md-button class="md-button md-info" @click="downloadFile">Download</md-button>
         </div>
       </template>
     </modal>
