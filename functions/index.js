@@ -1,3 +1,4 @@
+/* eslint-disable */
 let path = require('path');
 const functions = require("firebase-functions");
 const moment = require("moment");
@@ -103,22 +104,7 @@ app.post("/notification", urlencodedParser, async (req, res) => {
   sgMail.setApiKey(settings.apiKey);
   
   var msg = null;
-  if(req.body.type === "feedback" || req.body.type === "support") {
-    msg = {
-        to: "contact@jobox.co.za",
-        from: req.body.email,
-        subject: req.body.subject,
-        text: req.body.message
-    };
-
-    db.collection(req.body.type).add({
-        userId: req.body.id,
-        created: moment(Date.now()).format('L'),
-        subject: req.body.subject,
-        message: req.body.message
-    });
-  }
-  if(req.body.type === "active") {
+  if(req.body.type === "active") { //trigger in the micros table for cancelled, active and incomplete <<also add slack messages going to jobnotifications
     msg = {
         to: "contact@jobox.co.za",
         from: "admin@jobox.co.za",
@@ -148,7 +134,7 @@ app.post("/notification", urlencodedParser, async (req, res) => {
 
 // Inbound payment
 app.post("/activate", urlencodedParser, async (req, res) => {
-  if(req.body.TransactionAccepted && req.body.Extra1 && req.body.Extra2 ) {
+  if(req.body.TransactionAccepted && req.body.Extra1) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
@@ -720,8 +706,9 @@ exports.newApplication = functions.firestore.document('applications/{application
   const value = snap.data();
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
+ 
   sgMail.setApiKey(setting.apiKey);
-  sgMail.send(clientEmail("application", value.clientEmail, value.clientName, value.companyName, value.name, value.jobType, value.jobId, value.phone));
+  sgMail.send(clientEmail("application", value.clientEmail, setting.active, null, null, null, value.clientName, value.applicant));
   return null;
 });
 
@@ -736,6 +723,10 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
   sgMail.setApiKey(setting.apiKey);
+  var toEmail = setting.joboxToNotifications;
+  var fromEmail = setting.joboxFromNotifications;
+  var msg = null;
+  
   // Student accepts job
   if(previousValue.status === "select" && newValue.status === "active") {
     sgMail.send(clientEmail("accept", newValue.clientEmail, setting.active, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
@@ -762,20 +753,67 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
     //sgMail.send(clientEmail("summary", newValue.clientEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
     //sgMail.send(studentEmail("summary", newValue.studentEmail, setting.summary, newValue.name, newValue.jobId, newValue.clientName, newValue.studentName));
   }
-
-  //cancelled 
-  if(previousValue.status !== "cancelled" && newValue.status === "cancelled") {
+  
+  //active
+  if(previousValue.status !== "active" && newValue.status === "active") {
+    msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: "Job: " + newValue.jobId + " is active",
+      text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been set to 'active'."
+    };
+    sgMail.send(msg);
+  }
+  
+  
+  //client cancelled 
+  if(previousValue.clientCancelled !== true && newValue.clientCancelled === true) {
     // send chat bot message
     var channelName = "job-notifications";
-    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled";
+    var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled.";
     await chatBot.sendBotMessage(channelName, message);
+
+    msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: "Client has cancelled a job",
+      text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled by client name = " + newValue.clientName + ", who you may reach at " + newValue.clientEmail
+    };
+    sgMail.send(msg);
+  }
+
+  //student cancelled 
+  if(previousValue.studentCancelled !== true && newValue.studentCancelled === true) {
+    // send chat bot message
+    channelName = "job-notifications";
+    message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled.";
+    await chatBot.sendBotMessage(channelName, message);
+
+    msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: "Student has cancelled a job",
+      text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been cancelled by student name = " + newValue.studentName + ", who you may reach at " + newValue.studentEmail
+    };
+    sgMail.send(msg);
+  }
+
+  //incomplete
+  if(previousValue.status !== "incomplete" && newValue.status === "incomplete") {
+    msg = {
+      to: toEmail,
+      from: fromEmail,
+      subject: "Student has not completed a job",
+      text: "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been set to 'incomplete'."
+    };
+    sgMail.send(msg);
   }
 
   //dissatisfied 
   if(previousValue.status !== "dissatisfied" && newValue.status === "dissatisfied") {
     // send chat bot message
     channelName = "job-notifications";
-    message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as dissatisfied";
+    message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as 'dissatisfied'.";
     await chatBot.sendBotMessage(channelName, message);
   }
   return null;

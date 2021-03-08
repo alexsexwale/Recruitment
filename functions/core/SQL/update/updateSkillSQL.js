@@ -13,8 +13,8 @@ async function updateSkillSQL(change) {
       await sqlQuery(sql,values);
     }
     if (newValue.industry !== previousValue.industry) {
-      var sql = "UPDATE Jobs SET industry = ?, last_modified = ? WHERE job_ID = ?";
-      var values = [newValue.industry, lastModified, newValue.jobId];
+      sql = "UPDATE Jobs SET industry = ?, last_modified = ? WHERE job_ID = ?";
+      values = [newValue.industry, lastModified, newValue.jobId];
       await sqlQuery(sql,values);
     }
   }

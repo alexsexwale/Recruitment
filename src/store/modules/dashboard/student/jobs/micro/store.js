@@ -17,6 +17,7 @@ export default {
             state.loading = true;
             db.collection('micros').doc(payload.id).update({
                 status: "incomplete",
+                studentCancelled: true,
                 lastModified: moment(Date.now()).format('L')  
             });
             db.collection(args.type).add({
@@ -25,21 +26,6 @@ export default {
                 message: args.message,
                 description: "",
                 reason: ""
-            });
-            var args = {
-                type: "cancelled", 
-                subject: "",
-                message: ""
-            }
-            api.notification(args).then(() => {
-                state.loading = false;
-            }).catch(err => {
-                db.collection("errors").add({
-                    jobId: payload.jobId,
-                    created: moment(Date.now()).format('L'),
-                    issue: err.message,
-                    message: "API post call to 'notification' failed. Contact tech support immediately."
-                });
             });
             state.loading = false;
         }

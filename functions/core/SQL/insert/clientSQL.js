@@ -10,8 +10,8 @@ async function clientSQL(change) {
       var lastModified = new Date(newValue.lastModified);
       var created = new Date(newValue.created);
       //client table
-      var sql = "INSERT INTO Clients (client_ID, user_ID, industry, bio, vat, website, company_category, company_size, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?,?)";
-      var values = [newValue.userId, newValue.userId, newValue.industry, newValue.bio, newValue.vat, newValue.website, newValue.companyCategory, newValue.companySize, lastModified, created];
+      var sql = "INSERT INTO Clients (client_ID, user_ID, industry, bio, website, company_category, company_size, last_modified, created) VALUES (?,?,?,?,?,?,?,?,?)";
+      var values = [newValue.userId, newValue.userId, newValue.industry, newValue.bio, newValue.website, newValue.companyCategory, newValue.companySize, lastModified, created];
       await sqlQuery(sql,values);
       //client_addresses table
       sql = "INSERT INTO Client_Addresses (client_ID, address_line_1, city, country, postal_code_zip_code, province_state, last_modified, created) VALUES (?,?,?,?,?,?,?,?)";
