@@ -7,7 +7,7 @@ const router = express.Router();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.use(cors({ origin: true }));
-router.options('*', cors())
+router.options("*", cors());
 router.use(urlencodedParser);
 router.use(bodyParser.json());
 /* ------------------------------------------------------ */
@@ -64,22 +64,21 @@ router.post("/sendPdf", async (req, res) => {
 router.get("/downloadPdf", async (req, res) => {
   // download pdf from firestore
 
-  const bucket =  storage.bucket(req.query.bucket);
+  const bucket = storage.bucket(req.query.bucket);
   const remoteFile = bucket.file(req.query.filePath);
 
   await remoteFile
     .download()
     .then(contents => {
-
       res.set({
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=${remoteFile.name}`
       });
 
-      res.status(200).send(contents[0]);
+      return res.status(200).send(contents[0]);
     })
     .catch(err => {
-      res.status(500).send(err.message);
+      return res.status(500).send(err.message);
     });
 });
 

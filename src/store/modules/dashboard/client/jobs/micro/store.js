@@ -161,7 +161,7 @@ export default {
             context.commit("studentCancelSelect", payload);
         },
         downloadPdf: (context, payload) => {
-          context.commit("downloadPdf", payload);
+          return context.commit("downloadPdf", payload);
         },
         sendPdf: (context, payload) => {
           context.commit("sendPdf", payload);
