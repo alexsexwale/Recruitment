@@ -119,9 +119,9 @@ async function generateInvoice(snap) {
       if (err) {
         return {
           status: err.message,
-          msg: err.message };
+          msg: err.message
+        };
       } else {
-
         doc = await getDocument("Settings", "Backend");
         const baseURL = doc.data().devApi;
         const options = {
@@ -136,8 +136,9 @@ async function generateInvoice(snap) {
         pdf.create(data, options).toStream(async (err, stream) => {
           if (err) {
             return {
-              status: err.status, 
-              msg: err.responseText };
+              status: err.status,
+              msg: err.responseText
+            };
           } else {
             const file = bucket.file(filePath);
             stream
@@ -150,24 +151,26 @@ async function generateInvoice(snap) {
               )
               .on("error", err => {
                 return {
-                  status: 500, 
-                  msg: `Error encountered: ${err.message}` };
+                  status: 500,
+                  msg: `Error encountered: ${err.message}`
+                };
               })
               .on("finish", () => {
                 console.log("Upload successful");
 
                 let invoicesRef = db.collection("invoices");
                 invoicesRef.doc(value.jobId).set({
-                  "invoiceNo": invoiceNo,
-                  "jobId": value.jobId,
-                  "bucket": storageBucket,
-                  "filePath": filePath,
-                  "created": created
+                  invoiceNo: invoiceNo,
+                  jobId: value.jobId,
+                  bucket: storageBucket,
+                  filePath: filePath,
+                  created: created
                 });
 
                 return {
                   status: 200,
-                  msg: `Successfully created: ${file.name}` };
+                  msg: `Successfully created: ${file.name}`
+                };
               });
           }
         });
