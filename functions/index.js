@@ -42,8 +42,7 @@ const updateVettingSQLJS = require("./core/SQL/update/updateVettingSQL.js");
 const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
 
 //Generate Pdf
-//const generatePdf = require("./core/pdf/invoice");
-//const generateInvoice = generatePdf.generateInvoice;
+const generatePdf = require("./core/pdf/invoice");
 
 dotenv.config();
 /* code moved to config/firebase.js due to not being able to initialize firebase twice
@@ -531,6 +530,7 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
 .onCreate(async (snap, context) => {
   const insertJobSQL = insertJobSQLJS.insertJobSQL;
   await insertJobSQL(snap);
+  const generateInvoice = generatePdf.generateInvoice;
   await generateInvoice(snap);
 
   const value = snap.data();
