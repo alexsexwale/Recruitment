@@ -21,6 +21,28 @@ const db = firebase.db;
 const getDocument = firebase.getDocument;
 const storage = firebase.storage;
 
+async function getIncrement(args) {
+
+  var result = 1;
+  const counterRef = db.collection('Settings').doc(args.counterName)
+
+  const counterDoc = await args.transaction.get(counterRef);
+
+  if (counterDoc.exists) {
+    const { counterValue } = counterDoc.data();
+
+    result = counterValue + 1;
+    args.transaction.update(counterRef, { counterValue: result });
+  } 
+  else {
+    const counterValue = result;
+
+    args.transaction.create(counterRef, { counterValue });
+  }
+
+  return result;
+}
+
 async function generateInvoice(snap) {
   let doc = null;
   const value = snap.data();
@@ -45,6 +67,17 @@ async function generateInvoice(snap) {
   doc = await getDocument("micros", value.jobId);
   const micros = doc.data();
 
+  const invoicesRef = db.collection("invoices").doc(value.jobId);
+
+  let invoiceCounter = await db.runTransaction(async (transaction) => {
+
+    return await getIncrement({
+      transaction,
+      counterName: 'invoice'
+    });
+
+  });
+
   const description = micros.description;
   const adminCost = Number(micros.facilitation).toFixed(2);
   const budget = Number(micros.budget).toFixed(2);
@@ -68,15 +101,7 @@ async function generateInvoice(snap) {
   const today = new Date();
   const year = today.getFullYear();
 
-  let invoices = "";
-  let filePath = `Invoices/#J${year}`;
-
-  invoices = await bucket
-    .getFiles({ prefix: filePath })
-    .then(files => (files[0].length + 1).toString().padStart(3, "0"))
-    .catch(err => {
-      return res.status(500).send(err);
-    });
+  let invoices = invoiceCounter.toString().padStart(3, "0");
 
   const invoiceNo = `J${year}${invoices}`;
 
@@ -107,7 +132,15 @@ async function generateInvoice(snap) {
     joboxPostalCode
   };
 
-  filePath = `Invoices/#${invoiceNo}.pdf`;
+  const filePath = `Invoices/${companyName}/${invoiceNo}.pdf`;
+
+  await invoicesRef.set(
+    { invoiceNo: invoiceNo,
+      jobId: value.jobId,
+      bucket: storageBucket,
+      filePath: filePath,
+      created: created,
+      generated: false });
 
   // using ejs as a template render the pdf
   ejs.renderFile(
@@ -156,16 +189,12 @@ async function generateInvoice(snap) {
                   msg: `Error encountered: ${err.message}`
                 };
               })
-              .on("finish", () => {
+              .on("finish", async () => {
                 console.log("Upload successful");
 
-                let invoicesRef = db.collection("invoices");
-                invoicesRef.doc(value.jobId).set({
-                  invoiceNo: invoiceNo,
-                  jobId: value.jobId,
-                  bucket: storageBucket,
-                  filePath: filePath,
-                  created: created
+                await invoicesRef.update({
+                  
+                  generated: true
                 });
 
                 return {
