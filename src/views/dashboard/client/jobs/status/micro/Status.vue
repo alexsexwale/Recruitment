@@ -4,7 +4,7 @@
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <md-card class="padding">
       <div class="margin">
-        <md-button v-if="select" class="btn-next md-primary button" @click="viewInvoice" style="max-width:110px;">Get Invoice</md-button>
+        <md-button v-if="select && enableInvoice" class="btn-next md-primary button" @click="viewInvoice" style="max-width:110px;">Get Invoice</md-button>
         &nbsp;&nbsp;&nbsp;
         <md-button v-if="!paid" class="btn-next md-info button" @click="payment" style="max-width:110px;">Make payment</md-button>
         &nbsp;&nbsp;&nbsp;
@@ -93,7 +93,8 @@ export default {
       verified: false,
       modal: false,
       loading: false,
-      invoice: false
+      invoice: false,
+      enableInvoice: false
     };
   },
   methods: {
@@ -159,7 +160,7 @@ export default {
     },
     async viewInvoice() {
       this.invoice = true;
-      let doc = await db.collection('invoices').doc(this.$route.params.id).get();
+      let doc = await db.collection('invoices').doc(this.job.id).get();
       let invoice = doc.data();
 
       const storage = firebase.app().storage(invoice.bucket);
@@ -206,7 +207,7 @@ export default {
       await this.$store.dispatch('downloadPdf', this.job);
     }
   },
-  created() {
+  async created() {
     this.loading = true;
     let task_project = db.collection('micros');
     task_project.where('jobId', '==', this.$route.params.id).get()
@@ -271,6 +272,27 @@ export default {
         }
       });
     });
+
+    this.enableInvoice = await db.collection('invoices').doc(this.$route.params.id).get()
+                           .then(doc => {
+                              if (doc.exists)
+                                return doc.data().generated;
+                              else 
+                                return false;
+                           });
+    
+    let docExists = setInterval(async () => {
+      this.enableInvoice = await db.collection('invoices').doc(this.$route.params.id).get()
+                           .then(doc => {
+                             if (doc.exists)
+                                return doc.data().generated;
+                              else 
+                                return false;
+                           });
+
+      if (this.enableInvoice) clearInterval(docExists);
+    }, 5000);
+
   }
 };
 </script>
