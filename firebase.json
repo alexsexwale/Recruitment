@@ -26,5 +26,13 @@
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "port": "5001"
+    },
+    "functions": {
+      "port": "5000"
+    }
   }
 }
