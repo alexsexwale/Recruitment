@@ -44,18 +44,7 @@ const updateRatingSQLJS = require("./core/SQL/update/updateRatingSQL.js");
 const generatePdf = require("./core/pdf/invoice");
 
 dotenv.config();
-/* code moved to config/firebase.js due to not being able to initialize firebase twice
-var serviceAccount = require("./permissions.json");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://joboxza.firebaseio.com"
-});
-
-const authMiddleware = require("./authMiddleware");
-
-const db = admin.firestore();
-*/
 const db = firebaseJS.db;
 const app = express();
 const urlencodedParser = bodyParser.urlencoded({ extended: false });

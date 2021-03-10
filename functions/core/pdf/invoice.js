@@ -22,9 +22,8 @@ const getDocument = firebase.getDocument;
 const storage = firebase.storage;
 
 async function getIncrement(args) {
-
   var result = 1;
-  const counterRef = db.collection('Settings').doc(args.counterName)
+  const counterRef = db.collection("Settings").doc(args.counterName);
 
   const counterDoc = await args.transaction.get(counterRef);
 
@@ -33,8 +32,7 @@ async function getIncrement(args) {
 
     result = counterValue + 1;
     args.transaction.update(counterRef, { counterValue: result });
-  } 
-  else {
+  } else {
     const counterValue = result;
 
     args.transaction.create(counterRef, { counterValue });
@@ -69,13 +67,11 @@ async function generateInvoice(snap) {
 
   const invoicesRef = db.collection("invoices").doc(value.jobId);
 
-  let invoiceCounter = await db.runTransaction(async (transaction) => {
-
+  let invoiceCounter = await db.runTransaction(async transaction => {
     return await getIncrement({
       transaction,
-      counterName: 'invoice'
+      counterName: "Invoice"
     });
-
   });
 
   const description = micros.description;
@@ -134,13 +130,14 @@ async function generateInvoice(snap) {
 
   const filePath = `Invoices/${companyName}/${invoiceNo}.pdf`;
 
-  await invoicesRef.set(
-    { invoiceNo: invoiceNo,
-      jobId: value.jobId,
-      bucket: storageBucket,
-      filePath: filePath,
-      created: created,
-      generated: false });
+  await invoicesRef.set({
+    invoiceNo: invoiceNo,
+    jobId: value.jobId,
+    bucket: storageBucket,
+    filePath: filePath,
+    created: created,
+    generated: false
+  });
 
   // using ejs as a template render the pdf
   ejs.renderFile(
@@ -167,7 +164,7 @@ async function generateInvoice(snap) {
           base: baseURL
         };
 
-        pdf.create(data, options).toStream(async (err, stream) => {
+        return await pdf.create(data, options).toStream(async (err, stream) => {
           if (err) {
             return {
               status: err.status,
@@ -175,7 +172,7 @@ async function generateInvoice(snap) {
             };
           } else {
             const file = bucket.file(filePath);
-            stream
+            return stream
               .pipe(
                 file.createWriteStream({
                   metadata: {
@@ -193,7 +190,6 @@ async function generateInvoice(snap) {
                 console.log("Upload successful");
 
                 await invoicesRef.update({
-                  
                   generated: true
                 });
 
