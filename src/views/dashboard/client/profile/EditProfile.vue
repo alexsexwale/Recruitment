@@ -40,6 +40,7 @@
             @industry="addIndustry"
             @aboutMe="addAboutMe">
           </first-step>
+          <!-- ^^^where is company category?^^^ -->
         </wizard-tab>
 
         <wizard-tab>
@@ -110,7 +111,9 @@ export default {
       province: null,
       postalCode: null,
       modal: false
+      // where is company category?
     };
+  
   },
   components: {
     FirstStep,
@@ -172,6 +175,7 @@ export default {
       this.modal = true;
       this.feedback = feedback;
     }
+    // where is company category?
   }
 };
 </script>

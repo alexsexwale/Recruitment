@@ -160,6 +160,8 @@
         </md-autocomplete>
       </div>
 
+      <!-- ^^^where is company category?^^^ -->
+
       <md-field :class="[
           { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
           { 'md-error': errors.has('aboutMe') }
@@ -236,6 +238,7 @@ export default {
       sizeTypes: [],
       industry: null,
       industries: [],
+      // ^^^where is company category?^^^
       touched: {
         companyName: false,
         companyWebsite: false,
@@ -276,6 +279,7 @@ export default {
         aboutMe: {
           required: true
         }
+        // ^^^where is company category?^^^
       }
     };
   },
@@ -371,6 +375,7 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          // ^^^where is company category?^^^
         }
         if(doc.exists === false) {
           this.client.set({
@@ -391,6 +396,7 @@ export default {
             profilePicture: null,
             accountCreated: false,
             profile: this.image
+            // ^^^where is company category?^^^
           });
           if(this.image) {
             this.client.update({
@@ -442,6 +448,7 @@ export default {
       this.$emit("aboutMe", this.aboutMe);
       this.debouncedUpdate();
     }
+    // ^^^where is company category?^^^
   },
   watch: {
     firstName() {
@@ -471,6 +478,7 @@ export default {
     aboutMe() {
       this.touched.aboutMe = true;
     }
+    // ^^^where is company category?^^^
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
@@ -495,6 +503,7 @@ export default {
             this.industry = doc.data().industry;
             this.aboutMe = doc.data().bio;
             this.image = doc.data().profile;
+            // ^^^where is company category?^^^
           }
         })
         .catch(err => {
