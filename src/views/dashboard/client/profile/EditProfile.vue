@@ -17,6 +17,7 @@
         v-bind:province="province"
         v-bind:postalCode="postalCode"
         @feedback="addFeedback">
+<!-- ^^^add company category^^^ -->
         <template slot="header">
           <md-button class="btn-next md-success" @click="back">Go Back</md-button>
           <p></p>
@@ -40,7 +41,7 @@
             @industry="addIndustry"
             @aboutMe="addAboutMe">
           </first-step>
-          <!-- ^^^where is company category?^^^ -->
+<!-- ^^^add company category^^^ -->
         </wizard-tab>
 
         <wizard-tab>
@@ -111,7 +112,7 @@ export default {
       province: null,
       postalCode: null,
       modal: false
-      // where is company category?
+// ^^^add company category^^^
     };
   
   },
@@ -175,7 +176,7 @@ export default {
       this.modal = true;
       this.feedback = feedback;
     }
-    // where is company category?
+// ^^^add company category^^^
   }
 };
 </script>

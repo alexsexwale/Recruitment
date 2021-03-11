@@ -1,0 +1,217 @@
+rules_version = '2';
+service cloud.firestore {
+  
+  match /databases/{database}/documents {
+  	//////////////////////
+    //////////////////////
+    // Begin: Functions //
+    //////////////////////
+    //////////////////////
+    
+    ////////////////////////
+    // Begin: Basic Rules //
+    ////////////////////////
+    function isAuthenticated() {
+    	return request.auth != null;
+    }
+    
+    function isUser() {
+      return request.auth.uid == request.resource.data.userId;
+    }
+    
+    function myDocument() {
+    	return request.auth.uid == resource.data.userId;
+    }
+    
+    function emailVerified() {
+    	return request.auth.token.email_verified;
+    }
+    
+    //////////////////////
+    // End: Basic Rules //
+    //////////////////////
+    
+    function created() {
+    	return request.resource.data.created is string && // var type
+     				 request.resource.data.created.size() > 2 // min length
+    }
+    
+    
+    function message() {
+    	return request.resource.data.message is string && // var type
+             request.resource.data.message.size() > 2 // min length
+    }
+    
+    function subject() {
+    	return request.resource.data.subject is string && // var type
+             request.resource.data.subject.size() > 2 // min length
+    }
+    
+    function userId() {
+    	return request.resource.data.userId is string && // var type
+     				 request.resource.data.userId.size() > 2 // min length
+    }
+    
+   
+    ////////////////////
+    // End: Variables //
+    ////////////////////
+    
+    
+    ///////////////////////////////
+    // Begin: Feedback - Support //
+    ///////////////////////////////
+    function feedback_support() {
+    	return created() && message() && subject() && userId()
+    }
+    
+    ///////////////////////////////
+    // End: Feedback - Support ////
+    ///////////////////////////////
+    
+    
+    ////////////////////
+    ////////////////////
+    // End: Functions //
+    ////////////////////
+    ////////////////////
+    
+    ///////////////////////////
+    ///////////////////////////
+    // Begin: Database Rules //
+    ///////////////////////////
+    ///////////////////////////
+    match /users/{userId} {
+    	allow read;
+    	allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument() && emailVerified();
+      allow delete: if isAuthenticated() && myDocument() && emailVerified();
+    }
+    
+    match /students/{studentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument();
+      allow delete: if isAuthenticated() && myDocument() && emailVerified();
+    }
+
+    match /vetted/{vettedId} {
+      allow read: if isAuthenticated() && isUser();
+      allow write: if isAuthenticated();
+    }
+    
+    match /clients/{clientId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument();
+      allow delete: if isAuthenticated() && myDocument() && emailVerified();
+    }
+    
+    match /support/{supportId} {
+      allow create: if isAuthenticated() && isUser() && emailVerified() && feedback_support();
+    }
+    
+    match /feedback/{feedback} {
+      allow create: if isAuthenticated() && isUser() && emailVerified() && feedback_support();
+    }
+    
+    match /jobs/{jobs} {
+      allow read: if isAuthenticated() && isUser();
+      allow create: if isAuthenticated() && emailVerified();
+      allow update: if isAuthenticated() && myDocument() && emailVerified();
+    }
+    
+    match /micros/{micros} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /payments/{payments} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /skills/{skills} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /invoices/{invoice} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /applications/{applications} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /studentRatings/{studentRatings} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /clientRatings/{clientRatings} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /communication/{communication} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /problemSolving/{problemSolving} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /leadership/{leadership} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /organisation/{organisation} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /cancel/{cancel} {
+      allow create;
+    }
+
+    match /incomplete/{incomplete} {
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /dissatisfied/{dissatisfied} {
+      allow create: if isAuthenticated() && emailVerified();
+    }
+    
+    match /errors/{errors} {
+      allow create;
+    }
+    
+    match /Settings/{Settings} {
+      allow read;
+    }
+
+    match /ContentManagement/{ContentManagement} {
+      allow read;
+    }
+
+    match /netcash/{netcash} {
+      allow create;
+    }
+    
+    match /decline/{decline} {
+      allow create;
+    }
+    
+    //////////////////////////
+    //////////////////////////
+    // End: Databases Rules //
+    //////////////////////////
+    //////////////////////////
+  }
+}

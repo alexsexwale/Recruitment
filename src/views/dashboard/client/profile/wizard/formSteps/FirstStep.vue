@@ -143,7 +143,7 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
+        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry"
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
@@ -160,7 +160,7 @@
         </md-autocomplete>
       </div>
 
-      <!-- ^^^where is company category?^^^ -->
+<!-- ^^^add company category^^^ -->
 
       <md-field :class="[
           { 'md-valid': !errors.has('aboutMe') && touched.aboutMe },
@@ -193,7 +193,7 @@
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
-    </modal> 
+    </modal>
   </div>
 </template>
 <script>
@@ -238,7 +238,7 @@ export default {
       sizeTypes: [],
       industry: null,
       industries: [],
-      // ^^^where is company category?^^^
+// ^^^add company category^^^
       touched: {
         companyName: false,
         companyWebsite: false,
@@ -279,7 +279,7 @@ export default {
         aboutMe: {
           required: true
         }
-        // ^^^where is company category?^^^
+// ^^^add company category^^^
       }
     };
   },
@@ -287,7 +287,7 @@ export default {
     previewImage(event) {
       var file = event.target.files[0];
       if(!file) {
-        
+
       }
       else if(file.size < 2 * 1024 * 1024) { // less than 2MB
         this.fileUpload(file);
@@ -375,7 +375,7 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          // ^^^where is company category?^^^
+// ^^^add company category^^^
         }
         if(doc.exists === false) {
           this.client.set({
@@ -396,7 +396,7 @@ export default {
             profilePicture: null,
             accountCreated: false,
             profile: this.image
-            // ^^^where is company category?^^^
+// ^^^add company category^^^
           });
           if(this.image) {
             this.client.update({
@@ -448,7 +448,7 @@ export default {
       this.$emit("aboutMe", this.aboutMe);
       this.debouncedUpdate();
     }
-    // ^^^where is company category?^^^
+// ^^^add company category^^^
   },
   watch: {
     firstName() {
@@ -478,7 +478,7 @@ export default {
     aboutMe() {
       this.touched.aboutMe = true;
     }
-    // ^^^where is company category?^^^
+// ^^^add company category^^^
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');
@@ -502,8 +502,7 @@ export default {
             this.companySize = doc.data().companySize;
             this.industry = doc.data().industry;
             this.aboutMe = doc.data().bio;
-            this.image = doc.data().profile;
-            // ^^^where is company category?^^^
+// ^^^add company category^^^
           }
         })
         .catch(err => {

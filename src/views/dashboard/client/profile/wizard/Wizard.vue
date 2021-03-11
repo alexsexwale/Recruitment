@@ -143,6 +143,8 @@ export default {
     postalCode: {
       required: true
     },
+// ^^^add company category^^^
+
     email: {}
   },
   components: {
@@ -309,6 +311,7 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+//  ^^^add company category^^^
         });
       })
       .then(() => {
