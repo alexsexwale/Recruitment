@@ -322,12 +322,20 @@ export default {
       let isValid = await this.validate();
       if (isValid && this.activeTabIndex < this.tabCount - 1) {
         this.activeTabIndex++;
+        const container = document.getElementsByClassName("main-panel");        
+        if (container.length > 0) {
+          container[0].scrollTop = 0
+        }
       }
       return isValid;
     },
     prevTab() {
       this.activeTabIndex--;
       window.scrollTo(0, 0);
+      const container = document.getElementsByClassName("main-panel");        
+      if (container.length > 0) {
+        container[0].scrollTop = 0
+      }
     },
     async navigateToTab(index) {
       if (this.tabs[index].checked) {

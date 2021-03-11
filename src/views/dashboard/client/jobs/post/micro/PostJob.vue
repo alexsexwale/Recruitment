@@ -188,6 +188,12 @@ export default {
     addBenefit: function(benefit) {
       this.benefit = benefit;
     }
+  },
+  watch: {
+    industryCategory: function() {
+      if (this.industryCategory === "Other") 
+        this.$refs.step1.jobCategory = this.name;
+    }
   }
 };
 </script>

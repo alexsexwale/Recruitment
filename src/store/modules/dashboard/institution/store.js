@@ -10,9 +10,8 @@ export default {
     loading: false
   },
   getters: {},
-  mutations: {},
-  actions: {
-    getReportConfig: context => {
+  mutations: {
+    getReportConfig: state => {
       return api
         .getEmbedToken()
         .then(embedData => {
@@ -45,6 +44,11 @@ export default {
               "API get call to 'getReportEmbedToken' failed. Contact tech support immediately."
           });
         });
+    }
+  },
+  actions: {
+    getReportConfig: context => {
+      return context.commit("getReportConfig");
     }
   }
 };

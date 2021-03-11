@@ -184,6 +184,7 @@ export default {
       return { width: `${width}%` };
     },
     activeTab() {
+      
       return this.tabs[this.activeTabIndex];
     },
     movingTabStyles() {
@@ -306,7 +307,7 @@ export default {
 
         if (!newTab.checked) {
           newTab.checked = true;
-        }
+        }      
         this.$emit("tab-change", oldTab, newTab);
         this.$emit("update:startIndex", newValue);
       }

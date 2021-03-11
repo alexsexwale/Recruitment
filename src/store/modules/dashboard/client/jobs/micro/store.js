@@ -110,6 +110,38 @@ export default {
               router.push({ name: "student-profile", params: {id: doc.id} });
               state.loading = false;
             });
+        },
+        downloadPdf: (state, payload) => {
+            return db.collection("invoices").doc(payload.id).get().then(async doc => {
+              let invoice = doc.data();
+              let args = {
+                  bucket: invoice.bucket,
+                  filePath: invoice.filePath
+              }
+              
+              return await api.downloadPdf(args);
+            });
+        },
+        sendPdf: (state, payload) => {
+          state.loading = true;
+          db.collection('users').doc(payload.clientAlias).get().then(doc => {
+            state.user = doc.data();
+            db.collection('invoices').doc(payload.id).get().then(doc => {
+              let invoice = doc.data();
+              let datetime = moment(Date.now()).format('L');
+              let args = {
+                  bucket: invoice.bucket,
+                  filePath: invoice.filePath,
+                  email: state.user.email,
+                  subject: `Jobox Invoice Job - ${payload.jobId}`,
+                  message: `Please find the invoice for job with job id, ${payload.jobId}, requested on ${datetime} attached.`
+              }
+            
+              api.sendPdf(args);
+            });
+          });
+
+          state.loading = false;
         }
     },
     actions: {
@@ -127,6 +159,12 @@ export default {
         },
         studentCancelSelect: (context, payload) => {
             context.commit("studentCancelSelect", payload);
+        },
+        downloadPdf: (context, payload) => {
+          return context.commit("downloadPdf", payload);
+        },
+        sendPdf: (context, payload) => {
+          context.commit("sendPdf", payload);
         }
     }
 };

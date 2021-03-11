@@ -259,6 +259,17 @@
           <md-icon class="success" v-show="!errors.has('jobCategory') && touched.jobCategory">done</md-icon>
         </slide-y-down-transition>
       </md-field>
+      <!-- Industry: Other -->
+      <md-field v-if="industryCategory === 'Other'" :class="[
+          { 'md-valid': !errors.has('jobCategory') && touched.jobCategory },
+          { 'md-error': errors.has('jobCategory') }
+        ]">
+        <label>Job Title</label>
+        <md-input @input="addJobCategory" v-model="jobCategory" data-vv-name="jobCategory" type="text" name="jobCategory" required v-validate="modelValidations.jobCategory" style="margin-left: 10px;">
+        </md-input>
+        <md-icon class="error" v-show="errors.has('jobCategory')">close</md-icon>
+        <md-icon class="success" v-show="!errors.has('jobCategory') && touched.jobCategory">done</md-icon>
+      </md-field>
 
       <span v-if="industryCategory"><br/><br/></span>
       <md-field :class="[

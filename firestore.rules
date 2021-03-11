@@ -31,401 +31,15 @@ service cloud.firestore {
     // End: Basic Rules //
     //////////////////////
     
-    //////////////////////
-    // Begin: Variables //
-    //////////////////////
-    function accountCreated() {
-    	return request.resource.data.accountCreated is bool // var type
-    }
-    
-    function accountName() {
-      return request.resource.data.accountName is string && // var type
-     				 request.resource.data.accountName.size() > 2 // min length
-    }
-    
-    function accountNumber() {
-      return request.resource.data.accountNumber is string && // var type
-     				 request.resource.data.accountNumber.size() > 2 // min length
-    }
-    
-    function accountType() {
-    	return request.resource.data.accountType is string && // var type
-     				 request.resource.data.accountType.size() > 2 && // min length
-             (request.resource.data.accountType == "Cheque Account" ||
-             request.resource.data.accountType == "Savings Account" ||
-             request.resource.data.accountType == "Transmission Account" ||
-             request.resource.data.accountType == "Bond Account" ||
-             request.resource.data.accountType == "Credit Card Account" ||
-             request.resource.data.accountType == "Subscription Account")
-    }
-    
-    function addressLine1() {
-    	return request.resource.data.addressLine1 is string && // var type
-     				 request.resource.data.addressLine1.size() > 2 // min length
-    }
-    
-    function alias() {
-    	return request.resource.data.alias is string && // var type
-     				 request.resource.data.alias.size() > 2 // min length
-    }
-    
-    function amount() {
-    	return request.resource.data.amount is string && // var type
-              int(request.resource.data.amount) > 399 // min amount
-    }
-    
-    function bankName() {
-    	return request.resource.data.bankName is string && // var type
-     				 request.resource.data.bankName.size() > 2 && // min length
-             (request.resource.data.bankName == "FNB" ||
-             request.resource.data.bankName == "ABSA Bank" ||
-             request.resource.data.bankName == "Capetic Bank" ||
-             request.resource.data.bankName == "Nedbank Limited" ||
-             request.resource.data.bankName == "Standard Bank" ||
-             request.resource.data.bankName == "African Bank" ||
-             request.resource.data.bankName == "Bidvest Bank" ||
-             request.resource.data.bankName == "Discovery Bank" ||
-             request.resource.data.bankName == "Investec Bank" ||
-             request.resource.data.bankName == "TymeBank")
-    }
-    
-    function bio() {
-    	return request.resource.data.bio is string && // var type
-     				 request.resource.data.bio.size() > 2 // min length
-    }
-    
-    function blogWriter() {
-    	return request.resource.data.blogWriter is bool && // var type
-      			 request.resource.data.blogWriter == false // Default to false
-    }
-    
-    function branchCode() {
-    	return request.resource.data.branchCode is string && // var type
-     				 request.resource.data.branchCode.size() > 2 // min length
-    }
-    
-    function brandStrategy() {
-    	return request.resource.data.brandStrategy is bool && // var type
-      			 request.resource.data.brandStrategy == false // Default to false
-    }
-    
-    function budget() {
-    	return request.resource.data.budget is string && // var type
-              int(request.resource.data.budget) > 399 // min amount
-    }
-    
-    function campus() {
-    	return request.resource.data.campus is string && // var type
-     				 request.resource.data.campus.size() > 2 // min length
-    }
-    
-    function cancelled() {
-    	return request.resource.data.cancelled is bool && //var type
-              request.resource.data.cancelled == false // Default to false
-    }
-    
-    function category() {
-    	return request.resource.data.category is string && // var type
-     				 request.resource.data.category.size() > 2 // min length
-    }
-    
-    function city() {
-    	return request.resource.data.city is string && // var type
-     				 request.resource.data.city.size() > 2 // min length
-    }
-    
-    function clientAlias() {
-    	return request.resource.data.clientAlias is string && // var type
-    				 request.resource.data.clientAlias.size() > 2 // min length
-    }
-    
-    function clientId() {
-    	return request.resource.data.clientId is string && // var type
-    				 request.resource.data.clientId.size() > 2 // min length
-    }
-    
-    function clientName() {
-    	return request.resource.data.clientName is string && // var type
-      				request.resource.data.clientName.size() > 2 // min length
-    }
-    
-    function clientRatingComplete() {
-    	return request.resource.data.clientRatingComplete is bool && // var type
-    				 request.resource.data.clientRatingComplete == false // min length
-    }
-    
-    function commission() {
-    	return request.resource.data.commission is string && // var type
-             int(request.resource.data.commission) > 39 // min amount
-    }
-    
-    function companyName() {
-    	return request.resource.data.companyName is string && // var type
-     				 request.resource.data.companyName.size() > 2 // min length
-    }
-    
-    function companySize() {
-    	return request.resource.data.companySize is string && // var type
-     				 request.resource.data.companySize.size() > 2 // min length
-    }
-    
-    function complete() {
-    	return request.resource.data.complete is bool && // var type
-      			 request.resource.data.complete == false // Default to false
-    }
-    
-    function copywriter() {
-    	return request.resource.data.copywriter is bool && // var type
-      			 request.resource.data.copywriter == false // Default to false
-    }
-    
-    function country() {
-    	return request.resource.data.country is string && // var type
-     				 request.resource.data.country.size() > 2 // min length
-    }
-    
     function created() {
     	return request.resource.data.created is string && // var type
      				 request.resource.data.created.size() > 2 // min length
     }
     
-    function dataEntry() {
-    	return request.resource.data.dataEntry is bool && // var type
-      			 request.resource.data.dataEntry == false // Default to false
-    }
-    
-    function dateOfBirth() {
-    	return request.resource.data.dateOfBirth is string && // var type
-     				 request.resource.data.dateOfBirth.size() > 2 // min length
-    }
-    
-    function degree() {
-    	return request.resource.data.degree is string && // var type
-     				 request.resource.data.degree.size() > 2 // min length
-    }
-    
-    function description() {
-    	return request.resource.data.description is string && // var type
-     				 request.resource.data.description.size() > 2 // min length
-    }
-    
-    function duration() {
-    	return request.resource.data.duration is string && // var type
-     				 request.resource.data.duration.size() > 2 // min length
-    }
-    
-    function email() {
-    	return request.resource.data.email is string && // var type
-             request.resource.data.email.size() > 2 // min length
-    }
-    
-    function facebook() {
-    	return request.resource.data.facebook == null
-    }
-    
-    function facilitationCost() {
-    	return request.resource.data.facilitationCost is string //&& // var type
-              //int(request.resource.data.facilitationCost) == 10 // min amount
-    }
-    
-    function faculty() {
-    	return request.resource.data.faculty is string && // var type
-             request.resource.data.faculty.size() > 2 && // min length
-             (request.resource.data.faculty == "Economic and Management Science" ||
-             request.resource.data.faculty == "Education" ||
-             request.resource.data.faculty == "Engineering, Built Environment & IT" ||
-             request.resource.data.faculty == "Health Science" ||
-             request.resource.data.faculty == "Humanities" ||
-             request.resource.data.faculty == "Law" ||
-             request.resource.data.faculty == "Natural and Agricultural Sciences" ||
-             request.resource.data.faculty == "Theology and Religion" ||
-             request.resource.data.faculty == "Veterinary Services")
-    }
-    
-    function gender() {
-    	return request.resource.data.gender is string && // var type
-             request.resource.data.gender.size() > 3 && // min length
-             (request.resource.data.gender == "Male" || 
-             request.resource.data.gender == "Female" ||
-             request.resource.data.gender == "Prefer Not to Say" ||
-             request.resource.data.gender == "Other")
-    }
-    
-    function graduateStatus() {
-    	return request.resource.data.graduateStatus is string && // var type
-             (request.resource.data.graduateStatus == "Postgraduate" || 
-             request.resource.data.user == "Undergraduate") // match text
-    }
-    
-    function graphicDesigner() {
-    	return request.resource.data.graphicDesigner is bool && // var type
-      			 request.resource.data.graphicDesigner == false // Default to false
-    }
-    
-    function inboundPayment() {
-    	return request.resource.data.inboundPayment is bool && // var type
-      			 request.resource.data.inboundPayment == false // Default to false
-    }
-    
-    function industry() {
-    	return request.resource.data.industry is string && // var type
-             request.resource.data.industry.size() > 2 // min length
-    }
-    
-    function instagram() {
-    	return request.resource.data.instagram == null
-    }
-    
-    function institution() {
-    	return request.resource.data.institution is string && // var type
-             request.resource.data.institution.size() > 2 && // min length
-             request.resource.data.institution == "University of Pretoria"
-             
-    }
-    
-    function institutionType() {
-    	return request.resource.data.institutionType is string && // var type
-             request.resource.data.institutionType == "University"
-    }
-    
-    function jobId() {
-    	return request.resource.data.jobId is string && // var type
-     				 request.resource.data.jobId.size() > 2 // min length
-    }
-    
-    function jobType() {
-    	return request.resource.data.jobType is string && // var type
-     				 request.resource.data.jobType.size() > 2 // min length
-    }
-    
-    function lastModified() {
-    	return request.resource.data.lastModified is string && // var type
-     				 request.resource.data.lastModified.size() > 2 // min length
-    }
-    
-    function location() {
-    	return request.resource.data.location is string && // var type
-     				 request.resource.data.location.size() > 2 // min length
-    }
-    
-    function linkedIn() {
-    	return request.resource.data.linkedIn == null
-    }
     
     function message() {
     	return request.resource.data.message is string && // var type
              request.resource.data.message.size() > 2 // min length
-    }
-    
-    function name() {
-    	return request.resource.data.name is string && // var type
-             request.resource.data.name.size() > 2 // min length
-    }
-    
-    //function outboundPayment() {
-    //	return request.resource.data.outboundPayment is bool && // var type
-    //  			 request.resource.data.outboundPayment == false // Default to false 
-    //}
-    
-    //function paymentDate() {
-    //	return request.resource.data.paymentDate == null
-    //}
-    
-    //function paymentMethod() {
-    //	return request.resource.data.paymentMethod == null
-    //}
-    
-    function phone() {
-    	return request.resource.data.phone is string && // var type
-             request.resource.data.phone.size() > 2 // min length
-    }
-    
-    function photographer() {
-    	return request.resource.data.photographer is bool && // var type
-      			 request.resource.data.photographer == false // Default to false
-    }
-    
-    function portfolio() {
-    	return request.resource.data.portfolio == null
-    }
-    
-    function postalCode_zipCode() {
-    	return request.resource.data.postalCode_zipCode is string && // var type
-             request.resource.data.postalCode_zipCode.size() > 2 // min length
-    }
-    
-    function promoter() {
-    	return request.resource.data.promoter is bool && // var type
-      			 request.resource.data.promoter == false // Default to false
-    }
-    
-    function province_state() {
-    	return request.resource.data.province_state is string && // var type
-             request.resource.data.province_state.size() > 2 // min length
-    }
-    
-    function race() {
-    	return request.resource.data.race is string && // var type
-             request.resource.data.race.size() > 2 && // min length
-             (request.resource.data.race == "Black" ||
-             request.resource.data.race == "White" ||
-             request.resource.data.race == "Coloured" ||
-             request.resource.data.race == "Indian/Asia" ||
-             request.resource.data.race == "Other/Unspecified")
-    }
-    
-    //function reference() {
-    //	return request.resource.data.reference == null
-    //}
-    
-    //function requestTrace() {
-    //	return request.resource.data.requestTrace == null
-    //}
-    
-    function salesperson() {
-    	return request.resource.data.salesperson is bool && // var type
-      			 request.resource.data.salesperson == false // Default to false
-    }
-    
-    function satisfied() {
-    	return request.resource.data.satisfied == null
-    }
-    
-    //function serviceFee() {
-    //	return request.resource.data.serviceFee is int //&& // var type
-      			 //request.resource.data.serviceFee == 0.135 // Default to false 
-    //}
-    
-    function socialMediaManager() {
-    	return request.resource.data.socialMediaManager is bool && // var type
-      			 request.resource.data.socialMediaManager == false
-    }
-    
-    function status() {
-    	return request.resource.data.status is string && // var type
-             request.resource.data.status == "select" // min length
-    }
-    
-    //function studentAlias() {
-    //	return request.resource.data.studentAlias == null
-    //}
-    
-    //function studentFileToken() {
-    //	return request.resource.data.studentFileToken == null
-    //}
-    
-    function studentId() {
-    	return request.resource.data.studentId == null;
-    }
-    
-    function studentNo() {
-    	return request.resource.data.studentNo is string && // var type
-             request.resource.data.studentNo.size() > 2 // min length
-    }
-    
-    function studentRatingComplete() {
-    	return request.resource.data.studentRatingComplete is bool && // var type
-      			 request.resource.data.studentRatingComplete == false // Default to false
     }
     
     function subject() {
@@ -433,125 +47,17 @@ service cloud.firestore {
              request.resource.data.subject.size() > 2 // min length
     }
     
-    function surname() {
-    	return request.resource.data.surname is string && // var type
-             request.resource.data.surname.size() > 2 // min length
-    }
-    
-    function terms_and_conditions() {
-    	return request.resource.data.terms_and_conditions is bool // var type
-    }
-    
-    function total() {
-    	return request.resource.data.total is string // var type
-    }
-    
-    //function totalCostPaid() {
-    //	return request.resource.data.totalCostPaid is string && // var type
-    //         request.resource.data.totalCostPaid.size() > 2 // min length
-    //}
-    
-    function translater() {
-    	return request.resource.data.translater is bool && // var type
-      			 request.resource.data.translater == false // Default to false
-    }
-    
-    function twitter() {
-    	return request.resource.data.twitter == null
-    }
-    
-    function userRole() {
-    	return request.resource.data.user is string && // var type
-             (request.resource.data.user == "client" || request.resource.data.user == "student") // match text
-    }
-    
     function userId() {
     	return request.resource.data.userId is string && // var type
      				 request.resource.data.userId.size() > 2 // min length
     }
     
-    function vat() {
-    	return request.resource.data.vat is string && // var type
-     				 request.resource.data.vat.size() > 2 // min length
-    }
-    
-    function webDeveloper() {
-    	return request.resource.data.webDeveloper is bool && // var type
-      			 request.resource.data.webDeveloper == false
-    }
-    
-    function website() {
-    	return request.resource.data.website is string && // var type
-      			 request.resource.data.website == false
-    }
-    
-    function year() {
-    	return request.resource.data.year is string && // var type
-             request.resource.data.year.size() > 2 && // min length
-             (request.resource.data.year == "1st Year" ||
-             request.resource.data.year == "2nd Year" ||
-             request.resource.data.year == "3rd Year" || 
-             request.resource.data.year == "4th Year" ||
-             request.resource.data.year == "5th Year" ||
-             request.resource.data.year == "Postgraduate Diploma/Certificates" ||
-             request.resource.data.year == "Honours" || 
-             request.resource.data.year == "Masters" || 
-             request.resource.data.year == "Doctorates")
-    }
+   
     ////////////////////
     // End: Variables //
     ////////////////////
     
-    //////////////////
-    // Begin: Users //
-    //////////////////
-    function createUser() {
-    	return alias() && created() && email() && lastModified() && name() && surname() && phone() && terms_and_conditions() && userRole() && userId()
-    }
     
-    function updateUser() {
-    	return (name() || surname()) && lastModified()
-    }
-    ////////////////
-    // End: Users //
-    ////////////////
-    
-    /////////////////////
-    // Begin: Students //
-    /////////////////////
-    function createStudent() {
-    	return (dateOfBirth() || gender() || race() || bio() || institution() || faculty() || graduateStatus() || 
-      			 campus() || studentNo() || year() || degree() || accountName() || accountNumber() || accountType() || bankName() || branchCode()) && institutionType() && 
-             accountCreated() && portfolio() && facebook() && instagram() && linkedIn() && twitter() && created() && lastModified() && userId()
-    }
-    
-    function createVetting() {
-    	return userId() && created() && lastModified() && blogWriter() && brandStrategy() && copywriter() &&
-      			 dataEntry() && graphicDesigner() && photographer() && promoter() && salesperson() &&
-             socialMediaManager() && translater() && webDeveloper()
-    }
-    
-    function updateStudent() {
-    	return (gender() || race() || bio() || institution() || faculty() || graduateStatus() || campus() || 
-      				studentNo() || year() || degree() || accountName() || accountNumber() || accountType() || bankName() || branchCode() || 
-              institutionType() || portfolio() || facebook() || instagram() || linkedIn() || twitter()) && lastModified()
-    }
-    ///////////////////
-    // End: Students //
-    ///////////////////
-    
-    ////////////////////
-    // Begin: Clients //
-    ////////////////////
-    function createClient() {
-    	return (companyName() || website() || vat() || companySize() || industry() || bio() || addressLine1() || 
-      city() || province_state() || postalCode_zipCode() || country()) && accountCreated() && created() && lastModified() && userId()
-    }
-    
-    function updateClient() {
-    	return (companyName() || website() || vat() || companySize() || industry() || bio() || addressLine1() || 
-      				city() || province_state() || postalCode_zipCode()) && lastModified()
-    }
     ///////////////////////////////
     // Begin: Feedback - Support //
     ///////////////////////////////
@@ -563,36 +69,6 @@ service cloud.firestore {
     // End: Feedback - Support ////
     ///////////////////////////////
     
-    /////////////////
-    // Begin: Jobs //
-    /////////////////
-    function createJobs() {
-    	return created() && lastModified() && clientId() && jobId() && jobType() && name()
-    }
-    
-    function updateJobs() {
-    	return jobId() || jobType() || name()
-    }
-    
-    function createMicro() {
-    	return budget()// && cancelled() && clientAlias() && clientName() && clientRatingComplete() && 
-      				//commission() && companyName() && complete() && created() && description() && 
-              //duration() && jobId() && lastModified() && location() && name() && satisfied() && studentId() &&
-              //status() && studentRatingComplete() && total()
-    }
-    
-    function createPayment() {
-    	return amount()// && created() && facilitationCost() && inboundPayment() && jobId() && lastModified() //&& 
-      			 //outboundPayment() && paymentDate() && paymentMethod() && reference() && requestTrace() && 
-             //serviceFee() && studentAlias() && studentFileToken() && totalCostPaid()
-    }
-    
-    function createSkills() {
-    	return category() && created() && jobId() && lastModified()
-    }
-    ///////////////
-    // End: Jobs //
-    ///////////////
     
     ////////////////////
     ////////////////////
@@ -607,27 +83,27 @@ service cloud.firestore {
     ///////////////////////////
     match /users/{userId} {
     	allow read;
-    	allow create: if isAuthenticated() && isUser() && createUser();
-      allow update: if isAuthenticated() && myDocument() && emailVerified() && updateUser() ;
+    	allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument() && emailVerified();
       allow delete: if isAuthenticated() && myDocument() && emailVerified();
     }
     
     match /students/{studentId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isUser() && createStudent();
-      allow update: if isAuthenticated() && myDocument() && updateStudent();
+      allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument();
       allow delete: if isAuthenticated() && myDocument() && emailVerified();
     }
 
     match /vetted/{vettedId} {
       allow read: if isAuthenticated() && isUser();
-      allow write: if isAuthenticated() && createVetting();
+      allow write: if isAuthenticated();
     }
     
     match /clients/{clientId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isUser() && createClient();
-      allow update: if isAuthenticated() && myDocument() && updateClient();
+      allow create: if isAuthenticated() && isUser();
+      allow update: if isAuthenticated() && myDocument();
       allow delete: if isAuthenticated() && myDocument() && emailVerified();
     }
     
@@ -641,23 +117,28 @@ service cloud.firestore {
     
     match /jobs/{jobs} {
       allow read: if isAuthenticated() && isUser();
-      allow create: if isAuthenticated() && emailVerified() && createJobs();
-      allow update: if isAuthenticated() && myDocument() && emailVerified() && updateJobs();
+      allow create: if isAuthenticated() && emailVerified();
+      allow update: if isAuthenticated() && myDocument() && emailVerified();
     }
     
     match /micros/{micros} {
       allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified(); //&& createMicro();
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /payments/{payments} {
       allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified(); //&& createPayment();
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /skills/{skills} {
       allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified() && createSkills();
+      allow create: if isAuthenticated() && emailVerified();
+    }
+
+    match /invoices/{invoice} {
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
 
     match /applications/{applications} {

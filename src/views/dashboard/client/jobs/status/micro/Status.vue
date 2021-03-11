@@ -4,6 +4,8 @@
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"><div class="loading"></div></div></div>
     <md-card class="padding">
       <div class="margin">
+        <md-button v-if="select && enableInvoice" class="btn-next md-primary button" @click="viewInvoice" style="max-width:110px;">Get Invoice</md-button>
+        &nbsp;&nbsp;&nbsp;
         <md-button v-if="!paid" class="btn-next md-info button" @click="payment" style="max-width:110px;">Make payment</md-button>
         &nbsp;&nbsp;&nbsp;
         <md-button v-if="select" class="btn-next md-success button" @click="edit" style="max-width:110px;">Edit Job</md-button>
@@ -24,20 +26,28 @@
     <!-- Modal: Error handling -->
     <modal v-if="modal" @close="modalHide">
       <template slot="header">
-        <h4 class="modal-title black">Make Payment</h4>
+        <h4 v-if="!invoice" class="modal-title black">Make Payment</h4>
+        <h4 v-if="invoice" class="modal-title black">Invoice</h4>
         <md-button class="md-simple md-just-icon md-round modal-default-button" @click="modalHide">
           <md-icon>clear</md-icon>
         </md-button>
       </template>
 
       <template slot="body">
-        <p class="black">Your payment is outstanding</p>
-        <p class="black">Your payment could take up to 5 minutes to reflect depending on your internet speed</p>
+        <notifications></notifications>
+        <p v-if="!invoice" class="black">Your payment is outstanding</p>
+        <p v-if="!invoice" class="black">Your payment could take up to 5 minutes to reflect depending on your internet speed</p>
+        <iframe v-if="invoice" id="invoice"></iframe>
       </template>
 
       <template slot="footer">
-        <div class="centre">
+        <div v-if="!invoice" class="centre">
           <md-button class="md-button md-success" @click="makePayment">Pay Now</md-button>
+        </div>
+        <div v-if="invoice" class="centre">
+          <md-button class="md-button md-success" @click="sendEmail">Send</md-button>
+          &nbsp;&nbsp;
+          <md-button class="md-button md-info" @click="downloadFile">Download</md-button>
         </div>
       </template>
     </modal>
@@ -82,7 +92,9 @@ export default {
       summary: false,
       verified: false,
       modal: false,
-      loading: false
+      loading: false,
+      invoice: false,
+      enableInvoice: false
     };
   },
   methods: {
@@ -90,6 +102,7 @@ export default {
       this.$router.push({ name: 'edit-micro-job', params: {id: this.$route.params.id} });
     },
     modalHide() {
+      this.invoice = false;
       this.modal = false;
     },
     payment() {
@@ -144,9 +157,57 @@ export default {
       .then(() => {
           this.$router.push({ name: "post-a-job" });
       });
+    },
+    async viewInvoice() {
+      this.invoice = true;
+      let doc = await db.collection('invoices').doc(this.job.id).get();
+      let invoice = doc.data();
+
+      const storage = firebase.app().storage(invoice.bucket);
+      const storageRef = storage.ref(invoice.filePath);
+
+      storageRef.getDownloadURL()
+        .then(fileUrl => {
+          var pdf = document.getElementById('invoice');
+          pdf.setAttribute('src', fileUrl);
+        })
+        .catch(err => {
+          this.$notify(
+            {
+              message: 'File failed to load',
+              icon: 'add_alert',
+              horizontalAlign: 'center',
+              verticalAlign: 'top',
+              type: 'danger'
+            });
+        });
+      this.modal = true;
+    },
+    sendEmail() {
+      this.$store.dispatch('sendPdf', this.job);
+      this.$notify(
+        {
+          message: 'Invoice sent',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+    },
+    async downloadFile() {
+      this.$notify(
+        {
+          message: 'Download started...',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+
+      await this.$store.dispatch('downloadPdf', this.job);
     }
   },
-  created() {
+  async created() {
     this.loading = true;
     let task_project = db.collection('micros');
     task_project.where('jobId', '==', this.$route.params.id).get()
@@ -211,6 +272,27 @@ export default {
         }
       });
     });
+
+    this.enableInvoice = await db.collection('invoices').doc(this.$route.params.id).get()
+                           .then(doc => {
+                              if (doc.exists)
+                                return doc.data().generated;
+                              else 
+                                return false;
+                           });
+    
+    let docExists = setInterval(async () => {
+      this.enableInvoice = await db.collection('invoices').doc(this.$route.params.id).get()
+                           .then(doc => {
+                             if (doc.exists)
+                                return doc.data().generated;
+                              else 
+                                return false;
+                           });
+
+      if (this.enableInvoice) clearInterval(docExists);
+    }, 5000);
+
   }
 };
 </script>

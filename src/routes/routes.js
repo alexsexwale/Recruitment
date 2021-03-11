@@ -29,6 +29,10 @@ const router = new Router({
     InstitutionDashboard
   ],
   scrollBehavior(to, from, savedPosition) {
+    const container = document.getElementsByClassName("main-panel");
+    if (container.length > 0) {
+      return container[0].scrollTop = 0;
+    }
     if(to.hash) {
       return {
         selector: to.hash
