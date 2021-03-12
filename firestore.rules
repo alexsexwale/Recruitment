@@ -137,12 +137,12 @@ service cloud.firestore {
     }
 
     match /invoices/{invoice} {
-      allow read: if isAuthenticated() && emailVerified();
+      allow read: if isAuthenticated() //&& emailVerified();
       allow create: if isAuthenticated() && emailVerified();
     }
 
     match /applications/{applications} {
-      allow read: if isAuthenticated() && emailVerified();
+      allow read: if isAuthenticated() //&& emailVerified();
       allow create: if isAuthenticated() && emailVerified();
     }
 

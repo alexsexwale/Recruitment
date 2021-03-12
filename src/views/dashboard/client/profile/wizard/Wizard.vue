@@ -143,8 +143,9 @@ export default {
     postalCode: {
       required: true
     },
-// ^^^add company category^^^
-
+    companyCategory: {
+      required: true
+    },
     email: {}
   },
   components: {
@@ -275,6 +276,12 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
+          if(this.companyCategory) {
+            clients.update({
+              companyCategory: this.companyCategory,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
           if(this.aboutMe) {
             clients.update({
               bio: this.aboutMe,
@@ -311,7 +318,6 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-//  ^^^add company category^^^
         });
       })
       .then(() => {
