@@ -116,24 +116,24 @@ service cloud.firestore {
     }
     
     match /jobs/{jobs} {
-      allow read: if isAuthenticated() && isUser();
-      allow create: if isAuthenticated() && emailVerified();
-      allow update: if isAuthenticated() && myDocument() && emailVerified();
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
+      allow update: if isAuthenticated() && myDocument(); //&& emailVerified();
     }
     
     match /micros/{micros} {
-      allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified();
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
     }
     
     match /payments/{payments} {
-      allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified();
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
     }
     
     match /skills/{skills} {
-      allow read: if isAuthenticated() && emailVerified();
-      allow create: if isAuthenticated() && emailVerified();
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated();// && emailVerified();
     }
 
     match /invoices/{invoice} {
