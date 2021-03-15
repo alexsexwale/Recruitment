@@ -54,10 +54,12 @@
 <script>
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
+import firebase from "firebase/app";
 import db from '@/firebase/init';
 import 'firebase/auth';
 import 'firebase/firestore';
-
+import moment from "moment";
+import debounce from "debounce";
 export default {
   components: {
     IconCheckbox,
@@ -68,6 +70,7 @@ export default {
   },
   data() {
     return {
+      microsDoc: null,
       budget: null,
       benefit: null,
       price: {},
@@ -108,11 +111,39 @@ export default {
         return res;
       });
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.microsDoc.get().then(doc => {
+        if(doc.exists) {
+          if(this.budget) {
+            this.microsDoc.update({
+              budget: this.budget,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+        }
+        if(doc.exists === false) {
+          console.log("doc does not exist: " + this.$route.params.id);
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
+    },
     addBudget: function() {
       this.$emit("budget", this.budget);
+      this.debouncedUpdate();
     },
     addBenefit: function() {
       this.$emit("benefit", this.benefit);
+      this.debouncedUpdate();
     },
     total() {
       let total = (((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2));
@@ -143,13 +174,39 @@ export default {
       this.list = doc.data();
     });
     let job = db.collection('micros').doc(this.$route.params.id);
-    job.get().then(doc => {
-      this.budget = doc.data().budget;
-      let payment = db.collection('payments').doc(this.$route.params.id);
-      payment.get().then(doc => {
-        this.paid = doc.data().inboundPayment;
+    // job.get().then(doc => {
+    //   this.budget = doc.data().budget;
+    //   let payment = db.collection('payments').doc(this.$route.params.id);
+    //   payment.get().then(doc => {
+    //     this.paid = doc.data().inboundPayment;
+    //   });
+    // });
+
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('jobs');
+    ref.where('clientId', '==', this.user.uid).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+        if(doc.exists) { 
+          //console.log("payments:client exists:" + this.user.uid);
+          this.microsDoc = db.collection('micros').doc(this.$route.params.id);
+          this.skillsDoc = db.collection('skills').doc(this.$route.params.id);
+          this.jobsDoc = db.collection('jobs').doc(this.$route.params.id);
+          this.microsDoc.get().then(doc => {
+            if(doc.exists) { 
+             // console.log("payments:micros exists:" + this.user.uid);
+              this.budget = doc.data().budget;
+              let payment = db.collection('payments').doc(this.$route.params.id);
+              payment.get().then(doc => {
+                this.paid = doc.data().inboundPayment;
+              });
+            }   
+          });
+        }
       });
     });
+
   }
 };
 </script>

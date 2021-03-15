@@ -143,7 +143,7 @@
       </div>
 
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry"
+        <md-autocomplete class="industry" @input="addIndustry" v-model="industry" :md-options="industries" data-vv-name="industry" name="industry" required v-validate="modelValidations.industry" 
           :class="[
               { 'md-valid': !errors.has('industry') && touched.industry },
               { 'md-form-group': true },
@@ -158,27 +158,6 @@
             <md-icon class="success" v-show="!errors.has('industry') && touched.industry">done</md-icon>
           </slide-y-down-transition>
         </md-autocomplete>
-      </div>
-
-
-      <div class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-field :class="[
-            { 'md-valid': !errors.has('companyCategory') && touched.companyCategory },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('companyCategory') }
-          ]">
-          <md-icon><i class="far fa-building"></i></md-icon>
-          <label>Company Category</label>
-          <md-select class="pad" @input="addCompanyCategory" v-model="companyCategory" data-vv-name="companyCategory" name="select" required v-validate="modelValidations.companyCategory">
-            <md-option v-for="(companyCategory, index) in companyCategorys" :key="index" :value="companyCategory">{{companyCategory}}</md-option>
-          </md-select>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('companyCategory')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('companyCategory') && touched.companyCategory">done</md-icon>
-          </slide-y-down-transition>
-        </md-field>
       </div>
 
       <md-field :class="[
@@ -212,7 +191,7 @@
           <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
-    </modal>
+    </modal> 
   </div>
 </template>
 <script>
@@ -257,16 +236,13 @@ export default {
       sizeTypes: [],
       industry: null,
       industries: [],
-      companyCategory: null,
-      companyCategorys: [],
       touched: {
         companyName: false,
         companyWebsite: false,
         vat: false,
         companySize: false,
         industry: false,
-        aboutMe: false,
-        companyCategory: false
+        aboutMe: false
       },
       modelValidations: {
         firstName: {
@@ -299,9 +275,6 @@ export default {
         },
         aboutMe: {
           required: true
-        },
-        companyCategory: {
-          required: true
         }
       }
     };
@@ -310,7 +283,7 @@ export default {
     previewImage(event) {
       var file = event.target.files[0];
       if(!file) {
-
+        // empty
       }
       else if(file.size < 2 * 1024 * 1024) { // less than 2MB
         this.fileUpload(file);
@@ -398,12 +371,6 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.companyCategory) {
-            this.client.update({
-              companyCategory: this.companyCategory,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
         }
         if(doc.exists === false) {
           this.client.set({
@@ -423,8 +390,7 @@ export default {
             country: "South Africa",
             profilePicture: null,
             accountCreated: false,
-            profile: this.image,
-            companyCategory: this.companyCategory
+            profile: this.image
           });
           if(this.image) {
             this.client.update({
@@ -475,10 +441,6 @@ export default {
     addAboutMe: function() {
       this.$emit("aboutMe", this.aboutMe);
       this.debouncedUpdate();
-    },
-    addCompanyCategory: function() {
-      this.$emit("companySize", this.companyCategory);
-      this.debouncedUpdate();
     }
   },
   watch: {
@@ -508,9 +470,6 @@ export default {
     },
     aboutMe() {
       this.touched.aboutMe = true;
-    },
-    companyCategory() {
-      this.touched.companyCategory = true;
     }
   },
   created() {
@@ -518,7 +477,6 @@ export default {
     settings.get().then(doc => {
       this.industries = doc.data().Industries;
       this.sizeTypes = doc.data().CompanySizes;
-      this.companyCategorys = doc.data().CompanyCategory;
     });
 
     this.user = firebase.auth().currentUser;
@@ -536,7 +494,7 @@ export default {
             this.companySize = doc.data().companySize;
             this.industry = doc.data().industry;
             this.aboutMe = doc.data().bio;
-            this.companyCategory = doc.data().companyCategory;
+            this.image = doc.data().profile;
           }
         })
         .catch(err => {
