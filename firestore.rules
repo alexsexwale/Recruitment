@@ -89,19 +89,19 @@ service cloud.firestore {
     }
     
     match /students/{studentId} {
-      allow read: if isAuthenticated();
+      allow read//: if isAuthenticated();
       allow create: if isAuthenticated() && isUser();
       allow update: if isAuthenticated() && myDocument();
       allow delete: if isAuthenticated() && myDocument() && emailVerified();
     }
 
     match /vetted/{vettedId} {
-      allow read: if isAuthenticated() && isUser();
+      allow read: if isAuthenticated()// && isUser();
       allow write: if isAuthenticated();
     }
     
     match /clients/{clientId} {
-      allow read: if isAuthenticated();
+      allow read//: if isAuthenticated();
       allow create: if isAuthenticated() && isUser();
       allow update: if isAuthenticated() && myDocument();
       allow delete: if isAuthenticated() && myDocument() && emailVerified();

@@ -434,9 +434,9 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
   await insertFeedbackSQL(snap);
 
-  // const value = snap.data();
-  // const doc = await getDocument("Settings", "Email");
-  // const setting = doc.data();
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
   // sgMail.setApiKey(setting.apiKey);
   // sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
   await emailJS.sendEmail(emailJS.standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
