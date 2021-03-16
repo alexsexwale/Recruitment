@@ -93,6 +93,7 @@
 import { IconCheckbox, Collapse } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 import moment from "moment";
+import firebase from "firebase/app";
 import db from '@/firebase/init';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -153,6 +154,53 @@ export default {
     businessModel.get().then(doc => {
       this.price = doc.data();
     }); 
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('jobs');
+    ref.where('clientId', '==', this.user.uid).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+        if(doc.exists) { 
+          this.microsDoc = db.collection('micros').doc(this.$route.params.id);
+          this.skillsDoc = db.collection('skills').doc(this.$route.params.id);
+          this.jobsDoc = db.collection('jobs').doc(this.$route.params.id);
+          this.microsDoc.get().then(doc => {
+            if(doc.exists) { 
+              this.name = doc.data().name;
+              this.description = doc.data().description;
+              this.location = doc.data().location;
+              this.deadline = doc.data().duration;
+              this.daysOfTheWeek = doc.data().daysOfTheWeek;
+              this.hours = doc.data().workingHours;
+              this.budget = doc.data().budget;
+              let payment = db.collection('payments').doc(this.$route.params.id);
+              payment.get().then(doc => {
+                this.paid = doc.data().inboundPayment;
+              });
+              this.skillsDoc.get()
+              .then(doc => {
+                if(doc.exists) { 
+                  this.skills = doc.data().skills; // skills
+                  this.industryCategory = doc.data().industry; // skills
+                  this.jobCategory = doc.data().category; // skills
+                  this.skills.id = doc.id;
+                  this.jobsDoc.get()
+                  .then(doc => {
+                    if(doc.exists) { 
+                      this.jobType = doc.data().jobType; // jobs
+                      this.education = doc.data().education; // jobs
+                      this.experience = doc.data().experience; //jobs
+                      this.startDate = new Date(doc.data().startDate); 
+                    }
+                  });
+                }
+              });
+            }   
+          });
+        }
+      });
+    });
+
   }
 };
 </script>

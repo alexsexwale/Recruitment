@@ -208,19 +208,20 @@ export default {
   },
   methods: {
     updateAccount() {
-      this.user = firebase.auth().currentUser;
-      let ref = db.collection('jobs');
-      ref.where('clientId', '==', this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          this.slug = slugify(this.jobId + " " + Date.now(), {
-            replacement: '-',
-            remove: /[$*_+~.()'"!\-:@]/g,
-            lower: true
-          });
-        });
-      })
+      //this.user = firebase.auth().currentUser;
+      // let ref = db.collection('jobs');
+      // ref.where('clientId', '==', this.user.uid).get()
+      // .then(snapshot => {
+      //   snapshot.forEach(doc => {
+      //     this.slug = slugify(this.jobId + " " + Date.now(), {
+      //       replacement: '-',
+      //       remove: /[$*_+~.()'"!\-:@]/g,
+      //       lower: true
+      //     });
+      //   });
+      // })
       // this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
+       this.$router.go(-1);
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);
