@@ -195,34 +195,34 @@ export default {
       });
     },
     addAddressLine1: function() {
-      var searchInput = 'search_input';
-      var autocomplete;
-      autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput)), {
-        types: ['geocode'],
-        componentRestrictions: {
-          country: "ZA"
-        }
-      });
+      // var searchInput = 'search_input';
+      // var autocomplete;
+      // autocomplete = new google.maps.places.Autocomplete((document.getElementById(searchInput)), {
+      //   types: ['geocode'],
+      //   componentRestrictions: {
+      //     country: "ZA"
+      //   }
+      // });
 
-      google.maps.event.addListener(autocomplete, 'place_changed', () => {
-        var near_place = autocomplete.getPlace();
-        var address = near_place.address_components;
-        var addressLine = "";
-        for(var i = 0; i < address.length - 4; i++) {
-          addressLine += address[i].long_name + ", ";
-        }
-        addressLine = addressLine.substring(0, addressLine.length - 1);
-        addressLine = addressLine.substring(0, addressLine.length - 1);
-        this.addressLine1 = addressLine;
+      // google.maps.event.addListener(autocomplete, 'place_changed', () => {
+      //   var near_place = autocomplete.getPlace();
+      //   var address = near_place.address_components;
+      //   var addressLine = "";
+      //   for(var i = 0; i < address.length - 4; i++) {
+      //     addressLine += address[i].long_name + ", ";
+      //   }
+      //   addressLine = addressLine.substring(0, addressLine.length - 1);
+      //   addressLine = addressLine.substring(0, addressLine.length - 1);
+      //   this.addressLine1 = addressLine;
 
-        this.city = address[address.length - 4].long_name;
-        this.province_state = address[address.length - 3].long_name;
-        this.country = address[address.length - 2].long_name;
-        this.postalCode = address[address.length - 1].long_name;
-      });
+      //   this.city = address[address.length - 4].long_name;
+      //   this.province_state = address[address.length - 3].long_name;
+      //   this.country = address[address.length - 2].long_name;
+      //   this.postalCode = address[address.length - 1].long_name;
+      // });
 
-      this.$emit("addressLine1", this.addressLine1);
-      this.debouncedUpdate();
+      // this.$emit("addressLine1", this.addressLine1);
+      // this.debouncedUpdate();
     },
     // addAddressLine2: function() {
     //   this.$emit("addressLine2", this.addressLine2);

@@ -2,7 +2,7 @@
   <div class="wizard-container">
     <div v-if="loading" class="background"></div>
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
-    <form @submit.prevent="createJob">
+    <form @submit.prevent="updateAccount">
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
       <md-card class="md-card-wizard active" data-color="green">
         <md-card-header>
@@ -207,105 +207,21 @@ export default {
     }
   },
   methods: {
-    createJob() {
-      this.loading = true;
-      this.user = firebase.auth().currentUser;
-      let ref = db.collection('clients');
-      ref.where('userId', '==', this.user.uid).get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          this.client = doc.data();
-          this.slug = slugify(this.name + " " + Date.now(), {
-            replacement: '-',
-            remove: /[$*_+~.()'"!\-:@]/g,
-            lower: true
-          });
-          db.collection('jobs').doc(this.slug).set({
-            jobId: this.slug,
-            clientId: this.user.uid,
-            clientAlias: this.alias,
-            verified: false,
-            created: moment(Date.now()).format('L'),
-            lastModified: moment(Date.now()).format("L"),
-            name: this.name,
-            jobType: this.jobType,
-            clientName: this.person.name + " " + this.person.surname,
-            companyName: this.client.companyName,
-            email: this.person.email,
-            phone: this.person.phone,
-            education: this.education,
-            experience: this.experience,
-            startDate: moment(this.startDate).format("L"),
-            clientProfile: this.person.profile
-          });
-
-          db.collection('micros').doc(this.slug).set({
-            jobId: this.slug,
-            studentId: null,
-            studentEmail: null,
-            studentName: null,
-            companyName: this.client.companyName,
-            clientName: this.user.displayName,
-            clientEmail: this.person.email,
-            clientAlias: this.alias,
-            name: this.name,
-            description: this.description,
-            location: this.location,
-            duration: this.deadline,
-            workingHours: this.hours,
-            daysOfTheWeek: this.daysOfTheWeek,
-            //benefit: this.benefit, // to do: move to different document
-            budget: (this.budget * 1).toFixed(2),
-            commission: (this.budget * this.price.serviceFee).toFixed(2),
-            facilitation: (this.price.facilitationFee * 1).toFixed(2),
-            total: ((this.budget * (1 + this.price.serviceFee)) + this.price.facilitationFee).toFixed(2),
-            status: "select",
-            satisfied: null,
-            complete: false,
-            clientRatingComplete: false,
-            studentRatingComplete: false,
-            cancelled: false,
-            created: moment(Date.now()).format('L'),
-            lastModified: moment(Date.now()).format("L"),
-          });
-
-          db.collection('skills').doc(this.slug).set({
-            jobId: this.slug,
-            industry: this.industryCategory,
-            category: this.jobCategory,
-            skills: this.skills,
-            created: moment(Date.now()).format('L'),
-            lastModified: moment(Date.now()).format("L"),
-          });
-
-          db.collection('payments').doc(this.slug).set({
-            jobId: this.slug,
-            amount: (this.budget * 1).toFixed(2),
-            created: moment(Date.now()).format("L"),
-            paymentDate: null,
-            paymentMethod: null,
-            requestTrace: null,
-            reference: null,
-            inboundPayment: false,
-            outboundPayment: false,
-            studentFileToken: null,
-            clientFileToken: null,
-            lastModified: moment(Date.now()).format("L"),
-            studentAlias: null,
-            serviceFee: this.price.serviceFee,
-            facilitationCost: (this.price.facilitationFee * 1).toFixed(2),
-            totalCostPaid: null
-          });
-        });
-      })
-      .then(() => {
-        this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
-      })
-      .catch(err => {
-        this.feedback = err.message;
-        console.log(err.message)
-        this.loading = false;
-      })
+    updateAccount() {
+      //this.user = firebase.auth().currentUser;
+      // let ref = db.collection('jobs');
+      // ref.where('clientId', '==', this.user.uid).get()
+      // .then(snapshot => {
+      //   snapshot.forEach(doc => {
+      //     this.slug = slugify(this.jobId + " " + Date.now(), {
+      //       replacement: '-',
+      //       remove: /[$*_+~.()'"!\-:@]/g,
+      //       lower: true
+      //     });
+      //   });
+      // })
+      // this.$router.push({ name: 'client-micro-status', params: {id: this.slug} });
+       this.$router.go(-1);
     },
     addTab(tab) {
       const index = this.$slots.default.indexOf(tab.$vnode);

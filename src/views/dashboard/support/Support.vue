@@ -51,7 +51,7 @@
       </template>
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button class="md-button md-success" @click="modalHide">Got it</md-button>
+          <md-button class="md-button md-success" @click="submit">Got it</md-button>
         </div>
       </template>
     </modal>
@@ -82,7 +82,11 @@ export default {
     })
   },
   methods: {
-    ...mapActions(["support", "modalHide"])
+    ...mapActions(["support", "modalHide"]),
+    submit() {
+      this.message = "";
+      this.modalHide();
+    }
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');

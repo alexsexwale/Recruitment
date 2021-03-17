@@ -141,9 +141,6 @@ export default {
     accountNumber: {
       required: true
     },
-    accountNumber: {
-      required: true
-    },
     accountType: {
       required: true
     },

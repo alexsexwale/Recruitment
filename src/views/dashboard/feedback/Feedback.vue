@@ -49,7 +49,7 @@
       </template>
       <template slot="footer">
         <div style="text-align:center;">
-          <md-button v-if="success" class="md-button md-success" @click="modalHide">Great!</md-button>
+          <md-button v-if="success" class="md-button md-success" @click="submit">Great!</md-button>
           <md-button v-if="error" class="md-button md-success" @click="modalHide">Got it</md-button>
         </div>
       </template>
@@ -80,7 +80,12 @@ export default {
     })
   },
   methods: {
-    ...mapActions(["feedback", "modalHide"])
+    ...mapActions(["feedback", "modalHide"]),
+    
+    submit() {
+      this.message = "";
+      this.modalHide();
+    }
   },
   created() {
     let settings = db.collection('Settings').doc('Drop-down Lists');

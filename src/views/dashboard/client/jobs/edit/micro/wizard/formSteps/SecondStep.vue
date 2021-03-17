@@ -119,10 +119,11 @@ import firebase from "firebase/app";
 import 'firebase/auth';
 import 'firebase/firestore';
 import moment from "moment";
+import debounce from "debounce";
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 import { Modal } from "@/components";
-
+import format from 'date-fns/format'
 export default {
   components: {
     IconCheckbox,
@@ -134,6 +135,8 @@ export default {
   },
   data() {
     return {
+      jobsDoc: null,
+      microsDoc: null,
       remote: true,
       onsite: false,
       location: null,
@@ -204,23 +207,91 @@ export default {
       if(!this.remote && !this.onsite) {
         this.onsite = true;
       }
+      this.addLocation();
+    },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    updateAccount() {
+      this.jobsDoc.get().then(doc => {
+        if(doc.exists) {
+          if(this.startDate) {
+            this.jobsDoc.update({
+              startDate: moment(this.startDate).format('L'),
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.location) {
+            this.microsDoc.update({
+              location: this.location,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.deadline) {
+              this.microsDoc.update({
+              duration: this.deadline,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.daysOfTheWeek) {
+            this.microsDoc.update({
+              daysOfTheWeek: this.daysOfTheWeek,
+              lastModified: moment(Date.now()).format('L')
+            });
+            if (this.jobType !== 'Once-off Project/Task') {
+              this.microsDoc.update({
+                duration: null,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+          }
+          if(this.hours) {
+            this.microsDoc.update({
+              workingHours: this.hours,
+              lastModified: moment(Date.now()).format('L')
+            });
+            if (this.jobType !== 'Once-off Project/Task') {
+              this.microsDoc.update({
+                duration: null,
+                lastModified: moment(Date.now()).format('L')
+              });
+            }
+          }
+        }
+        if(doc.exists === false) {
+          console.log("doc does not exist: " + this.$route.params.id);
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
     },
     addRemote: function() {
       this.$emit("location", "Remote");
+      this.location = "Remote";
+      this.debouncedUpdate();
     },
     addLocation: function() {
       this.$emit("location", this.location);
+      this.debouncedUpdate();
     },
     addDeadline: function() {
       this.$emit("deadline", this.deadline);
+      this.debouncedUpdate();
     },
     addHours: function() {
       this.deadline = null;
       this.$emit("hours", this.hours);
+      this.debouncedUpdate();
     },
     addDaysOfTheWeek: function() {
-      this.deadline = null;
       this.$emit("daysOfTheWeek", this.daysOfTheWeek);
+      this.debouncedUpdate();
     },
     addStartDate: function() {
       var date = new Date();
@@ -239,6 +310,7 @@ export default {
       }
       else {
         this.$emit("startDate", this.startDate);
+        this.debouncedUpdate(); 
       }
     },
     modalHide() {
@@ -272,23 +344,39 @@ export default {
     settings.doc('Business Model').get().then(doc => {
       this.days = doc.data().startDate;
     });
-    this.remoteSelection();
-    
-    let job = db.collection('micros').doc(this.$route.params.id);
-    job.get().then(doc => {
-      this.location = doc.data().location;
-      this.deadline = doc.data().duration;
-      this.daysOfTheWeek = doc.data().daysOfTheWeek;
-      this.hours = doc.data().workingHours;
-      if(this.location == "Remote")
-        this.remote = true;
-      else
-        this.onsite = true;
-      db.collection('jobs').doc(this.$route.params.id).get()
-      .then(doc => {
-        this.startDate = new Date(doc.data().startDate);
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('jobs');
+    ref.where('clientId', '==', this.user.uid).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+        if(doc.exists) { 
+
+          this.microsDoc = db.collection('micros').doc(this.$route.params.id);
+          this.jobsDoc = db.collection('jobs').doc(this.$route.params.id);
+          this.microsDoc.get().then(doc => {
+            if(doc.exists) { 
+
+              this.location = doc.data().location;
+              this.deadline = doc.data().duration;
+              this.daysOfTheWeek = doc.data().daysOfTheWeek;
+              this.hours = doc.data().workingHours;
+              if(this.location == "Remote")
+                this.remote = true;
+              else
+                this.onsite = true;
+              this.jobsDoc.get()
+              .then(doc => {
+                if(doc.exists) { 
+                  this.startDate = new Date(doc.data().startDate); 
+                }
+              });
+            }   
+          });
+        }
       });
+      
     });
+    this.remoteSelection();
   }
 };
 </script>

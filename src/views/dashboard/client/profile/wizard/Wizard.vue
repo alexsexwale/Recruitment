@@ -143,6 +143,9 @@ export default {
     postalCode: {
       required: true
     },
+    companyCategory: {
+      required: true
+    },
     email: {}
   },
   components: {
@@ -270,6 +273,12 @@ export default {
           if(this.industry) {
             clients.update({
               industry: this.industry,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.companyCategory) {
+            clients.update({
+              companyCategory: this.companyCategory,
               lastModified: moment(Date.now()).format('L')
             });
           }

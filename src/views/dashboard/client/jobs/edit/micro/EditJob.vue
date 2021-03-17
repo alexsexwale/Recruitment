@@ -18,6 +18,8 @@
         v-bind:budget="budget"
         v-bind:benefit="benefit">
         <template slot="header">
+          <md-button class="btn-next md-success" @click="back">Go Back</md-button>
+          <p></p>
           <h3 class="title">Edit a Job</h3>
           <h5 class="category">
             This information you fill out will allow students to apply for the job
@@ -137,6 +139,9 @@ export default {
     }
   },
   methods: {
+    back() {
+      this.$router.go(-1);
+    },
     validateStep(ref) {
       return this.$refs[ref].validate();
     },

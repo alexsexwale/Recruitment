@@ -16,7 +16,9 @@
         v-bind:city="city"
         v-bind:province="province"
         v-bind:postalCode="postalCode"
+        v-bind:companyCategory="companyCategory"
         @feedback="addFeedback">
+
         <template slot="header">
           <md-button class="btn-next md-success" @click="back">Go Back</md-button>
           <p></p>
@@ -38,8 +40,10 @@
             @vat="addVat"
             @companySize="addCompanySize"
             @industry="addIndustry"
+            @companyCategory="addCompanyCategory"
             @aboutMe="addAboutMe">
           </first-step>
+
         </wizard-tab>
 
         <wizard-tab>
@@ -109,8 +113,10 @@ export default {
       city: null,
       province: null,
       postalCode: null,
+      companyCategory: null,
       modal: false
     };
+  
   },
   components: {
     FirstStep,
@@ -171,6 +177,9 @@ export default {
     addFeedback: function(feedback) {
       this.modal = true;
       this.feedback = feedback;
+    },
+    addCompanyCategory: function(companyCategory) {
+      this.companyCategory = companyCategory
     }
   }
 };

@@ -19,6 +19,7 @@
     "@tweenjs/tween.js": "17.4.0",
     "axios": "^0.19.2",
     "chartist": "0.11.2",
+    "date-fns": "^2.19.0",
     "debounce": "^1.2.0",
     "element-ui": "^2.13.0",
     "es6-promise": "^4.2.8",
