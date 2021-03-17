@@ -123,7 +123,6 @@ import debounce from "debounce";
 import { IconCheckbox } from "@/components";
 import { SlideYDownTransition } from "vue2-transitions";
 import { Modal } from "@/components";
-import format from 'date-fns/format'
 export default {
   components: {
     IconCheckbox,
