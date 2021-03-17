@@ -74,13 +74,7 @@ app.use("/public", express.static("./public"))
 
 // Routes
 app.get("/hello", async (req, res) => {
-  var msg = {
-    to: "jpemail777@gmail.com",
-    from: "u14024749@tuks.co.za",
-    subject: "TEST",
-    text: "test"
-  };
-  emailJS.sendEmail(msg);
+
     return res.status(200).send("Hey");
 });
 
@@ -126,7 +120,14 @@ app.post("/activate", urlencodedParser, async (req, res) => {
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
-    
+    msg = {
+      to: req.body.Extra2,
+      from: fromEmail,
+      subject: "Payment Successful",
+      text: "Your payment has been successful and you can now view more information about the applicants. Please click on the view profile button to see the applicant's contact information."
+    };
+    await emailJS.sendEmail(msg);
+  
     // send chat bot message
     var channelName = "netcash";
     var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash";
@@ -434,9 +435,9 @@ exports.feedback = functions.firestore.document('feedback/{feedback}')
   const insertFeedbackSQL = insertFeedbackSQLJS.insertFeedbackSQL;
   await insertFeedbackSQL(snap);
 
-  // const value = snap.data();
-  // const doc = await getDocument("Settings", "Email");
-  // const setting = doc.data();
+  const value = snap.data();
+  const doc = await getDocument("Settings", "Email");
+  const setting = doc.data();
   // sgMail.setApiKey(setting.apiKey);
   // sgMail.send(standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
   await emailJS.sendEmail(emailJS.standardEmail(setting.giveFeedback, value.email, value.subject, value.message));
@@ -531,12 +532,14 @@ exports.paymentsUpdate = functions.firestore.document('payments/{jobId}')
   await updatePayments(change);
   const newValue = change.after.data();
   const previousValue = change.before.data();
+  //payment is outbound
   if (previousValue.outboundPayment === false && newValue.outboundPayment === true) {
     // send chat bot message
     var channelName = "netcash";
     var message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " has been completed";
     await chatBot.sendBotMessage(channelName, message);
   }
+
   return null;
 });
 
@@ -693,6 +696,7 @@ exports.jobStatus = functions.firestore.document('micros/{microsId}')
     message = "Dear Jobox Team,\n\n" + " jobId = " + newValue.jobId + " is rated as 'dissatisfied'.";
     await chatBot.sendBotMessage(channelName, message);
   }
+
   return null;
 });
 

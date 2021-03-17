@@ -1,6 +1,5 @@
 <template>
   <div class="wizard-container">
-    <form @submit.prevent="createAccount">
       <div v-if="loading" class="background"></div>
       <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
       <!--        You can switch " data-color="primary" "  with one of the next bright colors: "green", "orange", "red", "blue"       -->
@@ -49,19 +48,14 @@
                 <div class="pc-view">{{ nextButtonText }}</div>
                 <div class="mobi-view"><i class="fas fa-arrow-right"></i></div>
               </md-button>
-              <button v-else class="md-button md-success md-theme-default" slot="footer">
-                <div class="md-ripple">
-                  <div class="md-button-content">
-                    <div class="pc-view">{{ finishButtonText }}</div>
-                    <div class="mobi-view"><i class="fa fa-check"></i></div>
-                  </div>
-                </div>
-              </button>
+              <md-button @click="createAccount" v-else class="md-button md-success md-theme-default" slot="footer">
+                <div class="pc-view">{{ finishButtonText }}</div>
+                <div class="mobi-view"><i class="fa fa-check"></i></div>
+              </md-button>
             </div>
           </slot>
         </md-card-actions>
       </md-card>
-    </form>
   </div>
 </template>
 <script>
@@ -136,9 +130,6 @@ export default {
       required: true
     },
     accountName: {
-      required: true
-    },
-    accountNumber: {
       required: true
     },
     accountNumber: {

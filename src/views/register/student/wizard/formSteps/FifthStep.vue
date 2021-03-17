@@ -52,7 +52,7 @@
           ]">
           <md-icon><i class="fas fa-piggy-bank"></i></md-icon>
           <label>Account Type</label>
-          <md-select class="pad" @input="addAccountType" v-model="accountType" data-vv-name="accountType" type="text" name="accountType" required v-validate="modelValidations.accountType">
+          <md-select class="pad" @input="addAccountType" v-model="accountType" >
             <md-option v-for="(accountType, index) in accountTypes" :key="index" :value="accountType">{{accountType}}</md-option>
           </md-select>
           <slide-y-down-transition>
@@ -72,7 +72,7 @@
           ]">
           <md-icon><i class="fas fa-university"></i></md-icon>
           <label>Bank Name</label>
-          <md-select class="pad" @input="addBankName" v-model="bankName" data-vv-name="bankName" type="text" name="bankName" required v-validate="modelValidations.bankName">
+          <md-select class="pad" @input="addBankName" v-model="bankName">
             <md-option v-for="(bankName, index) in bankNames" :key="index" :value="bankName">{{bankName}}</md-option>
           </md-select>
           <slide-y-down-transition>

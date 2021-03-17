@@ -284,6 +284,8 @@ import db from "@/firebase/init";
 import firebase from "firebase/app";
 import 'firebase/auth';
 import 'firebase/firestore';
+import moment from "moment";
+import debounce from "debounce";
 import { SlideYDownTransition } from "vue2-transitions";
 export default {
   components: {
@@ -291,6 +293,9 @@ export default {
   },
   data() {
     return {
+      jobsDoc: null,
+      microsDoc: null,
+      skillsDoc: null,
       name: null,
       description: null,
       jobType: null,
@@ -316,7 +321,8 @@ export default {
           required: true
         },
         description: {
-          required: true
+          required: true,
+          max: 100
         },
         jobType: {
           required: true
@@ -349,30 +355,107 @@ export default {
         return res;
       });
     },
+    debouncedUpdate: debounce(function() {
+      this.updateAccount();
+    }, 1500),
+    
+    updateAccount() {
+      this.jobsDoc.get().then(doc => {
+        if(doc.exists) {
+          if(this.name) {
+            this.jobsDoc.update({
+              name: this.name,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.description) {
+            this.microsDoc.update({
+              description: this.description,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.jobType) {
+            this.jobsDoc.update({
+              jobType: this.jobType,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.education) {
+            this.jobsDoc.update({
+              education: this.education,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.experience) {
+            this.jobsDoc.update({
+              experience: this.experience,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.industryCategory) {
+            this.skillsDoc.update({
+              industry: this.industryCategory,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.jobCategory) {
+            this.skillsDoc.update({
+              category: this.jobCategory,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.skills) {
+            this.skillsDoc.update({
+              skills: this.skills,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+        }
+        if(doc.exists === false) {
+          console.log("doc does not exist: " + this.$route.params.id);
+        }
+        this.$notify(
+        {
+          message: 'Your data has been automatically saved!',
+          icon: 'add_alert',
+          horizontalAlign: 'center',
+          verticalAlign: 'top',
+          type: 'success'
+        });
+      });
+    },
     addName: function() {
       this.$emit("name", this.name);
+      this.debouncedUpdate();
     },
     addDescription: function() {
       this.$emit("description", this.description);
+      this.debouncedUpdate();
     },
     addJobType: function() {
       this.$emit("jobType", this.jobType);
+      this.debouncedUpdate();
     },
     addEducation: function() {
       this.$emit("education", this.education);
+      this.debouncedUpdate();
     },
     addExperience: function() {
       this.$emit("experience", this.experience);
+      this.debouncedUpdate();
     },
     addIndustryCategory: function() {
-      this.jobCategory = null;
+      //this.jobCategory = null;
       this.$emit("industryCategory", this.industryCategory);
+      this.debouncedUpdate();
     },
     addJobCategory: function() {
       this.$emit("jobCategory", this.jobCategory);
+      this.debouncedUpdate();
     },
     addSkills: function() {
       this.$emit("skills", this.skills);
+      this.debouncedUpdate();
     }
   },
   watch: {
@@ -402,33 +485,49 @@ export default {
     }
   },
   created() {
-    db.collection('micros').doc(this.$route.params.id).get().then(doc => {
-      this.name = doc.data().name;
-      this.description = doc.data().description;
-      db.collection('skills').doc(this.$route.params.id).get()
-      .then(doc => {
-        this.skills = doc.data().skills; // skills
-        this.industryCategory = doc.data().industry; // skills
-        this.jobCategory = doc.data().category; // skills
-        console.log(this.jobCategory)
-        this.skills.id = doc.id;
-        db.collection('jobs').doc(this.$route.params.id).get()
-        .then(doc => {
-          this.jobType = doc.data().jobType; // jobs
-          this.education = doc.data().education; // jobs
-          this.experience = doc.data().experience; //jobs
-        });
-      });
-    });
-    
+
     let settings = db.collection('Settings');
-    
     settings.doc('Drop-down Lists').get().then(doc => {
       this.extraList = doc.data();
     });
-
     settings.doc('Job Category Drop-down Lists').get().then(doc => {
       this.list = doc.data();
+    });
+
+    this.user = firebase.auth().currentUser;
+    let ref = db.collection('jobs');
+    ref.where('clientId', '==', this.user.uid).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+        if(doc.exists) { 
+          this.microsDoc = db.collection('micros').doc(this.$route.params.id);
+          this.skillsDoc = db.collection('skills').doc(this.$route.params.id);
+          this.jobsDoc = db.collection('jobs').doc(this.$route.params.id);
+          this.microsDoc.get().then(doc => {
+            if(doc.exists) { 
+              this.name = doc.data().name;
+              this.description = doc.data().description;
+              this.skillsDoc.get()
+              .then(doc => {
+                if(doc.exists) { 
+                  this.skills = doc.data().skills; // skills
+                  this.industryCategory = doc.data().industry; // skills
+                  this.jobCategory = doc.data().category; // skills
+                  this.skills.id = doc.id;
+                  this.jobsDoc.get()
+                  .then(doc => {
+                    if(doc.exists) { 
+                      this.jobType = doc.data().jobType; // jobs
+                      this.education = doc.data().education; // jobs
+                      this.experience = doc.data().experience; //jobs
+                    }
+                  });
+                }
+              });
+            }   
+          });
+        }
+      });
     });
   }
 };

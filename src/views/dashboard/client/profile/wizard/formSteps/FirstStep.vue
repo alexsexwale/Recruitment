@@ -225,6 +225,7 @@ export default {
       body: "",
       user: null,
       client: null,
+      users: null,
       firstName: null,
       lastName: null,
       phoneNumber: null,
@@ -283,7 +284,7 @@ export default {
     previewImage(event) {
       var file = event.target.files[0];
       if(!file) {
-        
+        // empty
       }
       else if(file.size < 2 * 1024 * 1024) { // less than 2MB
         this.fileUpload(file);
@@ -323,6 +324,18 @@ export default {
     updateAccount() {
       this.client.get().then(doc => {
         if(doc.exists) {
+          if(this.firstName) {
+            this.users.update({
+              name: this.firstName,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
+          if(this.lastName) {
+            this.users.update({
+              surname: this.lastName,
+              lastModified: moment(Date.now()).format('L')
+            });
+          }
           if(this.companyName) {
             this.client.update({
               companyName: this.companyName,
@@ -411,12 +424,15 @@ export default {
     },
     addFirstName: function() {
       this.$emit("firstName", this.firstName);
+      this.debouncedUpdate();
     },
     addLastName: function() {
       this.$emit("lastName", this.lastName);
+      this.debouncedUpdate();
     },
     addPhoneNumber: function() {
       this.$emit("phoneNumber", this.phoneNumber);
+      this.debouncedUpdate();
     },
     addCompanyName: function() {
       this.$emit("companyName", this.companyName);
@@ -496,6 +512,7 @@ export default {
             this.aboutMe = doc.data().bio;
             this.image = doc.data().profile;
           }
+          this.users = db.collection('users').doc(this.$route.params.id);
         })
         .catch(err => {
           console.log(err.message);
