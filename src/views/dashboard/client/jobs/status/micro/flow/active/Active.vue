@@ -14,6 +14,7 @@
             <img v-if="profile" class="img" :src="profile" />
             <img v-else class="img" :src="cardUserImage" />
           </div>
+          <br>
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
             <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link>
