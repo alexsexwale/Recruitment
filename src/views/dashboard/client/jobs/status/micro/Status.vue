@@ -12,6 +12,7 @@
         &nbsp;&nbsp;&nbsp;
         <md-button v-if="select && !paid" class="btn-next md-danger button" @click="cancelJob" style="max-width:110px;">Cancel Job</md-button>
       </div>
+      <p v-if="!enableInvoice" class="red centre">Please be patient an invoice is being generated for the job.</p>
       <p v-if="!verified" class="centre bold">Jobox takes up to 24 hours to validate a job and prepare the candidate vetting process. Please note that you may recieve a call from the Jobox team.</p>
       <p v-if="job.total > 0 && !paid" class="centre">Your outstanding balance is R{{job.total}}</p>
       
@@ -291,7 +292,7 @@ export default {
                            });
 
       if (this.enableInvoice) clearInterval(docExists);
-    }, 5000);
+    }, 1500);
 
   }
 };
@@ -311,5 +312,9 @@ export default {
 }
 .margin {
   margin: auto;
+}
+.red {
+  color: red;
+  font-weight: bold;
 }
 </style>
