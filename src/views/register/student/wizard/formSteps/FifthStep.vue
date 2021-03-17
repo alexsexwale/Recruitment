@@ -212,7 +212,6 @@ export default {
             let branches = banks.collection('Branches').doc(this.bankName);
 
             await branches.get().then(doc => {
-              console.log(doc.exists)
               if(doc.exists)
                 this.branchCode = doc.data().BranchCode;
               else
