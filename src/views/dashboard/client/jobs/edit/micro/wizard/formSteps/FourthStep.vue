@@ -149,7 +149,7 @@ export default {
       return moment(this.startDate).format('LL')
     }
   },
-  created() {
+  mounted() {
     let businessModel = db.collection('Settings').doc('Business Model');
     businessModel.get().then(doc => {
       this.price = doc.data();
@@ -183,7 +183,6 @@ export default {
                   this.skills = doc.data().skills; // skills
                   this.industryCategory = doc.data().industry; // skills
                   this.jobCategory = doc.data().category; // skills
-                  this.skills.id = doc.id;
                   this.jobsDoc.get()
                   .then(doc => {
                     if(doc.exists) { 
@@ -200,7 +199,22 @@ export default {
         }
       });
     });
-
+    this.name.reload();
+    this.description.reload();
+    this.location.reload();
+    this.deadline.reload();
+    this.daysOfTheWeek.reload();
+    this.hours.reload();
+    this.budget.reload();
+    this.paid.reload();
+    this.skills.reload();
+    this.industryCategory.reload();
+    this.jobCategory.reload();
+    this.skills.id.reload();
+    this.jobType.reload();
+    this.education.reload();
+    this.experience.reload();
+    this.startDate.reload(); 
   }
 };
 </script>

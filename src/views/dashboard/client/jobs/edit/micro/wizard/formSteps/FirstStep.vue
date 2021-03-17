@@ -321,7 +321,8 @@ export default {
           required: true
         },
         description: {
-          required: true
+          required: true,
+          max: 100
         },
         jobType: {
           required: true

@@ -330,7 +330,7 @@ export default {
         },
         description: {
           required: true,
-          max: 200,
+          max: 100,
           min: 5
         },
         jobType: {
