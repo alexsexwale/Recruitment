@@ -96,10 +96,8 @@ service cloud.firestore {
     }
 
     match /vetted/{vettedId} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated()// && isUser();
+      allow write: if isAuthenticated();
     }
     
     match /clients/{clientId} {
@@ -110,157 +108,110 @@ service cloud.firestore {
     }
     
     match /support/{supportId} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create: if isAuthenticated() && isUser() && emailVerified() && feedback_support();
     }
     
     match /feedback/{feedback} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create: if isAuthenticated() && isUser() && emailVerified() && feedback_support();
     }
     
     match /jobs/{jobs} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
+      allow update//: if isAuthenticated() && myDocument(); //&& emailVerified();
     }
     
     match /micros/{micros} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
+      allow update//: if isAuthenticated() && myDocument(); //&& emailVerified();
     }
     
     match /payments/{payments} {
-      allow read;
-    	allow create;
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated(); //&& emailVerified();
       allow update;
-      allow delete;
     }
     
     match /skills/{skills} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated();// && emailVerified();
+      allow create: if isAuthenticated();// && emailVerified();
+      allow update//: if isAuthenticated() && myDocument(); //&& emailVerified();
     }
 
     match /invoices/{invoice} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated() //&& emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
 
     match /applications/{applications} {
-      allow read;
-    	allow create;
+      allow read: if isAuthenticated() //&& emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
       allow update;
-      allow delete;
     }
 
     match /studentRatings/{studentRatings} {
-      allow read;
-    	allow create;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
       allow update;
-      allow delete;
     }
 
     match /clientRatings/{clientRatings} {
-      allow read;
-    	allow create;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
       allow update;
-      allow delete;
     }
 
     match /communication/{communication} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /problemSolving/{problemSolving} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /leadership/{leadership} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /organisation/{organisation} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow read: if isAuthenticated() && emailVerified();
+      allow create: if isAuthenticated() && emailVerified();
     }
 
     match /cancel/{cancel} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create;
     }
 
     match /incomplete/{incomplete} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create: if isAuthenticated() && emailVerified();
     }
 
     match /dissatisfied/{dissatisfied} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create: if isAuthenticated() && emailVerified();
     }
     
     match /errors/{errors} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create;
     }
     
     match /Settings/{Settings} {
       allow read;
-    	allow create;
-      allow update;
-      allow delete;
     }
 
     match /ContentManagement/{ContentManagement} {
       allow read;
-    	allow create;
-      allow update;
-      allow delete;
     }
 
     match /netcash/{netcash} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create;
     }
     
     match /decline/{decline} {
-      allow read;
-    	allow create;
-      allow update;
-      allow delete;
+      allow create;
     }
     
     //////////////////////////
