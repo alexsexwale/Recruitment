@@ -115,6 +115,7 @@ app.get("/hello", async (req, res) => {
 
 // Inbound payment
 app.post("/activate", urlencodedParser, async (req, res) => {
+  console.log("activate");
   if(req.body.TransactionAccepted && req.body.Extra1) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
