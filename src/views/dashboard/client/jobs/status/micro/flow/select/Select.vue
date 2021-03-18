@@ -175,6 +175,7 @@
         <md-icon v-if="student.twitter && student.twitter !== ''"><i class="fab fa-twitter" style="color:#00acee; cursor: pointer" @click="twitter"></i></md-icon>
         <span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span><span v-if="student.twitter && student.twitter !== ''">&nbsp;</span>
         <md-icon v-if="student.instagram && student.instagram !== ''"><i class="fab fa-instagram" style="color: #d6249f; cursor: pointer" @click="instagram"></i></md-icon>
+        <span class="red left" v-if="!socialMedia">The candidate has no social media handles present</span>
       </p>
       <p v-else class="red">You have not made a payment</p>
     </template>
@@ -216,6 +217,7 @@ export default {
       index: null,
       loading: true,
       pop: null,
+      socialMedia: false,
       feedback: "Please be patient, students will start applying soon",
       cardUserImage: "/img/dashboard/client/card-1.jpg"
     };
@@ -277,6 +279,10 @@ export default {
       this.loading = true;
       db.collection('students').doc(alias).get().then(doc => {
         this.student = doc.data();
+        if (this.student.linkedIn && this.student.linkedIn !== '' && this.student.github && this.student.github !== '' && this.student.facebook && this.student.facebook !== '' && this.student.twitter && this.student.twitter !== '' && this.student.instagram && this.student.instagram !== '')
+          this.socialMedia = true;
+        else
+          this.socialMedia = false;
         this.cardUserImage = this.student.profile;
         db.collection('users').doc(alias).get().then(doc => {
           this.student.name = doc.data().name;
