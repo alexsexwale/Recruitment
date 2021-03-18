@@ -120,6 +120,12 @@ app.post("/activate", urlencodedParser, async (req, res) => {
       inboundPayment: true,
       lastModified: moment(Date.now()).format("L"),
     });
+    const doc = await getDocument("Settings", "Email");
+    const setting = doc.data();
+
+    var fromEmail = setting.joboxFromNotifications;
+    console.log("fromEmail:" + fromEmail);
+    console.log("req.body.Extra2:" + req.body.Extra2);
     msg = {
       to: req.body.Extra2,
       from: fromEmail,
@@ -127,7 +133,7 @@ app.post("/activate", urlencodedParser, async (req, res) => {
       text: "Your payment has been successful and you can now view more information about the applicants. Please click on the view profile button to see the applicant's contact information."
     };
     await emailJS.sendEmail(msg);
-  
+    console.log("email sent");
     // send chat bot message
     var channelName = "netcash";
     var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash";
