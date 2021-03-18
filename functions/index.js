@@ -74,7 +74,7 @@ app.use("/public", express.static("./public"))
 
 // Routes
 app.get("/hello", async (req, res) => {
-
+    console.log("test");
     return res.status(200).send("Hey");
 });
 
@@ -115,7 +115,7 @@ app.get("/hello", async (req, res) => {
 
 // Inbound payment
 app.post("/activate", urlencodedParser, async (req, res) => {
-  console.log("activate");
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>activate");
   if(req.body.TransactionAccepted && req.body.Extra1) {
     db.collection("payments").doc(req.body.Extra1).update({
       inboundPayment: true,
@@ -125,10 +125,10 @@ app.post("/activate", urlencodedParser, async (req, res) => {
     const setting = doc.data();
 
     var fromEmail = setting.joboxFromNotifications;
-    console.log("fromEmail:" + fromEmail);
-    console.log("req.body.Extra2:" + req.body.Extra2);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fromEmail:" + fromEmail);
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>req.body.Extra2:" + req.body.EmailAccount);
     msg = {
-      to: req.body.Extra2,
+      to: req.body.EmailAccount,
       from: fromEmail,
       subject: "Payment Successful",
       text: "Your payment has been successful and you can now view more information about the applicants. Please click on the view profile button to see the applicant's contact information."
@@ -595,7 +595,7 @@ exports.newApplication = functions.firestore.document('applications/{application
   const doc = await getDocument("Settings", "Email");
   const setting = doc.data();
  
-  await emailJS.sendEmail(emailJS.clientEmail("application", value.clientEmail, setting.active, null, null, null, value.clientName, value.applicant));
+  await emailJS.sendEmail(emailJS.clientEmail("application", value.clientEmail, setting.active, null, null, value.clientName, value.applicant));
   return null;
 });
 
