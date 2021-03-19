@@ -84,7 +84,7 @@
           { 'md-valid': !errors.has('industryCategory') && touched.industryCategory },
           { 'md-error': errors.has('industryCategory') }
         ]">
-        <label>Job Category</label>
+        <label>Job Industry</label>
         <md-select @input="addIndustryCategory" v-model="industryCategory" data-vv-name="industryCategory" type="text" name="industryCategory" required v-validate="modelValidations.industryCategory" style="margin-left: 10px;">
           <md-option v-for="(industryCategory, index) in list.JobCategory" :key="index" :value="industryCategory">{{industryCategory}}</md-option>
         </md-select>
