@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h5 class="info-text" v-if="jobType === 'Once-off Project/Task'">Let us know what your budget is. Minimum amount is <b><u>R400.00</u></b></h5>
+    <h5 class="info-text" v-if="jobType === 'Project/Task'">Let us know what your budget is. Minimum amount is <b><u>R400.00</u></b></h5>
     <h5 class="info-text" v-else-if="jobType === 'Full-time'">Let us know what the employee salary is. Minimum amount is <b><u>R3500.00</u></b> per month.</h5>
     <h5 class="info-text" v-else>Let us know what the employee salary is. Minimum amount is <b><u>R2000.00</u></b> per month.</h5>
     <div class="md-layout">
@@ -12,9 +12,9 @@
             { 'md-error': errors.has('budget') }
           ]">
           <md-icon><i class="fas fa-wallet"></i></md-icon>
-          <label v-if="jobType === 'Once-off Project/Task'">Budget</label>
+          <label v-if="jobType === 'Project/Task'">Budget</label>
           <label v-else>Salary</label>
-          <md-input v-if="jobType === 'Once-off Project/Task'" @change="addBudget" v-model="budget" data-vv-name="budget" type="number" min="10" step=".01" name="budget" required v-validate="modelValidations.budget"></md-input>
+          <md-input v-if="jobType === 'Project/Task'" @change="addBudget" v-model="budget" data-vv-name="budget" type="number" min="10" step=".01" name="budget" required v-validate="modelValidations.budget"></md-input>
           <md-input v-else-if="jobType === 'Full-time'" @change="addBudget" v-model="budget" data-vv-name="budget" type="number" min="10" step=".01" name="budget" required v-validate="modelValidations.minSalary"></md-input>
           <md-input v-else @change="addBudget" v-model="budget" data-vv-name="budget" type="number" min="10" step=".01" name="budget" required v-validate="modelValidations.salary"></md-input>
           <slide-y-down-transition>
@@ -25,7 +25,7 @@
           </slide-y-down-transition>
         </md-field>
 
-        <!-- <md-field v-if="jobType !== 'Once-off Project/Task'"
+        <!-- <md-field v-if="jobType !== 'Project/Task'"
           :class="[
             { 'md-valid': !errors.has('benefit') && touched.benefit },
             { 'md-form-group': true },
