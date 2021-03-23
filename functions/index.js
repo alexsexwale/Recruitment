@@ -124,9 +124,17 @@ app.post("/activate", urlencodedParser, async (req, res) => {
     const doc = await getDocument("Settings", "Email");
     const setting = doc.data();
 
-    var fromEmail = setting.joboxFromNotifications;
+    //get the jobs collection
+    const jobs = await getDocument("jobs", req.body.Extra1);
+    // get the clientAlias from the jobs collection
+    const clientAlias = jobs.data().clientAlias;
+    //get the users collection
+    const users = await getDocument("users", clientAlias);
+    //get the email from the users collection
+    var fromEmail = users.data().email;
+
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>req.body.Extra1:" + req.body.Extra1);
     console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fromEmail:" + fromEmail);
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>req.body.Extra2:" + req.body.EmailAccount);
     msg = {
       to: req.body.EmailAccount,
       from: fromEmail,
