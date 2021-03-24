@@ -146,20 +146,18 @@ service cloud.firestore {
 
     match /applications/{applications} {
       allow read: if isAuthenticated() //&& emailVerified();
-      allow create: if isAuthenticated() && emailVerified();
+      allow create//: if isAuthenticated() && emailVerified();
       allow update;
     }
 
     match /studentRatings/{studentRatings} {
       allow read: if isAuthenticated() && emailVerified();
       allow create: if isAuthenticated() && emailVerified();
-      allow update;
     }
 
     match /clientRatings/{clientRatings} {
       allow read: if isAuthenticated() && emailVerified();
       allow create: if isAuthenticated() && emailVerified();
-      allow update;
     }
 
     match /communication/{communication} {
@@ -199,10 +197,6 @@ service cloud.firestore {
     }
     
     match /Settings/{Settings} {
-      allow read;
-    }
-
-    match /Settings/Banks/Branches/{Branches} {
       allow read;
     }
 

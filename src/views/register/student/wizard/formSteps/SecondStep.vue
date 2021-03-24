@@ -5,7 +5,6 @@
     </h5>
     <div class="md-layout">
       <notifications></notifications>
-      <!-- Currently Studying -->
       <div class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('studying') && touched.studying },
@@ -25,7 +24,6 @@
           </slide-y-down-transition>
         </md-field>
       </div>
-      <!-- Institution -->
       <div v-if="studying" class="md-layout-item ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('institution') && touched.institution },
@@ -45,40 +43,6 @@
             <md-icon class="success" v-show="!errors.has('institution') && touched.institution">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div>
-       <!-- Start Date -->
-      <div v-if="studying === 'No'" class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addStartDate" v-model="startDate" data-vv-name="startDate" v-validate="modelValidations.startDate" md-immediately
-          :class="[
-            { 'md-valid': !errors.has('startDate') && touched.startDate },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('startDate') }
-          ]">
-          <label>Start Date</label>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('startDate')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('startDate') && touched.startDate">done</md-icon>
-          </slide-y-down-transition>
-        </md-datepicker>
-      </div>
-      <!-- End Date -->
-      <div v-if="studying === 'No'" class="md-layout-item ml-auto mt-4 md-small-size-100">
-        <md-datepicker @input="addEndDate" v-model="endDate" data-vv-name="endDate" v-validate="modelValidations.endDate" md-immediately md-success
-          :class="[
-            { 'md-valid': !errors.has('endDate') && touched.endDate },
-            { 'md-form-group': true },
-            { 'md-error': errors.has('endDate') }
-          ]">
-          <label>End Date</label>
-          <slide-y-down-transition>
-            <md-icon class="error" v-show="errors.has('endDate')">close</md-icon>
-          </slide-y-down-transition>
-          <slide-y-down-transition>
-            <md-icon class="success" v-show="!errors.has('endDate') && touched.endDate">done</md-icon>
-          </slide-y-down-transition>
-        </md-datepicker>
       </div>
     </div>
   </div>
@@ -109,24 +73,15 @@ export default {
       institutions: [],
       studying: null,
       yes_no: null,
-      endDate: null,
       touched: {
         institution: false,
-        studying: false,
-        startDate: false,
-        endDate: false
+        studying: false
       },
       modelValidations: {
         institution: {
           required: true
         },
         studying: {
-          required: true
-        },       
-        startDate: {
-          required: true
-        },
-        endDate: {
           required: true
         }
       }
@@ -157,18 +112,6 @@ export default {
               lastModified: moment(Date.now()).format('L')
             });
           }
-          if(this.startDate) {
-            this.student.update({
-              startDate: this.studying,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
-          if(this.endDate) {
-            this.student.update({
-              endDate: this.studying,
-              lastModified: moment(Date.now()).format('L')
-            });
-          }
         }
       });
       this.$notify(
@@ -187,14 +130,6 @@ export default {
     addStudying: function() {
       this.$emit("studying", this.studying);
       this.debouncedUpdate();
-    },
-    addStartDate: function() {
-      this.$emit("startDate", this.startDate);
-      this.debouncedUpdate();
-    },
-    addEndDate: function() {
-      this.$emit("endDate", this.endDate);
-      this.debouncedUpdate();
     }
   },
   watch: {
@@ -203,12 +138,6 @@ export default {
     },
     studying() {
       this.touched.studying = true;
-    },
-    startDate() {
-      this.touched.startDate = true;
-    },
-    endDate() {
-      this.touched.endDate = true;
     }
   },
   created() {
@@ -228,8 +157,6 @@ export default {
           if(doc.exists) {
             this.institution = doc.data().institution;
             this.studying = doc.data().studying;
-            this.startDate = doc.data().startDate;
-            this.endDate = doc.data().endDate;
           }
         })
         .catch(err => {

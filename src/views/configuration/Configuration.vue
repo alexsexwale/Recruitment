@@ -168,8 +168,16 @@ export default {
       this.loading = true;
       var user = firebase.auth().currentUser;
       if(user) {
-        firebase.auth().signOut().then(() => {
-          this.$router.push({ name: 'Login'});
+        db.collection('users').where('userId', '==', user.uid).get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            if(doc.data().user === "client") {
+              this.$router.push({ name: "create-client-account" });
+            }
+            else {
+              this.$router.push({ name: "create-student-account" });
+            }
+          });
         });
       }
       else {

@@ -3,7 +3,7 @@
     <h5 class="info-text">
       What are your banking details, so that we can pay you for each job?
     </h5>
-    <p class="info-text">Jobs will be paid directly to your bank account through the platform.</p>
+    <p class="info-text">Jobs will be paid directly to your bank account through the platform</p>
       <div class="md-layout">
       <notifications></notifications>
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
@@ -85,14 +85,14 @@
       </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
-        <md-field :md-counter="false" :class="[
+        <md-field :class="[
             { 'md-valid': !errors.has('branchCode') && touched.branchCode },
             { 'md-form-group': true },
             { 'md-error': errors.has('branchCode') }
           ]">
           <md-icon><i class="fas fa-stamp"></i></md-icon>
           <label>Branch Code</label>
-          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="number" name="branchCode" required v-validate="modelValidations.branchCode" maxlength="6" :readonly="branchCode">
+          <md-input @change="addBranchCode" v-model="branchCode" data-vv-name="branchCode" type="number" name="branchCode" required v-validate="modelValidations.branchCode">
           </md-input>
           <slide-y-down-transition>
             <md-icon class="error" v-show="errors.has('branchCode')">close</md-icon>
@@ -187,7 +187,7 @@ export default {
       this.updateAccount();
     }, 1500),
     updateAccount() {
-      this.student.get().then(async doc => {
+      this.student.get().then(doc => {
         if(doc.exists) {
           if(this.accountName) {
             this.student.update({
@@ -208,21 +208,67 @@ export default {
             });
           }
           if(this.bankName) {
-            let banks = db.collection('Settings').doc('Banks');
-            let branches = banks.collection('Branches').doc(this.bankName);
-
-            await branches.get().then(doc => {
-              if(doc.exists)
-                this.branchCode = doc.data().BranchCode;
-              else
-                this.branchCode = null;
-            });
-
             this.student.update({
               bankName: this.bankName,
-              branchCode: this.branchCode,
               lastModified: moment(Date.now()).format('L')
             });
+            // switch (this.bankName) {
+            //   case "Absa":
+            //     this.branchCode = "632005";
+            //     break
+            //   case "African Bank":
+            //     this.branchCode = "430000";
+            //     break
+            //   case "Bidvest Bank":
+            //     this.branchCode = "462005";
+            //     break
+            //   case "Capitec Bank":
+            //     this.branchCode = "470010";
+            //     break
+            //   case "Discovery Bank":
+            //     this.branchCode = "679000";
+            //     break
+            //   case "First National Bank":
+            //     this.branchCode = "250655";
+            //     break
+            //   case "Grindrod Bank":
+            //     this.branchCode = "223626";
+            //     break
+            //   case "Habib Overseas Bank":
+            //     this.branchCode = "";
+            //     break
+            //   case "HBZ Bank":
+            //     this.branchCode = "";
+            //     break
+            //   case "Imperial Bank South Africa":
+            //     this.branchCode = "";
+            //     break
+            //   case "Investec Bank":
+            //     this.branchCode = "580105";
+            //     break
+            //   case "Nedbank":
+            //     this.branchCode = "198765";
+            //     break
+            //   case "Sasfin":
+            //     this.branchCode = "683000";
+            //     break
+            //   case "South African Bank of Athens":
+            //     this.branchCode = "";
+            //     break
+            //   case "Standard Bank":
+            //     this.branchCode = "051001";
+            //     break
+            //   case "TymeBank":
+            //     this.branchCode = "678910";
+            //     break
+            //   case "Ubank":
+            //     this.branchCode = "";
+            //     break
+            // }
+            // this.student.update({
+            //   branchCode: this.branchCode,
+            //   lastModified: moment(Date.now()).format('L')
+            // });
           }
           if(this.branchCode) {
             this.student.update({
