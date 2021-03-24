@@ -24,7 +24,7 @@
         </md-field>
       </div>
       <br/><br/>
-      <div v-if="jobType === 'Once-off Project/Task'" class="md-layout-item mt-4 md-small-size-100">
+      <div v-if="jobType === 'Project/Task'" class="md-layout-item mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('deadline') && touched.deadline },
             { 'md-error': errors.has('deadline') }
@@ -42,7 +42,7 @@
         </md-field>
       </div>
 
-      <div v-if="jobType !== 'Once-off Project/Task'" class="md-layout-item mt-4 md-small-size-100">
+      <div v-if="jobType !== 'Project/Task'" class="md-layout-item mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('daysOfTheWeek') && touched.daysOfTheWeek },
             { 'md-error': errors.has('daysOfTheWeek') }
@@ -237,7 +237,7 @@ export default {
               daysOfTheWeek: this.daysOfTheWeek,
               lastModified: moment(Date.now()).format('L')
             });
-            if (this.jobType !== 'Once-off Project/Task') {
+            if (this.jobType !== 'Project/Task') {
               this.microsDoc.update({
                 duration: null,
                 lastModified: moment(Date.now()).format('L')
@@ -249,7 +249,7 @@ export default {
               workingHours: this.hours,
               lastModified: moment(Date.now()).format('L')
             });
-            if (this.jobType !== 'Once-off Project/Task') {
+            if (this.jobType !== 'Project/Task') {
               this.microsDoc.update({
                 duration: null,
                 lastModified: moment(Date.now()).format('L')

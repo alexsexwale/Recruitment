@@ -63,11 +63,11 @@
                     <h4 class="card-title">Start Date</h4>
                     <p class="card-description">{{ job.date }}</p>
 
-                    <h4 v-if="job.type === 'Once-off Project/Task'" class="card-title">Estimated Duration</h4>
-                    <p v-if="job.type === 'Once-off Project/Task'" class="card-description">{{ job.duration }}</p>
+                    <h4 v-if="job.type === 'Project/Task'" class="card-title">Estimated Duration</h4>
+                    <p v-if="job.type === 'Project/Task'" class="card-description">{{ job.duration }}</p>
 
-                    <h4 v-if="job.type !== 'Once-off Project/Task'" class="card-title">Working Days</h4>
-                    <ul v-if="job.type !== 'Once-off Project/Task'">
+                    <h4 v-if="job.type !== 'Project/Task'" class="card-title">Working Days</h4>
+                    <ul v-if="job.type !== 'Project/Task'">
                       <li v-for="days in job.daysOfTheWeek" :key="days" class="card-description">{{ days }}</li>
                     </ul>
 
@@ -79,14 +79,14 @@
               <template slot="md-collapse-pane-4">
               <md-card class="bg-success">
                 <md-card-content>
-                  <h3 v-if="job.type === 'Once-off Project/Task'" class="card-category card-category-social centre">
+                  <h3 v-if="job.type === 'Project/Task'" class="card-category card-category-social centre">
                     <i class="fas fa-wallet"></i> Budget
                   </h3>
-                  <h3 v-if="job.type ==! 'Once-off Project/Task'" class="card-category card-category-social centre">
+                  <h3 v-if="job.type ==! 'Project/Task'" class="card-category card-category-social centre">
                     <i class="fas fa-wallet"></i> Salary
                   </h3>
-                  <h4 v-if="job.type === 'Once-off Project/Task'" class="card-title">Budget</h4>
-                  <h4 v-if="job.type !== 'Once-off Project/Task'" class="card-title">Salary</h4>
+                  <h4 v-if="job.type === 'Project/Task'" class="card-title">Budget</h4>
+                  <h4 v-if="job.type !== 'Project/Task'" class="card-title">Salary</h4>
                   <p class="card-description">R{{ job.budget }}</p>
                 </md-card-content>
               </md-card>

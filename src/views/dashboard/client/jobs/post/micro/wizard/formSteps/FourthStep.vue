@@ -53,11 +53,11 @@
                   <h4 class="card-title">Start Date</h4>
                   <p class="card-description">{{ date }}</p>
 
-                  <h4 v-if="jobType === 'Once-off Project/Task'" class="card-title">Estimated Duration</h4>
-                  <p v-if="jobType === 'Once-off Project/Task'" class="card-description">{{ deadline }}</p>
+                  <h4 v-if="jobType === 'Project/Task'" class="card-title">Estimated Duration</h4>
+                  <p v-if="jobType === 'Project/Task'" class="card-description">{{ deadline }}</p>
                   
-                  <h4 v-if="jobType !== 'Once-off Project/Task'" class="card-title">Working Days</h4>
-                  <ul v-if="jobType !== 'Once-off Project/Task'">
+                  <h4 v-if="jobType !== 'Project/Task'" class="card-title">Working Days</h4>
+                  <ul v-if="jobType !== 'Project/Task'">
                     <li v-for="days in daysOfTheWeek" :key="days" class="card-description">{{ days }}</li>
                   </ul>
 
@@ -76,8 +76,8 @@
                   <p class="card-description"><b>R{{ total() }}</b> = <b>R{{ rate() }}</b> + <b>R{{ fee() }}</b> + <b>R{{ price.facilitationFee }}.00</b></p>
                   <hr/>
                   <h4 class="card-title">Cost Breakdown</h4>
-                  <p class="card-description" v-if="jobType === 'Once-off Project/Task'">Fixed-Term Rate:  <b>R{{ rate() }}</b></p>
-                  <p class="card-description" v-if="jobType !== 'Once-off Project/Task'">Salary:  <b>R{{ rate() }}</b></p>  
+                  <p class="card-description" v-if="jobType === 'Project/Task'">Fixed-Term Rate:  <b>R{{ rate() }}</b></p>
+                  <p class="card-description" v-if="jobType !== 'Project/Task'">Salary:  <b>R{{ rate() }}</b></p>  
                   <p class="card-description">Jobox Service Fee ({{ percentage() }}%): <b>R{{ fee() }}</b></p> 
                   <p class="card-description">Jobox Admin Cost: <b>R{{ price.facilitationFee }}.00</b></p>
                 </md-card-content>
