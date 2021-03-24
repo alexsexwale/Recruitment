@@ -58,7 +58,7 @@ function clientEmail(messageType, receiver, sender, jobName, jobId, clientName, 
     var message = null;
     if(messageType === "application") {
       subject = applicantName + " has applied for your job";
-      message = "Hey " + clientName + ",\n\nGreat news!"+ applicantName + " just applied for the job you posted:" 
+      message = "Hey " + clientName + ",\n\n Great news!"+ applicantName + " just applied for the job you posted:" 
     }
     if(messageType === "accept") {
       subject = "Student has accepted the job you have posted";

@@ -108,8 +108,7 @@ import FourthStep from "./wizard/formSteps/FourthStep.vue";
 import swal from "sweetalert2";
 import { WizardTab } from "@/components";
 import SimpleWizard from "./wizard/Wizard.vue";
-import db from "@/firebase/init";
-import firebase from "firebase/app";
+
 export default {
   components: {
     FirstStep,
@@ -194,68 +193,6 @@ export default {
     addBenefit: function(benefit) {
       this.benefit = benefit;
     }
-  },
-  created() {
-    this.user = firebase.auth().currentUser;
-    let ref = db.collection('jobs');
-    ref.where('clientId', '==', this.user.uid).get()
-    .then(snapshot => {
-        snapshot.forEach(doc => {
-        if(doc.exists) { 
-          this.microsDoc = db.collection('micros').doc(this.$route.params.id);
-          this.skillsDoc = db.collection('skills').doc(this.$route.params.id);
-          this.jobsDoc = db.collection('jobs').doc(this.$route.params.id);
-          this.microsDoc.get().then(doc => {
-            if(doc.exists) { 
-              this.name = doc.data().name;
-              this.description = doc.data().description;
-              this.location = doc.data().location;
-              this.deadline = doc.data().duration;
-              this.daysOfTheWeek = doc.data().daysOfTheWeek;
-              this.hours = doc.data().workingHours;
-              this.budget = doc.data().budget;
-              let payment = db.collection('payments').doc(this.$route.params.id);
-              payment.get().then(doc => {
-                this.paid = doc.data().inboundPayment;
-              });
-              this.skillsDoc.get()
-              .then(doc => {
-                if(doc.exists) { 
-                  this.skills = doc.data().skills; // skills
-                  this.industryCategory = doc.data().industry; // skills
-                  this.jobCategory = doc.data().category; // skills
-                  this.jobsDoc.get()
-                  .then(doc => {
-                    if(doc.exists) { 
-                      this.jobType = doc.data().jobType; // jobs
-                      this.education = doc.data().education; // jobs
-                      this.experience = doc.data().experience; //jobs
-                      this.startDate = new Date(doc.data().startDate); 
-                    }
-                  });
-                }
-              });
-            }   
-          });
-        }
-      });
-    });
-    this.name.reload();
-    this.description.reload();
-    this.location.reload();
-    this.deadline.reload();
-    this.daysOfTheWeek.reload();
-    this.hours.reload();
-    this.budget.reload();
-    this.paid.reload();
-    this.skills.reload();
-    this.industryCategory.reload();
-    this.jobCategory.reload();
-    this.skills.id.reload();
-    this.jobType.reload();
-    this.education.reload();
-    this.experience.reload();
-    this.startDate.reload(); 
   }
 };
 </script>

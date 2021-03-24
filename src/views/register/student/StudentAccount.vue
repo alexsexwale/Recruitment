@@ -73,9 +73,7 @@
           <second-step ref="step2" 
             @on-validated="onStepValidated"
             @institution="addInstitution"
-            @studying="addStudying"
-            @startDate="addStartDate"
-            @endDate="addEndDate">
+            @studying="addStudying">
           </second-step>
           <!-- University of Pretoria -->
           <tuks ref="step2" v-if="institution === 'University of Pretoria'" @on-validated="onStepValidated"  @faculty="addFaculty" @degree="addDegree" 
@@ -185,8 +183,6 @@ export default {
       bio: null,
       institution: null,
       studying: null,
-      startDate: null,
-      endDate: null,
       campus: null,
       studentNo: null,
       faculty: null,
@@ -284,14 +280,6 @@ export default {
     },
     addInstitution: function(institution) {
       this.institution = institution;
-      this.refresh();
-    },
-    addStartDate: function(startDate) {
-      this.startDate = startDate;
-      this.refresh();
-    },
-    addEndDate: function(endDate) {
-      this.endDate = endDate;
       this.refresh();
     },
     addCampus: function(campus) {

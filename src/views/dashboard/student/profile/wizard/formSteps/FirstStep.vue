@@ -16,7 +16,7 @@
             <div v-else>
               <img :src="image" />
             </div>
-            <input type="file" @change="previewImage" title="Profile Picture" accept="image/*"/>
+            <input type="file" @change="previewImage" title="Profile Picture" />
           </div>
           <h6 class="description">Profile Picture</h6>
           <!-- <h6 class="description">Currently disabled</h6> -->
