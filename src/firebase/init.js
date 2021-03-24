@@ -15,8 +15,8 @@ var config = {
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(config);
 
-if (window.location.hostname === "localhost") {
-  firebaseApp.firestore().settings({ host: 'localhost:5001', ssl: false });
-}
+// if (window.location.hostname === "localhost") {
+//   firebaseApp.firestore().settings({ host: 'localhost:5001', ssl: false });
+// }
 
 export default firebaseApp.firestore();

@@ -62,7 +62,7 @@
         </md-field>
       </div>
 
-      <!-- <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
+      <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[
             { 'md-valid': !errors.has('instagram') && touched.instagram },
             { 'md-form-group': true },
@@ -78,7 +78,7 @@
             <md-icon class="success" v-show="!errors.has('instagram') && touched.instagram">done</md-icon>
           </slide-y-down-transition>
         </md-field>
-      </div> -->
+      </div>
 
       <div class="md-layout-item  ml-auto mt-4 md-small-size-100">
         <md-field :class="[

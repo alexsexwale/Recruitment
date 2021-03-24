@@ -130,7 +130,7 @@ app.post("/activate", urlencodedParser, async (req, res) => {
   
     // send chat bot message
     var channelName = "netcash";
-    var message = "Dear Jobox Team,\n\n" + " the user with the job id: " + req.body.Extra1 + ", has made a payment theough the api that was put into netcash";
+    var message = "Dear Jobox Team,\n\n" + " the client with the job id: " + req.body.Extra1 + ", has made a payment into netcash.";
     await chatBot.sendBotMessage(channelName, message);
     res.status(200).redirect("https://joboxstaging.web.app/client/payment/success/" + req.body.Extra1);
   } 
@@ -401,11 +401,8 @@ app.post("/pay", urlencodedParser, async (req, res) => {
   }
 });
 
-
-
 // Export api to Firebase Cloud Functions
 exports.app = functions.https.onRequest(app);
-
 
 // New user document created
 exports.newUser = functions.firestore.document('users/{userId}')
@@ -474,15 +471,12 @@ exports.support = functions.firestore.document('support/{support}')
   return null;
 });
 
-
 //support document updated
 exports.updateSupport = functions.firestore.document('support/{support}')
 .onUpdate(async (change, context) => {
   const updateSupportSQL = updateSupportSQLJS.updateSupportSQL;
   await updateSupportSQL(change);
 });
-
-
 
 // New job document created
 exports.jobPost = functions.firestore.document('jobs/{jobId}')
@@ -500,7 +494,7 @@ exports.jobPost = functions.firestore.document('jobs/{jobId}')
   var channelName = "job-notifications";
   var message = "Dear Jobox Team,\n\n" + value.clientName + " from " + value.companyName + " has posted a new " + value.jobType + " job on the platform, "
   + value.name + " (" + value.jobId + ").\n\nPlease verify the job post within 24 hours.\n\nYou can reach " + 
-  value.clientName + " on their phone number, " + value.phone + "\nAlex Sexwale";
+  value.clientName + " on their phone number, " + value.phone;
   await chatBot.sendBotMessage(channelName, message);
 });
 
@@ -549,8 +543,6 @@ exports.newStudent = functions.firestore.document('students/{studentId}')
   const studentSQL = studentSQLJS.studentSQL;
   await studentSQL(change);
 });
-
-
 
 // Application document updated
 exports.applicantDecision = functions.firestore.document('applications/{applicationsId}')
