@@ -9,7 +9,9 @@ async function createMySQLconnection() {
     const settingsCollection = await getDocument("Settings", "MySQL");
     var MySQLsettings = settingsCollection.data();
     var mysqlConnection = mysql.createConnection({
+      // Used when we deploy
       socketPath: MySQLsettings.socketPath,
+      // Used when we are testing locally
       //host: '35.239.215.232',
       user: MySQLsettings.user,
       password: MySQLsettings.password,
