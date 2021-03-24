@@ -27,7 +27,7 @@ async function insertJobSQL(snap) {
     created = new Date(microsDocData.created);
   
     //if the job type is a project task, then the Project_Tasks table needs to get a new entry
-    if (value.jobType === "Once-off Project/Task") {
+    if (value.jobType === "Project/Task") {
       sql = "INSERT INTO Project_Tasks (job_ID, client_rating_complete, duration, student_rating_complete,last_modified, created) VALUES (?,?,?,?,?,?)";
       values = [microsDocData.jobId, microsDocData.clientRatingComplete, microsDocData.duration, microsDocData.studentRatingComplete, lastModified, created];
       await sqlQuery(sql,values);
