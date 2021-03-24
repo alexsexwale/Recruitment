@@ -4,6 +4,7 @@
     <div v-if="loading" class="text-center lds-circle"><div><img src="@/assets/img/logo.png"></div></div>
     <hr><h2 class="centre">Please Confirm That the Job Was Completed To Your Satisfaction</h2><hr>
     <h6 class="centre">Student Information</h6>
+    <br>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
@@ -11,6 +12,7 @@
             <img v-if="profile" class="img" :src="profile" />
             <img v-else class="img" :src="cardUserImage" />
           </div>
+          <br>
           <md-card-content>
             <h6 class="category text-gray">{{ applicant.degree }}</h6>
             <router-link class="card-title" :to="{ name: 'view-student-profile', params: {id: applicant.alias}}"><a>{{ applicant.applicant }}</a></router-link>

@@ -6,6 +6,7 @@
     <p class="centre">You are currently working with the client</p>
     <hr>
     <h6 class="centre">Client Information</h6>
+    <br>
     <div class="md-layout">
       <div class="md-layout-item md-small-size-100">
         <md-card class="md-card-profile">
@@ -13,6 +14,7 @@
             <img v-if="picture" class="img" :src="picture" />
             <img v-else class="img" :src="cardUserImage" />
           </div>
+          <br>
           <md-card-content>
           <h6 class="category text-gray">{{ client.companyName }}</h6>
           <h4><router-link class="card-title" :to="{ name: 'view-client-profile', params: {id: client.clientAlias}}"><a>{{ client.clientName }}</a></router-link></h4>
