@@ -421,7 +421,7 @@
                         <li>The arbitrator shall be entitled to:
                           <ol>
                             <li>investigate or cause to be investigated any matter, fact or thing which he considers necessary or desirable in connection with any matter referred to him for decision;</li>
-                            <li>decide the matters submitted to him according to what he considers just and equitable in all the circumstances, having regard to the purpose of this fixed term contract; an</li>
+                            <li>decide the matters submitted to him according to what he considers just and equitable in all the circumstances, having regard to the purpose of this fixed term contract;</li>
                             <li>make such award, including an award for specific performance, an interdict, damages or a penalty or the costs of arbitration or otherwise, as he in his discretion may deem fit and appropriate.</li>
                           </ol>
                         </li>
