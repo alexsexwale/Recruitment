@@ -26,7 +26,9 @@
             'SECTION 18 - TERMINATION',
             'SECTION 19 - ENTIRE AGREEMENT',
             'SECTION 20 - GOVERNING LAW',
-            'SECTION 21 - CONTACT INFORMATION'
+            'SECTION 21 - CONTACT INFORMATION',
+            'SCHEDULE 1: FEE STRUCTURE',
+            'SCHEDULE 2: FIXED TERMS CONTRACT'
             ]"
           icon="keyboard_arrow_down"
           color-collapse="success">
@@ -42,9 +44,9 @@
               <p><b>“Jobox”, “We”, “Us” and “Our”</b> refers to Jobox (Pty) Ltd, a company duly incorporated in terms of the company laws of South Africa with Registration Number 2015/143706/07 and its principal place of business at 26 Merano Crescent, Kyalami Estates , Johannesburg, Gauteng, 1684.</p>
               <p><b>“Intellectual Property”</b> means all intellectual property, whether registered or not, including but not limited to designs; processes; know-how; trade secrets; research results; business names; domain names; patents and patent applications; trademarks and trade mark applications; copyright (including rights in any reports, presentation slide shows, software source code, photographs, literary works, computer software and typography rights); confidential and proprietary knowledge and information and any rights protecting same; business goodwill and reputation and rights protecting same; database rights; and all intellectual property rights and forms of protection of a similar nature to any of the foregoing or having an equivalent effect anywhere in the world belonging to Jobox or its affiliates;</p>
               <p><b>“On-site Job”</b> means a Job that is started and/or completed at a location that is requested by a Client.</p>
-              <p><b>“Remote Job"</b> means the websites operated by Jobox and any related Jobox service, tool or application.</p>
+              <p><b>“Remote Job"</b> means a Job that is started and/or completed at any location that the Students chooses.</p>
               <p><b>Service</b> means providing a marketplace for Students and Clients to interact and to enter into an agreement between themselves for the completion of a Job and facilitating the payment process.</p>
-              <p><b>Student/s</b> means the User which performs a Job and sells a service to the Client</p>
+              <p><b>Student/s</b> means the User which performs a Job and sells a service to the Client.</p>
               <p><b>Website</b> means the site <a href="https://app.jobox.co.za/">https://app.jobox.co.za/</a> operated by Jobox and any related Jobox service, tool or application and is inclusive of any social media platforms.</p>
             </template>
             <template slot="md-collapse-pane-2">
@@ -67,7 +69,7 @@
               <p>When using Jobox, You agree to not:</p>
               <ol type="a">
                   <li>post content or items in inappropriate categories or areas on Our Websites and Services;</li>
-                  <li>infringe any laws, third party rights or Our policies</li>
+                  <li>infringe any laws, third party rights or Our policies;</li>
                   <li>fail to deliver payment for the Job delivered to You, unless the Student/Client has materially changed the Job provided from the bid or a clear typographical error is made;</li>
                   <li>fail to deliver on the Job purchased from You, unless the Client fails to meet the terms, materially alters the terms of the Student services from the listing;</li>
                   <li>circumvent or manipulate Our fee structure, the billing process, or fees owed to Jobox;</li>
@@ -93,7 +95,7 @@
               <p>Jobox is an online platform to facilitate interactions between the Student and the Client. We assist the Clients and Students to make informed decisions by providing a facility to rate and review Students but We cannot be held liable if the review and rating of a Student does not match the quality of what is done or a service that is performed as We do not control the ratings and reviews of the Students or the Clients.</p>
               <p>The Client determines the amount the Client intends to pay for the Job and We charge the Fee for certain Services, such as but not limited to introduction fees for Jobs, listing upgrades dependent on your elected memberships. When the Client uses a Service that has a Fee, the client has an opportunity to review and accept the Fee that will be charged by Us for the Service that We provide which We may change from time to time and We will update You in this regard by updating Our Website Terms and Conditions. We may choose to temporarily change the fees for Our Services for promotional events (for example, discounts on memberships) or new services, and such changes are effective when We post the temporary promotional event or new Service on the Website.</p>
               <p>Unless otherwise stated, all costs and Fees are quoted in South African Rands (ZAR).</p>
-              <p>In return for providing a facility to source Services, Jobox charges a Fee for each Job. Upon registering for an Account, You agree to this Fee being levied and consent to the amount prior to confirming the Job. </p>
+              <p>In return for providing a facility to source Services, Jobox charges a Fee for each Job. Upon registering for an Account, You agree to this Fee being levied and consent to the amount prior to confirming the Job.</p>
               <p>The Client is entitled to make payment of the amount prior to the commencement of the Job and hereby agrees to allow Jobox to hold the payment of a Job in Escrow. In the event that the Client does not make upfront payment, the Client shall make payment immediately on receipt of Jobox’s invoice.</p>
               <p>Jobox cannot be held liable if the Client does not make the payment for the services rendered by the Student in terms of the Job or if there is a delay in transferring the payment that is held in Escrow to the Student. Subject to the Client making payment for the Job, Jobox will release the payment to the Student in terms of the Fixed Term Contract within 7 (seven) days from completion of the Job.</p>
               <p>The Client hereby indemnifies Jobox against any and all claims that the Student may have against Jobox, however so arising as a direct, indirect or consequential result of the Client failing to timeously make payment for the Job.</p>
@@ -218,7 +220,7 @@
                   <li>for any unlawful purpose;</li>
                   <li>to solicit others to perform or participate in any unlawful acts;</li>
                   <li>to violate any international, federal, provincial or state regulations, rules, laws, or local ordinances;</li>
-                  <li>to infringe upon or violate Our intellectual property rights or the intellectual property rights of others; </li>
+                  <li>to infringe upon or violate Our intellectual property rights or the intellectual property rights of others;</li>
                   <li>to harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate based on race, gender, sexual orientation, belief, religion, language, ethnicity, colour, pregnancy, conscience, birth, marital status, age, national origin, ethnic or social origin, or disability;</li>
                   <li>to submit false or misleading information;</li>
                   <li>to upload or transmit viruses or any other type of malicious code that will or may be used in any way that will affect the functionality or operation of the Service or of any related Website, other Websites, or the Internet;</li>
@@ -269,6 +271,168 @@
             <template slot="md-collapse-pane-23">
               <p>Questions about the Terms and Conditions should be sent to Us at <u>contact@jobox.co.za</u></p>
             </template>
+            <template slot="md-collapse-pane-24">
+              <md-table>
+                <md-table-row>
+                  <md-table-head><span class="md-body-1"> </span></md-table-head>
+                  <md-table-head><span class="md-body-1">Minimum Job Fee</span></md-table-head>
+                  <md-table-head><span class="md-body-1">Admin Fee</span></md-table-head>
+                  <md-table-head><span class="md-body-1">Jobox Commission</span></md-table-head>
+                  <md-table-head><span class="md-body-1">Payment Recurrence</span></md-table-head>
+                  <md-table-head><span class="md-body-1">Payment Due</span></md-table-head>
+                </md-table-row>
+                <md-table-row>
+                  <md-table-cell><span class="md-body-1">Project/Task</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">R400</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">R100</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">15%</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">Per Job</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">N/A</span></md-table-cell>
+                </md-table-row>
+                <md-table-row>
+                  <md-table-cell><span class="md-body-1">Part-Time</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">R1000</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">-</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">15%</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">Cost to company for each month of employment for the first 12 months of employment</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">Within 7 days of a new month</span></md-table-cell>
+                </md-table-row>
+                <md-table-row>
+                  <md-table-cell><span class="md-body-1">Part-Time</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">R1000</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">-</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">15%</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">For the first 12 Months of employment</span></md-table-cell>
+                  <md-table-cell><span class="md-body-1">Within 7 days of a new month</span></md-table-cell>
+                </md-table-row>
+              </md-table>
+            </template>
+            <template slot="md-collapse-pane-25">
+              <ol>
+                <li>
+                  <b>Definitions</b>
+                    <ol>
+                      <li>All the definitions contained in the Jobox terms and conditions and privacy policy are to be incorporated into this fixed term contract, save to the extent that such definition has been expressly amended in this fixed term contract.</li>
+                      <li>Unless otherwise stated, or the context otherwise requires, the words and expressions listed below shall bear the meanings ascribed to them:</li>
+                      <ol>
+                        <li><b>Student</b> – means the person as more specifically defined in the cover sheet,</li>
+                        <li><b>Client</b> – means the person as more specifically defined in the cover sheet;</li>
+                        <li><b>Jobox</b> – means Jobox (Pty) Ltd, a company duly incorporated in terms of the company laws of South Africa with Registration Number 2015/143706/07 who offer an online platform enabling the Client and Student to find each other online, to complete and pay for a Job Category, buy and sell items and to use the services therein.</li>
+                        <li>Job Category – [Insert the title of the job category that the client has selected.] ad further detailed in clause 5 below.</li>
+                        <li>Termination Date – When the client clicks on confirm completion button on the Jobox Website or if terminated in accordance with clause 10 below;</li>
+                      </ol>
+                    </ol>
+                  </li>
+                  <li>
+                    <b>Appointment</b>
+                      <ol>
+                        <li>The Client has procured the services of the Student through the Jobox online platform and hereby appoints the Student, and the Student hereby accepts the appointment as an independent contractor of the Client for a fixed period of time.</li>
+                        <li>The reason for this fixed term contract is <b>for the appointment and completion of the Job Category that was posted on the Jobox online platform with the Job Name [insert Job Name]</b></li>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Duration</b>
+                      <ol>
+                        <li>Notwithstanding the date of signature hereof, this fixed term contract shall be deemed to have commenced on the <b>[insert date]</b> and will terminate, without further notice, on the Termination Date. </li>
+                        <li>The automatic termination of the contract on the Termination Date shall not be construed as a dismissal but as the completion of a fixed term contract.</li>
+                        <li>The parties agree that the Student will not continue to render his / her services in terms of this contract beyond the Termination Date. The foregoing is without prejudice to the right of either party to terminate this contract prior to its expiry date for any cause recognized by law as being sufficient therefore, including termination based on the Client’s operational requirements.</li>
+                        <li>The Student's appointment in terms of this contract does not contemplate the Student’s appointment to the Client’s permanent staff at any time or the Student’s appointment on an indefinite basis. The Student agrees that the nature of this contract is that of a temporary contract and that the student has not been led to believe otherwise.  The Student agrees that the nature of this contract will not be altered unless such alteration is explicitly made by the Client, signed by the parties.</li>
+                        <li>The Student should have no expectation that the contract will be renewed or extended after the Termination Date, that the student will be retained by the client on an indefinite basis following the Termination Date or that the client will offer the Student employment in the future.</li>
+                        <li>Notwithstanding the provisions of clause 3.1 above, during the currency of this fixed term contract the parties to the fixed term contract may terminate the fixed term contract, subject to Jobox terms and conditions and clause 11 below by going to the Jobox Website and clicking on the cancel button.</li>
+                        <li>Notwithstanding the provisions above, either party may terminate this fixed term contract without any notice for any cause recognized by law as sufficient.</li>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Place of work </b>
+                    <p>If the client requires the Student to be based at the Client’s premises they will have to report at the premises situated at <b>[insert]</b> or at such other premises which the Client may, on reasonable notice, require him to perform his / her duties. In all other cases, the Student can work remotely.</p>  
+                  </li>
+                  <li>
+                    <b>Responsibilities </b>
+                      <ol>
+                        <li>The Student’s responsibilities are as follows:</li>
+                        <ol>
+                          <li><b>[insert description]</b></li>
+                        </ol>
+                      </ol>
+                      5.2 In addition to the responsibilities listed above and as contained in the job description, the Student specially agrees to perform all other duties which the Client may reasonably and lawfully require you to perform from time to time.
+                  </li>
+                  <li>
+                    <b>Payment</b>
+                      <ol>
+                        <li>The Client will pay and the Student will accept as payment for their services the amount of R<b>[insert amount]</b>.</li>
+                        <li>The Student’s payment will be paid through the Jobox online platform at the completion of the job.</li>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Confidentiality and Company Property</b>
+                      <ol>
+                        <li>The Student records, acknowledges and agrees that:</li>
+                        <p></p>
+                        <ol>
+                          <li>During the course of their appointment in terms of this Contract, they shall become acquainted with, develop intellectual property on behalf of the Client, gain personal and in-depth knowledge of and have direct access to strategic, sensitive and confidential information of the Client its customers, shareholders and directors (including technical and business know-how, software and source code, trade secrets, confidential information, goodwill and intellectual property in general and hereinafter collectively referred to as “the Trade Secrets”) which is not readily available to the Client’s competitors and Client’s competitors:</li>
+                        </ol>
+                        <p></p>
+                        <p> 7.2 The Trade Secrets are of crucial importance to the business of the client and their Customer and the Client accordingly has a legitimate proprietary and commercial interest therein which the Client is entitled to protect;</p>
+                        <p> 7.3 Should any of the Trade Secrets become available to a competitor of the Client or customers, it could cause considerable financial loss; and</p>
+                        <p> 7.4 The only effective and reasonable manner in which legitimate proprietary and commercial interests in the Trade Secrets could be protected so as to avoid financial loss to the Client is by way of the Student furnishing the confidentiality undertakings and assignment provided for in clause 7.5 and 7.6 below.</p>
+                        <p> 7.5 In consideration of the benefits accruing to the Student in terms of this fixed term contract and in the interest of the protection and maintenance of the Trade Secrets, the Student undertakes to the Client that:</p>
+                        <p> 7.5.1 They shall not during the duration of this fixed term contract or at any time thereafter, either itself utilise and/or directly or indirectly divulge and/or disclose to any third party (except as required by the terms and nature of the Student’s work with the Client) any of the Trade Secrets;</p>
+                        <p> 7.5.2 They shall not derive any benefit, whether directly or indirectly, from the Trade Secrets, nor, without limiting the generality of the aforegoing, be engaged, involved, concerned or interested, whether directly or indirectly, in the economic exploitation, whether by marketing, promoting, advertising, changing, adapting, reverse-engineering, publishing or selling in any manner whatsoever, the Trade Secrets;</p>
+                        <p> 7.5.3 They shall treat as confidential all Trade Secrets which a third party has in terms of any contract made available to the Client and which has become known to the Student in the course of their duties under this fixed term contract, and they shall not divulge to other third parties any information regarding such trade secrets contrary to the terms of the aforesaid contract;</p>
+                        <p> 7.5.4 Any documents or records (including written instructions, drawings, notes or memoranda) relating to the Trade Secrets of the Client or their customers which are made by the Student or which come into the Student’s possession during the currency of this fixed term contract, shall be deemed to be the property of the Client and shall be surrendered to the Client on demand, and in any event, on the termination of this fixed term contract the Student will not retain any copies thereof or extracts therefrom.</p>
+                        <p> 7.6 The Student hereby acknowledges that the Client is the proprietary owner of the Trade Secrets. The Student hereby agrees and consents for completing the Job Category in return for payment, to automatically by signature of this contract, cede, transfer and make over to the Client all right, title and interest in any work created, developed or modified by the Student in the completion of the Job Category.</p>
+                        <p> 7.7 For the purposes of this fixed term contract the term “Trade Secrets” shall also include any part thereof whether verbal, in writing or electronic; and this clause 7 shall survive the termination or this fixed term contract for any reason whatsoever.</p>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Non-circumvention </b>
+                      <ol>
+                        <li>The parties hereby undertake not to circumvent Jobox in the process of doing business with it, where Jobox has introduced the parties to each other, or to a new product, process, design, drawing, potential business partner, supplier or client.</li>
+                        <li>The parties hereby undertake not to not deal directly with each other or such potential business partner, supplier or client to the exclusion of Jobox who introduced the parties, said business partner, supplier or client for the duration that the Student remains registered with a higher education institute.</li>
+                        <li>The parties hereby undertake not to, whether for itself, or as the agent of anyone else, or in any other capacity or for any other reason, to directly or indirectly assist any third party with the setting up, commencing and/or promoting or operating of a business utilisation similar Intellectual Property as Jobox.</li>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Independent contractor</b>
+                      <ol>
+                        <li>The Client and the Student hereby acknowledge and agree that the relationship between Client and Student is that of an independent contractor. Nothing in this contract creates a partnership, joint venture, agency or employer-employee relationship between the Client and Student.</li>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Cancellation</b>
+                      <ol>
+                        <p>10.1 Cancellation of Job by the Client whilst the Job is on-going</p>
+                        <p>10.1.1 Should the Client terminate the Job Category after acceptance and entering into a Fixed Term contract, for any reason whatsoever, the following cancellation policy will be applicable:</p>
+                        <p>10.1.2 Each Job Category will be referred to Jobox and dealt with on an ad-hoc basis;</p>
+                        <p>10.1.3 The Client and the Student will enter into a mediation process, as facilitated by Jobox in its sole discretion, the outcome of which is absolute and cannot be appealed or reviewed;</p>
+                        <p>10.1.4 Jobox will take into consideration various factors including but not limited to the Job specifications set out in the Fixed Term contract, the duration of the Job, how far the Student is to completing the Job Category, the quality and satisfactory performance of the Job by the Student.</p>
+                        <p>10.2 The Student cancels the contract whilst the Job is in process</p>
+                        <p>10.2.1 In the event that the Student cancels the Job Category, Jobox shall reimburse the Client (if an upfront payment was made and held in Escrow) less the reasonable reimbursement fee applicable.</p>
+                      </ol>
+                  </li>
+                  <li>
+                    <b>Dispute Resolution</b>
+                      <ol>
+                        <li>Should any dispute arise between the Client and Student concerning any provision of this Contract, the parties shall use their best endeavours to resolve the dispute by negotiation. Either Party may call upon the other Party by written notice to meet with the former for the purpose of reaching a mutually acceptable settlement of the dispute within 7 (seven) days after the date of such notice.</li>
+                        <li>If the parties are unable to reach a mutually acceptable settlement of the dispute within such period, either Party may submit the dispute to arbitration.</li>
+                        <li>An arbitrator shall be appointed by the parties jointly, and failing agreement, shall be nominated by the Arbitration Foundation of Southern Africa (“AFSA”). Should AFSA not be in existence at the time, the nomination shall be by the Chairman for the time being of the Johannesburg Bar Council.</li>
+                        <li>The arbitration shall be held in Johannesburg.</li>
+                        <li>The arbitration shall be held in accordance with the Commercial Rules of AFSA, or if AFSA shall not be in existence, in accordance with the formalities and procedures settled by the arbitrator, which shall be in an informal and summary manner, that is, it shall not be necessary to observe or carry out either the usual formalities or procedure or the strict rules of evidence of the Arbitration Act, 1965 of the Republic of South Africa and any statutory modification or re-enactment thereof.</li>
+                        <li>The arbitrator shall be entitled to:
+                          <ol>
+                            <li>investigate or cause to be investigated any matter, fact or thing which he considers necessary or desirable in connection with any matter referred to him for decision;</li>
+                            <li>decide the matters submitted to him according to what he considers just and equitable in all the circumstances, having regard to the purpose of this fixed term contract; an</li>
+                            <li>make such award, including an award for specific performance, an interdict, damages or a penalty or the costs of arbitration or otherwise, as he in his discretion may deem fit and appropriate.</li>
+                          </ol>
+                        </li>
+                        <p>11.7 The arbitration shall be held as quickly as possible after it is demanded, with a view to it being completed within thirty days after it has been so demanded. All procedures aimed at resolving any dispute pertaining to this fixed term contract, including but not limited to the Arbitration proceedings shall be held on a private and confidential basis.</p>
+                        <p>11.8 This clause is severable from the rest of the fixed term contract and shall therefore remain in effect even if this fixed term contract is terminated.</p>
+                        <p>11.9 This clause shall not preclude any Party from obtaining interim relief on an urgent basis from a court of competent jurisdiction pending the decision of the arbitrator.</p>
+                        <p>11.10 The parties hereby consent to the non-exclusive jurisdiction of the High Court of South Africa (Gauteng Local Division) in respect of the proceedings in this clause 11 and the above Court shall have jurisdiction to enforce any award made by an arbitrator under this clause.</p>
+                      </ol>
+                  </li>
+              </ol>
+            </template>
       </collapse>
       </md-card-content>
     </md-card>
@@ -287,4 +451,33 @@ export default {
 .transparant {
       opacity: 0.8;
 }
+</style>
+<style>
+ol {
+  list-style-type: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+}
+
+ol > li {
+  display: table;
+  counter-increment: item;
+  margin-bottom: 0.6em;
+}
+
+ol > li:before {
+  content: counters(item, ".") ". ";
+  display: table-cell;
+  padding-right: 0.6em;    
+}
+
+li ol > li {
+  margin: 0;
+}
+
+li ol > li:before {
+  content: counters(item, ".") " ";
+}
+
 </style>
